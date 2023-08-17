@@ -252,7 +252,7 @@ class BBCode {
 		$bbcode = array();
 		$html = array();
         //
-        $pre = '<img src="'.$tsCore->settings['smiles'].'/';
+        $pre = '<img src="'.$tsCore->settings['default'].'/images/smiles/';
         $end = '" align="absmiddle"/>';
 		// SMILES DEFAULT
         $bbcode[] =":)"; $html[] = $pre."001.png".$end;

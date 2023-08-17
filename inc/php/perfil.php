@@ -21,7 +21,7 @@
 	
 /*++++++++ = ++++++++*/
 
-	include "../../header.php"; // INCLUIR EL HEADER
+	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
 
 	$tsTitle = $tsCore->settings['titulo']; 	// TITULO DE LA PAGINA ACTUAL
 
@@ -87,7 +87,6 @@
     $tsInfo['yfollow'] = $tsCuenta->yFollow($usuario['user_id']);
     // MANDAR A PLANTILLA
 	$smarty->assign("tsInfo",$tsInfo);
-	$smarty->assign("tsRedes", $tsCuenta->redes);
 	$smarty->assign("tsGeneral",$tsGeneral);
     // MURO
     include("../class/c.muro.php");

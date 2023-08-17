@@ -135,7 +135,7 @@ $(document).ready(function(){
 		});
     });
     // GENERADOR DE TAGS
-    $('input[name=tags]').click(function(){
+    $('input[name=tags]').on('click', function(){
         if(tags == true) return true;
         var q = $('input[name=titulo]').val();
 		$.ajax({

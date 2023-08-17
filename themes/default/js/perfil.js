@@ -583,7 +583,7 @@ $(function(){
         }
     });
     // ADJUNTAR
-    $('.adj').click(function(){
+    $('.adj').on('click', function(){
         var aid = $(this).attr('aid');
     })
     // RESPUESTAS

@@ -24,20 +24,26 @@ class tsPosts {
         //
         return $data;
     }
-   /** genTags($q)
-    * @access public
-    * @param string
-    * @return string
-   */
-   public function genTags(string $q = '') {
-      $texto = preg_replace('/ {2,}/si', " ", trim(preg_replace("/[^ A-Za-z0-9]/", "", $q)));
-      $array = [];
-      # Solo agregamos de más de 4 y menos de 8 letras
-      foreach (explode(' ', $texto) as $tag):
-         if(strlen($tag) >= 4 AND strlen($tag) <= 12) array_push($array, strtolower($tag));
-      endforeach;
-      return join(', ', $array);
-   }
+    /** genTags($q)
+     * @access public
+     * @param string
+     * @return string
+     */
+     public function genTags($q){
+        $content = trim(preg_replace("/[^ A-Za-z0-9]/", "", $q));
+        $ketxt = preg_replace('/ {2,}/si', " ", $content);
+        $t = explode(" ", $ketxt);
+        $total = count($t);
+        $tg = "";
+        $i = 0;
+        foreach($t as $v){ $i++;
+            $coma = ($i < $total) ? ", " : " ";
+            $tg .= (strlen($v) >= 4 && strlen($v) <= 8) ? ($v.$coma) : "";
+        }
+        $tag = strtolower($tg);
+        //
+        return ($tag);
+     }
 	/*
 		getPreview()
 	*/
@@ -346,7 +352,7 @@ class tsPosts {
 		// MEDALLAS
         $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT m.*, a.* FROM w_medallas AS m LEFT JOIN w_medallas_assign AS a ON a.medal_id = m.medal_id WHERE a.medal_for = \''.(int)$postData['post_id'].'\' AND m.m_type = \'2\' ORDER BY a.medal_date');
 		$postData['medallas'] = result_array($query);
-        $postData['m_total'] = empty($postData['medallas']) ? 0 : count($postData['medallas']);
+        $postData['m_total'] = count($postData['medallas']);
         
 		// TAGS
 		$postData['post_tags'] = explode(",",$postData['post_tags']);

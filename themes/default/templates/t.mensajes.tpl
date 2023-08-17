@@ -1,5 +1,5 @@
-{include file='sections/main_header.tpl'}
-                {include file='modules/m.mensajes_menu.tpl'}
+{include "main_header.tpl"}
+                {include "m.mensajes_menu.tpl"}
                 <div style="float:right;width:730px">
                 	<div style="display: none;" id="m-mensaje"></div>
                     <div class="boxy">
@@ -11,11 +11,11 @@
                         </div>
                         <div class="boxy-content" style="padding:0" id="mensajes">
                             {if $tsAction == '' || $tsAction == 'enviados' || $tsAction == 'respondidos' || $tsAction == 'search'}
-                            {include file='modules/m.mensajes_list.tpl'}
+                            {include "m.mensajes_list.tpl"}
                             {elseif $tsAction == 'leer'}
-                            {include file='modules/m.mensajes_leer.tpl'}
+                            {include "m.mensajes_leer.tpl"}
                             {elseif $tsAction == 'avisos'}
-                            {include file='modules/m.mensajes_avisos.tpl'}
+                            {include "m.mensajes_avisos.tpl"}
                             
                             {/if}
 						</div>
@@ -23,4 +23,4 @@
                 </div>
                 <div style="clear: both;"></div>
                 
-{include file='sections/main_footer.tpl'}
+{include "main_footer.tpl"}

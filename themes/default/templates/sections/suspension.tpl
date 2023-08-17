@@ -1,4 +1,4 @@
-{include file='sections/main_header.tpl'}
+{include "main_header.tpl"}
 				<div class="user-suspendido">
                     <h3>Usuario suspendido</h3>
                     <p>Hola, <b>{$tsUser->nick}</b> lamentamos informarte que has sido suspendido de <b>{$tsConfig.titulo}</b></p>
@@ -9,5 +9,5 @@
                     <h4>Fecha actual:</h4>
                     {$smarty.now|date_format:"%d/%m/%Y %H:%M:%S"}hs.
                 </div>
-{include file='sections/main_footer.tpl'}
+{include "main_footer.tpl"}
                                     

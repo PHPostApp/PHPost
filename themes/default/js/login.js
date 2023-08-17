@@ -1,33 +1,70 @@
-login_ajax = () => {
-	if( empty($("#nickname").val()) ) {
-		$("#nickname").focus();return
+comprobar = (id, encode = false) => {
+	input = $('.formulario #' + id);
+	if (empty(input.val())) {
+		input.focus();
+		return false;
 	}
-	if( empty($("#password").val()) ) {
-		$("#password").focus();return
-	}
-	// Datos a enviar
-	let dato = [
-		'nick=' + encodeURIComponent($("#nickname").val()),
-		'pass=' + encodeURIComponent($("#password").val()),
-		'rem=' + $("#rem").is(':checked')
-	].join("&");
-	// Imagen de cargando
-	$(".login_cuerpo").append('<div id="login_cargando"><img src="'+global_data.img+'images/large-loading.gif" width="32" height="32" alt="Iniciando sesion"></div>');
-	// Envio los datos
-	$.post(global_data.url + "/login-user.php", dato, response => {
-		switch (response.charAt(0)) {
+	input.on('keyup', () => $('#login_error p').html('').hide())
+	return encode ? encodeURIComponent(input.val()) : input;
+}
+
+cargando = (status = false) => {
+	const loading = $("#login_cargando");
+	if(status) {
+		loading
+		.css({width: '100%',display: 'grid',placeItems: 'center',marginBottom: '.3rem'})
+		.html('<img src="'+global_data.img+'/loading_bar.gif" />');
+	} else loading.removeAttr('style').html('')
+}
+
+iniciarSesion = () => {
+	params = [
+		'nick=' + comprobar('nickname', true),
+		'pass=' + comprobar('password', true),
+		'rem=' + $('#rem').is(':checked')
+	].join('&');
+	cargando(true)
+	$('#login_error p').html('').hide();
+	$('#loading').fadeIn(250);
+	$.post(global_data.url + '/login-user.php', params, h => {
+		switch(h.charAt(0)){
 			case '0':
-				$("#login_error").html(response.substring(3)).show()
-				$("#login_cargando").remove()
+				$('#login_error p').html(h.substring(3)).show();
+				comprobar('nickname').focus();
+				cargando()
 			break;
-			// Iniciamos sesion
 			case '1':
-				setTimeout(() => (response.charAt(0) != '1' ? location.href = response.substring(3) : location.reload()), 1500)
+				if (h.substring(3)=='Home') location.href='/';
+				else if (h.substr(3) == 'Cuenta') location.href = '/cuenta/';
+				else location.reload();
+				$('#loading').fadeOut(350);
 			break;
+		};
+	})
+	.fail(() => $('#login_error p').html('Error al intentar procesar lo solicitado').show())
+	.done(() => cargando())
+}
+
+multiOptions = (who = '', status = false) => {
+	// Creamos la plantilla que usará
+	const template = `<div id="AFormInputs">
+		<div class="form-line">
+			<label for="r_email">Correo electr&oacute;nico:</label>
+			<input type="text" ame="r_email" placeholder="example@gmail.com" id="r_email" maxlength="35"/>
+		</div>
+	</div>`;
+	if(!status) {
+		let data = {
+			'password': 'Recuperar Contrase&ntilde;a',
+			'validation': 'Reenviar validaci&oacute;n'
 		}
-	})
-	.fail(() => {
-		$("#login_error").html('Error al procesar la petici&oacute;n')
-		$("#login_cargando").remove()
-	})
+		mydialog.faster({
+			title: data[who],
+			body: template,
+			buttons: {
+				ok: {text: 'Continuar', action: `javascript:multiOptions(true, '${who}')` },
+				fail: {text: 'Cancelar', action: 'close' }
+			}
+		})
+	}
 }

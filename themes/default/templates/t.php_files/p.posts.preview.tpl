@@ -3,7 +3,9 @@
 </div>
 {literal}
 <script type="text/javascript">
-$(window).on('resize', function(){
+$(window).on(
+	'resize',
+	function(){
 		$('#preview').height((document.documentElement.clientHeight - 140) + 'px');
 		mydialog.center();
 	}

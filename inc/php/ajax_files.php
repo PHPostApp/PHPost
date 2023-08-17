@@ -20,7 +20,7 @@
 	
 /*++++++++ = ++++++++*/
 
-	include "../../header.php"; // INCLUIR EL HEADER
+	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php"; // INCLUIR EL HEADER
 
 	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
 
@@ -55,6 +55,7 @@
 \*********************************/
 
 if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO MOSTRAR PLANTILLA, SI NO ENTONCES MOSTRARLA.
+
 	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
 
 	/*++++++++ = ++++++++*/

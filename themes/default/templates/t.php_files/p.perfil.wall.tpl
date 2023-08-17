@@ -1,6 +1,6 @@
 1:
 {if $tsPrivacidad.m.v == true}
-{include file='modules/m.perfil_muro.tpl'}
+{include "m.perfil_muro.tpl"}
 <script type="text/javascript">
 /* {literal} */
 $(function(){

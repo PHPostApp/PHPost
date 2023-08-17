@@ -1,4 +1,4 @@
-{include file='sections/main_header.tpl'}
+{include "main_header.tpl"}
             <style>
             /* {literal} */
             .reg-login {
@@ -27,7 +27,7 @@
 <div class="post-deleted post-privado clearbeta">
 	<div class="content-splash">
 		<h3>{if $tsType == 'post'}Este post es privado, s&oacute;lo los usuarios registrados de {$tsConfig.titulo} pueden acceder.{else}Registrate en {$tsConfig.titulo}{/if}</h3>
-        {if $tsType == 'post'}Pero no te preocupes, tambi&eacute;n puedes formar parte de nuestra gran familia. <a title="Reg&iacute;strate!" href="{$tsConfig.url}/registro/"><b>Reg&iacute;strate!</b></a>{/if}
+        {if $tsType == 'post'}Pero no te preocupes, tambi&eacute;n puedes formar parte de nuestra gran familia. <a title="Reg&iacute;strate!" onclick="registro_load_form(); return false" href=""><b>Reg&iacute;strate!</b></a>{/if}
 				<div class="reg-login">
 			<div class="login-panel">
 				<h4>...O identif&iacute;cate</h4>
@@ -57,4 +57,4 @@
 		</div>
 	</div>
 </div>
-{include file='sections/main_footer.tpl'}
+{include "main_footer.tpl"}

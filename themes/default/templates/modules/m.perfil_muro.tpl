@@ -4,12 +4,12 @@
                         </script>
                         {if $tsGeneral.fotos_total > 0}
                         <div id="perfil-foto-bar">
-                            {include file='modules/m.perfil_muro_fotos.tpl'}
+                            {include "m.perfil_muro_fotos.tpl"}
                         </div>
                         {/if}
                         <div id="perfil-form" class="widget">
                         {if $tsPrivacidad.mf.v == true}
-                            {include file='modules/m.perfil_muro_form.tpl'}
+                            {include "m.perfil_muro_form.tpl"}
                         {else}
                             <div class="emptyData" style="border-top:none">{$tsPrivacidad.mf.m}</div>
                         {/if}
@@ -17,7 +17,7 @@
 						<div class="widget clearfix" id="perfil-wall">
                             
                             <div id="wall-content">
-                            {include file='modules/m.perfil_muro_story.tpl'}
+                            {include "m.perfil_muro_story.tpl"}
                             </div>
                             <!-- more -->
                             {if $tsMuro.total >= 10}

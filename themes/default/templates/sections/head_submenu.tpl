@@ -12,7 +12,7 @@
                     {/if}
                     <div class="clearBoth"></div>
                 </ul>
-                {include file='sections/head_categorias.tpl'}
+                {include "head_categorias.tpl"}
                 <div class="clearBoth"></div>
             </div>
             <div id="subMenuFotos" class="subMenu {if $tsPage == 'fotos'}here{/if}">

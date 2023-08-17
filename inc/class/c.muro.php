@@ -46,7 +46,7 @@ class tsMuro {
             break;
             case 5:
                 if(!$tsUser->is_member) $priv['m']['v'] = false;
-                $priv['m']['m'] = 'Solo usuarios <a href="'.$tsCore->settings['url'].'/registro/">registrados</a> pueden ver el muro de '.$username;
+                $priv['m']['m'] = 'Solo usuarios <a onclick="registro_load_form();">registrados</a> pueden ver el muro de '.$username;
             break;
         }
         // FIRMAR MURO
@@ -73,7 +73,7 @@ class tsMuro {
             break;
             case 5:
                 if(!$tsUser->is_member) $priv['mf']['v'] = false;
-                $priv['mf']['m'] = 'Solo usuarios <a href="'.$tsCore->settings['url'].'/registro/">registrados</a> pueden firmar el muro de '.$username;
+                $priv['mf']['m'] = 'Solo usuarios <a onclick="registro_load_form();">registrados</a> pueden firmar el muro de '.$username;
             break;
         }
         //
@@ -345,7 +345,7 @@ class tsMuro {
         
         //die(count($data));
         // RETORNAMOS
-        return array('total' => (empty($data) ? 0 : count($data)), 'data' => $data);
+        return array('total' => safe_count($data), 'data' => $data);
     }
     /*
         getWall($count)
@@ -376,7 +376,7 @@ class tsMuro {
         }
         
         //
-        return array('total' => (empty($data) ? 0 : count($data)), 'data' => $data);
+        return array('total' => safe_count($data), 'data' => $data);
     }
     /*
         getPubExtras($pud_id, $type)
@@ -596,7 +596,7 @@ class tsMuro {
 		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT like_id, user_id FROM u_muro_likes WHERE obj_id = \''.(int)$id.'\' AND obj_type = \''.(int)$type.'\'');
         $likes = result_array($query);
         
-        $total = count($likes);
+        $total = sefe_count($likes);
         // CHECAMOS
         $i_like = 0;
         foreach($likes as $key => $val){

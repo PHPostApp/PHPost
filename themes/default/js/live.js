@@ -172,7 +172,7 @@ $(document).ready(function(){
     //
     live.inicializar();
     // NOS DICE SI MOSTRAR O NO :D
-    $(window).on('focus', function(){
+    $(window).focus(function(){
         live.focus = true;
         //live.hide();
     }).blur(function(){

@@ -208,7 +208,7 @@ public function setNotificacion($type, $user_id, $obj_user, $obj_uno = 0, $obj_d
      * @return void
      * @info Envia notificaciones a los usuarios que siguen a un post o usuario.
 	*/
-	function setFollowNotificacion($notType = null, $f_type = null, $user_id = null, $obj_uno = null, $obj_dos = 0, array $excluir = []){
+	function setFollowNotificacion($notType = null, $f_type = null, $user_id = null, $obj_uno = null, $obj_dos = 0, $excluir = null){
 		global $tsCore;
 		# TIPO DE FOLLOW USER o POST
         if($f_type == 1) $f_id = $user_id;
@@ -307,7 +307,7 @@ public function setNotificacion($type, $user_id, $obj_user, $obj_uno = 0, $obj_d
 		// ARMAR TEXTOS Y LINKS :)
 		$dataDos['data'] = $this->armNotificaciones($data);
         // TOTAL DE NOTIDICACIONES
-        $dataDos['total'] = empty($dataDos['data']) ? 0 : count($dataDos['data']);
+        $dataDos['total'] = count($dataDos['data']);
 		//
 		return $dataDos;
 	}
@@ -317,30 +317,29 @@ public function setNotificacion($type, $user_id, $obj_user, $obj_uno = 0, $obj_d
      * @param array, int
      * @return array
      * @info CREA LAS NOTIFICACIONES
-     * Obtenido de Cerberus
 	*/
 	private function armNotificaciones($array){
         # ARMAMOS LAS ORACIONES
         $this->makeMonitor();
-      $dato = array();
-      # PARA CADA VALOR CREAR UNA CONSULTA
-      foreach($array as $key => $val){
-         // CREAR CONSULTA
-         $sql = $this->makeConsulta($val);
-         // CONSULTAMOS
-         if(is_array($sql)) $dato = $sql;
-         else {
-            $query = db_exec(array(__FILE__, __LINE__), 'query', $sql);
-            if($query)
-            $dato = db_exec('fetch_assoc', $query);
-         }
-         $dato = array_merge($dato, $val);
-         // SI AUN EXISTE LO QUE VAMOS A NOTIFICAR..
-         if($dato) $data[] = $this->makeOracion($dato);
-      }
-      //
-      return $data;
-   }
+		# PARA CADA VALOR CREAR UNA CONSULTA
+		foreach($array as $key => $val){
+			// CREAR CONSULTA
+			$sql = $this->makeConsulta($val);
+			// CONSULTAMOS
+			if(is_array($sql)){
+				$dato = $sql;
+			}else {
+				$query = db_exec(array(__FILE__, __LINE__), 'query', $sql);
+				$dato = db_exec('fetch_assoc', $query);
+				
+			}
+			$dato = array_merge($dato, $val);
+            // SI AUN EXISTE LO QUE VAMOS A NOTIFICAR..
+            if($dato) $data[] = $this->makeOracion($dato);
+		}
+		//
+		return $data;
+	}
 	/**
      * @name makeConsulta
      * @access private

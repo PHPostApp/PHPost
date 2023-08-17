@@ -21,7 +21,7 @@
 	
 /*++++++++ = ++++++++*/
 
-	include "../../header.php"; // INCLUIR EL HEADER
+	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
 
 	$tsTitle = $_GET['type'] == 1 ? 'Recuperar contrase&ntilde;a ' : 'Validar cuenta '.' - '.$tsCore->settings['titulo'];
 

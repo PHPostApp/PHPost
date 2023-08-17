@@ -1,4 +1,4 @@
-{include file='sections/main_header.tpl'}
+{include "main_header.tpl"}
 				<script type="text/javascript" src="{$tsConfig.js}/favoritos.js"></script>
 				<script type="text/javascript">
                 var favoritos_data = [{$tsFavoritos}];
@@ -39,4 +39,4 @@
                 </div>
                 <div style="clear: both;"></div>
                 
-{include file='sections/main_footer.tpl'}
+{include "main_footer.tpl"}

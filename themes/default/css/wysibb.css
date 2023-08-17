@@ -1021,3 +1021,9 @@ code {
 #preview img {
 	max-width: 100%;
 }
+.post-contenido ol li {
+	list-style-type: decimal;
+}
+.post-contenido ul li {
+	list-style-type: disc;
+}

@@ -22,7 +22,7 @@
 	
 /*++++++++ = ++++++++*/
 
-	include "../../header.php"; // INCLUIR EL HEADER
+	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
 
 	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
 
@@ -66,24 +66,23 @@
 		$smarty->assign("tsMax",$max_year);
 		$smarty->assign("tsEndY",$end_year);
 		// PERFIL INFO
-      $tsPerfil = $tsCuenta->loadPerfil();
+        $tsPerfil = $tsCuenta->loadPerfil();
 		$smarty->assign("tsPerfil",$tsPerfil);
 		// PERFIL DATA
 		$smarty->assign("tsPData",$tsPerfilData);
-      $smarty->assign("tsPrivacidad",$tsPrivacidad);
+        $smarty->assign("tsPrivacidad",$tsPrivacidad);
 		// DATOS
 		$smarty->assign("tsPaises",$tsPaises);
 		$smarty->assign("tsEstados",$estados[$tsPerfil['user_pais']]);
 		$smarty->assign("tsMeces",$tsMeces);
-      // BLOQUEOS
-      $smarty->assign("tsBlocks",$tsCuenta->loadBloqueos());
+        // BLOQUEOS
+        $smarty->assign("tsBlocks",$tsCuenta->loadBloqueos());
         
 	} elseif($action == 'save'){
 		echo $tsCore->setJSON($tsCuenta->savePerfil());
 	} elseif($action == 'desactivate'){
 		if(!empty($_POST['validar'])) echo $tsCuenta->desCuenta();
 	}
-   $smarty->assign("tsAccion", $_GET["accion"]);
 	
 /**********************************\
 

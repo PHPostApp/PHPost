@@ -50,7 +50,7 @@
                             <div id="no-comments">No tienes permisos para comentar.</div>
 						{elseif $tsUser->is_member && ($tsPost.post_block_comments != 1 || $tsPost.post_user == $tsUser->uid || $tsUser->is_admod || $tsUser->permisos.gopcp) && $tsPost.block == 0}
                         <div class="miComentario">
-		                    {include file='modules/m.posts_comments_form.tpl'}
+		                    {include "m.posts_comments_form.tpl"}
                         </div>
                         {/if}
                     </div>

@@ -1,4 +1,4 @@
-{include file='sections/main_header.tpl'}
+{include "main_header.tpl"}
 				
 				<div class="post-{$tsAviso.0}">
                     <h3>{$tsAviso.1}</h3>
@@ -17,4 +17,4 @@
                     </ul>
                 </div>
                 
-{include file='sections/main_footer.tpl'}
+{include "main_footer.tpl"}

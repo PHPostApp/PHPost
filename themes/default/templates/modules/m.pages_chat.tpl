@@ -39,8 +39,8 @@
 	
 </div>
 <div style="width:300px" class="floatR">
-    {include file='modules/m.global_ads_300.tpl'}
+    {include "m.global_ads_300.tpl"}
     {if $tsConfig.chat_id}<br />
-    {include file='modules/m.global_ads_300.tpl'}
+    {include "m.global_ads_300.tpl"}
     {/if}
 </div>

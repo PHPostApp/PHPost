@@ -1,10 +1,10 @@
-{include file='sections/main_header.tpl'}
+{include "main_header.tpl"}
 				{if $tsAction == ''}
-                    {include file='modules/m.monitor_content.tpl'}
-                    {include file='modules/m.monitor_sidebar.tpl'}
+                    {include "m.monitor_content.tpl"}
+                    {include "m.monitor_sidebar.tpl"}
                 {else}
-	                {include file='modules/m.monitor_menu.tpl'}
-                    {include file='modules/m.monitor_listado.tpl'}
+	                {include "m.monitor_menu.tpl"}
+                    {include "m.monitor_listado.tpl"}
 <style>
 /* {literal} */
 .btn_follow a {
@@ -159,4 +159,4 @@ a.siguiente-listado, a.anterior-listado {
                 {/if}
                 <div style="clear: both;"></div>
                 
-{include file='sections/main_footer.tpl'}
+{include "main_footer.tpl"}

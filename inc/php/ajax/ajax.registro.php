@@ -89,7 +89,8 @@
 			
 			$smarty->assign("tsPaises",$tsPaises);
 			
-			$smarty->assign("tsMeces",$tsMeces);	
+			$smarty->assign("tsMeces",$tsMeces);		
+
 			}
 			
 		break;

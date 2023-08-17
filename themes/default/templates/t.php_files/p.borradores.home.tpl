@@ -1,4 +1,4 @@
-{include file='sections/main_header.tpl'}
+{include "main_header.tpl"}
 
 				<script type="text/javascript" src="{$tsConfig.js}/borradores.js"></script>
                 <div id="borradores">
@@ -59,4 +59,4 @@
                 </div>
                 <div style="clear:both"></div>
             
-{include file='sections/main_footer.tpl'}
+{include "main_footer.tpl"}

@@ -21,7 +21,7 @@
 	
 /*++++++++ = ++++++++*/
 
-	include "../../header.php"; // INCLUIR EL HEADER
+	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
 
 	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
 
@@ -59,57 +59,58 @@
 
 \*********************************/
 
-	$denuncia = ['posts', 'users', 'mps', 'fotos'];
-
 	if($action == ''){
-		$smarty->assign("plantilla", "mod_welcome");
 		$smarty->assign("tsMods",$tsMod->getMods());
     // DENUNCIAS
-	} elseif(in_array($action, $denuncia)) {
-		$smarty->assign("plantilla", "mod_report_" . $action);
-      // DATOS EXTRA
-      include('../ext/datos.php');
-      // SEGUNDA ACCION
+	} elseif($action == 'posts' || $action == 'users' ||  $action == 'mps' ||  $action == 'fotos' ){
+        // DATOS EXTRA
+        include('../ext/datos.php');
+        // SEGUNDA ACCION
 		if(empty($act)){
-		 	$smarty->assign("tsReports", $tsMod->getDenuncias($action));
-         $smarty->assign("tsDenuncias", $tsDenuncias[$action]);
-		} elseif($act == 'info') {
-         $smarty->assign("tsDenuncia", $tsMod->getDenuncia($action));
-         $smarty->assign("tsDenuncias", $tsDenuncias[$action]);
+		  $smarty->assign("tsReports",$tsMod->getDenuncias($action));
+          $smarty->assign("tsDenuncias",$tsDenuncias[$action]);
+		}elseif($act == 'info'){
+          $smarty->assign("tsDenuncia",$tsMod->getDenuncia($action));
+          $smarty->assign("tsDenuncias",$tsDenuncias[$action]);
 		}
 	}
-   // SUSPENSIONES
-   elseif($action == 'banusers'){
-		$smarty->assign("plantilla", "mod_ban_users");
-      $smarty->assign("tsSuspendidos",$tsMod->getSuspendidos());
-   }
+    // SUSPENSIONES
+    elseif($action == 'banusers'){
+        $smarty->assign("tsSuspendidos",$tsMod->getSuspendidos());
+    }
 	//PAPELERAS
 	elseif($action == 'pospelera'){
-		$smarty->assign("plantilla", "mod_papelera_posts");
-      $smarty->assign("tsPospelera",$tsMod->getPospelera());
-   }
+        $smarty->assign("tsPospelera",$tsMod->getPospelera());
+    }
 	elseif($action == 'fopelera'){
-		$smarty->assign("plantilla", "mod_papelera_fotos");
-       $smarty->assign("tsFopelera",$tsMod->getFopelera());
-   }
+        $smarty->assign("tsFopelera",$tsMod->getFopelera());
+    }
 	// CONTENIDO DESAPROBADO
 	elseif($action == 'comentarios'){
-		$smarty->assign("plantilla", "mod_revision_comentarios");
-      $smarty->assign("tsComentarios",$tsMod->getComentariosD());
-   }
+        $smarty->assign("tsComentarios",$tsMod->getComentariosD());
+    }
 	elseif($action == 'revposts'){
-		$smarty->assign("plantilla", "mod_revision_posts");
-      $smarty->assign("tsPosts",$tsMod->getPostsD());
-   }
+        $smarty->assign("tsPosts",$tsMod->getPostsD());
+    }
 	// BUSCADOR DE IP Y CONTENIDO
-   elseif($action == 'buscador') {
-		$smarty->assign("plantilla", "mod_buscador");
-		if($_POST['buscar']) {
-			$tsCore->redirectTo($tsCore->settings['url'].'/moderacion/buscador/'.$_POST['m'].'/'.$_POST['t'].'/'.$_POST['texto']);
-		}	
-		if($act == 'search') $smarty->assign("tsContenido", $tsMod->getContenido()); 
-
-	}
+    elseif($action == 'buscador'){
+		if(!$act) {
+		if($_POST['buscar']){
+		$texto = $_POST['texto'];
+		$metodo = $_POST['m'];
+		$tipo = $_POST['t'];
+		$tsCore->redirectTo($tsCore->settings['url'].'/moderacion/buscador/'.$metodo.'/'.$tipo.'/'.$texto);
+		}		
+		}elseif($act == 'search'){
+		if($_POST['buscar']){
+		$texto = $_POST['texto'];
+		$metodo = $_POST['m'];
+		$tipo = $_POST['t'];
+		$tsCore->redirectTo($tsCore->settings['url'].'/moderacion/buscador/'.$metodo.'/'.$tipo.'/'.$texto);
+		}		
+        $smarty->assign("tsContenido",$tsMod->getContenido()); 
+		}
+		}
 
 /**********************************\
 

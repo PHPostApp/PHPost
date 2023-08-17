@@ -1,10 +1,10 @@
-{include file='sections/main_header.tpl'}
+{include "main_header.tpl"}
 				<script type="text/javascript" src="{$tsConfig.default}/js/perfil.js"></script>
                 <script type="text/javascript" src="{$tsConfig.default}/js/portal.js"></script>
                 <div id="left_box">
-                    {include file='modules/m.portal_userbox.tpl'}
+                    {include "m.portal_userbox.tpl"}
                     <br class="spacer"/>
-                    {include file='modules/m.global_ads_160.tpl'}
+                    {include "m.global_ads_160.tpl"}
                 </div>
                 <div id="center_box">
                     <div id="portal">
@@ -18,21 +18,21 @@
                             <div class="clearBoth"></div>
                         </div>
                         <div id="portal_content">
-                            {include file='modules/m.portal_noticias.tpl'}
-                            {include file='modules/m.portal_activity.tpl'}
-                            {include file='modules/m.portal_posts.tpl'}
-                            {include file='modules/m.portal_posts_favoritos.tpl'}
+                            {include "m.portal_noticias.tpl"}
+                            {include "m.portal_activity.tpl"}
+                            {include "m.portal_posts.tpl"}
+                            {include "m.portal_posts_favoritos.tpl"}
                         </div>
                     </div>
                 </div>
                 <div id="right_box">
                     <br />
-                    {include file='modules/m.home_stats.tpl'}
-                    {include file='modules/m.portal_posts_visitados.tpl'}
-                    {include file='modules/m.portal_fotos.tpl'}
-                    {include file='modules/m.portal_afiliados.tpl'}
+                    {include "m.home_stats.tpl"}
+                    {include "m.portal_posts_visitados.tpl"}
+                    {include "m.portal_fotos.tpl"}
+                    {include "m.portal_afiliados.tpl"}
                     <!--Poner aqui mas modulos-->
                 </div>
                 <div style="clear:both"></div>
 
-{include file='sections/main_footer.tpl'}
+{include "main_footer.tpl"}

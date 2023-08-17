@@ -3,474 +3,463 @@
 /**
  * @name install.php
  * @author PHPost Team
- * @copyright 2011-2018
+ * @copyright 2011-2023
  */
+
+define('DS', DIRECTORY_SEPARATOR);
+define('SCRIPT_ROOT', realpath('../') . DS);
+define('INSTALL_ROOT', realpath('./') . DS);
+define('CONFIGINC', SCRIPT_ROOT . 'config.inc.php');
+define('LICENSE', SCRIPT_ROOT . 'license.txt');
 
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 session_start();
 //
-$version_id = 2;
-$version_title = "Risus 1.3";
+$version_id = "1.3.001";
+$version_title = "Risus $version_id";
+$wversion_code = str_replace([' ', '.'], '_', strtolower($version_title));
+
 $step = empty($_GET['step']) ? 0 : $_GET['step'];
 $step = htmlspecialchars(intval($step));
 $next = true; // CONTINUAR
 
+$theme = [
+	'tid' => 1, 
+	't_name' => 'PHPost', 
+	't_url' => '/themes/default', 
+	't_path' => 'default', 
+	't_copy' => 'PHPost & Miguel92'
+];
+
+// Intento de sistema de dirección automática
+$ssl = 'http';
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' || !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+   $ssl = 'https';
+}
+$local = dirname(dirname($_SERVER["REQUEST_URI"]));
+// Creando las url base e install
+$url = "$ssl://" . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost') . $local;
+$base_install = $url . "/install";
+
+require_once INSTALL_ROOT . "mysqli.database.php";
+require_once INSTALL_ROOT . "extension.loader.php";
+
 switch ($step) {
-    case 0:
-        $_SESSION['license'] = false;
-        $licence = file_get_contents('../license.txt');
-        break;
-    // OBTENER PERMISOS
-    case 1:
-        if ($_POST['license']) {
-            $permisos['f1'] = array('chmod' => substr(sprintf('%o', fileperms('../config.inc.php')), -3));
-            $permisos['d1'] = array('chmod' => substr(sprintf('%o', fileperms('../files/avatar/')), -3));
-            $permisos['d2'] = array('chmod' => substr(sprintf('%o', fileperms('../files/uploads/')), -3));
-            $permisos['d3'] = array('chmod' => substr(sprintf('%o', fileperms('../cache/')), -3));
-            //
-            foreach ($permisos as $key => $val) {
-                $permisos[$key]['css'] = 'OK';
-                if ($key == 'f1' && $val['chmod'] != 666) {
-                    $permisos[$key]['css'] = 'NO';
-                    $next = false;
-                } elseif ($key != 'f1' && $val['chmod'] != 777) {
-                    $permisos[$key]['css'] = 'NO';
-                    $next = false;
-                }
-            }
+	case 0:
+		$_SESSION['license'] = false;
+		$license = file_get_contents(LICENSE);
+	break;
+	// OBTENER PERMISOS
+	case 1:
+		if ($_POST['license']) {
+			$all = [
+				"config" => '../config.inc.php',
+				"cache" => '../cache/',
+				"avatar" => '../files/avatar/',
+				"uploads" => '../files/uploads/',
+			];
+			foreach ($all as $key => $val) {
+				$permisos[$key]['chmod'] = (int)substr(sprintf('%o', fileperms($val)), -3);
+				$permisos[$key]['css'] = 'OK';
+				if ($key === 'config' && $permisos[$key]['chmod'] != 666) {
+					$permisos[$key]['css'] = 'NO';
+					$next = false;
+				} elseif ($key != 'config' && $permisos[$key]['chmod'] != 777) {
+					$permisos[$key]['css'] = 'NO';
+					$next = false;
+				}
+			}
+			$_SESSION['license'] = true;
+		} else header("Location: index.php");
+	break;
+	// Comprobando...
+	case 2:
+		// No saltar la licensia
+		if (!$_SESSION['license']) header("Location: index.php");
+	
+		$compare = version_compare(PHP_VERSION, '7.0.0', '>');
+		$all = [
+			'php' => [
+				'name' => 'PHP', 
+				'status' => PHP_VERSION,
+				'css' => $compare ? 'ok' :'no'
+			],
+			'gd' => [
+				'name' => 'Extensión GD',
+				'status' => $extension->loaderGD('message'),
+				'css' => $extension->loaderGD('status') ? 'ok' :'no'
+			],
+			'curl' => [
+				'name' => 'Extensión cURL',
+				'status' => $extension->loaderCURL('message'),
+				'css' => $extension->loaderCURL('status') ? 'ok' :'no'
+			]
+		];
 
-            $_SESSION['licence'] = true;
-        } else {
-            header("Location: index.php");
-        }
-        break;
-    // COMPROBAR BASE DE DATOS
-    case 2:
-        // No saltar la licensia
-        if (!$_SESSION['licence']) {
-            header("Location: index.php");
-        }
-
-        // Step
-        $next = false;
-        if ($_POST['save']) {
-            $dbhost = $_POST['dbhost'];
-            $dbuser = $_POST['dbuser'];
-            $dbpass = $_POST['dbpass'];
-            $dbname = $_POST['dbname'];
+		$_SESSION['license'] = true;
+	break;
+	// COMPROBAR BASE DE DATOS
+	case 3:
+		// No saltar la licensia
+		if (!$_SESSION['license']) header("Location: index.php");
+		// Step
+		$next = false;
+		if (isset($_POST['save'])) {
+         // Con esto evitamos escribir todos los campos
+         foreach ($_POST['db'] as $key => $val) 
+         	$db[$key] = empty($val) ? '' : htmlspecialchars($val);
+			// CONECTAMOS
+			$db_link = mysqli_connect($db['hostname'], $db['username'], $db['password'], $db['database']);
+			// NO SE PUDO CONECTAR?
+         $database->db = $db;
+         $database->db_link = $database->conn();
+			if (empty($database->db_link)) {
+				$message = 'Tus datos de conexi&oacute;n son incorrectos.';
+				$next = false;
+			} else {
+				$database->setNames();
+				// GUARDAR LOS DATOS DE CONEXION
+				$config = file_get_contents(CONFIGINC);
+				$config = str_replace(['dbhost', 'dbuser', 'dbpass', 'dbname'], $db, $config);
+				file_put_contents(CONFIGINC, $config);
+            // ELIMINAMOS LAS TABLAS QUE EXISTAN EN LA BASE
+            $result = $database->query("SHOW TABLES");
+            while ($row = $result->fetch_row()) $database->query("DROP TABLE {$row[0]}");
+				// INSERTAR DB
+				require_once INSTALL_ROOT . 'database.php';
+				$bderror = '';
+				foreach ($phpost_sql as $tbl => $sentecia) {
+					if ($database->query($sentecia)) $exe[$tbl] = 1;
+					else {
+						$exe[$tbl] = 0;
+						$bderror .= '<br/>' . mysqli_error($db_link);
+					}
+				}
+				if (!in_array(0, $exe)) header("Location: index.php?step=4");
+				else {
+					$message = 'Lo sentimos, pero ocurrió un problema. Inténtalo nuevamente; borra las tablas que se hayan guardado en tu base de datos: ' . $bderror;
+				}
+			}
+		}
+	break;
+	// DATOS DEL SITIO
+	case 4:
+		// No saltar la licensia
+		if (!$_SESSION['license']) header("Location: index.php");
+		$next = false;
+		if ($_POST['save']) {
+         // Con esto evitamos escribir todos los campos
+         foreach($_POST['web'] as $key => $val) $web[$key] = htmlspecialchars($val);
+			// Verificamos que todos los campos esten llenos
+         if (in_array(' ', $web)) $message = 'Todos los campos son requeridos';
+			else {
+				define('TS_HEADER', true);
+				// DATOS DE CONEXION
+				require_once CONFIGINC;
             // CONECTAMOS
-            $db_link = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
-            // NO SE PUDO CONECTAR?
-            if (empty($db_link)) {
-                $message = 'Tus datos de conexi&oacute;n son incorrectos.';
-                $next = false;
+            $database->db = $db;
+            $database->db_link = $database->conn();
+            $database->setNames();
+            //
+            if ($db['hostname'] === 'dbhost' OR $database->num_rows('SELECT user_id FROM u_miembros WHERE user_id = 1 || user_rango = 1')) $message = 'Vuelva al paso anterior, no se han guardado los datos de acceso correctamente.';
+				// Cambia el nombre de la categoría Taringa! por el del sitio web creado
+            require_once SCRIPT_ROOT . 'inc' . DS . 'plugins' . DS . "modifier.seo.php";
+            $name = $database->escape($web['name']);
+				$seo = smarty_modifier_seo($name);
+				// Actualizamos
+				$database->query("UPDATE `p_categorias` SET c_nombre = '$name', c_seo = '$seo' WHERE cid = 30 LIMIT 1");
+            // Insertamos en w_temas
+            $database->query("INSERT INTO w_temas (tid, t_name, t_url, t_path, t_copy) VALUES({$theme['tid']}, '{$theme['t_name']}', '{$theme['t_url']}', '{$theme['t_path']}', '{$theme['t_copy']}')");
+				// GUARDAR LOS DATOS DE CONEXION
+				$config = file_get_contents(CONFIGINC);
+				$config = str_replace(['dbpkey', 'dbskey'], [$web['pkey'], $web['skey']], $config);
+				file_put_contents(CONFIGINC, $config);
+				// UPDATE
+				if ($database->query("UPDATE w_configuracion SET titulo = '{$web['name']}', slogan = '{$web['slogan']}', url = '{$web['url']}', email = '{$web['mail']}', version = '$version_title', version_code = '$wversion_code', pkey = '{$web['pkey']}', skey = '{$web['skey']}' WHERE tscript_id = 1")) header("Location: index.php?step=5");
+				else $message = $database->error();
+			}
+		}
+	break;
+	// ADMINISTRADOR
+	case 5:
+		// No saltar la licencia
+		if (!$_SESSION['license']) header("Location: index.php");
+
+		// Step
+		$next = false;
+		if ($_POST['save']) {
+         // Con esto evitamos escribir todos los campos
+         foreach ($_POST['user'] as $key => $val) $user[$key] = htmlspecialchars($val);
+			// Evitamos que los campos esten vacios
+         if(in_array('', $user)) $message = 'Todos los campos son requeridos';
+         else {
+         	if(!ctype_alnum($user['name'])) 
+               $message = 'Introduzca un nombre de usuario alfanum&eacute;rico';
+            //
+            if(!filter_var($user['mail'], FILTER_VALIDATE_EMAIL))
+               $message = 'Introduzca un email correcto.';
+            //
+            if($user['pass'] !== $user['passc']) 
+               $message = 'Las contrase&ntilde;as no coinciden.';
+            // Generamos una nueva contraseña más segura
+            $key = md5(md5($user['passc']) . $user['name']);
+            $time = time();
+				// DATOS DE CONEXION
+				define('TS_HEADER', true);
+				require_once CONFIGINC;
+            // CONECTAMOS
+            $database->db = $db;
+            $database->db_link = $database->conn();
+            $database->setNames();
+            //COMPROBAMOS QUE NO HAYA ADMINISTRADORES Y/O EL PRIMER USUARIO REGISTRADO
+            if($database->num_rows("SELECT user_id FROM u_miembros WHERE user_id = 1 OR user_rango = 1 LIMIT 1")) {
+               $message = 'No se puede registrar, ya existe un administrador.';
+               $body = "<html><head></head><body><p>Un lammer ha entrado a su instalador. <br /> <br /> <b>Sitio web:</b> {$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}<br /> <b>IP:</b> {$_SERVER['REMOTE_ADDR']}<br /> <b>Usuario:</b> {$user['name']}<br /> <b>Password:</b> {$user['pass']}<br /> <b>Email:</b> {$user['mail']}</p></body></html>";
+               mail('isidro@phpost.net', 'Lammer detectado', $body, 'Content-type: text/html; charset=iso-8859-15');
             } else {
-                @mysqli_query($db_link, "SET NAMES 'utf8'");
-
-                //COMPROBAMOS SI EXISTE UNA INSTALACIÓN ANTERIOR; si existe redirigimos al actualizador.
-                if (mysqli_fetch_row(mysqli_query($db_link, 'SHOW TABLES LIKE \'w_configuracion\'')) == true) {
-                    header('Location: ./../upgrade/index.php');
-                } else {
-
-                    // GUARDAR LOS DATOS DE CONEXION
-                    $config = file_get_contents('../config.inc.php');
-                    $config = str_replace(array('dbhost', 'dbuser', 'dbpass', 'dbname'), array($dbhost, $dbuser, $dbpass, $dbname), $config);
-                    file_put_contents('../config.inc.php', $config);
-                    // INSERTAR DB
-                    include 'database.php';
-                    $bderror = '';
-                    foreach ($phpos_sql as $key => $sql) {
-                        if (mysqli_query($db_link, $sql)) {
-                            $exe[$key] = 1;
-                        } else {
-                            $exe[$key] = 0;
-                            $bderror .= '<br/>' . mysqli_error($db_link);
-                        }
-
-                    }
-                    if (!in_array(0, $exe)) {
-                        header("Location: index.php?step=3");
-                    } else {
-                        $message = 'Lo sentimos, pero ocurrió un problema. Inténtalo nuevamente; borra las tablas que se hayan guardado en tu base de datos: ' . $bderror;
-                    }
-
-                }
-            }
-        }
-        break;
-    // DATOS DEL SITIO
-    case 3:
-        // No saltar la licensia
-        if (!$_SESSION['licence']) {
-            header("Location: index.php");
-        }
-
-        // Step
-        if (isset($_SERVER['HTTP_HOST'])) {
-            $base_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http';
-            $base_url .= '://' . $_SERVER['HTTP_HOST'];
-        } else {
-            $base_url = 'http://localhost';
-        }
-        $next = false;
-        if ($_POST['save']) {
-            $wname = htmlspecialchars($_POST['wname']);
-            $wlema = htmlspecialchars($_POST['wslogan']);
-            $wurl = htmlspecialchars($_POST['wurl']);
-            $wmail = htmlspecialchars($_POST['wmail']);
-            $pkey = htmlspecialchars($_POST['pkey']);
-            $skey = htmlspecialchars($_POST['skey']);
-            if (empty($wname) || empty($wlema) || empty($wurl) || empty($wmail) || empty($pkey) || empty($skey)) {
-                $message = 'Todos los campos son requeridos';
-            } else {
-                define('TS_HEADER', true);
-                // DATOS DE CONEXION
-                include "../config.inc.php";
-                $db_link = mysqli_connect($db['hostname'], $db['username'], $db['password'], $db['database']);
-                @mysqli_query($db_link, "SET NAMES 'utf8'");
-
-                if ($db['hostname'] != 'dbhost') {
-                    if (!mysqli_num_rows(mysqli_query($db_link, 'SELECT `user_id` FROM `u_miembros` WHERE user_id = \'1\' || user_rango = \'1\''))) {
-                        // Cambia el nombre de la categoría Taringa! por el del sitio web creado
-                        include '../inc/smarty/plugins/modifier.seo.php';
-                        $catceo = function_exists('smarty_modifier_seo') ? smarty_modifier_seo($wname) : 'phpost';
-                        mysqli_query($db_link, 'UPDATE `p_categorias` SET c_nombre = \'' . mysqli_real_escape_string($db_link, $wname) . '\', c_seo = \'' . mysqli_real_escape_string($db_link, $catceo) . '\' WHERE cid = \'30\' LIMIT 1');
-                        // UPDATE
-                        if (mysqli_query($db_link, 'UPDATE `w_configuracion` SET titulo = \'' . $wname . '\', slogan = \'' . $wlema . '\', url = \'' . $wurl . '\', email = \'' . $wmail . '\', pkey = \'' . $pkey . '\', skey = \'' . $skey . '\'  WHERE tscript_id = \'1\'')) {
-                            header("Location: index.php?step=4");
-                        } else {
-                            $message = mysqli_error($db_link);
-                        }
-
-                    } else {
-                        $message = 'Vuelva al paso anterior, no se han guardado los datos de acceso correctamente;';
-                    }
-
-                } else {
-                    $message = 'Vuelva al paso anterior, no se han guardado los datos de acceso correctamente;';
-                }
-
-            }
-        }
-        break;
-    // ADMINISTRADOR
-    case 4:
-        // No saltar la licencia
-        if (!$_SESSION['licence']) {
-            header("Location: index.php");
-        }
-
-        // Step
-        $next = false;
-        if ($_POST['save']) {
-            $uname = htmlspecialchars($_POST['uname']);
-            $upass = htmlspecialchars($_POST['upass']);
-            $ucpass = htmlspecialchars($_POST['ucpass']);
-            $umail = htmlspecialchars($_POST['umail']);
-            // CONFIRMAR
-            if (empty($uname) || empty($upass) || empty($ucpass) || empty($umail)) {
-                $message = 'Todos los campos son requeridos';
-            } else {
-                if (!ctype_alnum($uname)) {
-                    $message = 'Introduzca un nombre de usuario alfanum&eacute;rico';
-                } else {
-                    if (!filter_var($umail, FILTER_VALIDATE_EMAIL)) {
-                        $message = 'Introduzca un email correcto.';
-                    } else {
-                        // PASSWORD
-                        if ($upass != $ucpass) {
-                            $message = 'Las contrase&ntilde;as no coinciden.';
-                        } else {
-                            // GENERAR KEY
-                            $key = md5(md5($ucpass) . strtolower($uname));
-                            $fecha = time();
-                            // DATOS DE CONEXION
-                            define('TS_HEADER', true);
-                            include "../config.inc.php";
-                            $db_link = mysqli_connect($db['hostname'], $db['username'], $db['password'], $db['database']);
-                            @mysqli_query($db_link, "SET NAMES 'utf8'");
-                            //
-                            //COMPROBAMOS QUE NO HAYA ADMINISTRADORES Y/O EL PRIMER USUARIO REGISTRADO
-                            if (mysqli_num_rows(mysqli_query($db_link, 'SELECT `user_id` FROM `u_miembros` WHERE user_id = \'1\' OR user_rango = \'1\' LIMIT 1'))) {
-                                $message = 'No se puede registrar, ya existe un administrador.';
-                                mail('isidro@phpost.net', 'Lammer detectado (2)', '<html><head></head><body><p>Un lammer ha entrado a su instalador. <br /> <br /> <b>Sitio web:</b> ' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . ' <br /> <b>IP:</b> ' . $_SERVER['REMOTE_ADDR'] . ' <br /> <b>Usuario:</b> ' . $uname . ' <br /> <b>Password:</b> ' . $upass . ' <br /> <b>Email:</b> ' . $umail . ' </p></body></html>', 'Content-type: text/html; charset=iso-8859-15');
-                            } else {
-                                //INSERTAMOS AL FUNDADOR DE LA WEB
-                                mysqli_query($db_link, 'INSERT INTO u_miembros (user_name, user_password, user_email, user_rango, user_registro, user_puntosxdar, user_activo) VALUES (\'' . $uname . '\', \'' . $key . '\', \'' . $umail . '\', \'1\', \'' . $fecha . '\', 50, \'1\')');
-                                $user_id = mysqli_insert_id($db_link);
-                                // DEMAS TABLAS
-                                mysqli_query($db_link, 'INSERT INTO u_perfil (user_id) VALUES (\'' . $user_id . '\')');
-                                mysqli_query($db_link, 'INSERT INTO u_portal (user_id) VALUES (\'' . $user_id . '\')');
-                                // UPDATE
-                                mysqli_query($db_link, 'UPDATE p_posts SET post_date = \'' . $fecha . '\' WHERE post_id = \'1\'');
-                                mysqli_query($db_link, 'UPDATE w_stats SET stats_time_foundation = \'' . $fecha . '\', stats_time_upgrade = \'' . $fecha . '\' WHERE stats_no = \'1\'');
-                                // DAMOS BIENVENIDA POR CORREO
-                                mail($umail, 'Su comunidad ya puede ser usada', '<html><head><title>Su nueva comunidad Link Sharing est&aacute; lista!</title></head><body><p>Estas son sus credenciales de acceso:</p><p>Usuario: ' . $uname . '</p><p>Contrase&ntilde;a: ' . $upass . '</p><br />Gracias por usar <a href="http://www.phpost.net"><b>PHPost Risus</b></a> para compartir enlaces :)</body></html>', 'Content-type: text/html; charset=iso-8859-15');
-                                //
-                                header('Location: index.php?step=5&uid=' . $user_id . '');
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        break;
-    case 5:
-        // No saltar la licensia
-        if (!$_SESSION['licence']) {
-            header("Location: index.php");
-        }
-
-        // Step
-        // DATOS DE CONEXION
-        define('TS_HEADER', true);
-        include "../config.inc.php";
-        $db_link = mysqli_connect($db['hostname'], $db['username'], $db['password'], $db['database']);
-        @mysqli_query($db_link, "SET NAMES 'utf8'");
-        //
-        $query = mysqli_query($db_link, 'SELECT `titulo`, `slogan`, `url`, `version_code` FROM `w_configuracion` WHERE tscript_id = \'1\'');
-        $data = mysqli_fetch_assoc($query);
-        if ($_POST['save']) {
-            header("Location: {$data['url']}");
-        } else {
-            // CONSULTA
-            $user_id = (int) $_GET['uid'];
-            $query = mysqli_query($db_link, 'SELECT user_id, user_name FROM u_miembros WHERE user_id = \'' . $user_id . '\'');
-            $udata = mysqli_fetch_assoc($query);
-            // ESTADISTICAS
-            $code = array('w' => $data['titulo'], 's' => $data['slogan'], 'u' => str_replace('http://', '', $data['url']), 'v' => $data['version_code'], 'a' => $udata['user_name'], 'i' => $udata['user_id']);
-            $key = base64_encode(serialize($code));
-        }
-        break;
+               //INSERTAMOS AL FUNDADOR DE LA WEB
+               $database->query("INSERT INTO u_miembros (user_name, user_password, user_email, user_rango, user_registro, user_puntosxdar, user_activo) VALUES ('{$user['name']}', '$key', '{$user['mail']}', 1, $time, 50, 1)");
+               $user_id = (int)$database->insert_id();
+               // DEMAS TABLAS
+               $avatar = "https://ui-avatars.com/api/?name={$user['name']}&background=D6030B&color=fff&size=$1&font-size=0.50&bold=false&length=2";
+               $sizes = [50, 120];
+               foreach ($sizes as $k => $v) {
+                  copy(
+                  	str_replace('$1', $v, $avatar), 
+                  	SCRIPT_ROOT . "files" . DS . "avatar" . DS . "{$user_id}_$v.jpg"
+                  );
+               }
+               $database->query("INSERT INTO u_perfil (user_id, p_avatar) VALUES ($user_id, 1)");
+               $database->query("INSERT INTO u_portal (user_id) VALUES ($user_id)");
+               // UPDATE
+               $database->query("UPDATE p_posts SET post_user = $user_id, post_category = 30, post_date = $time WHERE post_id = 1");
+               $database->query("UPDATE w_stats SET stats_time_foundation = $time, stats_time_upgrade = $time WHERE stats_no = 1");
+               // DAMOS BIENVENIDA POR CORREO
+               mail($user['mail'], 'Su comunidad ya puede ser usada', "<html><head><title>Su nueva comunidad Link Sharing est&aacute; lista!</title></head><body><p>Estas son sus credenciales de acceso:</p><p>Usuario: {$user['name']}</p><p>Contrase&ntilde;a: {$user['pass']}</p><br />Gracias por usar <a href=\"$script_web\"><b>PHPost Risus</b></a> para compartir enlaces :)</body></html>", 'Content-type: text/html; charset=iso-8859-15');
+               //
+               header("Location: index.php?step=6&uid=$user_id");
+         	}
+      	}
+      }
+   break;
+	case 6:
+		// No saltar la licensia
+		if (!$_SESSION['license']) header("Location: index.php");
+		// DATOS DE CONEXION
+		define('TS_HEADER', true);
+		require_once CONFIGINC;
+      // CONECTAMOS
+      $database->db = $db;
+      $database->db_link = $database->conn();
+      $database->setNames();
+		//
+		$data = $database->fetch_assoc("SELECT titulo, slogan, url, version_code FROM w_configuracion WHERE tscript_id = 1");
+		if (isset($_POST['save'])) header("Location: {$data['url']}");
+      else {
+			// CONSULTA
+         $user_id = (int)$_GET['uid'];
+         $udata = $database->fetch_assoc("SELECT user_id, user_name FROM u_miembros WHERE user_id = $user_id");
+			// ESTADISTICAS
+         $code = [
+            'w' => $data['titulo'], 
+            's' => $data['slogan'], 
+            'u' => str_replace(['https://','http://'], '', $data['url']), 
+            'v' => $data['version_code'], 
+            'a' => $udata['user_name'], 
+            'i' => $udata['user_id']
+         ];
+         $key = base64_encode(serialize($code));
+         // Abrir el archivo en modo de escritura ("w")
+         $handle = fopen(SCRIPT_ROOT . "lock", "w");
+         // Escribir los datos en el archivo
+         fwrite($handle, $key);
+         // Cerrar el archivo
+         fclose($handle);
+		}
+	break;
 }
 
 ?>
 <!DOCTYPE html>
 <html>
-
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<meta name="author" content="PHPost" />
-	<title>Instalaci&oacute;n de PHPost <?php echo $version_title; ?></title>
-    <link href="estilo.css" rel="stylesheet" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="author" content="PHPost" />
+<title>Instalaci&oacute;n de PHPost <?=$version_title?></title>
+<link href="<?=$url.$theme['t_url']?>/images/favicon.png" rel="icon" type="image/png">
+<link href="<?=$base_install?>/estilo.css?<?=time()?>" rel="stylesheet" type="text/css" />
 </head>
-
 <body>
-    <div id="container">
-        <div id="header">
-            <h1 class="s32 left"><a href="http://www.phpost.net" target="_blank"><img src="./logo.png" /></a></h1>
-            <h3 class="s12 right">Programa de instalaci&oacute;n: PHPost <?php echo $version_title; ?></h3>
-        </div>
-        <div id="content">
-            <div class="col_left">
-                <h3 class="s16" style="margin-bottom: 5px;;">Pasos</h3>
-                <ul class="menu">
-                    <li id="mstep_1"<?php if ($step > 1) {
-    echo ' class="ok"';
-}
-?>>#1 | Permisos de escritura</li>
-                    <li id="mstep_1"<?php if ($step > 2) {
-    echo ' class="ok"';
-}
-?>>#2 | Base de datos</li>
-                    <li id="mstep_1"<?php if ($step > 3) {
-    echo ' class="ok"';
-}
-?>>#3 | Datos de la web</li>
-                    <li id="mstep_1"<?php if ($step > 4) {
-    echo ' class="ok"';
-}
-?>>#4 | Administrador</li>
-                    <li id="mstep_1"<?php if ($step == 5) {
-    echo ' class="ok"';
-}
-?>>#5 | Bienvenido</li>
-                </ul>
-            </div>
-            <div class="col_right">
-                <div id="step_<?php echo $step; ?>" class="step">
-                    <h3 class="step_num" style="margin-bottom: 5px;"><?php if ($step) {
-    echo 'Paso #' . $step;
-}
-?></h3>
-                    <?php if (!$step) {
-    ?>
-                    <form action="index.php<?php if ($next == true) {
-        echo '?step=1';
-    }
-    ?>" method="post" id="form">
-                    <fieldset>
-                        <legend>Licencia</legend>
-                        <p>Para utilizar PHPost Risus debes estar de acuerdo con nuestra licencia de uso.</p>
-                        <textarea name="license" rows="15" style="width: 652px;"><?php echo $licence; ?></textarea>
-                        <p><input type="submit" class="gbqfb" value="Acepto"/></p>
-                    </fieldset>
-                    </form>
-                    <?php } elseif ($step == 1) {
-    ?>
-                    <form action="index.php<?php if ($next == true) {
-        echo '?step=2';
-    }
-    ?>" method="post" id="form">
-                    <fieldset>
-                        <legend>Permisos de escritura</legend>
-                        <p>Los siguientes archivos y directorios requieren de permisos especiales, debes cambiarlos desde tu cliente FTP, los archivos deben tener permiso <strong>666</strong> y los direcorios <strong>777</strong></p>
-                        <dl>
-                            <dt><label for="f1">/config.inc.php</label></dt>
-                            <dd><span class="status <?php echo strtolower($permisos['f1']['css']); ?>"><?php echo $permisos['f1']['css']; ?></span></dd>
+
+	<div id="container">
+		
+		<div id="header">
+			<h1 class="s32 left">
+				<a href="https://www.phpost.net/foro/" target="_blank">
+					<img src="<?=$base_install?>/logo.png" />
+				</a>
+			</h1>
+			<h3 class="s12 right">Programa de instalaci&oacute;n: PHPost <?= $version_title ?></h3>
+		</div>
+		<div id="content">
+			<div class="col_left">
+					<ul class="menu">
+						<li class="<?=($step >= 0 ? ' ok' : '')?>">Licencia</li>
+						<li class="<?=($step >= 1 ? ' ok' : '')?>">Permisos de escritura</li>
+						<li class="<?=($step >= 2 ? ' ok' : '')?>">Verificaciones del sistema</li>
+						<li class="<?=($step >= 3 ? ' ok' : '')?>">Base de datos</li>
+						<li class="<?=($step >= 4 ? ' ok' : '')?>">Datos de la web</li>
+						<li class="<?=($step >= 5 ? ' ok' : '')?>">Administrador</li>
+						<li class="<?=($step >= 6 ? ' ok' : '')?>">Bienvenido</li> 
+					</ul>
+			</div>
+			<div class="col_right">
+				<div id="step_<?= $step ?>" class="step">
+					<?php if ($step == 0) { ?>
+						<form action="index.php<?=($next ? '?step=1' : '')?>" method="post">
+					  		<fieldset>
+								<legend>Licencia</legend>
+								<p>Para utilizar <?=$version_title?> debes estar de acuerdo con nuestra licencia de uso.</p>
+								<textarea name="license" rows="15"><?=$license?></textarea>
+								<p><input type="submit" class="gbqfb" value="Acepto"/></p>
+					  		</fieldset>
+					  	</form>
+					<?php } elseif ($step == 1) { ?>
+						<form action="index.php<?=($next ? '?step=2' : '')?>" method="post">
+						  	<fieldset>
+								<legend>Permisos de escritura</legend>
+								<p>Los siguientes archivos y directorios requieren de permisos especiales, debes cambiarlos desde tu cliente FTP, los archivos deben tener permiso <strong>666</strong> y los direcorios <strong>777</strong></p>
+								<?php foreach ($permisos as $k => $val): ?>
+		                     <dl>
+		                        <dt><label for="<?=$key?>"><?=$all[$k]?></label></dt>
+		                        <dd><span class="status <?=strtolower($val['css']); ?>"><?=$val['css']?></span></dd>
+		                     </dl>
+	                     <?php endforeach; ?>
+								<p><input type="submit" class="gbqfb" value="<?=($next ? 'Continuar &raquo;' : 'Volver a verificar')?>"/></p>
+					  		</fieldset>
+					  	</form>
+					<?php } elseif ($step == 2) { ?>
+						<form action="index.php<?=($next ? '?step=3' : '')?>" method="post">
+						  	<fieldset>
+								<legend>Verificaciones del sistema</legend>
+								<p>Las siguientes verificaciones son necesarias para el correcto funcionamiento del script, ya que este puede hacer que funcione de una manera no deseada</p>
+								<?php foreach ($all as $k => $val): ?>
+		                     <dl>
+		                        <dt><label for="<?=$key?>"><?=$val['name']?></label></dt>
+		                        <dd><span class="status <?=$val['css']?>"><?=$val['status']?></span></dd>
+		                     </dl>
+	                     <?php endforeach; ?>
+	                     <p>Para activar las extensiones necesarias puedes ir la página <strong><a href="https://www.php.net/manual/es/install.pecl.windows.php" target="_blank" rel="noreferrer">oficial de php</a></strong> y leer la parte de "Cargando una extensión"</p>
+								<p><input type="submit" class="gbqfb" value="Continuar &raquo;"/></p>
+					  		</fieldset>
+					  	</form>
+					<?php } elseif ($step == 3) { ?>
+						<form action="index.php?step=<?=($next ? 4 : 3)?>" method="post">
+						  	<fieldset>
+								<legend>Base de datos</legend>
+								<p>Ingresa tus datos de conexi&oacute;n a la base de datos.</p>
+								<?=(isset($message) ? "<div class=\"error\">$message</div>" : "")?>
+								<dl>
+                           <dt><label for="f1">Servidor:</label><span>Donde est&aacute; la base de datos, ej: <strong>localhost</strong></span></dt>
+                           <dd><input type="text" autocomplete="off" id="f1" name="db[hostname]" placeholder="localhost" value="<?=(empty($db['hostname']) ? '' : $db['hostname'])?>" required/></span></dd>
                         </dl>
                         <dl>
-                            <dt><label for="f1">/files/avatar/</label></dt>
-                            <dd><span class="status <?php echo strtolower($permisos['d1']['css']); ?>"><?php echo $permisos['d1']['css']; ?></span></dd>
+                           <dt><label for="f2">Usuario:</label><span>El usuario de tu base de datos.</span></dt>
+                           <dd><input type="text" autocomplete="off" id="f2" name="db[username]" placeholder="root" value="<?=(empty($db['username']) ? '' : $db['username'])?>" required/></span></dd>
                         </dl>
                         <dl>
-                            <dt><label for="f1">/files/uploads/</label></dt>
-                            <dd><span class="status <?php echo strtolower($permisos['d2']['css']); ?>"><?php echo $permisos['d2']['css']; ?></span></dd>
+                           <dt><label for="f3">Contrase&ntilde;a:</label><span>Para acceder a la base de datos.</span></dt>
+                           <dd><input type="password" autocomplete="off" id="f3" name="db[password]" placeholder="" value="<?=(empty($db['password']) ? '' : $db['password'])?>" /></span></dd>
                         </dl>
                         <dl>
-                            <dt><label for="f1">/cache/</label></dt>
-                            <dd><span class="status <?php echo strtolower($permisos['d3']['css']); ?>"><?php echo $permisos['d3']['css']; ?></span></dd>
+                           <dt><label for="f4">Base de datos</label><span>Nombre de la base de datos para tu web.</span></dt>
+                           <dd><input type="text" autocomplete="off" id="f4" name="db[database]" placeholder="mydatabase" value="<?=(empty($db['database']) ? '' : $db['database'])?>" required/></span></dd>
                         </dl>
-                        <p><input type="submit" class="gbqfb" value="<?php if ($next == true) {
-        echo 'Continuar &raquo;';
-    } else {
-        echo 'Volver a verificar';
-    }
-    ?>"/></p>
-                    </fieldset>
-                    </form>
-                    <?php } elseif ($step == 2) {
-    ?>
-                    <form action="index.php?step=<?php if ($next == true) {
-        echo '3';
-    } else {
-        echo '2';
-    }
-    ?>" method="post" id="form">
-                    <fieldset>
-                        <legend>Base de datos</legend>
-                        <p>Ingresa tus datos de conexi&oacute;n a la base de datos.</p>
-                        <?php if ($message) {
-        echo '<div class="error">' . $message . '</div>';
-    }
-    ?>
-                        <dl>
-                            <dt><label for="f1">Servidor:</label><br /><span>Donde est&aacute; la base de datos, ej: <strong>localhost</strong></span></dt>
-                            <dd><input type="text" autocomplete="off" id="f1" name="dbhost" value="<?php echo $dbhost; ?>" required/></span></dd>
+								<p><input type="submit" class="gbqfb" name="save" value="Continuar &raquo;"/></p>
+						  	</fieldset>
+						</form>
+					<?php } elseif ($step == 4) { ?>
+						<form action="index.php?step=<?=($next ? 5 : 4)?>" method="post">
+						  	<fieldset>
+								<legend>Datos del sitio</legend>
+								<?=(isset($message) ? "<div class=\"error\">$message</div>" : "")?>
+								<dl>
+                           <dt><label for="f1">Nombre:</label><span>El t&iacute;tulo de tu web.</span></dt>
+                           <dd><input type="text" id="f1" name="web[name]" placeholder="PHPost" value="<?=(empty($web['name']) ? '' : $web['name'])?>" required/></dd>
                         </dl>
                         <dl>
-                            <dt><label for="f2">Usuario:</label><br /><span>El usuario de tu base de datos.</span></dt>
-                            <dd><input type="text" autocomplete="off" id="f2" name="dbuser" value="<?php echo $dbuser; ?>" required/></span></dd>
+                           <dt><label for="f2">Slogan:</label><span>Una breve descripción.</span></dt>
+                           <dd><input type="text" id="f2" name="web[slogan]" placeholder="Inteligencia renovada" value="<?=(empty($web['slogan']) ? '' : $web['slogan'])?>" required/></span></dd>
                         </dl>
                         <dl>
-                            <dt><label for="f3">Contrase&ntilde;a:</label><br /><span>Para acceder a la base de datos.</span></dt>
-                            <dd><input type="password" autocomplete="off" id="f3" name="dbpass" value="<?php echo $dbpass; ?>" /></span></dd>
+                           <dt><label for="f3">Direcci&oacute;n:</label><span>Ingresa la url donde  est&aacute; alojada tu web, sin la &uacute;ltima diagonal <strong>/</strong> </span></dt>
+                           <dd><input type="text" id="f3" name="web[url]" value="<?=(empty($web['url']) ? $url : $web['url'])?>" required/></dd>
                         </dl>
                         <dl>
-                            <dt><label for="f4">Base de datos</label><br /><span>Nombre de la base de datos para tu web.</span></dt>
-                            <dd><input type="text" autocomplete="off" id="f4" name="dbname" value="<?php echo $dbname; ?>" required/></span></dd>
+                           <dt><label for="f4">Email:</label><span>Email de la web o del administrador.</span></dt>
+                           <dd><input type="text" id="f4" name="web[mail]" placeholder="example@server.com" value="<?=(empty($web['mail']) ? '' : $web['mail'])?>" required/></dd>
                         </dl>
-                        <p><input type="submit" class="gbqfb" name="save" value="Continuar &raquo;"/></p>
-                    </fieldset>
-                    </form>
-                    <?php } elseif ($step == 3) {
-    ?>
-                    <form action="index.php?step=<?php if ($next == true) {
-        echo '4';
-    } else {
-        echo '3';
-    }
-    ?>" method="post" id="form">
-                    <fieldset>
-                        <legend>Datos del sitio</legend>
-                        <?php if ($message) {echo '<div class="error">' . $message . '</div>';}?>
-                        <dl>
-                            <dt><label for="f1">Nombre:</label><br /><span>El t&iacute;tulo de tu web.</span></dt>
-                            <dd><input type="text" id="f1" name="wname" value="<?php echo $wname; ?>" required/></dd>
-                        </dl>
-                        <dl>
-                            <dt><label for="f2">Lema:</label><br /><span>Ej: Inteligencia recargada.</span></dt>
-                            <dd><input type="text" id="f2" name="wslogan" value="<?php echo $wlema; ?>" required/></span></dd>
-                        </dl>
-                        <dl>
-                            <dt><label for="f3">Direcci&oacute;n:</label><br /><span>Ingresa la url donde  est&aacute; alojada tu web, sin la &uacute;ltima diagonal <strong>/</strong> </span></dt>
-                            <dd><input type="text" id="f3" name="wurl" value="<?php echo $base_url; ?>" required/></dd>
-                        </dl>
-                        <dl>
-                            <dt><label for="f4">Email:</label><br /><span>Email de la web o del administrador.</span></dt>
-                            <dd><input type="text" id="f4" name="wmail" value="<?php echo $wmail; ?>" required/></dd>
-                        </dl>
-                    </fieldset>
-                    <fieldset>
+                     </fieldset>
+                     <fieldset>
                         <legend>Datos de reCAPTCHA</legend>
-                        <p>Obtén tu clave desde <a href="https://www.google.com/recaptcha/admin" target="_blank"><strong>www.google.com/recaptcha/admin</strong></a></p>
+                        <p>Obtén tu clave desde <a href="https://www.google.com/recaptcha/admin" target="_blank"><strong>google.com/recaptcha/admin</strong></a></p>
                         <dl>
-                            <dt><label for="f5">Clave pública del sitio:</label></dt>
-                            <dd><input type="text" id="f5" name="pkey" value="<?php echo $pkey; ?>" required /></dd>
+                           <dt><label for="f5">Clave pública del sitio:</label></dt>
+                           <dd><input type="text" id="f5" name="web[pkey]" value="<?=(empty($web['pkey']) ? '' : $web['pkey'])?>" required /></dd>
                         </dl>
                         <dl>
-                            <dt><label for="f6">Clave secreta:</label></dt>
-                            <dd><input type="text" id="f6" name="skey" value="<?php echo $skey; ?>" required/></dd>
+                           <dt><label for="f6">Clave secreta:</label></dt>
+                           <dd><input type="text" id="f6" name="web[skey]" value="<?=(empty($web['skey']) ? '' : $web['skey'])?>" required/></dd>
                         </dl>
-                        <p><input type="submit" name="save" class="gbqfb" value="Continuar &raquo;"/></p>
-                    </fieldset>
-                    </form>
-                    <?php } elseif ($step == 4) {
-    ?>
-                    <form action="index.php?step=<?php if ($next == true) {
-        echo '5';
-    } else {
-        echo '4';
-    }
-    ?>" method="post" id="form">
-                    <fieldset>
-                        <legend>Administrador</legend>
-                        Ingresa tus datos de usuario, m&aacute;s adelante debes editar tu cuenta para ingresar datos como, fecha de nacimiento, lugar de residencia, etc.
-                        <?php if ($message) {
-        echo '<div class="error">' . $message . '</div>';
-    }
-    ?>
-                        <dl>
-                            <dt><label for="f1">Nombre de usuario:</label></dt>
-                            <dd><input type="text" id="f1" name="uname" autocomplete="off" value="<?php echo $uname; ?>" required/></span></dd>
+								<p><input type="submit" name="save" class="gbqfb" value="Continuar &raquo;"/></p>
+						  </fieldset>
+						</form>
+					<?php } elseif ($step == 5) { ?>
+						<form action="index.php?step=<?=($next ? 6 : 5)?>" method="post">
+						  	<fieldset>
+								<legend>Administrador</legend>
+								Ingresa tus datos de usuario, m&aacute;s adelante debes editar tu cuenta para ingresar datos como, fecha de nacimiento, lugar de residencia, etc.
+								<?=(isset($message) ? "<div class=\"error\">$message</div>" : "")?>
+								<dl>
+                           <dt><label for="f1">Nombre de usuario:</label></dt>
+                           <dd><input type="text" id="f1" name="user[name]" autocomplete="off" value="<?=(empty($user['name']) ? '' : $user['name'])?>" required/></span></dd>
                         </dl>
                         <dl>
-                            <dt><label for="f2">Contrase&ntilde;a:</label></dt>
-                            <dd><input type="password" id="f2" name="upass" autocomplete="off" value="<?php echo $upass; ?>" required/></span></dd>
+                           <dt><label for="f2">Contrase&ntilde;a:</label></dt>
+                           <dd><input type="password" id="f2" name="user[pass]" autocomplete="off" value="<?=(empty($user['pass']) ? '' : $user['pass'])?>" required/></span></dd>
                         </dl>
                         <dl>
-                            <dt><label for="f3">Confirmar contrase&ntilde;a:</label><br /><span>Ingresa tu contrase&ntilde;a nuevamente.</span></dt>
-                            <dd><input type="password" id="f3" name="ucpass" autocomplete="off" value="<?php echo $ucpass; ?>" required/></span></dd>
+                           <dt><label for="f3">Confirmar contrase&ntilde;a:</label><span>Ingresa tu contrase&ntilde;a nuevamente.</span></dt>
+                           <dd><input type="password" id="f3" name="user[passc]" autocomplete="off" value="<?=(empty($user['passc']) ? '' : $user['passc'])?>" required/></span></dd>
                         </dl>
                         <dl>
-                            <dt><label for="f4">Email:</label><br /><span>Ingresa tu direcci&oacute;n de email.</span></dt>
-                            <dd><input type="text" id="f4" name="umail" autocomplete="off" value="<?php echo $umail; ?>" required/></span></dd>
+                           <dt><label for="f4">Email:</label><span>Ingresa tu direcci&oacute;n de email.</span></dt>
+                           <dd><input type="text" id="f4" name="user[mail]" autocomplete="off" value="<?=(empty($user['mail']) ? '' : $user['mail'])?>" required/></span></dd>
                         </dl>
-                        <p><input type="submit" name="save" class="gbqfb" value="Continuar &raquo;"/></p>
-                    </fieldset>
-                    </form>
-                    <?php } elseif ($step == 5) {?>
-                    <h2 class="s16">Bienvenido a PHPost Risus</h2>
-                    <!-- ESTADISTICAS -->
-                    <form action="http://download.phpost.net/feed/install.php" method="post" id="form">
-                    <div class="error">Ingresa a tu FTP y borra la carpeta <strong><?php echo basename(getcwd()); ?></strong> antes de usar el script.</div>
-                    <fieldset style="color: #555;">
-                        Gracias por instalar <strong>PHPost Risus</strong>, ya est&aacute; lista tu nueva comunidad <strong>Link Sharing System</strong>. S&oacute;lo inicia sesi&oacute;n con tus datos y comienza a disfrutar. Ahora no dejes de <a href="http://www.phpost.net/" target="_blank"><u>visitarnos</u></a> para estar pendiente de futuras actualizaciones. Recuerda reportar cualquier bug que encuentres, de esta manera todos ganamos.<br /><br />
-                    </fieldset>
-                    <center>
-                        <input type="hidden" name="key" value="<?php echo $key; ?>" />
-                        <input type="submit" value="Finalizar" class="gbqfb" style="font-size: 12pt; font-weight: bold;" />
-                    </center>
-                    </form>
-                    <?php }?>
-                </div>
-            </div>
-            <div class="clear"></div>
-        </div>
-        <div id="footer">
-            <p>Powered by <a href="http://www.phpost.net" target="_blank">PHPost</a></p>
-        </div>
-    </div>
+								<p><input type="submit" name="save" class="gbqfb" value="Continuar &raquo;"/></p>
+						  	</fieldset>
+						</form>
+					<?php } elseif ($step == 6) {?>
+						<h2 class="s16">Bienvenido a PHPost Risus</h2>
+						<!-- ESTADISTICAS -->
+						<form action="<?=$data['url']?>" method="post">
+						  	<div class="error">Ingresa a tu FTP y borra la carpeta <strong><?php echo basename(getcwd()); ?></strong> antes de usar el script.</div>
+						  	<fieldset>
+								<p>Gracias por instalar <strong>PHPost <?= $version_title ?></strong>, ya est&aacute; lista tu nueva comunidad <strong>Link Sharing System</strong>. S&oacute;lo inicia sesi&oacute;n con tus datos y comienza a disfrutar. Ahora no dejes de <a href="https://www.phpost.net/foro/" target="_blank"><u>visitarnos</u></a> para estar pendiente de futuras actualizaciones. Recuerda reportar cualquier bug que encuentres, de esta manera todos ganamos.</p><br>
+						  	</fieldset>
+						  	<center>
+								<input type="hidden" name="key" value="<?=$key?>" />
+								<input type="submit" value="Finalizar" class="gbqfb"  />
+						  	</center>
+						</form>
+					<?php }?>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div id="footer">
+			<p>Powered by <a href="https://www.phpost.net/foro/" target="_blank">PHPost</a></p>
+		</div>
+	</div>
 </body>
 </html>

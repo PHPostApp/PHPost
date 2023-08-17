@@ -5,11 +5,11 @@
                     <div id="portal_news" class="showHide" status="activo">
                         <div id="info" pid="{$tsInfo.uid}"></div>
                         <div id="perfil-form" class="widget">
-                            {include file='modules/m.perfil_muro_form.tpl'}
+                            {include "m.perfil_muro_form.tpl"}
                         </div>
 						<div class="widget clearfix" id="perfil-news">
                             <div id="news-content">
-                            {include file='modules/m.perfil_muro_story.tpl'}                         
+                            {include "m.perfil_muro_story.tpl"}                         
                             </div>
                             <!-- more -->
                             {if $tsMuro.total >= 10}

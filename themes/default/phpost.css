@@ -494,13 +494,6 @@ span.ma_medal{ background: url(images/icons/med/blue_bronze_16.png);}
     text-align: center;
 }
 
-/**
-    FIXs
-**/
-.post-wrapper .post-contenido, .post-wrapper .post-contenedor {
-    overflow: visible !important;
-}
-
 /* MENSAJE DE ALERTA INSTALADOR */
 #msg_install {
     /*position:fixed;

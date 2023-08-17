@@ -1,4 +1,4 @@
-{include file='sections/main_header.tpl'}
+{include "main_header.tpl"}
 				
 				<input type="button" onclick="location.href = '{$tsConfig.url}/mod-history/'" value="Posts" style="width:100px;cursor:default;" {if !$tsAction || $tsAction == 'posts'}class="mBtn btnGreen"{else}class="mBtn btnYellow"{/if}/> 
 				
@@ -76,4 +76,4 @@
 					{/if}
                 </div>
                 <div style="clear:both"></div>
-{include file='sections/main_footer.tpl'}
+{include "main_footer.tpl"}

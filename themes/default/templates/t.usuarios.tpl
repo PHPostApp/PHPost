@@ -1,4 +1,4 @@
-{include file='sections/main_header.tpl'}
+{include "main_header.tpl"}
                 <div id="resultados" class="resultadosFull"> 
                     <div class="filterBy filterFull" style="width:925px">
                         <div class="block floatL" style="line-height:25px">
@@ -35,7 +35,7 @@
                                             {if $u.p_mensaje}<li>{$u.p_mensaje}</li>{/if}
                                             <li>Sexo: <strong>{if $u.user_sexo == 0}Mujer{else}Hombre{/if}</strong> - Pa&iacute;s: <strong>{$tsPaises[$u.user_pais]}</strong></li>
                         					<li>Posts: <strong>{$u.user_posts}</strong> - Puntos: <strong>{$u.user_puntos}</strong> - Comentarios: <strong>{$u.user_comentarios}</strong></li>
-                                            {if $u.user_id != $tsUser->uid}<li><a href="{if !$tsUser->is_member}{$tsConfig.url}/registro/{else}javascript:mensaje.nuevo('{$u.user_name}','','','');{/if}">Enviar Mensaje</a></li>{/if}
+                                            {if $u.user_id != $tsUser->uid}<li><a href="#" onclick="{if !$tsUser->is_member}registro_load_form();{else}mensaje.nuevo('{$u.user_name}','','','');{/if}return false">Enviar Mensaje</a></li>{/if}
                                             <li>Estado: {$u.status.t} <strong class="status {$u.status.css}" style="display:inline-block">&nbsp;</strong></li>                                            
                         				</ul>
                         			</div>
@@ -56,4 +56,4 @@
                     </div>
                 </div>
                 <div style="clear:both"></div>
-{include file='sections/main_footer.tpl'}
+{include "main_footer.tpl"}

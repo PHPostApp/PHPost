@@ -1,4 +1,4 @@
-{include file='sections/main_header.tpl'}
+{include "main_header.tpl"}
 				
 			<div style="margin: 10px auto 0 auto;" class="container400">
                 <div class="box_title">
@@ -22,4 +22,4 @@
             <br /><br /><br /><br />
             <div style="clear:both"></div>
                 
-{include file='sections/main_footer.tpl'}
+{include "main_footer.tpl"}

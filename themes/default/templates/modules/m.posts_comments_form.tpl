@@ -18,7 +18,7 @@
                                     <div class="floatR">
                                         <a href="#" onclick="moreEmoticons(true); return false;" class="floatR" id="moreemofn"> M&aacute;s emoticones</a>
                                     </div>
-                                    {include file='modules/m.global_emoticons.tpl'}
+                                    {include "m.global_emoticons.tpl"}
                                     <div class="clearfix"></div>
                                 </div>
                                 </div>
