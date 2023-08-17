@@ -13,10 +13,10 @@
 |	['password'] The password used to connect to the database
 |	['database'] The name of the database you want to connect to
 */
-$db['hostname'] = 'localhost';
-$db['username'] = 'root';
-$db['password'] = '';
-$db['database'] = 'phpost';
+$db['hostname'] = 'dbhost';
+$db['username'] = 'dbuser';
+$db['password'] = 'dbpass';
+$db['database'] = 'dbname';
 
 
 /*

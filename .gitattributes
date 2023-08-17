@@ -9,3 +9,4 @@
 *.tpl -crlf
 *.txt -crlf
 *.xml -crlf
+*.mod -crlf
