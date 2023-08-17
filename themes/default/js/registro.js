@@ -1,4 +1,4 @@
-let avanzar = false;
+var avanzar = false;
 // Un poco de segundos para cargar el captcha
 setTimeout(() => {
 	$("#mensajeCaptcha").remove()

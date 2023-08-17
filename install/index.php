@@ -44,6 +44,8 @@ $base_install = $url . "/install";
 require_once INSTALL_ROOT . "mysqli.database.php";
 require_once INSTALL_ROOT . "extension.loader.php";
 
+if(file_exists(SCRIPT_ROOT . 'lock')) header("Location: ../");
+
 switch ($step) {
 	case 0:
 		$_SESSION['license'] = false;
