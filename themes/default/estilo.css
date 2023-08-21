@@ -221,7 +221,7 @@ hr {
 #RegistroForm {
 	position: relative;
 }
-#RegistroForm #mensajeCaptcha {
+#RegistroForm .mensajeAviso {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -230,8 +230,11 @@ hr {
 	place-items: center;
 	top: 0;
 	left: 0;
-	background-color: #F2F2F2;
+	background-color: #F2F2F299;
 	z-index: 103;
+	font-weight: 600;
+	text-shadow: 0 0 1rem #0005;
+	backdrop-filter: blur(2px);
 }
 .help {
 	position: absolute;
@@ -6656,50 +6659,7 @@ cursor: pointer;
 }
 	
 	
-	
-.tabbed-d .sidebar-tabs li.url-file span {
-background: none;
-}
-		
-	
-	
-.tabbed-d div.mini-modal {
-	position: absolute;
-	padding: 12px;
-	border: 1px solid #CCC;
-	width: 220px;
-	right: -105px;
-	background: url(images/g-c-to-f.gif) repeat-x right bottom #FFF;
-	top: 30px;
-	-moz-box-shadow:0 2px 2px #CCCCCC;
-	display: none;
-}
 
-.tabbed-d div.mini-modal input {
-	width: 215px;
-}
-
-.tabbed-d div.mini-modal input.browse {
-	width: 120px;
-}
-
-
-
-.tabbed-d div.mini-modal span {
-	background: none;
-	margin: 0 0 3px 0;
-	
-	}
-
-
-.tabbed-d div.mini-modal .dialog-m{
-    height:10px;
-    left:110px;
-    position:absolute;
-    top:-10px;
-    width:18px;
-	background: transparent url(images/dialog-a.png) no-repeat top left;
-}
 
 
 .tabbed-d .sidebar-tabs li a {
@@ -6711,24 +6671,6 @@ background: none;
 	height: 25px;
 }
 
-
-
-.tabbed-d .sidebar-tabs li.local-file a { background-position: -29px 6px}
-.tabbed-d .sidebar-tabs li.url-file a { background-position: 12px 6px;}
-.tabbed-d .sidebar-tabs li.webcam-file a { background-position: -74px 6px;}
-
-.tabbed-d .sidebar-tabs li.local-file.active a {background-position: -29px -29px }
-.tabbed-d .sidebar-tabs li.url-file.active a { background-position: 12px -29px;}
-.tabbed-d .sidebar-tabs li.webcam-file.active a { background-position: -74px -29px;}
-
-.tabbed-d a.edit {
-	display: block;
-	padding: 6px;
-	margin-top: 10px;
-	background: #ebebbc;
-	text-align: center;
-	clear: both;
-}
 
 .tabbed-d a {
 	color: #0a3c6f;
@@ -6761,13 +6703,9 @@ background: none;
 	
 }
 
-/* First, some basic resets, body styles, etc. */
-.tabbed-d  div, .tabbed-d  span, .tabbed-d  fieldset, .tabbed-d  form, .tabbed-d label, .tabbed-d legend
-{border: 0; margin: 0; outline: 0; padding: 0; background: transparent; vertical-align: baseline;}
-
 /* Here's our form stuff */
 
-.tabbed-d fieldset {clear: both;}
+.tabbed-d fieldset {clear: both;border: 0;}
 .tabbed-d legend {padding: 0 0 1.286em; font-size: 1.167em; font-weight: 700;}
 .tabbed-d fieldset fieldset legend {padding: 0 0 1.5em; font-size: 1em;}
 * html .tabbed-d legend {margin-left: -7px;} /* ie6 */

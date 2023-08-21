@@ -18,8 +18,8 @@
 										</select>
 									</div>
                                     <div class="field">
-                                        <label for="estado">Estado/Provincia:</label>
-                                        <select name="estado" id="estado" class="cuenta-save-1">
+                                        <label for="estados">Estado/Provincia:</label>
+                                        <select name="estado" id="estados" class="cuenta-save-1">
                                         {foreach from=$tsEstados key=code item=estado}
                                             <option value="{$code+1}" {if $code+1 == $tsPerfil.user_estado}selected="selected"{/if}>{$estado}</option>
                                         {/foreach}

@@ -1,6 +1,6 @@
 1:
 <form id="RegistroForm">
-	<div id="mensajeCaptcha">
+	<div class="mensajeAviso">
 		<span>Obteniendo código de reCAPTCHA...</span>
 	</div>
 	<div class="form-line">

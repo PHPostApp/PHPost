@@ -1,21 +1,14 @@
 {include "main_header.tpl"}
-				
-				<script type="text/javascript" src="{$tsConfig.js}/cuenta.js"></script>
-                {literal}
-				<script type="text/javascript">
-                $(document).ready(function(){
-                    //document.domain = global_data.domain;
-                	// {/literal}
-                    avatar.uid = '{$tsUser->uid}';
-                    avatar.current = '{$tsConfig.url}/files/avatar/{if $tsPerfil.p_avatar}{$tsPerfil.user_id}{else}avatar{/if}.jpg';
-                	// {literal}                
-                    if (typeof location.href.split('#')[1] != 'undefined') {
-                        $('ul.menu-tab > li > a:contains('+location.href.split('#')[1]+')').click();
-                    }
-                
-                });
-                </script>
-                {/literal}
+<script>
+   $(document).ready(function(){
+      avatar.uid = '{$tsUser->uid}';
+      avatar.current = '{$tsConfig.url}/files/avatar/{if $tsPerfil.p_avatar}{$tsPerfil.user_id}{else}avatar{/if}.jpg';
+      avatar.url = '{$tsConfig.avatar}/$1_120.jpg';
+      if (typeof location.href.split('#')[1] != 'undefined') {
+         $('ul.menu-tab > li > a:contains('+location.href.split('#')[1]+')').click();
+      }
+   });
+</script>
                 <div class="tabbed-d">
                 	<div class="floatL">
                         <ul class="menu-tab">
@@ -41,5 +34,8 @@
                     </div>
                 </div>
                 <div style="clear:both"></div>
-                
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/croppr@2.3.1/dist/croppr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/croppr@2.3.1/dist/croppr.min.js"></script>
+<script src="{$tsConfig.js}/cuenta.js?{$smarty.now}"></script>
 {include "main_footer.tpl"}

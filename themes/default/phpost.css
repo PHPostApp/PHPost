@@ -522,3 +522,40 @@ span.ma_medal{ background: url(images/icons/med/blue_bronze_16.png);}
 {
     color:#777;
 }
+
+.sidebar-tabs .avatar-big-cont .avatar-loading,
+.avatar-big-cont .avatarimg, 
+.avatar-big-cont .avatarimg input[type=file] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #FFF8;
+    display: grid;
+    place-items: center;
+}
+.avatar-big-cont .avatarimg, 
+.avatar-big-cont .avatarimg input[type=file] {
+    width: 100%;
+    height: 100%;
+    border-radius: .3rem;
+    object-fit: cover;
+}
+.avatar-big-cont .avatarimg, 
+.avatar-big-cont .avatarimg input[type=file] {
+    opacity: 0;
+}
+.avatar-big-cont:hover .avatarimg {
+    color: #333;
+    opacity: 1;
+    display: block;
+    background-color: #fff8;
+    line-height: 120px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+}
+.avatar-big-cont:hover .avatarimg::before {
+    content: 'Cambiar avatar';
+}

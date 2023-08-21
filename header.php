@@ -138,7 +138,10 @@
 	 
 	 // Mensajes
 	 $smarty->assign('tsMPs',$tsMP->mensajes);
-	 
+
+if (!extension_loaded('gd') && !function_exists('gd_info')) {
+	$smarty->assign('gd_info', 'La extensión GD no está habilitada en tu servidor.');
+}	 
 
 /*
  * -------------------------------------------------------------------

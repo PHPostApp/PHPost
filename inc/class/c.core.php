@@ -32,6 +32,9 @@ class tsCore {
 		$this->settings['images'] = $this->settings['tema']['t_url'].'/images';
       $this->settings['css'] = $this->settings['tema']['t_url'].'/css';
 		$this->settings['js'] = $this->settings['tema']['t_url'].'/js';
+		//
+		$this->settings['avatar'] = $this->settings['url'].'/files/avatar';
+		$this->settings['uploads'] = $this->settings['url'].'/files/uploads';
       //
      	if($_GET['do'] == 'portal' || $_GET['do'] == 'posts') 
      		$this->settings['news'] = $this->getNews();

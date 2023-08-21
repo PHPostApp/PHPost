@@ -1,7 +1,7 @@
 var avanzar = false;
 // Un poco de segundos para cargar el captcha
 setTimeout(() => {
-	$("#mensajeCaptcha").remove()
+	$(".mensajeAviso").hide()
 	avanzar = true;
 }, 3000);
 
@@ -91,15 +91,19 @@ crearCuenta = () => {
 		if(sonTodosVerdaderos(Approved) && $("#terminos").prop('checked')) {
 			$('#loading').fadeIn(250);
 			const formulario = $("#RegistroForm").serialize()
+			$(".mensajeAviso").css({ display: 'grid' })
+			$(".mensajeAviso span").html('Espere, creando su cuenta...')
 			$.post(getURL('nuevo'), formulario, h => {
+				//console.log(h)
 				switch(h.charAt(0)){
 	            case '0':
 	               $('#loading').fadeOut(350);
 						mydialog.alert('Error', h.substring(3))
+						$(".mensajeAviso").hide()
 	            break;
 	            case '1':
 	            case '2':
-	            	$('#loading').fadeIn(350);
+	               $('#loading').fadeOut(350);
 			         mydialog.faster({
 			         	title: 'Vamos',
 			         	body: h.substring(3),

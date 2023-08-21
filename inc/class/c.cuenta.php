@@ -95,7 +95,7 @@ class tsCuenta {
 		// REAL STATS
 		$data['stats'] = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_id, u.user_rango, u.user_puntos, u.user_posts, u.user_comentarios, u.user_seguidores, u.user_cache, r.r_name, r.r_color FROM u_miembros AS u LEFT JOIN u_rangos AS r ON  u.user_rango = r.rango_id WHERE u.user_id = \''.(int)$user_id.'\''));
 		
-        if($data['stats']['user_cache'] < time()-($tsCore->settings['c_stats_cache']*60)){
+        if((int)$data['stats']['user_cache'] < time()-((int)$tsCore->settings['c_stats_cache']*60)){
         $q1 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(post_id) AS p FROM p_posts WHERE post_user = \''.(int)$user_id.'\' && post_status = \'0\''));
         $q2 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(follow_id) AS s FROM u_follows WHERE f_id =\''.(int)$user_id.'\' && f_type = \'1\''));
         $q3 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(cid) AS c FROM p_comentarios WHERE c_user = \''.(int)$user_id.'\' && c_status = \'0\''));

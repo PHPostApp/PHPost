@@ -33,9 +33,22 @@ class tsRegistro extends reCaptcha {
 		// Variables
 		$username = htmlspecialchars($_POST['nick']);
 		$email = strtolower($_POST['email']);
-      $which = empty($username) ? 'email' : 'nick'; 
+      $which = empty($username) ? 'email' : 'nick';
+      $proveedores = 'gmail.com,hotmail.com,yahoo.com';
       // MENSAJE
 		$valid = "1: El $which est&aacute; disponible.";	// DEFAULT
+		//
+		if (!empty($username) AND ctype_digit($username)) return "3: T&uacute; nick no pueder solo n&uacute;meros.";
+
+		if(!empty($email)) {
+			$msg = "3: Tu proveedor de correo no est&aacute; permitido en este sitio.";
+			$whitelist = join('|', explode(',', $proveedores));
+			preg_match_all("/@(".$whitelist.")/", $email, $matches);
+		
+			if(empty($matches[0][0])) return $msg;
+			$decode = substr($matches[0][0], 1);
+			if(!in_array($decode, explode(',', $proveedores))) return $msg;
+		}
 		//
 		if(!empty($username) || !empty($email)) {
 			$username = $tsCore->setSecure($username);
