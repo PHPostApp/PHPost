@@ -4,51 +4,64 @@ function input_fake(x) {
 }
 
 function desactivate(few) {
-	if(!few){
-            mydialog.show();
-			
-            mydialog.title('Desactivar Cuenta');
-			
-            mydialog.body('&#191;Seguro que quiere desativar su cuenta?');
-			
-            mydialog.buttons(true, true, 'Desactivar', 'desactivate(true)', true, false, true, 'No', 'close', true, true);
-			
-            mydialog.center();
-			
-        }else{
-			
-		var pass = $('#passi');
-        
-            $('#loading').fadeIn(250); 
-			
-           $.post(global_data.url + '/cuenta.php?action=desactivate', 'validar=' + 'ajaxcontinue', function(a){
-		   
-           mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), (a.charAt(0) == '0' ? 'No se pudo desactivar' : 'Cuenta desactivada'), true);
-		   
-           mydialog.center();
-           
-           $('#loading').fadeOut(250); 
-		   
+	if(!few) {
+      mydialog.faster({
+      	title: 'Desactivar Cuenta',
+      	body: '&#191;Seguro que quiere desativar su cuenta?',
+      	buttons: {
+      		ok: { text: 'Desactivar', action: 'desactivate(true)' },
+      		fail: { text: 'No', action: 'close' }
+      	}
       });
-     }
+	} else {
+		var pass = $('#passi');
+      $('#loading').fadeIn(250); 
+		$.post(`${global_data.url}/cuenta.php?action=desactivate`, 'validar=ajaxcontinue', a => {
+		   mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), (a.charAt(0) == '0' ? 'No se pudo desactivar' : 'Cuenta desactivada'), true);
+		   mydialog.center();
+         $('#loading').fadeOut(250);
+      });
    }
+}
 
+var AlertFloat = new function() {
+	this.prefix = 'alertfloat__color--',
+	this.element = '#alert_float',
+	this.elclass = '',
+	this._title = '<em>Debes agregar el titulo</em>',
+	this._body = '<em>Debes agregar el contenido</em>',
+	this._type = 'default',
+	this.show = objects => {
+		let title = empty(objects.title) ? this._title : objects.title;
+		let body = empty(objects.body) ? this._body : objects.body;
+		let type = empty(objects.type) ? this._type : objects.type;
+		
+		$('#brandday').after(`
+			<div id="${this.element}" class="alertfloat ${this.prefix}${type}">
+				<h3 class="alertfloat--title">${title}</h3>
+				<p class="alertfloat--content">${body}<p>
+			</div>
+		`)
+	}
+}
+
+console.log(AlertFloat.show({title:'titulo', body:'el contenido del mismo', type:'danger'}))
 var cuenta = {
 	ciudad_id: '',
 	ciudad_text: '',
 	no_requerido: new Array(),
 
-	alert: function (secc, title, body) {
+	alert: (secc, title, body) => {
 		$('div.alert-cuenta.cuenta-'+secc).html('<h2>'+title+'</h2>');
 		$('div.alert-cuenta.cuenta-'+secc).slideDown(100);
 	},
 
-	alert_close: function (secc) {
+	alert_close: secc => {
 		$('div.alert-cuenta.cuenta-'+secc).html('');
 		$('div.alert-cuenta.cuenta-'+secc).slideUp(100);
 	},
 
-	chgtab: function (obj) {
+	chgtab: obj => {
 		$('div.tabbed-d > div.floatL > ul.menu-tab > li.active').removeClass('active');
 		$(obj).parent().addClass('active');
 		var active = $(obj).html().toLowerCase().replace(' ', '-');
@@ -56,7 +69,7 @@ var cuenta = {
 		$('div.content-tabs.'+active).show();
 	},
 
-	chgsec: function (obj) {
+	chgsec: obj => {
 		$('div.content-tabs.perfil > h3').removeClass('active');
 		$('div.content-tabs.perfil > fieldset').slideUp(100);
 		if ($(obj).next().css('display') == 'none') {
@@ -152,7 +165,6 @@ var cuenta = {
 			}
 		});
 	}
-
 }
 
 function cambiarFile(other = true){
@@ -165,11 +177,13 @@ function cambiarFile(other = true){
       avatar.subir('desktop')
    } 
 }
-$("#change").on('click', e => {
-	$("#input_add").html(`<div style="margin: 10px auto 0 auto;">
-   	<input type="text" name="url" autocomplete="off" placeholder="Url de la imagen" class="browse form-control"/>
-  	</div>`);
- 	$("input[name=url].browse").on('keyup', e => avatar.subir('url'));
+$('.avatar-cambiar .mBtn').on('click', e => {
+	if(!empty(e.target.id)) {
+		let name = e.target.id;
+		$("#input_add")[(name === 'changePC' ? 'hide' : 'block')]();
+		if(name === 'changePC') $('#drop-region input').click();
+		else $(".verify").on('click', e => avatar.subir('url'));
+	}
 })
 $('.avatar-cambiar .mBtn.btnDelete').on('click', () => mydialog.alert('No puedes subir avatar por URL', 'Esta deshabilitado desde la administración...'));
 

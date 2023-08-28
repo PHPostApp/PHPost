@@ -1,5 +1,14 @@
 cache/
 config.inc.php
+
+# Los avatares
 files/avatar/*_120.jpg
 files/avatar/*_50.jpg
-lock
+files/uploads/*.*
+
+# Archivo generado desde el install
+.lock
+
+# Solo el theme default
+themes/*
+!themes/default

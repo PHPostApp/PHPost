@@ -10,12 +10,14 @@ define('DS', DIRECTORY_SEPARATOR);
 define('SCRIPT_ROOT', realpath('../') . DS);
 define('INSTALL_ROOT', realpath('./') . DS);
 define('CONFIGINC', SCRIPT_ROOT . 'config.inc.php');
+define('CONFIGINC2', INSTALL_ROOT . 'config.inc.php');
 define('LICENSE', SCRIPT_ROOT . 'license.txt');
+define('BLOCKED', SCRIPT_ROOT . '.lock');
 
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 session_start();
 //
-$version_id = "1.3.001";
+$version_id = "1.3.003";
 $version_title = "Risus $version_id";
 $wversion_code = str_replace([' ', '.'], '_', strtolower($version_title));
 
@@ -41,13 +43,16 @@ $local = dirname(dirname($_SERVER["REQUEST_URI"]));
 $url = "$ssl://" . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost') . $local;
 $base_install = $url . "/install";
 
-require_once INSTALL_ROOT . "mysqli.database.php";
-require_once INSTALL_ROOT . "extension.loader.php";
+require_once INSTALL_ROOT . "functions.php";
 
-if(file_exists(SCRIPT_ROOT . 'lock')) header("Location: ../");
+if(file_exists(BLOCKED)) header("Location: ../");
 
 switch ($step) {
 	case 0:
+		if(!file_exists(CONFIGINC)) {
+			copy(CONFIGINC2, CONFIGINC);
+			chmod(CONFIGINC, 0666);
+		}
 		$_SESSION['license'] = false;
 		$license = file_get_contents(LICENSE);
 	break;
@@ -171,7 +176,7 @@ switch ($step) {
 				// Actualizamos
 				$database->query("UPDATE `p_categorias` SET c_nombre = '$name', c_seo = '$seo' WHERE cid = 30 LIMIT 1");
             // Insertamos en w_temas
-            $database->query("INSERT INTO w_temas (tid, t_name, t_url, t_path, t_copy) VALUES({$theme['tid']}, '{$theme['t_name']}', '{$theme['t_url']}', '{$theme['t_path']}', '{$theme['t_copy']}')");
+            $database->query("INSERT INTO w_temas (tid, t_name, t_url, t_path, t_copy) VALUES({$theme['tid']}, '{$theme['t_name']}', '{$web['url']}{$theme['t_url']}', '{$theme['t_path']}', '{$theme['t_copy']}')");
 				// GUARDAR LOS DATOS DE CONEXION
 				$config = file_get_contents(CONFIGINC);
 				$config = str_replace(['dbpkey', 'dbskey'], [$web['pkey'], $web['skey']], $config);
@@ -204,7 +209,7 @@ switch ($step) {
             if($user['pass'] !== $user['passc']) 
                $message = 'Las contrase&ntilde;as no coinciden.';
             // Generamos una nueva contraseña más segura
-            $key = md5(md5($user['passc']) . $user['name']);
+            $key = createPassword($user['name'], $user['passc']);
             $time = time();
 				// DATOS DE CONEXION
 				define('TS_HEADER', true);
@@ -272,7 +277,7 @@ switch ($step) {
          ];
          $key = base64_encode(serialize($code));
          // Abrir el archivo en modo de escritura ("w")
-         $handle = fopen(SCRIPT_ROOT . "lock", "w");
+         $handle = fopen(BLOCKED, "w");
          // Escribir los datos en el archivo
          fwrite($handle, $key);
          // Cerrar el archivo

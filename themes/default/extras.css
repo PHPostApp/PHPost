@@ -528,3 +528,39 @@ textarea {
 .share-big.red#whatsapp a {
 	background: url('https://api.iconify.design/logos/whatsapp-icon.svg') no-repeat center center / contain;
 }
+.alertfloat {
+	--bgk: #CCC;
+	--ck: #888;
+	position: fixed;
+	top: 1rem;
+	right: 1rem;
+	width: 280px;
+	padding: 0.6rem;
+	border-radius: .3rem;
+	background-color: var(--bgk);
+	color: var(--ck);
+	box-shadow: 0 0 1rem var(--bgk)
+}
+.alertfloat * {
+	padding: 0;
+	margin: 0;
+	font-size: 100%;
+	font-weight: 100%;
+}
+.alertfloat.alertfloat__color--default {
+	--bgk: #CCC;
+	--ck: #888;
+}
+.alertfloat.alertfloat__color--danger {
+	--bgk: #b30100;
+	--ck: #FFF;
+}
+.alertfloat .alertfloat--title {
+	font-size: 1rem;
+	display: block;
+	margin-bottom: 0.3rem;
+}
+.alertfloat .alertfloat--content {
+	display: block;
+	padding: 0.2rem 0;
+}

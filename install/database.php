@@ -71,7 +71,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_categorias` (
   `c_seo` varchar(32) NOT NULL DEFAULT '',
   `c_img` varchar(32) NOT NULL DEFAULT 'comments.png',
   PRIMARY KEY (`cid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=34 ;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "INSERT INTO `p_categorias` (`cid`, `c_orden`, `c_nombre`, `c_seo`, `c_img`) VALUES
 (1, 1, 'Animaciones', 'animaciones', 'flash.png'),
@@ -153,11 +153,10 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_posts` (
   `post_visitantes` int(1) NOT NULL DEFAULT 0,
   `post_status` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`post_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
-$phpost_sql[] = "INSERT INTO `p_posts` (`post_id`, `post_user`, `post_category`, `post_title`, `post_body`, `post_date`, `post_tags`) VALUES
-(1, 1, 30, 'Bienvenido a PHPost Risus', '[align=center][size=18]Este es el primer post de los miles que tendrá tu web  ;)   \r\n\r\nGracias por elegir a [url=http://www.phpost.net]PHPost[/url] como tu Link Sharing System.[/size][/align]\r\n\r\nCon la versión de [b]PHPost Risus[/b] actualizada:
-[ol][li]Smarty 4.3.x[/li][li]jQuery 3.7.x[/li][li]Plugins para jQuery actualizado y mejorado[/li][li]Modal modificado y con una nueva función[/li][li]Actualización al crear/editar post[/li][/ol], 0, 'PHPost, Risus, actualizado, smarty, php');";
+$phpost_sql[] = "INSERT INTO `p_posts` (`post_id`, `post_user`, `post_category`, `post_title`, `post_body`, `post_date`, `post_tags`) VALUES (1, 1, 30, 'Bienvenido a $version_title', '[align=center][size=18]Este es el primer post de los miles que tendrá tu web  ;) \r\n\r\nGracias por elegir a [url=https://www.phpost.net/foro/]PHPost[/url] como tu Link Sharing System.[/size][/align]\r\n\r\nCon la versión de [b]{$version_title}[/b] actualizada:
+[ol][li]Smarty 4.3.x[/li][li]jQuery 3.7.x[/li][li]Plugins para jQuery actualizado y mejorado[/li][li]Modal modificado y con una nueva función[/li][li]Actualización al crear/editar post[/li][/ol]', 0, 'PHPost, Risus, actualizado, smarty, php');";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_votos` (
   `voto_id` int(11) NOT NULL AUTO_INCREMENT,

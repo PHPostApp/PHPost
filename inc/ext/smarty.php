@@ -101,7 +101,7 @@ function __appendFilePage($params, $smarty) {
       		return trim("<link href=\"$fromtheme\" rel=\"stylesheet\" type=\"text/css\" />");
       	}
       } elseif ($type === 'js') {
-      	if($file !== 'moderacion.js') {
+      	if($file !== 'moderacion.js' AND $file !== 'cuenta.js') {
 	      	if(file_exists($smarty->template_dir[$type].$file)) {
 	      		return trim("<script src=\"$fileroute\"></script>");
 	      	}

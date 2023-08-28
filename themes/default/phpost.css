@@ -559,3 +559,42 @@ span.ma_medal{ background: url(images/icons/med/blue_bronze_16.png);}
 .avatar-big-cont:hover .avatarimg::before {
     content: 'Cambiar avatar';
 }
+#input_add {
+    margin-top: 10px;
+}
+#input_add > div {
+    --colleft: 200px;
+    --colright: 35px;
+    display: grid;
+    grid-template-columns: var(--colleft) var(--colright);
+    width: calc(var(--colleft) + var(--colright));
+    border-radius: .3rem;
+    overflow: hidden;
+    height: 2rem;
+    background-color: #2470BD;
+}
+#input_add > div input {
+    padding: .6rem .3rem;
+    width: var(--colleft);
+    box-sizing: border-box;
+    border: 0 solid transparent;
+    background: transparent;
+    color: #FFF;
+}
+#input_add > div input::placeholder {
+    color: #FFF;
+    font-style: italic;
+    font-weight: 300;
+}
+#input_add > div .verify {
+    width: var(--colright);
+    height: 2rem;
+    text-align: center;
+    line-height: 2rem;
+    font-weight: 600;
+    color: #FFF;
+    cursor: pointer;
+}
+#input_add > div .verify:hover {
+    background-color: #255C94;
+}
