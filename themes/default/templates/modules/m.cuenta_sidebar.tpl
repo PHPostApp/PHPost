@@ -20,7 +20,19 @@
 		</div>
 	</div>
 	<div class="clearfix"></div>
+	<div class="porcentaje-total">
+		<div class="box" data-percentage="{$tsPerfil.porcentaje}">
+		  	<div class="percentage">
+		      <div class="completed active"></div>
+		  	</div>
+		</div>
+	</div>
+	<div class="clearfix"></div>
 </div>
+
+	
+
+
 						  <div class="clearfix"></div>
 						  <h3 style="margin: 25px 0 0; padding: 0" id="porc-completado-label">Perfil completo al {$tsPerfil.porcentaje}%</h3>
 						  <div style="margin-top:5px;text-align:center;font-size:13px;margin-bottom:10px;color:#FFF;text-shadow: 0 1px 0px #000" id="porc-completado">

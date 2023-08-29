@@ -215,6 +215,34 @@ class LiteYTEmbed extends HTMLElement {
 // Register custom element
 customElements.define('lite-youtube', LiteYTEmbed);
 
+var AlertFloat = new function() {
+	this.prefix = 'alertfloat__color--',
+	this.element = 'alertfloat',
+	this.elclass = '',
+	this._type = 'default',
+	this._timeout = 3000,
+	this.show = objects => {
+		let body = empty(objects.body) ? this._body : objects.body;
+		let type = empty(objects.type) ? this._type : objects.type;
+		if(!empty(objects.title)) {
+			let title = `<h3 class="alertfloat--title">${objects.title}</h3>`
+		}
+		$('#brandday').after(`
+			<div id="${this.element}" class="alertfloat ${this.elclass} ${this.prefix}${type}">
+				${title}
+				<p class="alertfloat--content">${body}<p>
+			</div>
+		`)
+		this.close(objects.timeout)
+	},
+	this.close = end => {
+		removeElementOfBody = empty(end) ? this._timeout : end * 1000;
+		setTimeout(() => {
+			$('#brandday #' + this.element).remove()
+		}, removeElementOfBody);
+	}
+}
+
 /**
  * MyDialog v2
  * @autor Miguel92

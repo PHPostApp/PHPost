@@ -24,42 +24,10 @@ function desactivate(few) {
    }
 }
 
-var AlertFloat = new function() {
-	this.prefix = 'alertfloat__color--',
-	this.element = '#alert_float',
-	this.elclass = '',
-	this._title = '<em>Debes agregar el titulo</em>',
-	this._body = '<em>Debes agregar el contenido</em>',
-	this._type = 'default',
-	this.show = objects => {
-		let title = empty(objects.title) ? this._title : objects.title;
-		let body = empty(objects.body) ? this._body : objects.body;
-		let type = empty(objects.type) ? this._type : objects.type;
-		
-		$('#brandday').after(`
-			<div id="${this.element}" class="alertfloat ${this.prefix}${type}">
-				<h3 class="alertfloat--title">${title}</h3>
-				<p class="alertfloat--content">${body}<p>
-			</div>
-		`)
-	}
-}
-
-console.log(AlertFloat.show({title:'titulo', body:'el contenido del mismo', type:'danger'}))
 var cuenta = {
 	ciudad_id: '',
 	ciudad_text: '',
 	no_requerido: new Array(),
-
-	alert: (secc, title, body) => {
-		$('div.alert-cuenta.cuenta-'+secc).html('<h2>'+title+'</h2>');
-		$('div.alert-cuenta.cuenta-'+secc).slideDown(100);
-	},
-
-	alert_close: secc => {
-		$('div.alert-cuenta.cuenta-'+secc).html('');
-		$('div.alert-cuenta.cuenta-'+secc).slideUp(100);
-	},
 
 	chgtab: obj => {
 		$('div.tabbed-d > div.floatL > ul.menu-tab > li.active').removeClass('active');
@@ -135,7 +103,7 @@ var cuenta = {
 		params.push('save='+secc);
 
 		$('.cuenta-save-'+secc).each(function(){
-			if (($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'radio') || $(this).attr('checked')) params.push($(this).attr('name')+'='+encodeURIComponent($(this).val()));
+			if (($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'radio') || $(this).prop('checked')) params.push($(this).attr('name')+'='+encodeURIComponent($(this).val()));
 		});
 
 		var cuenta_url = global_data.url + '/cuenta.php?action=save&ajax=true';
@@ -147,14 +115,18 @@ var cuenta = {
 			data: params.join('&'), 
 			dataType: 'json',
 			success: function (r) {
-				//$('#prueba').html(r.html);
 				if (r.error) {
 					if (r.field) $('input[name='+r.field+']').focus().addClass('input-incorrect');
-					cuenta.alert(secc, r.error)
-				}
-				else {
+					AlertFloat.show({title:'Error!', body:r.error, type:'danger',timeout:3})
+				} else {
 					if (next) cuenta.next(secc > 1 && secc < 5);
-					cuenta.alert(secc, 'Los cambios fueron aceptados y ser&aacute;n aplicados.');
+					title = secc ? 'Bien!' : 'Error!';
+					AlertFloat.show({
+						title, 
+						body:'Los cambios fueron aceptados y ser&aacute;n aplicados.', 
+						type:'success',
+						timeout:3
+					})
 					if(r.porc != null) {
 						$('#porc-completado-label').html('Perfil completo al ' + r.porc + '%');
 						$('#porc-completado-barra').css('width', r.porc + '%');

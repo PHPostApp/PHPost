@@ -537,7 +537,7 @@ textarea {
 	width: 280px;
 	padding: 0.6rem;
 	border-radius: .3rem;
-	background-color: var(--bgk);
+	background: var(--bgk);
 	color: var(--ck);
 	box-shadow: 0 0 1rem var(--bgk)
 }
@@ -547,18 +547,24 @@ textarea {
 	font-size: 100%;
 	font-weight: 100%;
 }
-.alertfloat.alertfloat__color--default {
-	--bgk: #CCC;
-	--ck: #888;
-}
 .alertfloat.alertfloat__color--danger {
 	--bgk: #b30100;
 	--ck: #FFF;
 }
+.alertfloat.alertfloat__color--success {
+	--bgk: #1E8035;
+	--ck: #FFF;
+}
+.alertfloat.alertfloat__color--primary {
+	--bgk: #225BC3;
+	--ck: #FFF;
+}
 .alertfloat .alertfloat--title {
-	font-size: 1rem;
+	font-size: 1.2rem;
 	display: block;
 	margin-bottom: 0.3rem;
+	font-weight: 700!important;
+	text-transform: capitalize;
 }
 .alertfloat .alertfloat--content {
 	display: block;

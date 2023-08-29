@@ -32,3 +32,21 @@ mydialog.faster({
 
 El "size" se puede usar de forma normal, así:
 mydialog.size = 'normal'
+
+=======================================================================
+Nuevo "Mini modal para alertas"
+
+Colores 
+ * Default
+ * Danger
+ * Success
+ * Primary
+
+Formas de uso:
+AlertFloat.elclass = 'SI DESEAS AÑADIR UNA CLASE EXTRA'
+AlertFloat.show({
+	title: 'string', // El titulo para la alerta
+	body: 'string', // El mensaje de la alerta
+	type: 'string', // default|danger|success|primary
+	timeout: int // Tiempo en segundos, ej: 3s = 3000ms
+})
