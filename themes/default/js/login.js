@@ -1,3 +1,5 @@
+var avanzar = false;
+
 comprobar = (id, encode = false) => {
 	input = $('.formulario #' + id);
 	if (empty(input.val())) {
@@ -17,32 +19,39 @@ cargando = (status = false) => {
 	} else loading.removeAttr('style').html('')
 }
 
+
 iniciarSesion = () => {
-	params = [
-		'nick=' + comprobar('nickname', true),
-		'pass=' + comprobar('password', true),
-		'rem=' + $('#rem').is(':checked')
-	].join('&');
-	cargando(true)
-	$('#login_error p').html('').hide();
-	$('#loading').fadeIn(250);
-	$.post(global_data.url + '/login-user.php', params, h => {
-		switch(h.charAt(0)){
-			case '0':
-				$('#login_error p').html(h.substring(3)).show();
-				comprobar('nickname').focus();
-				cargando()
-			break;
-			case '1':
-				if (h.substring(3)=='Home') location.href='/';
-				else if (h.substr(3) == 'Cuenta') location.href = '/cuenta/';
-				else location.reload();
-				$('#loading').fadeOut(350);
-			break;
-		};
-	})
-	.fail(() => $('#login_error p').html('Error al intentar procesar lo solicitado').show())
-	.done(() => cargando())
+	console.log(avanzar)
+	if(avanzar) {
+		const codigoRecaptcha = $("#response").val();
+		params = [
+			'nick=' + comprobar('nickname', true),
+			'pass=' + comprobar('password', true),
+			'rem=' + $('#rem').is(':checked'),
+			'response=' + codigoRecaptcha
+		].join('&');
+		cargando(true)
+		$('#login_error p').html('').hide();
+		$('#loading').fadeIn(250);
+		$.post(global_data.url + '/login-user.php', params, h => {
+			console.log(h)
+			switch(h.charAt(0)){
+				case '0':
+					$('#login_error p').html(h.substring(3)).show();
+					comprobar('nickname').focus();
+					cargando()
+				break;
+				case '1':
+					if (h.substring(3)=='Home') location.href='/';
+					else if (h.substr(3) == 'Cuenta') location.href = '/cuenta/';
+					else location.reload();
+					$('#loading').fadeOut(350);
+				break;
+			};
+		})
+		.fail(() => $('#login_error p').html('Error al intentar procesar lo solicitado').show())
+		.done(() => cargando())
+	}
 }
 
 multiOptions = (who = '', status = false) => {

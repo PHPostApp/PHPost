@@ -1,9 +1,4 @@
 var avanzar = false;
-// Un poco de segundos para cargar el captcha
-setTimeout(() => {
-	$(".mensajeAviso").hide()
-	avanzar = true;
-}, 3000);
 
 getURL = page => `${global_data.url}/registro-${page}.php?ajax=true`
 
@@ -36,6 +31,26 @@ campos = (nameEl, response) => {
    return trfa ? helper_msg('#' + nameEl, response.substring(3), number) : false;
 }
 
+checkStrength = (password, nameEl) => {
+   var strength = 0;
+   // Comprobar la longitud de la contraseña
+   if (password.length > 8) strength += 1;
+   // Verifique si hay casos mixtos
+   if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 1;
+   // Comprobar los números
+   if (password.match(/\d/)) strength += 1;
+   // Comprobar caracteres especiales
+   if (password.match(/[^a-zA-Z\d]/)) strength += 1;
+   // Actualice el texto y el color según la seguridad de la contraseña
+   let color = {1: 'darkred', 2: 'red', 3: 'orange', 4: 'green' }
+   let text = {1: 'Fácil', 2: 'Medio', 3: 'Difícil', 4: 'Extremadamente difícil' }
+   // Limpiamos el css
+   $('#'+nameEl+'-strength span').removeAttr('style')
+  	$('#'+nameEl+'-strength span').css({ backgroundColor: color[strength],  })
+  	$('#'+nameEl+'-strength em').html(text[strength]);
+  
+}
+
 var verificar = element => {
 	const nameElem = element.target.name
 	const idElem = `#${nameElem}`;
@@ -44,7 +59,12 @@ var verificar = element => {
 	switch (nameElem) {
 		case 'nick':
 		case 'email':
-			helper_msg(idElem, `Comprobando ${nameElem}...`, 2)
+			if(nameElem === 'nick' && valElem.length <= 4) {
+				helper_msg(idElem, `Debes ser mayor a 4 caracteres`, 3)
+			} else if(nameElem === 'nick' && valElem.length >= 20) {
+				helper_msg(idElem, `Debes ser menor a 20 caracteres`, 3)
+			} else helper_msg(idElem, `Comprobando ${nameElem}...`, 2)
+
 			typeData = (nameElem === 'nick') ? {nick:valElem} : {email:valElem};
 			$.post(getURL('check-' + nameElem), typeData, h => Approved[nameElem] = campos(nameElem, h))
 		break;
@@ -55,19 +75,29 @@ var verificar = element => {
 			const p2 = $("#password2").val();
 			const nick = $("#nick").val();
 			if(nameElem === 'password') {
+				checkStrength(p1, nameElem)
 				message = (p1 === nick || p2 === nick) ? '0: No puede ser igual al Nick' : '1: Ok!';
 			} else {
+				checkStrength(p2, nameElem)
             message = (p1 !== p2) ? '0: Tus contraseñas deben ser iguales' : '1: Ok!';
 			}
 			Approved[nameElem] = campos(nameElem, message)
 		break;
 		case 'nacimiento':
-			helper_msg(idElem, `Verificando fecha...`, 2);
-			let fechaNacimiento = new Date(valElem);
-			let hoy = new Date();
-			let total = hoy.getFullYear() - fechaNacimiento.getFullYear();
-			message = (total >= 16) ? '1: Ok!' : '0: Eres menor';
-			Approved[nameElem] = campos(nameElem, message)
+		   const fnac = new Date(valElem);
+		   const nacimiento = fnac.getFullYear();
+		   const hoy = new Date();
+		   // Comprobaciones condicionales
+		   if (nacimiento >= hoy.getFullYear()) {
+		      helper_msg(idElem, `La fecha no puede ser en el futuro`, 3);
+		   } else if (nacimiento < parseInt($('#max').val())) {
+		      helper_msg(idElem, `No puedes ser tan viejo!`, 3);
+		   } else if (hoy.getFullYear() - nacimiento < 16) {
+		      helper_msg(idElem, `Debes ser mayor de 16 años`, 3);
+		   } else {		      
+		      // Si todas las condiciones se cumplen, se aprueba la fecha
+		     	Approved[nameElem] = campos(nameElem, '1: Fecha válida!')
+		   }
 		break;
 	}
 }
@@ -94,7 +124,6 @@ crearCuenta = () => {
 			$(".mensajeAviso").css({ display: 'grid' })
 			$(".mensajeAviso span").html('Espere, creando su cuenta...')
 			$.post(getURL('nuevo'), formulario, h => {
-				//console.log(h)
 				switch(h.charAt(0)){
 	            case '0':
 	               $('#loading').fadeOut(350);

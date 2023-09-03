@@ -11,16 +11,25 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `f_comentarios` (
   `c_foto_id` int(11) NOT NULL DEFAULT 0,
   `c_user` int(11) NOT NULL DEFAULT 0,
   `c_date` int(10) NOT NULL DEFAULT 0,
-  `c_body` text NOT NULL DEFAULT '',
+  `c_body` text NULL,
   `c_ip` varchar(15) NOT NULL DEFAULT '',
   PRIMARY KEY (`cid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `f_favoritos` (
+  `fid` int(11) NOT NULL AUTO_INCREMENT,
+  `f_foto_id` int(11) NOT NULL DEFAULT 0,
+  `f_user` int(11) NOT NULL DEFAULT 0,
+  `f_date` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`fid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `f_fotos` (
   `foto_id` int(11) NOT NULL AUTO_INCREMENT,
+  `f_album` int(11) NOT NULL DEFAULT 0,
   `f_title` varchar(40) NOT NULL DEFAULT '',
   `f_date` int(10) NOT NULL DEFAULT 0,
-  `f_description` text NOT NULL DEFAULT '',
+  `f_description` text NULL,
   `f_url` varchar(200) NOT NULL DEFAULT '',
   `f_user` int(11) NOT NULL DEFAULT 0,
   `f_closed` int(1) NOT NULL DEFAULT 0,
@@ -32,7 +41,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `f_fotos` (
   `f_hits` int(11) NOT NULL DEFAULT 0,
   `f_ip` varchar(15) NOT NULL DEFAULT '',
   PRIMARY KEY (`foto_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `f_votos` (
   `vid` int(11) NOT NULL AUTO_INCREMENT,
@@ -41,15 +50,25 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `f_votos` (
   `v_type` int(1) NOT NULL DEFAULT 0,
   `v_date` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`vid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `f_album` (
+  `aid` int(11) NOT NULL AUTO_INCREMENT,
+  `a_name` varchar(30) NOT NULL DEFAULT '',
+  `a_cover` tinytext NULL,
+  `a_description` tinytext NULL,
+  `a_status` int(1) NOT NULL DEFAULT 0,
+  `a_date` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`aid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_borradores` (
   `bid` int(11) NOT NULL AUTO_INCREMENT,
   `b_user` int(11) NOT NULL DEFAULT 0,
   `b_date` int(10) NOT NULL DEFAULT 0,
   `b_title` varchar(120) NOT NULL DEFAULT '',
-  `b_portada` tinytext NOT NULL DEFAULT '',
-  `b_body` text NOT NULL DEFAULT '',
+  `b_portada` tinytext NULL,
+  `b_body` text NULL,
   `b_tags` varchar(128) DEFAULT NULL,
   `b_category` int(4) NOT NULL DEFAULT 0,
   `b_private` int(1) NOT NULL DEFAULT 0,
@@ -62,7 +81,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_borradores` (
   `b_status` int(1) NOT NULL DEFAULT 1,
   `b_causa` varchar(128) NOT NULL DEFAULT '',
   PRIMARY KEY (`bid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_categorias` (
   `cid` int(11) NOT NULL AUTO_INCREMENT,
@@ -71,7 +90,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_categorias` (
   `c_seo` varchar(32) NOT NULL DEFAULT '',
   `c_img` varchar(32) NOT NULL DEFAULT 'comments.png',
   PRIMARY KEY (`cid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "INSERT INTO `p_categorias` (`cid`, `c_orden`, `c_nombre`, `c_seo`, `c_img`) VALUES
 (1, 1, 'Animaciones', 'animaciones', 'flash.png'),
@@ -113,12 +132,12 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_comentarios` (
   `c_post_id` int(11) NOT NULL DEFAULT 0,
   `c_user` int(11) NOT NULL DEFAULT 0,
   `c_date` int(10) NOT NULL DEFAULT 0,
-  `c_body` text NOT NULL DEFAULT '',
+  `c_body` text NULL,
   `c_votos` int(3) NOT NULL DEFAULT 0,
   `c_status` ENUM(  '0',  '1' ) NOT NULL DEFAULT  '0',
   `c_ip` varchar(15) NOT NULL DEFAULT '',
   PRIMARY KEY (`cid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_favoritos` (
   `fav_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -126,15 +145,15 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_favoritos` (
   `fav_post_id` int(11) NOT NULL DEFAULT 0,
   `fav_date` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`fav_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_posts` (
   `post_id` int(11) NOT NULL AUTO_INCREMENT,
   `post_user` int(11) NOT NULL DEFAULT 0,
   `post_category` int(4) NOT NULL DEFAULT 0,
   `post_title` varchar(120) NOT NULL DEFAULT '',
-  `post_portada` tinytext NOT NULL DEFAULT '',
-  `post_body` text NOT NULL DEFAULT '',
+  `post_portada` tinytext NULL,
+  `post_body` text NULL,
   `post_date` int(10) NOT NULL DEFAULT 0,
   `post_tags` varchar(128) NOT NULL DEFAULT '',
   `post_puntos` int(11) unsigned NOT NULL DEFAULT '0',
@@ -153,7 +172,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_posts` (
   `post_visitantes` int(1) NOT NULL DEFAULT 0,
   `post_status` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`post_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "INSERT INTO `p_posts` (`post_id`, `post_user`, `post_category`, `post_title`, `post_body`, `post_date`, `post_tags`) VALUES (1, 1, 30, 'Bienvenido a $version_title', '[align=center][size=18]Este es el primer post de los miles que tendrá tu web  ;) \r\n\r\nGracias por elegir a [url=https://www.phpost.net/foro/]PHPost[/url] como tu Link Sharing System.[/size][/align]\r\n\r\nCon la versión de [b]{$version_title}[/b] actualizada:
 [ol][li]Smarty 4.3.x[/li][li]jQuery 3.7.x[/li][li]Plugins para jQuery actualizado y mejorado[/li][li]Modal modificado y con una nueva función[/li][li]Actualización al crear/editar post[/li][/ol]', 0, 'PHPost, Risus, actualizado, smarty, php');";
@@ -166,7 +185,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_votos` (
   `type` int(1) NOT NULL DEFAULT 1,
   `date` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`voto_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_actividad` (
   `ac_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -176,25 +195,25 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_actividad` (
   `ac_type` int(2) NOT NULL DEFAULT 0,
   `ac_date` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`ac_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_avisos` (
   `av_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL DEFAULT 0,
   `av_subject` varchar(24) NOT NULL DEFAULT '',
-  `av_body` text NOT NULL DEFAULT '',
+  `av_body` text NULL,
   `av_date` int(10) NOT NULL DEFAULT 0,
   `av_read` int(1) NOT NULL DEFAULT 0,
   `av_type` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`av_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_bloqueos` (
   `bid` int(11) NOT NULL AUTO_INCREMENT,
   `b_user` int(11) NOT NULL DEFAULT 0,
   `b_auser` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`bid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_follows` (
   `follow_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -203,7 +222,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_follows` (
   `f_type` int(1) NOT NULL DEFAULT 0,
   `f_date` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`follow_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_mensajes` (
   `mp_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -220,7 +239,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_mensajes` (
   `mp_preview` varchar(75) NOT NULL DEFAULT '',
   `mp_date` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`mp_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_miembros` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -245,7 +264,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_miembros` (
   `user_activo` int(1) NOT NULL DEFAULT 0,
   `user_baneado` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_nicks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -273,7 +292,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_monitor` (
   `not_menubar` int(1) NOT NULL DEFAULT 2,
   `not_monitor` int(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`not_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_muro` (
   `pub_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -281,33 +300,33 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_muro` (
   `p_user_pub` int(11) NOT NULL DEFAULT 0,
   `p_date` int(10) NOT NULL DEFAULT 0,
   `p_comments` int(4) NOT NULL DEFAULT 0,
-  `p_body` text NOT NULL DEFAULT '',
+  `p_body` text NULL,
   `p_likes` int(4) NOT NULL DEFAULT 0,
   `p_type` int(1) NOT NULL DEFAULT 0,
   `p_ip` varchar(15) NOT NULL DEFAULT '',
   PRIMARY KEY (`pub_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_muro_adjuntos` (
   `adj_id` int(11) NOT NULL AUTO_INCREMENT,
   `pub_id` int(11) NOT NULL DEFAULT 0,
   `a_title` varchar(100) NOT NULL DEFAULT '',
-  `a_url` text NOT NULL DEFAULT '',
-  `a_img` text NOT NULL DEFAULT '',
-  `a_desc` text NOT NULL DEFAULT '',
+  `a_url` text NULL,
+  `a_img` text NULL,
+  `a_desc` text NULL,
   PRIMARY KEY (`adj_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_muro_comentarios` (
   `cid` int(11) NOT NULL AUTO_INCREMENT,
   `pub_id` int(11) NOT NULL DEFAULT 0,
   `c_user` int(11) NOT NULL DEFAULT 0,
   `c_date` int(10) NOT NULL DEFAULT 0,
-  `c_body` text NOT NULL DEFAULT '',
+  `c_body` text NULL,
   `c_likes` int(4) NOT NULL DEFAULT 0,
   `c_ip` varchar(15) NOT NULL DEFAULT '',
   PRIMARY KEY (`cid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_muro_likes` (
   `like_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -315,7 +334,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_muro_likes` (
   `obj_id` int(11) NOT NULL DEFAULT 0,
   `obj_type` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`like_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_perfil` (
   `user_id` int(11) NOT NULL DEFAULT 0,
@@ -325,12 +344,12 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_perfil` (
   `user_pais` varchar(2) NOT NULL DEFAULT '',
   `user_estado` int(2) NOT NULL DEFAULT 1,
   `user_sexo` int(1) NOT NULL DEFAULT 1,
-  `user_firma` text NOT NULL DEFAULT '',
+  `user_firma` text NULL,
   `p_nombre` varchar(32) NOT NULL DEFAULT '',
   `p_avatar` int(1) NOT NULL DEFAULT 0,
   `p_mensaje` varchar(60) NOT NULL DEFAULT '',
   `p_sitio` varchar(60) NOT NULL DEFAULT '',
-  `p_socials` text NOT NULL DEFAULT '',
+  `p_socials` text NULL,
   `p_gustos` varchar(71) NOT NULL DEFAULT 'a:5:{i:0;i:0;i:1;i:0;i:2;i:0;i:3;i:0;i:4;i:0;}',
   `p_estado` int(1) NOT NULL DEFAULT 0,
   `p_hijos` int(1) NOT NULL DEFAULT 0,
@@ -350,30 +369,30 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_perfil` (
   `p_empresa` varchar(32) NOT NULL DEFAULT '',
   `p_sector` int(2) NOT NULL DEFAULT 0,
   `p_ingresos` int(1) NOT NULL DEFAULT 0,
-  `p_int_prof` text NOT NULL DEFAULT '',
-  `p_hab_prof` text NOT NULL DEFAULT '',
-  `p_intereses` text NOT NULL DEFAULT '',
-  `p_hobbies` text NOT NULL DEFAULT '',
-  `p_tv` text NOT NULL DEFAULT '',
-  `p_musica` text NOT NULL DEFAULT '',
-  `p_deportes` text NOT NULL DEFAULT '',
-  `p_libros` text NOT NULL DEFAULT '',
-  `p_peliculas` text NOT NULL DEFAULT '',
-  `p_comida` text NOT NULL DEFAULT '',
-  `p_heroes` text NOT NULL DEFAULT '',
+  `p_int_prof` text NULL,
+  `p_hab_prof` text NULL,
+  `p_intereses` text NULL,
+  `p_hobbies` text NULL,
+  `p_tv` text NULL,
+  `p_musica` text NULL,
+  `p_deportes` text NULL,
+  `p_libros` text NULL,
+  `p_peliculas` text NULL,
+  `p_comida` text NULL,
+  `p_heroes` text NULL,
   `p_configs` varchar(100) NOT NULL DEFAULT 'a:3:{s:1:\"m\";s:1:\"5\";s:2:\"mf\";i:5;s:3:\"rmp\";s:1:\"5\";}',
   `p_total` varchar(54) NOT NULL DEFAULT 'a:6:{i:0;i:5;i:1;i:0;i:2;i:0;i:3;i:0;i:4;i:0;i:5;i:0;}',
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_portal` (
   `user_id` int(11) NOT NULL DEFAULT 0,
-  `last_posts_visited` text NOT NULL DEFAULT '',
-  `last_posts_shared` text NOT NULL DEFAULT '',
-  `last_posts_cats` text NOT NULL DEFAULT '',
-  `c_monitor` text NOT NULL DEFAULT '',
+  `last_posts_visited` text NULL,
+  `last_posts_shared` text NULL,
+  `last_posts_cats` text NULL,
+  `c_monitor` text NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_rangos` (
   `rango_id` int(3) NOT NULL AUTO_INCREMENT,
@@ -384,7 +403,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_rangos` (
   `r_allows` varchar(1000) NOT NULL DEFAULT '',
   `r_type` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`rango_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=8 ;";
 
 $phpost_sql[] = "INSERT INTO `u_rangos` (`rango_id`, `r_name`, `r_color`, `r_image`, `r_cant`, `r_allows`, `r_type`) VALUES
 (1, 'Administrador', 'D6030B', 'rosette.png', 0, 'a:4:{s:4:\"suad\";s:2:\"on\";s:4:\"goaf\";s:1:\"5\";s:5:\"gopfp\";s:2:\"20\";s:5:\"gopfd\";s:2:\"50\";}', 0),
@@ -399,11 +418,11 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_respuestas` (
   `mr_id` int(11) NOT NULL AUTO_INCREMENT,
   `mp_id` int(11) NOT NULL DEFAULT 0,
   `mr_from` int(11) NOT NULL DEFAULT 0,
-  `mr_body` text NOT NULL DEFAULT '',
+  `mr_body` text NULL,
   `mr_ip` varchar(15) NOT NULL DEFAULT '',
   `mr_date` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`mr_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_sessions` (
   `session_id` varchar(32) NOT NULL DEFAULT '',
@@ -414,18 +433,18 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_sessions` (
   PRIMARY KEY (`session_id`),
   KEY `session_user_id` (`session_user_id`),
   KEY `session_time` (`session_time`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_suspension` (
   `susp_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL DEFAULT 0,
-  `susp_causa` text NOT NULL DEFAULT '',
+  `susp_causa` text NULL,
   `susp_date` int(10) NOT NULL DEFAULT 0,
   `susp_termina` int(10) NOT NULL DEFAULT 0,
   `susp_mod` int(11) NOT NULL DEFAULT 0,
   `susp_ip` varchar(15) NOT NULL DEFAULT '',
   PRIMARY KEY (`susp_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_afiliados` (
   `aid` int(11) NOT NULL AUTO_INCREMENT,
@@ -439,22 +458,23 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_afiliados` (
   `a_date` int(10) NOT NULL DEFAULT 0,
   `a_active` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`aid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_configuracion` (
   `tscript_id` int(11) NOT NULL DEFAULT 0,
   `titulo` varchar(24) NOT NULL DEFAULT '',
   `slogan` varchar(32) NOT NULL DEFAULT '',
-  `url` tinytext NOT NULL DEFAULT '',
+  `url` tinytext NULL,
   `email` varchar(60) NOT NULL DEFAULT '',
   `banner` varchar(100) NOT NULL DEFAULT '',
   `tema_id` int(11) NOT NULL DEFAULT 1,
-  `ads_300` text NOT NULL DEFAULT '',
-  `ads_468` text NOT NULL DEFAULT '',
-  `ads_160` text NOT NULL DEFAULT '',
-  `ads_728` text NOT NULL DEFAULT '',
+  `ads_300` text NULL,
+  `ads_468` text NULL,
+  `ads_160` text NULL,
+  `ads_728` text NULL,
   `ads_search` varchar(50) NOT NULL DEFAULT '',
   `c_last_active` int(2) NOT NULL DEFAULT 15,
+  `c_upperkey` int(1) NOT NULL DEFAULT 1,
   `c_allow_sess_ip` int(1) NOT NULL DEFAULT 1,
   `c_count_guests` int(1) NOT NULL DEFAULT 0,
   `c_reg_active` int(1) NOT NULL DEFAULT 1,
@@ -487,7 +507,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_configuracion` (
   `version` varchar(22) NOT NULL DEFAULT '',
   `version_code` varchar(22) NOT NULL DEFAULT '',
   PRIMARY KEY (`tscript_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;";
 
 $phpost_sql[] = "INSERT INTO `w_configuracion` (`tscript_id`) VALUES (1);";
 
@@ -496,12 +516,12 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_denuncias` (
   `obj_id` int(11) NOT NULL DEFAULT 0,
   `d_user` int(11) NOT NULL DEFAULT 0,
   `d_razon` int(2) NOT NULL DEFAULT 0,
-  `d_extra` text NOT NULL DEFAULT '',
+  `d_extra` text NULL,
   `d_total` int(1) NOT NULL DEFAULT 1,
   `d_type` int(1) NOT NULL DEFAULT 0,
   `d_date` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`did`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_contacts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -545,20 +565,20 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_historial` (
   `type` int(1) NOT NULL DEFAULT 0,
   `action` int(1) NOT NULL DEFAULT 0,
   `mod` int(11) NOT NULL DEFAULT 0,
-  `reason` text NOT NULL DEFAULT '',
+  `reason` text NULL,
   `date` int(11) NOT NULL DEFAULT 0,
   `mod_ip` varchar(15) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_noticias` (
   `not_id` int(11) NOT NULL AUTO_INCREMENT,
-  `not_body` text NOT NULL DEFAULT '',
+  `not_body` text NULL,
   `not_autor` INT( 11 ) NOT NULL,
   `not_date` int(10) NOT NULL DEFAULT 0,
   `not_active` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`not_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_blacklist` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -596,18 +616,18 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_stats` (
   `stats_comments` int(11) NOT NULL DEFAULT 0,
   `stats_foto_comments` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`stats_no`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;";
 
 $phpost_sql[] = "INSERT INTO `w_stats` (`stats_no`, `stats_max_online`) VALUES (1, 0);";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_temas` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
-  `t_name` tinytext NOT NULL DEFAULT '',
-  `t_url` tinytext NOT NULL DEFAULT '',
-  `t_path` tinytext NOT NULL DEFAULT '',
-  `t_copy` tinytext NOT NULL DEFAULT '',
+  `t_name` tinytext NULL,
+  `t_url` tinytext NULL,
+  `t_path` tinytext NULL,
+  `t_copy` tinytext NULL,
   PRIMARY KEY (`tid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1;";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_visitas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

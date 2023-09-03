@@ -218,10 +218,11 @@ hr {
 /**
  * Registro
 */
-#RegistroForm {
+#RegistroForm, .formulario {
 	position: relative;
 }
-#RegistroForm .mensajeAviso {
+#RegistroForm .mensajeAviso,
+.formulario .mensajeAviso {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -1281,138 +1282,6 @@ list-style-image:none;
 list-style-position:outside;
 list-style-type:none;
 }
-
-.menu_cuenta li{
-	list-style:none;
-	list-style-position:inside;
-	list-style-type:disc;
-}
-.perfil-user {
-	background: #e1dfd2;
-	padding: 10px 10px 0 10px ;
-	position: relative;
-	color: #6D674F;
-}
-.perfil-data {
-    float: left;
-    position: relative;
-    width: 625px;
-}
-.perfil-user h1.nick {
-    color: #000000;
-    font-family: 'Helvetica',Arial;
-    font-size: 30px;
-    font-weight: bold;
-    letter-spacing: -1px;
-    margin: 5px 0;
-}
-.perfil-user h1.nick a {
-    color: #000000;
-}
-.perfil-user .realname {
-    color: #9A9684;
-    font-family: Helvetica,Arial;
-    font-size: 18px;
-    font-weight: normal;
-}
-.perfil-user .perfil-data .realname {
-    display: block !important;
-    font-size: 14px !important;
-    margin-top: 8px !important;
-}
-.perfil-user .btn_g {
-	position: absolute;
-	top: 10px;
-	right: 10px;	
-}
-.perfil-user .perfil-data .btn_g {
-    top: 0 !important;
-}
-.perfil-data .frase-personal {
-    color: #000000;
-    display: block;
-    font-weight: bold;
-    margin-top: 2px;
-    font-size: 13px;
-}
-
-.user-level {
-    float: right;
-    width: 306px;
-}
-.user-level ul li {
-    background: none repeat scroll 0 0 #ECEAE1;
-    border-radius: 5px 5px 5px 5px;
-    display: block;
-    float: left;
-    font-family: Helvetica,Arial;
-    margin: 0 5px 5px 0;
-    padding: 5px;
-    width: 138px;
-}
-.user-level ul li strong {
-    color: #000000;
-    display: block;
-    font-size: 16px;
-    font-weight: bold;
-}
-.user-level ul li span {
-    font-size: 12px;
-}
-
-.user-level ul li:hover {
-    background: #FFF;
-}
-
-.bio {
-	display: block;
-	font-size: 12px;
-	line-height: 18px;
-	margin-top: 5px;
-}
-
-.perfil-user .menu-tabs-perfil {
-	float:right;
-	background: none;
-	width: 100%;
-}
-
-.perfil-info {
-    float: left;
-	width: 480px;
-}
-.menu-tabs-perfil ul {
-	width: 100%;
-}
-.menu-tabs-perfil li {
-	float: left;
-	margin-right: 10px;
-}
-
-
-.menu-tabs-perfil li.enviar-mensaje {
-	float: right!important;
-}
-
-
-
-
-
-.menu-tabs-perfil li a {
-	display: block;
-	padding: 5px 10px;
-	background: #f0efe8;
-	font-size: 12px;
-	font-weight: bold;
-	color: #666666!important;
-}
-
-.menu-tabs-perfil li.selected a,.menu-tabs-perfil li a:hover {
-	background: #FFF;
-	color: #333!important;
-	text-shadow: none;
-}
-
 
 .ultimos li,.ultimos li.categoriaCom  {
 	border-bottom: 1px dotted #CCC;

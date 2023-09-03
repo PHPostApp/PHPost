@@ -32,7 +32,7 @@ textarea {
 	width: 100%;
 	box-sizing: border-box;
 }
-textarea, input:not([type=button], [type=submit]) {
+textarea, input:not([type=button], [type=submit], [type=radio]) {
 	border-radius: .3rem;
 	border: 1px solid #CCC;
 	padding: 0.3rem;
@@ -264,4 +264,34 @@ div.error {
 #footer a{
 	color:#555;
 	font-weight: bold;
+}
+
+label.radio {
+	height: 1rem;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin-top: 0.4rem;
+	position: relative;
+	width: 40px;
+	display: inline-block;
+}
+label.radio span {
+	position: absolute;
+	right: .2rem;
+	top: 0;
+	font-weight: 600;
+}
+label.radio input::before {
+	content: '';
+	width: 1rem;
+	height: 1rem;
+	background-color: #B0CCFA;
+	border-radius: 10em;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+label.radio input:checked::before {
+	background-color: #4D90FE;
 }

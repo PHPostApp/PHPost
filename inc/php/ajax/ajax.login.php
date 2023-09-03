@@ -45,6 +45,8 @@
 				$user = $tsCore->setSecure($_POST['nick']);
 				$pass = $tsCore->setSecure($_POST['pass']);
 				$reme = ($_POST['rem'] == 'true') ? true : false;
+				$tsUser->is_type = 'login';
+				$tsUser->response = $tsCore->setSecure($_POST['response']);
 				//
 				if(empty($user) or empty($pass)) echo '0: Faltan datos';
 				else echo $tsUser->loginUser($user, $pass, $reme);
@@ -53,9 +55,10 @@
 		case 'login-activar':
 			//<--
 				$activar = $tsUser->userActivate();
-				if($activar['user_password'])
+				if($activar['user_password']) {
+					$tsUser->is_type = 'activar';
 					$tsUser->loginUser($activar['user_nick'], $activar['user_password'], true, $tsCore->settings['url'].'/cuenta/');
-				else {
+				} else {
 					$tsPage = "aviso";
 					$tsAjax = 0;
 					$tsAviso = array('titulo' => 'Error al activar tu cuenta', 'mensaje' => 'El c&oacute;digo de validaci&oacute;n es incorrecto.');

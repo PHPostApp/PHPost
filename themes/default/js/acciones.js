@@ -838,11 +838,6 @@ $(document).ready(function(){
    news.slider();
    /* IMAGENES */
    imagenes.presentacion();
-   /* HOVER CARD */
-   $('.hovercard').tooltip({
-		offset: [ -50, -30 ],
-		content: 'uid'
-	});
 
 	$('body').on('click', function(e){ 
 	   if ($('#mon_list').css('display') != 'none' && $(e.target).closest('#mon_list').length == 0 && $(e.target).closest('a[name=Monitor]').length == 0) notifica.last();
@@ -851,14 +846,14 @@ $(document).ready(function(){
 	print_editor();
 	
 	
-	$('div.new-search > div.search-body > form > input[name=q]').on('focus', function(){
-		if ($(this).val() == 'Buscar') { $(this).val(''); }
+	$('div.new-search > div.search-body > form > input[name=q]').on('focus', () => {
+		if ($(this).val() == 'Buscar') $(this).val(''); 
 		$(this).css('color', '#000');
-	}).on('blur', function(){
-		if ($.trim($(this).val()) == '') { $(this).val('Buscar'); }
+	}).on('blur', () => {
+		if ($.trim($(this).val()) == '') $(this).val('Buscar'); 
 		$(this).css('color', '#999');
 	});
-	$('span.fb_share_no_count').each(function(){
+	$('span.fb_share_no_count').each(() => {
 		$(this).removeClass('fb_share_no_count');
 		$('.fb_share_count_inner', this).html('0');
 	});

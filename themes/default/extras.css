@@ -570,3 +570,19 @@ textarea {
 	display: block;
 	padding: 0.2rem 0;
 }
+#password-strength,
+#password2-strength {
+	display: flex;
+	justify-content: flex-start;
+   align-items: center;
+	gap: .2rem;
+	font-size: 12px;
+}
+#password-strength span,
+#password2-strength span {
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	background-color: #CCC;
+	border-radius: 10em;
+}

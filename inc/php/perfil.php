@@ -45,7 +45,7 @@
 \*********************************/
 
 	$username = $tsCore->setSecure($_GET['user']);
-	$usuario = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT user_id, user_name, user_activo, user_baneado FROM u_miembros WHERE LOWER(user_name) = \''.$tsCore->setSecure($username).'\''));
+	$usuario = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT user_id, user_name, user_activo, user_baneado FROM u_miembros WHERE LOWER(user_name) = \''.$tsCore->setSecure($username).'\''));
 	// EXISTE?
 	if(empty($usuario['user_id']) || ($usuario['user_activo'] != 1 && !$tsUser->permisos['movcud'] && !$tsUser->is_admod) || ($usuario['user_baneado'] != 0 && !$tsUser->permisos['movcus'] && !$tsUser->is_admod)) {
 		$tsPage = 'aviso';

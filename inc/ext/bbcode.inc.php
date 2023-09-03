@@ -102,7 +102,7 @@ class BBCode {
     private function unclosedTags() {
         $this->text = preg_replace("/[\.com]+\/v\//i", ".com/watch?v=", $this->text);
         $this->text = preg_replace("/\[swf=(http|https)?(\:\/\/)?www\.youtube\.com\/watch\?v([A-z0-9=\-]+?)\]/i", "[video]$1$2www.youtube.com/watch?v$3[/video]", $this->text);
-
+       
         $this->text = preg_replace("/\[img\=(.+?)\]/i", "[img]$1[/img]", $this->text);
         $this->text = preg_replace("/\[swf\=(.+?)\]/i", "[swf]$1[/swf]", $this->text);
 

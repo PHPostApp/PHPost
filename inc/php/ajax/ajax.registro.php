@@ -65,32 +65,26 @@
 	
 		case 'registro-form':				
 		
-		if($tsCore->settings['c_reg_active'] == 0){          
+			if($tsCore->settings['c_reg_active'] == 0){          
 		
-		$tsAjax = '1';         		
-		
-		echo '0: <div class="dialog_box">El registro de nuevas cuentas en <b>'.$tsCore->settings['titulo'].'</b> est&aacute; desactivado.</div>';
-		
-		}else{    
-		
-			include("../ext/datos.php");
+				$tsAjax = '1';         		
 			
-			// SOLO MENORES DE 100 AÑOS xD Y MAYORES DE...
+				echo '0: <div class="dialog_box">El registro de nuevas cuentas en <b>'.$tsCore->settings['titulo'].'</b> est&aacute; desactivado.</div>';
 			
-			$now_year = date("Y",time());
-			
-			$max_year = 100 - $tsCore->settings['c_allow_edad'];
-			
-			$end_year = $now_year - $tsCore->settings['c_allow_edad'];
-			
-			$smarty->assign("tsMax",$max_year);
-			
-			$smarty->assign("tsEndY",$end_year);
-			
-			$smarty->assign("tsPaises",$tsPaises);
-			
-			$smarty->assign("tsMeces",$tsMeces);		
-
+			} else {    
+				require_once TS_EXTRA . "datos.php";
+				
+				// SOLO MENORES DE 84 AÑOS xD Y MAYORES DE...
+				$now_year = date("Y", time());
+				// 100años - 16años = 84años
+				$edad = (int)$tsCore->settings['c_allow_edad'];
+				$max_year = 100 - $edad;
+				$start_year = (int)$now_year - (int)$max_year;
+				$end_year = (int)$now_year - (int)$tsCore->settings['c_allow_edad'];
+				//
+				$smarty->assign("tsMax", (int)$max_year);
+				$smarty->assign("tsMaxY", (int)$start_year);
+				$smarty->assign("tsEndY", (int)$end_year);
 			}
 			
 		break;

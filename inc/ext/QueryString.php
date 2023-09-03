@@ -4,30 +4,22 @@
  * Nueva versión de este código
 */
 class LimpiarSolicitud extends tsCore {
-
 	private $solicitudes;
-
-   public function __construct() {
-
-   }
-
+   public function __construct() {}
    private function mQSybase() {
    	$get = 'magic_quotes_sybase';
    	return @ini_get($get) || strtolower(@ini_get($get)) == 'on';
    }
-
    private function teclasNumericas() {
 		foreach (array_merge(array_keys($_POST), array_keys($_GET), array_keys($_FILES)) as $key) {
 			if (is_numeric($key)) die('Las claves de solicitud numérica no son válidas.');
 		}
    }
-
    private function cookies_key() {
 		foreach ($_COOKIE as $key => $value) {
 			if (is_numeric($key)) unset($_COOKIE[$key]);
 		}
    }
-
    public function limpiar() {
    	// Página actual
    	$tsPage = $GLOBALS['_GET']['do'];
@@ -69,7 +61,6 @@ class LimpiarSolicitud extends tsCore {
    	$findPage = ['admin', 'moderacion', 'cuenta'];
    	if((!empty($_SERVER["HTTP_REFERER"]) && (in_array($tsPage, $findPage) || $_SERVER['QUERY_STRING'] == 'action=login-salir') && !$IsMySite) || $_SERVER["REQUEST_METHOD"] === "POST" && !$IsMySite) die("Invalid request");
    }
-
 	// Agrega entidades html a la matriz/variable.
 	// Utiliza dos guiones bajos para evitar la sobrecarga.
 	private function htmlspecialchars__recursive($var, $level = 0) {
@@ -87,7 +78,6 @@ class LimpiarSolicitud extends tsCore {
 		foreach ($var as $k => $v) $new_var[stripslashes($k)] = self::unescapestring__recursive($v);
 		return $new_var;
 	}
-
 	// Eliminar barras recursivamente...
 	private function stripslashes__recursive($var, $level = 0) {
 		if (!is_array($var)) return stripslashes($var);
@@ -97,6 +87,5 @@ class LimpiarSolicitud extends tsCore {
 		foreach ($var as $k => $v) $new_var[stripslashes($k)] = $level > 25 ? null : self::stripslashes__recursive($v, $level + 1);
 		return $new_var;
 	}
-
 }
 $cleanRequest = new LimpiarSolicitud;

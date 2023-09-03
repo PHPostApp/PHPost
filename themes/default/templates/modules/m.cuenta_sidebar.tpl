@@ -20,25 +20,5 @@
 		</div>
 	</div>
 	<div class="clearfix"></div>
-	<div class="porcentaje-total">
-		<div class="box" data-percentage="{$tsPerfil.porcentaje}">
-		  	<div class="percentage">
-		      <div class="completed active"></div>
-		  	</div>
-		</div>
-	</div>
-	<div class="clearfix"></div>
 </div>
-
-	
-
-
-						  <div class="clearfix"></div>
-						  <h3 style="margin: 25px 0 0; padding: 0" id="porc-completado-label">Perfil completo al {$tsPerfil.porcentaje}%</h3>
-						  <div style="margin-top:5px;text-align:center;font-size:13px;margin-bottom:10px;color:#FFF;text-shadow: 0 1px 0px #000" id="porc-completado">
-								<div style="background: #CCC;padding:2px;line-height:17px">
-									 <div style="width: {$tsPerfil.porcentaje}%; height:17px;border-right:1px solid #004b8d; border-left: 1px solid #004b8d;background: url('{$tsConfig.images}/barra.gif') top left repeat-x;" id="porc-completado-barra">
-									 </div>
-								</div>
-						  </div>
-						  <div id="prueba"></div>
+	<div class="clearfix"></div>

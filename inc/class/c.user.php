@@ -5,72 +5,61 @@
  * @name    c.user.php
  * @author  PHPost Team
  */
-class tsUser {
+include_once TS_EXTRA . "reCaptcha.php";
+class tsUser extends reCaptcha {
 
-	var $info = array();	// SI EL USUARIO ES MIEMBRO CARGAMOS DATOS DE LA TABLA
+	var $info = array();		// SI EL USUARIO ES MIEMBRO CARGAMOS DATOS DE LA TABLA
 	var $is_member = 0;		// EL USUARIO ESTA LOGUEADO?
-    var $is_admod = 0;
-    var $is_banned = 0;
+   var $is_admod = 0;
+   var $is_banned = 0;
+   var $is_type;				// Inicia sesión o activa cuenta
+   var $response = '';		// Captcha
 	var $nick = 'Visitante';// NOMBRE A MOSTRAR
-	var $uid = 0;			// USER ID
-	var $is_error;			// SI OCURRE UN ERROR ESTA VARIABLE CONTENDRA EL NUMERO DE ERROR
+	var $uid = 0;				// USER ID
+	var $is_error;				// SI OCURRE UN ERROR ESTA VARIABLE CONTENDRA EL NUMERO DE ERROR
 	var $session;
 
-	function __construct()
-    {
+	public function __construct() {
 		global $tsCore, $tsMedal;
 		/* CARGAR SESSION */
-        $this->session = new tsSession();
-        $this->setSession();
-		
-		if($this->is_member)
-        {
-    		// ACTUALIZAR PUNTOS POR DIA :D
-    		$this->actualizarPuntos();
-
-		}
+      $this->session = new tsSession();
+      $this->setSession();
+		// ACTUALIZAR PUNTOS POR DIA :D
+		if($this->is_member) $this->puntos_actualizados();
 	}
 	/*
-		actualizarPuntos()
-		: CASI 2 HORAS PARA PODER CREAR ESTA FUNCION D:
-		: SI QUE ERA DIFICIL XD
+	 * Puntos Actualizados
 	*/
-	function actualizarPuntos()
-    {
-		// HORA EN LA CUAL RECARGAR PUNTOS 0 = MEDIA NOCHE DEL SERVIDOR
-		$ultimaRecarga = $this->info['user_nextpuntos'];
-		$tiempoActual = time();
-		// SI YA SE PASO EL TIEMPO RECARGAMOS...
-		if($ultimaRecarga < $tiempoActual){
-			// OPERACION SIG RECARGA A LAS 24 HRS
-            $horaActual = date("G",$tiempoActual);
-            $minActuales = date("i",$tiempoActual) * 60;
-            $segActuales = date("s",$tiempoActual);
-			$sigRecarga = 24 - $horaActual;
-			$sigRecarga = ($sigRecarga * 3600) - ($minActuales + $segActuales);
-			$sigRecarga = $tiempoActual + $sigRecarga;
-			// LA SIGUIENTE RECARGA SE HARA A MEDIA NOCHE DEL SIGUIENTE DIA LA HORA DEPENDE DEL SERVIDOR
-			//
-            db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_miembros SET user_puntosxdar = '.($tsCore->settings['c_keep_points'] == 0 ? $this->permisos['gopfd'] : 'user_puntosxdar + '.$this->permisos['gopfd']).', user_nextpuntos = '.$sigRecarga.' WHERE user_id = \''.$this->uid.'\'');
-			// VAMONOS
-			return true;
-		}
+	public function puntos_actualizados() {
+   	// HORA EN LA CUAL RECARGAR PUNTOS 0 = MEDIA NOCHE DEL SERVIDOR
+   	$ultimaRecarga = $this->info['user_nextpuntos'];
+   	$tiempoActual = time();
+   	// SI YA SE PASO EL TIEMPO RECARGAMOS...
+   	if ($ultimaRecarga < $tiempoActual) {
+   	   // CALCULAR LA SIGUIENTE RECARGA A LAS 24 HRS
+   	   $sigRecarga = strtotime('tomorrow', $tiempoActual);
+   	   // ACTUALIZAR LA BASE DE DATOS
+   	   $puntosxdar = $tsCore->settings['c_keep_points'] == 0 ? $this->permisos['gopfd'] : 'user_puntosxdar + '.$this->permisos['gopfd'];
+   	   db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_puntosxdar = '.$puntosxdar.', user_nextpuntos = '.$sigRecarga.' WHERE user_id = \''.$this->uid.'\'');
+   	   // VAMONOS
+   	   return true;
+   	}
 	}
 	
 	/*
 		DarMedalla()
 	*/
-	function DarMedalla(){
+	public function DarMedalla(){
 		//
-        $q1 = db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT wm.medal_id FROM w_medallas AS wm LEFT JOIN w_medallas_assign AS wma ON wm.medal_id = wma.medal_id WHERE wm.m_type = \'1\' AND wma.medal_for = \''.$this->uid.'\''));        
-		$q2 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(follow_id) AS f FROM u_follows WHERE f_id = \''.$this->uid.'\' && f_type = \'1\''));
-        $q3 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(follow_id) AS s FROM u_follows WHERE f_user = \''.$this->uid.'\' && f_type = \'1\''));
-        $q4 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(cid) AS c FROM p_comentarios WHERE c_user = \''.$this->uid.'\' && c_status = \'0\''));
-        $q5 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(cid) AS cf FROM f_comentarios WHERE c_user = \''.$this->uid.'\''));
-        $q6 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(foto_id) AS fo FROM f_fotos WHERE f_status = \'0\' && f_user = \''.$this->uid.'\''));
-        $q7 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(post_id) AS p FROM p_posts WHERE post_user = \''.$this->uid.'\' && post_status = \'0\''));
+      $q1 = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT wm.medal_id FROM w_medallas AS wm LEFT JOIN w_medallas_assign AS wma ON wm.medal_id = wma.medal_id WHERE wm.m_type = \'1\' AND wma.medal_for = \''.$this->uid.'\''));        
+		$q2 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(follow_id) AS f FROM u_follows WHERE f_id = \''.$this->uid.'\' && f_type = \'1\''));
+      $q3 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(follow_id) AS s FROM u_follows WHERE f_user = \''.$this->uid.'\' && f_type = \'1\''));
+      $q4 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(cid) AS c FROM p_comentarios WHERE c_user = \''.$this->uid.'\' && c_status = \'0\''));
+      $q5 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(cid) AS cf FROM f_comentarios WHERE c_user = \''.$this->uid.'\''));
+      $q6 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(foto_id) AS fo FROM f_fotos WHERE f_status = \'0\' && f_user = \''.$this->uid.'\''));
+      $q7 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(post_id) AS p FROM p_posts WHERE post_user = \''.$this->uid.'\' && post_status = \'0\''));
         // MEDALLAS
-		$datamedal = result_array($query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT medal_id, m_cant, m_cond_user, m_cond_user_rango FROM w_medallas WHERE m_type = \'1\' ORDER BY m_cant DESC'));
+		$datamedal = result_array($query = db_exec([__FILE__, __LINE__], 'query', 'SELECT medal_id, m_cant, m_cond_user, m_cond_user_rango FROM w_medallas WHERE m_type = \'1\' ORDER BY m_cant DESC'));
 		//		
 		foreach($datamedal as $medalla){
 			// DarMedalla
@@ -93,93 +82,76 @@ class tsUser {
 			}elseif($medalla['m_cond_user'] == 9 && !empty($this->info['user_rango']) && $medalla['m_cant'] > 0 && $medalla['m_cond_user_rango'] == $this->info['user_rango']){
 				$newmedalla = $medalla['medal_id'];
 			}
-			
-		//SI HAY NUEVA MEDALLA, HACEMOS LAS CONSULTAS
-		if(!empty($newmedalla)){
-		if(!db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT id FROM w_medallas_assign WHERE medal_id = \''.(int)$newmedalla.'\' && medal_for = \''.$this->uid.'\''))){
-		db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO `w_medallas_assign` (`medal_id`, `medal_for`, `medal_date`, `medal_ip`) VALUES (\''.(int)$newmedalla.'\', \''.$this->uid.'\', \''.time().'\', \''.$_SERVER['REMOTE_ADDR'].'\')');
-		db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO u_monitor (user_id, obj_uno, not_type, not_date) VALUES (\''.$this->uid.'\', \''.(int)$newmedalla.'\', \'15\', \''.time().'\')');
-		db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE w_medallas SET m_total = m_total + 1 WHERE medal_id = \''.(int)$newmedalla.'\'');}
-		}
+			//SI HAY NUEVA MEDALLA, HACEMOS LAS CONSULTAS
+			if(!empty($newmedalla)) {
+				if(!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT id FROM w_medallas_assign WHERE medal_id = \''.(int)$newmedalla.'\' && medal_for = \''.$this->uid.'\''))) {
+					db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO `w_medallas_assign` (`medal_id`, `medal_for`, `medal_date`, `medal_ip`) VALUES (\''.(int)$newmedalla.'\', \''.$this->uid.'\', \''.time().'\', \''.$_SERVER['REMOTE_ADDR'].'\')');
+					db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO u_monitor (user_id, obj_uno, not_type, not_date) VALUES (\''.$this->uid.'\', \''.(int)$newmedalla.'\', \'15\', \''.time().'\')');
+					db_exec([__FILE__, __LINE__], 'query', 'UPDATE w_medallas SET m_total = m_total + 1 WHERE medal_id = \''.(int)$newmedalla.'\'');
+				}
+			}
 	   }
-	  }
+	}
 
-	/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-							// MANEJAR SESSIONES \\
-	/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 	/*
 		CARGA LA SESSION
 		setSession()
 	*/
-	function setSession()
-    {
-        // Si no existe una sessión la creamos
-        // si existe la actualizamos...
-		if ( ! $this->session->read())
-		{
-			$this->session->create();
-		}
-		else
-		{
-            // Actualizamos sesión
+	public function setSession() {
+      // Si no existe una sessión la creamos, si existe la actualizamos...
+		if ( ! $this->session->read()) $this->session->create();
+		else {
+         // Actualizamos sesión
 			$this->session->update();
-            // Cargamos información
-            $this->loadUser();
+         // Cargamos información
+         $this->loadUser();
 		}
 	}
 	/*
 		CARGAR USUARIO POR SU ID
 		loadUser()
 	*/
-	function loadUser($login = FALSE)
-    {
-        // Cargar datos
-        $sql = 'SELECT u.*, s.* FROM u_sessions s, u_miembros u WHERE s.session_id = \''.$this->session->ID.'\' AND u.user_id = s.session_user_id';
-        $query = db_exec(array(__FILE__, __LINE__), 'query', $sql);
-        $this->info = db_exec('fetch_assoc', $query);
-        // Existe el usuario?
-        if(!isset($this->info['user_id']))
-        {
-            return FALSE;
-        }
-        // PERMISOS SEGUN RANGO
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT r_name, r_color, r_image, r_allows FROM u_rangos WHERE rango_id = '.$this->info['user_id'].' LIMIT 1');
-        $this->info['rango'] = db_exec('fetch_assoc', $query);
-        
+	public function loadUser($login = FALSE) {
+		$time = time();
+      // Cargar datos
+      $sql = 'SELECT u.*, s.* FROM u_sessions s, u_miembros u WHERE s.session_id = \''.$this->session->ID.'\' AND u.user_id = s.session_user_id';
+      $query = db_exec([__FILE__, __LINE__], 'query', $sql);
+      $this->info = db_exec('fetch_assoc', $query);
+      // Existe el usuario?
+      if(!isset($this->info['user_id'])) return FALSE;
+      // PERMISOS SEGUN RANGO
+		$this->info['rango'] = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT r_name, r_color, r_image, r_allows FROM u_rangos WHERE rango_id = {$this->info['user_id']} LIMIT 1"));
 		// PERMISOS SEGUN RANGO
-		$datis = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT r_allows FROM u_rangos WHERE rango_id = \''.$this->info['user_rango'].'\' LIMIT 1'));
+		$datis = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT r_allows FROM u_rangos WHERE rango_id = {$this->info['user_rango']} LIMIT 1"));
 		$this->permisos = unserialize($datis['r_allows']);
-        
 		/* ES MIEMBRO */
 		$this->is_member = 1;
-		
-		if($this->permisos['sumo'] == false && $this->permisos['suad'] == true){
-		$this->is_admod = 1;
-		}elseif($this->permisos['sumo'] == true && $this->permisos['suad'] == false){
-		$this->is_admod = 2;
-		}elseif($this->permisos['sumo'] || $this->permisos['suad']){
-		$this->is_admod = true;
-		}else{
-		$this->is_admod = 0;
+		if($this->permisos['sumo'] == false && $this->permisos['suad'] == true) {
+			$this->is_admod = 1;
+		} elseif($this->permisos['sumo'] == true && $this->permisos['suad'] == false) {
+			$this->is_admod = 2;
+		} elseif($this->permisos['sumo'] || $this->permisos['suad']) {
+			$this->is_admod = true;
+		} else {
+			$this->is_admod = 0;
 		}
 		
 		// NOMBRE
 		$this->nick = $this->info['user_name'];
 		$this->uid = $this->info['user_id'];
-        $this->is_banned = $this->info['user_baneado'];
+		$this->email = $this->info['user_email'];
+      $this->is_banned = $this->info['user_baneado'];
 		// ULTIMA ACCION
-		db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_miembros SET user_lastactive = \''.time().'\' WHERE user_id = \''.$this->uid.'\'');
-        // Si ha iniciado sesión cargamos estos datos.
-        if($login)
-        {
-            // Last login
-			db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_miembros SET user_lastlogin = \''.$this->session->time_now.'\' WHERE user_id = \''.$this->uid.'\'');
-            /* REGISTAR IP */
-            db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_miembros SET user_last_ip = \''.$this->session->ip_address.'\' WHERE user_id = \''.$this->uid.'\'');
-        }
-        // Borrar variable session
-        unset($this->session);
-
+		db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_lastactive = $time WHERE user_id = {$this->uid}");
+      // Si ha iniciado sesión cargamos estos datos.
+      if($login) {
+         // Last login
+			db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_lastlogin = {$this->session->time_now} WHERE user_id = {$this->uid}");
+         /* REGISTAR IP */
+         db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_last_ip = '{$this->session->ip_address}' WHERE user_id = {$this->uid}");
+      }
+      // Borrar variable session
+      unset($this->session);
 	}
 	/*
 		HACEMOS LOGIN
@@ -187,18 +159,30 @@ class tsUser {
 	*/
 	function loginUser($username, $password, $remember = FALSE, $redirectTo = NULL){
 		global $tsCore;
-
 		/* ARMAR VARIABLES */
-      $pp_password = $tsCore->createPassword($username, $password);
+		$filter = filter_var($username, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+		if($filter === 'email') $where = "LOWER(user_email)";
+		else {
+			$upperkey = ((int)$tsCore->settings['c_upperkey'] === 1);
+			$where = $upperkey ? "user_name" : "LOWER(user_name)";
+			$username = $upperkey ? $username : strtolower($username);
+		}
+		$where .= " = '$username'";
 		/* CONSULTA */  
-		$data = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT user_id, user_password, user_activo, user_baneado FROM u_miembros WHERE user_name = \''.$username.'\' LIMIT 1'));
-        
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, user_name, user_password, user_activo, user_baneado FROM u_miembros WHERE $where LIMIT 1"));
+      // Existe el usuario
       if(empty($data)) return '0: El usuario no existe.';
+      $password = $tsCore->createPassword($data['user_name'], $password);
+		// Solo cuando inicia sesion, no cuando activa la cuenta
+		if($this->is_type === 'login') {
+			// Verificando el captcha
+	      if (!parent::verify($this->response)) return '0: No hemos podido validar tu humanidad';
+		}
       // CHECAMOS
-      if($data['user_password'] != $pp_password){
+      if($data['user_password'] != $password){
 			return '0: Tu contrase&ntilde;a es incorrecta.';
 		} else {
-         if((int)$data['user_activo'] === 1){
+         if((int)$data['user_activo'] === 1) {
             // Actualizamos la session
             $this->session->update($data['user_id'], $remember, TRUE);
             // Cargamos la información del usuario
@@ -215,18 +199,18 @@ class tsUser {
 		CERRAR SESSION
 		logoutUser($redirectTo)
 	*/
-	function logoutUser($user_id, $redirectTo = '/'){
+	public function logoutUser(int $user_id, $redirectTo = '/'){
 		global $tsCore;
 		/* BORRAR SESSION */
-        $this->session = new tsSession();
-        $this->session->read();
-        $this->session->destroy();
+      $this->session = new tsSession();
+      $this->session->read();
+      $this->session->destroy();
 		/* LIMPIAR VARIABLES */
 		$this->info = '';
 		$this->is_member = 0;
-        # UPDATE
-        $last_active = (time() - (($tsCore->settings['c_last_active'] * 60) * 3));
-		db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_miembros SET user_lastactive = \''.$last_active.'\' WHERE user_id = \''.(int)$user_id.'\'');
+      # UPDATE
+      $last_active = (int)(time() - (($tsCore->settings['c_last_active'] * 60) * 3));
+		db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_lastactive = $last_active WHERE user_id = $user_id");
 		/* REDERIGIR */
 		if($redirectTo != NULL) $tsCore->redirectTo($redirectTo);	// REDIRIGIR
 		else return true;
@@ -240,14 +224,14 @@ class tsUser {
 		if(empty($tsUserID)) $tsUserID = (int)$_GET['uid'];
 		if(empty($tsKey)) $tsKey = $tsCore->setSecure($_GET['key']);
 		//
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT user_name, user_password, user_registro FROM u_miembros WHERE user_id = \''.$tsUserID.'\' LIMIT 1');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT user_name, user_password, user_registro FROM u_miembros WHERE user_id = \''.$tsUserID.'\' LIMIT 1');
 		$tsData = db_exec('fetch_assoc', $query);	// CARGAMOS DATOS
 		$tsKeyLocal = md5($tsData['user_registro']);
 		//
 		if(db_exec('num_rows', $query) == 0 || $tsKey != $tsKeyLocal){
 			return false;
 		} else {
-		    if(db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_miembros SET user_activo = 1 WHERE user_id = \''.$tsUserID.'\'')) {
+		    if(db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_activo = 1 WHERE user_id = \''.$tsUserID.'\'')) {
                 return $tsData;
 			}
 			else return false;
@@ -258,15 +242,15 @@ class tsUser {
     */
     function getUserBanned(){
         //
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT * FROM u_suspension WHERE user_id = \''.$this->uid.'\' LIMIT 1');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM u_suspension WHERE user_id = \''.$this->uid.'\' LIMIT 1');
         $data = db_exec('fetch_assoc', $query);
         
         //
         $now = time();
         //
         if($data['susp_termina'] > 1 && $data['susp_termina'] < $now){
-		    db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_miembros SET user_baneado = 0 WHERE user_id = \''.$this->uid.'\'');
-			db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_suspension WHERE user_id = \''.$this->uid.'\'');
+		    db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_baneado = 0 WHERE user_id = \''.$this->uid.'\'');
+			db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_suspension WHERE user_id = \''.$this->uid.'\'');
             return false;
         } else return $data;
     }
@@ -277,7 +261,7 @@ class tsUser {
 	global $tsCore;
 		//
 		$tsUsername = strtolower($tsUser);
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT user_id FROM u_miembros WHERE LOWER(user_name) = \''.$tsCore->setSecure($tsUsername).'\' LIMIT 1');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT user_id FROM u_miembros WHERE LOWER(user_name) = \''.$tsCore->setSecure($tsUsername).'\' LIMIT 1');
 		$tsUser = db_exec('fetch_assoc', $query);
         
 		$tsUserID = $tsUser['user_id'];
@@ -289,7 +273,7 @@ class tsUser {
     */
     function getUserName($user_id){
 		//
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT user_name FROM u_miembros WHERE user_id = \''.(int)$user_id.'\' LIMIT 1');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT user_name FROM u_miembros WHERE user_id = \''.(int)$user_id.'\' LIMIT 1');
 		$tsUser = db_exec('fetch_assoc', $query);
         
         //
@@ -303,7 +287,7 @@ class tsUser {
      */
     public function iFollow($user_id){
         # SIGO A ESTE USUARIO
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT follow_id FROM u_follows WHERE f_id = \''.(int)$user_id.'\' AND f_user = \''.$this->uid.'\' AND f_type = \'1\' LIMIT 1');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT follow_id FROM u_follows WHERE f_id = \''.(int)$user_id.'\' AND f_user = \''.$this->uid.'\' AND f_type = \'1\' LIMIT 1');
 		$data = db_exec('num_rows', $query);
 		
         //
@@ -323,16 +307,16 @@ class tsUser {
         $is_online = (time() - ($tsCore->settings['c_last_active'] * 60));
         $is_inactive = (time() - (($tsCore->settings['c_last_active'] * 60) * 2)); // DOBLE DEL ONLINE
 		// INFORMACION GENERAL
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_id, u.user_name, u.user_lastactive, u.user_baneado, p.user_sexo, p.user_pais, p.p_nombre, p.p_mensaje, p.p_sitio FROM u_miembros AS u, u_perfil AS p WHERE u.user_id = \''.(int)$user_id.'\' AND p.user_id = \''.(int)$user_id.'\'');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, u.user_lastactive, u.user_baneado, p.user_sexo, p.user_pais, p.p_nombre, p.p_mensaje, p.p_sitio FROM u_miembros AS u, u_perfil AS p WHERE u.user_id = \''.(int)$user_id.'\' AND p.user_id = \''.(int)$user_id.'\'');
 		$data = db_exec('fetch_assoc', $query);
         
 		//  STATS
-		$query =  db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_puntos, r.r_name, r.r_color, r.r_image FROM u_miembros AS u LEFT JOIN u_rangos AS r ON u.user_rango = r.rango_id WHERE user_id = \''.(int)$user_id.'\' LIMIT 1');
+		$query =  db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_puntos, r.r_name, r.r_color, r.r_image FROM u_miembros AS u LEFT JOIN u_rangos AS r ON u.user_rango = r.rango_id WHERE user_id = \''.(int)$user_id.'\' LIMIT 1');
 		$data['stats'] = db_exec('fetch_assoc', $query);
         
-		$q1 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(post_id) AS p FROM p_posts WHERE post_user = \''.(int)$user_id.'\' && post_status = \'0\''));;
-        $q2 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(cid) AS c FROM p_comentarios WHERE c_user = \''.(int)$user_id.'\' && c_status = \'0\''));;
-		$q3 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(follow_id) AS s FROM u_follows WHERE f_id = \''.(int)$user_id.'\' && f_type = \'1\''));
+		$q1 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(post_id) AS p FROM p_posts WHERE post_user = \''.(int)$user_id.'\' && post_status = \'0\''));;
+        $q2 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(cid) AS c FROM p_comentarios WHERE c_user = \''.(int)$user_id.'\' && c_status = \'0\''));;
+		$q3 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(follow_id) AS s FROM u_follows WHERE f_id = \''.(int)$user_id.'\' && f_type = \'1\''));
 		 
         $data['stats']['user_posts'] = $q1[0];
         $data['stats']['user_comentarios'] = $q2[0];
@@ -381,13 +365,13 @@ class tsUser {
             $w_rango = '&& u.user_rango = '.$rango.'';
         }
         // TOTAL Y PAGINAS
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(u.user_id) AS total FROM u_miembros AS u LEFT JOIN u_perfil AS p ON u.user_id = p.user_id WHERE u.user_activo = \'1\' && u.user_baneado = \'0\' '.$w_online.' '.$w_avatar.' '.$w_sex.' '.$w_pais.' '.$w_rango);
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(u.user_id) AS total FROM u_miembros AS u LEFT JOIN u_perfil AS p ON u.user_id = p.user_id WHERE u.user_activo = \'1\' && u.user_baneado = \'0\' '.$w_online.' '.$w_avatar.' '.$w_sex.' '.$w_pais.' '.$w_rango);
         $total = db_exec('fetch_assoc', $query);
         $total = $total['total'];
         
         $pages = $tsCore->getPagination($total, 12);
         // CONSULTA
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_id, u.user_name, p.user_pais, p.user_sexo, p.p_avatar, p.p_mensaje, u.user_rango, u.user_puntos, u.user_comentarios, u.user_posts, u.user_lastactive, u.user_baneado, r.r_name, r.r_color, r.r_image FROM u_miembros AS u LEFT JOIN u_perfil AS p ON u.user_id = p.user_id LEFT JOIN u_rangos AS r ON r.rango_id = u.user_rango WHERE u.user_activo = \'1\' && u.user_baneado = \'0\' '.$w_online.' '.$w_avatar.' '.$w_sex.' '.$w_pais.' '.$w_rango.'  ORDER BY u.user_id DESC LIMIT '.$pages['limit']);
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, p.user_pais, p.user_sexo, p.p_avatar, p.p_mensaje, u.user_rango, u.user_puntos, u.user_comentarios, u.user_posts, u.user_lastactive, u.user_baneado, r.r_name, r.r_color, r.r_image FROM u_miembros AS u LEFT JOIN u_perfil AS p ON u.user_id = p.user_id LEFT JOIN u_rangos AS r ON r.rango_id = u.user_rango WHERE u.user_activo = \'1\' && u.user_baneado = \'0\' '.$w_online.' '.$w_avatar.' '.$w_sex.' '.$w_pais.' '.$w_rango.'  ORDER BY u.user_id DESC LIMIT '.$pages['limit']);
         // PARA ASIGNAR SI ESTA ONLINE HACEMOS LO SIGUIENTE
         while($row = db_exec('fetch_assoc', $query)){
             if($row['user_lastactive'] > $is_online) $row['status'] = array('t' => 'Online', 'css' => 'online');
@@ -463,7 +447,7 @@ class tsSession {
         }
 
         // ** Obtener session desde la base de datos
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT * FROM u_sessions WHERE session_id = \''.$this->ID.'\'');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM u_sessions WHERE session_id = \''.$this->ID.'\'');
         $session = db_exec('fetch_assoc', $query);
 
         // Existe en la DB?
@@ -506,7 +490,7 @@ class tsSession {
 
         // Guardar en la base de datos, session_user_id siemrpe será 0 aquí
         // si inicia sesión se "actualiza"
-		db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO u_sessions (session_id, session_user_id, session_ip, session_time) VALUES (\''.$this->ID.'\', \'0\', \''.$this->ip_address.'\', \''.$this->time_now.'\') ');
+		db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO u_sessions (session_id, session_user_id, session_ip, session_time) VALUES (\''.$this->ID.'\', \'0\', \''.$this->ip_address.'\', \''.$this->time_now.'\') ');
 
         // Establecemos la cookie
         $this->set_cookie('sid', $this->ID, $this->sess_expiration);
@@ -536,7 +520,7 @@ class tsSession {
 
        // Actualizar en la DB
 	   
-	   db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_sessions SET session_user_id = \''.$this->userdata['session_user_id'].'\', session_ip = \''.$this->userdata['session_ip'].'\', session_time = \''.$this->userdata['session_time'].'\', session_autologin = \''.$this->userdata['session_autologin'].'\' WHERE session_id = \''.$this->ID.'\'');
+	   db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_sessions SET session_user_id = \''.$this->userdata['session_user_id'].'\', session_ip = \''.$this->userdata['session_ip'].'\', session_time = \''.$this->userdata['session_time'].'\', session_autologin = \''.$this->userdata['session_autologin'].'\' WHERE session_id = \''.$this->ID.'\'');
 
        // Limpiar sesiones
        $this->sess_gc();
@@ -561,7 +545,7 @@ class tsSession {
 	function destroy()
 	{
 	   // Elminar de la DB
-       db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_sessions WHERE session_id = \''.$this->ID.'\'');
+       db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_sessions WHERE session_id = \''.$this->ID.'\'');
 	   // Reset a la cookie
        $this->set_cookie('sid', '', -31500000);
     }
@@ -613,7 +597,7 @@ class tsSession {
             // Usuario sin actividad
     		$expire = $this->time_now - $this->sess_time_online;
             
-			db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_sessions WHERE session_time < '.$expire.' AND session_autologin = \'0\'');
+			db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_sessions WHERE session_time < '.$expire.' AND session_autologin = \'0\'');
         }
 	}
 }

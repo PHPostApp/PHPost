@@ -17,7 +17,7 @@ define('BLOCKED', SCRIPT_ROOT . '.lock');
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 session_start();
 //
-$version_id = "1.3.003";
+$version_id = "1.3.005";
 $version_title = "Risus $version_id";
 $wversion_code = str_replace([' ', '.'], '_', strtolower($version_title));
 
@@ -181,8 +181,9 @@ switch ($step) {
 				$config = file_get_contents(CONFIGINC);
 				$config = str_replace(['dbpkey', 'dbskey'], [$web['pkey'], $web['skey']], $config);
 				file_put_contents(CONFIGINC, $config);
+				setcookie("upperkey", $web['c_upperkey'], time() + 3600);
 				// UPDATE
-				if ($database->query("UPDATE w_configuracion SET titulo = '{$web['name']}', slogan = '{$web['slogan']}', url = '{$web['url']}', email = '{$web['mail']}', version = '$version_title', version_code = '$wversion_code', pkey = '{$web['pkey']}', skey = '{$web['skey']}' WHERE tscript_id = 1")) header("Location: index.php?step=5");
+				if ($database->query("UPDATE w_configuracion SET titulo = '{$web['name']}', slogan = '{$web['slogan']}', url = '{$web['url']}', email = '{$web['mail']}', c_upperkey = {$web['c_upperkey']}, version = '$version_title', version_code = '$wversion_code', pkey = '{$web['pkey']}', skey = '{$web['skey']}' WHERE tscript_id = 1")) header("Location: index.php?step=5");
 				else $message = $database->error();
 			}
 		}
@@ -209,6 +210,9 @@ switch ($step) {
             if($user['pass'] !== $user['passc']) 
                $message = 'Las contrase&ntilde;as no coinciden.';
             // Generamos una nueva contraseña más segura
+            if(isset($_COOKIE['upperkey']) AND (int)$_COOKIE['upperkey'] === 0) {
+   				$user['name'] = strtolower($user['name']);
+            }
             $key = createPassword($user['name'], $user['passc']);
             $time = time();
 				// DATOS DE CONEXION
@@ -244,6 +248,7 @@ switch ($step) {
                // DAMOS BIENVENIDA POR CORREO
                mail($user['mail'], 'Su comunidad ya puede ser usada', "<html><head><title>Su nueva comunidad Link Sharing est&aacute; lista!</title></head><body><p>Estas son sus credenciales de acceso:</p><p>Usuario: {$user['name']}</p><p>Contrase&ntilde;a: {$user['pass']}</p><br />Gracias por usar <a href=\"$script_web\"><b>PHPost Risus</b></a> para compartir enlaces :)</body></html>", 'Content-type: text/html; charset=iso-8859-15');
                //
+               setcookie("upperkey", "", time() - 3600);
                header("Location: index.php?step=6&uid=$user_id");
          	}
       	}
@@ -405,6 +410,20 @@ switch ($step) {
                         <dl>
                            <dt><label for="f4">Email:</label><span>Email de la web o del administrador.</span></dt>
                            <dd><input type="text" id="f4" name="web[mail]" placeholder="example@server.com" value="<?=(empty($web['mail']) ? '' : $web['mail'])?>" required/></dd>
+                        </dl>
+                        <dl>
+                           <dt><label for="f7">Usar mayúsculas en Registro y Login:</label><span>&nbsp;</span></dt>
+                           <dd>
+                           	<label class="radio" for="d0">
+                           		<input type="radio" id="d0" name="web[c_upperkey]" value="0"<?=((int)$web['c_upperkey'] ? '' : ' checked')?>/>
+                           		<span>No</span>
+                           	</label>
+                           	<label class="radio" for="d1">
+                           		<input type="radio" id="d1" name="web[c_upperkey]" value="1"<?=((int)$web['c_upperkey'] ? '' : ' checked')?>/>
+                           		<span>Si</span>
+                           	</label>
+
+                           	</dd>
                         </dl>
                      </fieldset>
                      <fieldset>

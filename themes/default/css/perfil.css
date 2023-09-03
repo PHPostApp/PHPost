@@ -1,3 +1,124 @@
+.perfil-user {
+    padding: 1rem;
+    background: #e1dfd2;
+    position: relative;
+    color: #6D674F;
+}
+.perfil-user > .perfil-box,
+.perfil-user > .perfil-box .user-level ul {
+    display: grid;
+    grid-template-columns: 600px 1fr;
+    gap: .6rem;
+}
+.perfil-user > .perfil-box .perfil-info {
+    position: relative;
+    height: 120px;
+}
+.perfil-user > .perfil-box .perfil-info .nick  {
+    color: #000000;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: .4rem 0 .6rem 0;
+    display: block;
+}
+.perfil-user > .perfil-box .perfil-info .realname {
+    color: #9A9684;
+    font-size: 18px;
+    font-weight: normal;
+}
+.perfil-user .btn_g {
+    position: absolute;
+    top: 10px;
+    right: 10px;    
+}
+.perfil-user .perfil-data .btn_g {
+    top: 0 !important;
+}
+.perfil-data .frase-personal {
+    color: #000000;
+    display: block;
+    font-weight: bold;
+    margin-top: 2px;
+    font-size: 13px;
+}
+.perfil-user > .perfil-box .user-level ul {
+    grid-template-columns: repeat(2, 1fr);
+    gap: .3rem;
+}
+.perfil-user > .perfil-box .user-level ul li {
+    background: #ECEAE1;
+    border-radius: .3rem;
+    position: relative;
+    padding: .3rem .5rem;
+    line-height: 1.2rem;
+    text-align: right;
+    border: 1px solid #D0D0D0;
+}
+.perfil-user > .perfil-box .user-level ul li strong {
+    color: #000000;
+    display: block;
+    font-size: .98rem;
+    font-weight: bold;
+}
+.perfil-user > .perfil-box .user-level ul li span {
+    font-size: .68rem;
+    text-transform: uppercase;
+}
+.perfil-user > .perfil-box .user-level ul li span.status {
+    display: block;
+    position: absolute;
+    width: 11px;
+    height: 16px;
+    top: .4rem;
+}
+.perfil-user > .perfil-box .user-level ul li:hover {
+    background: #FFF;
+}
+.perfil-user .menu-tabs-perfil {
+    margin-top: -1.9rem;
+}
+.menu-tabs-perfil ul {
+    display: flex;
+    padding: 0.3rem;
+}
+.menu-tabs-perfil li a {
+    display: block;
+    padding: .3rem .6rem;
+    background: #f0efe8;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 0 1rem #0005;
+    color: #666666!important;
+}
+.menu-tabs-perfil li:first-child a {
+    border-radius: .3rem 0 0 .3rem;
+}
+.menu-tabs-perfil li:last-child a {
+    border-radius: 0 .3rem .3rem 0;
+}
+
+.menu-tabs-perfil li.selected a,.menu-tabs-perfil li a:hover {
+    background: #FFF;
+    color: #333!important;
+    text-shadow: none;
+}
+
+.perfil-data .perfil-avatar a,
+.Story .Story_Pic {
+    display: inline-block;
+    width: 120px;
+    height: 120px;
+}
+.Story .Story_Pic {
+    width: 50px;
+    height: 50px;
+}
+.perfil-data .perfil-avatar a .image,
+.Story .Story_Pic .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 /* PERFIL */
 .perfil-content .emptyData{
 	border:1px solid #CCC;

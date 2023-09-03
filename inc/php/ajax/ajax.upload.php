@@ -59,11 +59,11 @@
             // <--
             echo $tsCore->setJSON($tsUpload->cropAvatar($tsUser->uid));
 			// PARA EL PERFIL
-			$total = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT p_total FROM u_perfil WHERE user_id = \''.$tsUser->uid.'\' LIMIT 1'));
+			$total = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT p_total FROM u_perfil WHERE user_id = \''.$tsUser->uid.'\' LIMIT 1'));
 			$total = unserialize($total['p_total']);
 			$total[5] = 1;
 			$total = serialize($total);
-			db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_perfil SET p_avatar = \'1\', p_total = \''.$total.'\' WHERE user_id = \''.$tsUser->uid.'\'');
+			db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_perfil SET p_avatar = \'1\', p_total = \''.$total.'\' WHERE user_id = \''.$tsUser->uid.'\'');
             // -->
         break;
 		case 'upload-images':

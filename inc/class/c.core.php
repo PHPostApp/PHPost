@@ -47,12 +47,12 @@ class tsCore {
 		getSettings() :: CARGA DESDE LA DB LAS CONFIGURACIONES DEL SITIO
 	*/
 	function getSettings() {
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT * FROM w_configuracion');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM w_configuracion');
 		return db_exec('fetch_assoc', $query);
 	}
 	
 	function getNovemods() {
-      $datos = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT 
+      $datos = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT 
         	(SELECT count(post_id) FROM p_posts WHERE post_status = \'3\') as revposts, 
         	(SELECT count(cid) FROM p_comentarios WHERE c_status = \'1\' ) as revcomentarios, 
         	(SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = \'1\') as repposts, 
@@ -72,7 +72,7 @@ class tsCore {
 	function getCategorias()
     {
 		// CONSULTA
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT cid, c_orden, c_nombre, c_seo, c_img FROM p_categorias ORDER BY c_orden');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT cid, c_orden, c_nombre, c_seo, c_img FROM p_categorias ORDER BY c_orden');
 		// GUARDAMOS
 		$categorias = result_array($query);
         //
@@ -84,7 +84,7 @@ class tsCore {
 	function getTema()
     {
 		//
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT * FROM w_temas WHERE tid = '.$this->settings['tema_id'].' LIMIT 1');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM w_temas WHERE tid = '.$this->settings['tema_id'].' LIMIT 1');
 		//
 		$data = db_exec('fetch_assoc', $query);
         $data['t_url'] = $this->settings['url'] . '/themes/' . $data['t_path'];
@@ -97,7 +97,7 @@ class tsCore {
     function getNews()
     {
         //
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT not_body FROM w_noticias WHERE not_active = \'1\' ORDER by RAND()');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT not_body FROM w_noticias WHERE not_active = \'1\' ORDER by RAND()');
 		while($row = db_exec('fetch_assoc', $query)){
 		  $row['not_body'] = $this->parseBBCode($row['not_body'],'news');
           $data[] = $row;
@@ -120,7 +120,7 @@ class tsCore {
 	
 	function parseBadWords($c, $s = FALSE) 
     {
-        $q = result_array(db_exec(array(__FILE__, __LINE__), 'query', 'SELECT word, swop, method, type FROM w_badwords '.($s == true ? '' : ' WHERE type = \'0\'')));
+        $q = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT word, swop, method, type FROM w_badwords '.($s == true ? '' : ' WHERE type = \'0\'')));
         
         foreach($q AS $badword) 
         {
@@ -602,6 +602,7 @@ class tsCore {
 	 * Función para generar la contraseña
 	*/
 	public function createPassword(string $username = '', string $password = '') {
+		if((int)$this->settings['c_upperkey'] === 0) $username = strtolower($username);
 		$password = $this->keygen . md5($password);
 		return $this->setSecure(md5($password . $username));
 	}

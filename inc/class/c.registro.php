@@ -34,20 +34,19 @@ class tsRegistro extends reCaptcha {
 		$username = htmlspecialchars($_POST['nick']);
 		$email = strtolower($_POST['email']);
       $which = empty($username) ? 'email' : 'nick';
-      $proveedores = 'gmail.com,hotmail.com,yahoo.com';
       // MENSAJE
 		$valid = "1: El $which est&aacute; disponible.";	// DEFAULT
 		//
 		if (!empty($username) AND ctype_digit($username)) return "3: T&uacute; nick no pueder solo n&uacute;meros.";
 
 		if(!empty($email)) {
-			$msg = "3: Tu proveedor de correo no est&aacute; permitido en este sitio.";
-			$whitelist = join('|', explode(',', $proveedores));
-			preg_match_all("/@(".$whitelist.")/", $email, $matches);
-		
+      	$permitidos = 'gmail.com|hotmail.com|yahoo.com|live.com';
+			$msg = "3: Tu proveedor no est&aacute; permitido.";
+			preg_match_all('/@(' . $permitidos . ')$/i', $email, $matches);
+
 			if(empty($matches[0][0])) return $msg;
 			$decode = substr($matches[0][0], 1);
-			if(!in_array($decode, explode(',', $proveedores))) return $msg;
+			if(!in_array($decode, explode('|', $permitidos))) return $msg;
 		}
 		//
 		if(!empty($username) || !empty($email)) {
@@ -111,7 +110,7 @@ class tsRegistro extends reCaptcha {
 		$rango = empty($tsCore->settings['c_reg_rango']) ? 3 : (int)$tsCore->settings['c_reg_rango'];
 		$active = (int)$tsCore->settings['c_reg_active'];
 		//
-		if(db_exec(array(__FILE__, __LINE__), 'query', "INSERT INTO `u_miembros` (`user_name`, `user_password`, `user_email`, `user_rango`, `user_registro`, `user_activo`) VALUES ('{$tsData['user_nick']}', '$key', '{$tsData['user_email']}', $rango, {$tsData['user_registro']}, $active)")){
+		if(db_exec([__FILE__, __LINE__], 'query', "INSERT INTO `u_miembros` (`user_name`, `user_password`, `user_email`, `user_rango`, `user_registro`, `user_activo`) VALUES ('{$tsData['user_nick']}', '$key', '{$tsData['user_email']}', $rango, {$tsData['user_registro']}, $active)")){
          $tsData['user_id'] = db_exec('insert_id');
          $id = (int)$tsData['user_id'];
          // CREAMOS EL AVATAR CON LAS INICIALES DEL USUARIO
@@ -119,8 +118,8 @@ class tsRegistro extends reCaptcha {
          $sizes = [50, 120];
          foreach ($sizes as $k => $v) copy(str_replace('$1', $v, $avatar), TS_AVATAR . "{$id}_$v.jpg");
          // INSERTAMOS EL PERFIL
-			db_exec(array(__FILE__, __LINE__), 'query', "INSERT INTO `u_perfil` (`user_id`, `user_dia`, `user_mes`, `user_ano`, `p_avatar`) VALUES ($id, {$tsData['user_dia']}, {$tsData['user_mes']}, {$tsData['user_anio']}, 1)");
-         db_exec(array(__FILE__, __LINE__), 'query', "INSERT INTO `u_portal` (`user_id`) VALUES ($id)");
+			db_exec([__FILE__, __LINE__], 'query', "INSERT INTO `u_perfil` (`user_id`, `user_dia`, `user_mes`, `user_ano`, `p_avatar`) VALUES ($id, {$tsData['user_dia']}, {$tsData['user_mes']}, {$tsData['user_anio']}, 1)");
+         db_exec([__FILE__, __LINE__], 'query', "INSERT INTO `u_portal` (`user_id`) VALUES ($id)");
 			
 			// MENSAJE PARA DAR LA BIENVENIDA BIENVENIDA
 			$send_welcome = $tsCore->settings['c_met_welcome'];
@@ -135,19 +134,19 @@ class tsRegistro extends reCaptcha {
             $time = time();
 	         switch($send_welcome) {
 	            case 1:
-						db_exec(array(__FILE__, __LINE__), 'query', "INSERT INTO `u_muro` (p_user, p_user_pub, p_date, p_body, p_type) VALUES ($id, 1, $time, '$msg_bienvenida', 1)"); 
+						db_exec([__FILE__, __LINE__], 'query', "INSERT INTO `u_muro` (p_user, p_user_pub, p_date, p_body, p_type) VALUES ($id, 1, $time, '$msg_bienvenida', 1)"); 
 			         $m_id = db_exec('insert_id');
-						db_exec(array(__FILE__, __LINE__), 'query', "INSERT INTO `u_monitor` (user_id,obj_user,obj_uno, not_type,not_total,not_menubar,not_monitor) VALUES ($id, 1, $m_id, 12, 1, 1, 1)");
+						db_exec([__FILE__, __LINE__], 'query', "INSERT INTO `u_monitor` (user_id,obj_user,obj_uno, not_type,not_total,not_menubar,not_monitor) VALUES ($id, 1, $m_id, 12, 1, 1, 1)");
 					break;
 	            case 2:
 						$preview = substr($msg_bienvenida, 0, 75); 
-						if(db_exec(array(__FILE__, __LINE__), 'query', "INSERT INTO `u_mensajes` (`mp_to`, `mp_from`, `mp_subject`, `mp_preview`, `mp_date`) VALUES ($id, 1, '$sexo a {$tsCore->settings['titulo']}', '$preview', $time)")) {
+						if(db_exec([__FILE__, __LINE__], 'query', "INSERT INTO `u_mensajes` (`mp_to`, `mp_from`, `mp_subject`, `mp_preview`, `mp_date`) VALUES ($id, 1, '$sexo a {$tsCore->settings['titulo']}', '$preview', $time)")) {
 			            $mp_id = db_exec('insert_id');
-			            db_exec(array(__FILE__, __LINE__), 'query', "INSERT INTO `u_respuestas` (mp_id, mr_from, mr_body, mr_ip, mr_date) VALUES ($mp_id, 1, '$msg_bienvenida', '{$_SERVER['REMOTE_ADDR']}', $time)"); 
+			            db_exec([__FILE__, __LINE__], 'query', "INSERT INTO `u_respuestas` (mp_id, mr_from, mr_body, mr_ip, mr_date) VALUES ($mp_id, 1, '$msg_bienvenida', '{$_SERVER['REMOTE_ADDR']}', $time)"); 
 			         }
 					break;
 		    		case 3:
-						db_exec(array(__FILE__, __LINE__), 'query', "INSERT INTO `u_avisos` (`user_id`, `av_subject`, `av_body`, `av_date`, `av_type`) VALUES ($id, '$sexo a {$tsCore->settings['titulo']}', '$msg_bienvenida', $time, 4)");			
+						db_exec([__FILE__, __LINE__], 'query', "INSERT INTO `u_avisos` (`user_id`, `av_subject`, `av_body`, `av_date`, `av_type`) VALUES ($id, '$sexo a {$tsCore->settings['titulo']}', '$msg_bienvenida', $time, 4)");			
             	break;
 				}
 			}

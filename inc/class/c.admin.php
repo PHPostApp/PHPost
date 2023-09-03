@@ -19,7 +19,7 @@ class tsAdmin {
     function getAdmins()
     {
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT `user_id`, `user_name` FROM `u_miembros` WHERE user_rango = \'1\' ORDER BY user_id');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `user_id`, `user_name` FROM `u_miembros` WHERE user_rango = \'1\' ORDER BY user_id');
         //
         $data = result_array($query);
         //
@@ -29,7 +29,7 @@ class tsAdmin {
     function getInst()
     {
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT `stats_time_foundation`, `stats_time_upgrade` FROM `w_stats` WHERE stats_no = \'1\'');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `stats_time_foundation`, `stats_time_upgrade` FROM `w_stats` WHERE stats_no = \'1\'');
         //
         $data = db_exec('fetch_row', $query);
         //
@@ -45,7 +45,7 @@ class tsAdmin {
         //
         $data['php'] = PHP_VERSION;
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT VERSION()');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT VERSION()');
         $data['mysql'] = db_exec('fetch_row', $query);
 
         //
@@ -100,7 +100,7 @@ class tsAdmin {
             'skey' => $tsCore->setSecure($_POST['skey']),
         );
         // UPDATE
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `w_configuracion` SET `titulo` = \'' . $c['titulo'] . '\', `slogan` = \'' .
+        if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE `w_configuracion` SET `titulo` = \'' . $c['titulo'] . '\', `slogan` = \'' .
             $c['slogan'] . '\', `url` = \'' . $c['url'] . '\', `chat_id` = \'' . $c['chat'] .
             '\', `xat_id` = \'' . $c['xat'] . '\',`c_last_active` = \'' . $c['active'] . '\', `c_allow_sess_ip` = \'' .
             $c['sess_ip'] . '\', `c_count_guests` = \'' . $c['count_guests'] . '\', `c_reg_active` = \'' .
@@ -127,7 +127,7 @@ class tsAdmin {
     {
 
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_id, u.user_name, n.* FROM w_noticias AS n LEFT JOIN u_miembros AS u ON n.not_autor = u.user_id  WHERE n.not_id > \'0\' ORDER BY n.not_id DESC');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, n.* FROM w_noticias AS n LEFT JOIN u_miembros AS u ON n.not_autor = u.user_id  WHERE n.not_id > \'0\' ORDER BY n.not_id DESC');
         $data = result_array($query);
 
         //
@@ -139,12 +139,12 @@ class tsAdmin {
     function delNoticia()
     {
         $not_id = $_GET['nid'];
-        if (!db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT `not_id` FROM `w_noticias` WHERE `not_id` = \'' .
+        if (!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT `not_id` FROM `w_noticias` WHERE `not_id` = \'' .
             (int)$not_id . '\' LIMIT 1')))
         {
             return 'El id ingresado no existe.';
         }
-        db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM `w_noticias` WHERE `not_id` = \'' . (int)$not_id . '\'');
+        db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM `w_noticias` WHERE `not_id` = \'' . (int)$not_id . '\'');
     }
     /*
     getNoticia()
@@ -155,7 +155,7 @@ class tsAdmin {
         //
         $not_id = $tsCore->setSecure($_GET['nid']);
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT `not_id`, `not_body`, `not_date`, `not_active` FROM w_noticias WHERE not_id = \'' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `not_id`, `not_body`, `not_date`, `not_active` FROM w_noticias WHERE not_id = \'' .
             (int)$not_id . '\' LIMIT 1');
         $data = db_exec('fetch_assoc', $query);
 
@@ -174,7 +174,7 @@ class tsAdmin {
         $not_active = empty($_POST['not_active']) ? 0 : 1;
         if (!empty($not_body))
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO `w_noticias` (`not_body`, `not_autor`, `not_date`, `not_active`) VALUES (\'' .
+            if (db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO `w_noticias` (`not_body`, `not_autor`, `not_date`, `not_active`) VALUES (\'' .
                 $not_body . '\', \'' . $tsUser->uid . '\', \'' . time() . '\', \'' . $not_active .
                 '\')'))
                 return true;
@@ -196,7 +196,7 @@ class tsAdmin {
         //
         if (!empty($not_body))
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `w_noticias` SET `not_autor` = \'' . $tsUser->uid . '\', `not_body` = \'' .
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE `w_noticias` SET `not_autor` = \'' . $tsUser->uid . '\', `not_body` = \'' .
                 $not_body . '\', not_active = \'' . $not_active . '\' WHERE not_id = \'' . (int)
                 $not_id . '\''))
                 return true;
@@ -209,7 +209,7 @@ class tsAdmin {
     {
         global $tsCore;
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT `tid`, `t_name`, `t_url`, `t_path` FROM `w_temas` WHERE tid != \'0\'');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `tid`, `t_name`, `t_url`, `t_path` FROM `w_temas` WHERE tid != \'0\'');
         //
         $data = result_array($query);
 
@@ -225,7 +225,7 @@ class tsAdmin {
         //
         $tema_id = $tsCore->setSecure($_GET['tid']);
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT `tid`, `t_name`, `t_url`, `t_path` FROM `w_temas` WHERE tid = \'' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `tid`, `t_name`, `t_url`, `t_path` FROM `w_temas` WHERE tid = \'' .
             (int)$tema_id . '\' LIMIT 1');
         $data = db_exec('fetch_assoc', $query);
 
@@ -244,7 +244,7 @@ class tsAdmin {
         $t = array('url' => $tsCore->setSecure($_POST['url']), 'path' => $tsCore->
                 setSecure($_POST['path']));
         //
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `w_temas` SET t_url = \'' . $t['url'] . '\', t_path = \'' .
+        if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE `w_temas` SET t_url = \'' . $t['url'] . '\', t_path = \'' .
             $t['path'] . '\' WHERE tid = \'' . (int)$tema_id . '\''))
             return true;
         else
@@ -261,7 +261,7 @@ class tsAdmin {
         //
         if (!empty($tema['tid']))
         {
-            db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `w_configuracion` SET tema_id = \'' . (int)$tema['tid'] . '\' WHERE tscript_id = \'1\'');
+            db_exec([__FILE__, __LINE__], 'query', 'UPDATE `w_configuracion` SET tema_id = \'' . (int)$tema['tid'] . '\' WHERE tscript_id = \'1\'');
             $d = $smarty->compile_dir;
             $h = opendir($d);
 
@@ -293,7 +293,7 @@ class tsAdmin {
         //
         if (!empty($tema['tid']))
         {
-            db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM `w_temas` WHERE tid = \'' . (int)$tema['tid'] . '\'');
+            db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM `w_temas` WHERE tid = \'' . (int)$tema['tid'] . '\'');
             return true;
         } else
             return false;
@@ -319,7 +319,7 @@ class tsAdmin {
                 $temadb[$key] = $tsCore->setSecure($val);
         }
         // NUEVO
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO `w_temas` (`t_name`, `t_url`, `t_path`, `t_copy`) VALUES (\'' .
+        if (db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO `w_temas` (`t_name`, `t_url`, `t_path`, `t_copy`) VALUES (\'' .
             $tsCore->setSecure($temadb['nombre']) . '\', \'' . $tsCore->setSecure($temadb['url']) .
             '\', \'' . $tsCore->setSecure($tema_path) . '\', \'' . $tsCore->setSecure($temadb['copy']) .
             '\')'))
@@ -342,7 +342,7 @@ class tsAdmin {
             'ad728' => html_entity_decode($_POST['ad728']),
             'sid' => $_POST['adSearch']);
         //
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `w_configuracion` SET ads_300 = \'' . $tsCore->
+        if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE `w_configuracion` SET ads_300 = \'' . $tsCore->
             setSecure($a['ad300']) . '\', ads_468 = \'' . $tsCore->setSecure($a['ad468']) .
             '\', ads_160 = \'' . $tsCore->setSecure($a['ad160']) . '\', ads_728 = \'' . $tsCore->
             setSecure($a['ad728']) . '\', ads_search = \'' . $tsCore->setSecure($a['sid']) .
@@ -381,7 +381,7 @@ class tsAdmin {
         {
             if (!empty($cid))
             {
-                db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `p_categorias` SET c_orden = \'' . (int)$orden . '\' WHERE cid = \'' .
+                db_exec([__FILE__, __LINE__], 'query', 'UPDATE `p_categorias` SET c_orden = \'' . (int)$orden . '\' WHERE cid = \'' .
                     (int)$cid . '\'');
                 $orden++;
             }
@@ -398,7 +398,7 @@ class tsAdmin {
         //$db = $this->getDBtypes();
         $cid = intval($_GET['cid']);
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT cid, c_orden, c_nombre, c_seo, c_img FROM p_categorias WHERE cid = \'' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT cid, c_orden, c_nombre, c_seo, c_img FROM p_categorias WHERE cid = \'' .
             (int)$cid . '\' LIMIT 1');
         $data = db_exec('fetch_assoc', $query);
 
@@ -418,7 +418,7 @@ class tsAdmin {
         //
         $c_nombre = $tsCore->setSecure($tsCore->parseBadWords($_POST['c_nombre']));
         $cimg = $tsCore->setSecure($tsCore->parseBadWords($_POST['c_img']));
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `p_categorias` SET c_nombre = \'' . $tsCore->setSecure($c_nombre) .
+        if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE `p_categorias` SET c_nombre = \'' . $tsCore->setSecure($c_nombre) .
             '\', c_seo = \'' . $tsCore->setSecure($tsCore->setSEO($c_nombre, true)) . '\', c_img = \'' .
             $tsCore->setSecure($cimg) . '\' WHERE cid = \'' . (int)$cid . '\''))
             return true;
@@ -430,7 +430,7 @@ class tsAdmin {
     */
     function MoveCat()
     {
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `p_posts` SET post_category = \'' . (int)$_POST['newcid'] .
+        if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE `p_posts` SET post_category = \'' . (int)$_POST['newcid'] .
             '\' WHERE post_category = \'' . (int)$_POST['oldcid'] . '\''))
             return true;
     }
@@ -448,11 +448,11 @@ class tsAdmin {
         $c_nombre = $tsCore->setSecure($tsCore->parseBadWords($_POST['c_nombre']));
         $cimg = $tsCore->setSecure($tsCore->parseBadWords($_POST['c_img']));
         // ORDEN
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(cid) AS total FROM `p_categorias`');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(cid) AS total FROM `p_categorias`');
         $orden = db_exec('fetch_assoc', $query);
         $orden = $orden['total'] + 1;
         // INSERTS
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO `p_categorias` (`c_orden`, `c_nombre`, `c_seo`, `c_img`) VALUES (\'' .
+        if (db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO `p_categorias` (`c_orden`, `c_nombre`, `c_seo`, `c_img`) VALUES (\'' .
             $orden . '\', \'' . $c_nombre . '\',\'' . $tsCore->setSEO($c_nombre, true) . '\', \'' .
             $cimg . '\')'))
             return true;
@@ -471,10 +471,10 @@ class tsAdmin {
         // MOVER
         if (!empty($ncid) && $ncid > 0)
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `p_posts` SET post_category = \'' . (int)$ncid . '\' WHERE post_category = \'' .
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE `p_posts` SET post_category = \'' . (int)$ncid . '\' WHERE post_category = \'' .
                 (int)$cid . '\''))
             {
-                if (db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM `p_categorias` WHERE cid = \'' . (int)$cid . '\''))
+                if (db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM `p_categorias` WHERE cid = \'' . (int)$cid . '\''))
                     return 1;
             } else // SI LLEGÓ HASTA AQUI HUBO UN ERROR.
 
@@ -509,7 +509,7 @@ class tsAdmin {
     {
         global $tsCore;
         // RANGOS SIN PUNTOS
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT * FROM u_rangos ORDER BY rango_id, r_cant');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM u_rangos ORDER BY rango_id, r_cant');
         // ARMAR ARRAY
         while ($row = db_exec('fetch_assoc', $query))
         {
@@ -529,7 +529,7 @@ class tsAdmin {
         // NUMERO DE USUARIOS EN CADA RANGO
         if (!empty($data['post']))
         {
-            $query = db_exec(array(__FILE__, __LINE__), 'query', "
+            $query = db_exec([__FILE__, __LINE__], 'query', "
                 SELECT user_rango AS ID_GROUP, COUNT(user_id) AS num_members
                 FROM u_miembros
                 WHERE user_rango IN (" . implode(', ', array_keys($data['post'])) . ")
@@ -541,7 +541,7 @@ class tsAdmin {
         // NUMERO DE USUARIOS EN RANGOS REGULARES
         if (!empty($data['regular']))
         {
-            $query = db_exec(array(__FILE__, __LINE__), 'query', "
+            $query = db_exec([__FILE__, __LINE__], 'query', "
                 SELECT user_rango AS ID_GROUP, COUNT(*) AS num_members
                 FROM u_miembros
                 WHERE user_rango IN (" . implode(', ', array_keys($data['regular'])) . ")
@@ -560,7 +560,7 @@ class tsAdmin {
     {
         global $tsCore;
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT * FROM u_rangos WHERE rango_id = \'' . (int)$_GET['rid'] .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM u_rangos WHERE rango_id = \'' . (int)$_GET['rid'] .
             '\' LIMIT 1');
         $data = db_exec('fetch_assoc', $query);
 
@@ -583,13 +583,13 @@ class tsAdmin {
         $where = 'user_rango = \'' . (int)$rid . '\'';
         // SELECCIONAMOS
         $limit = $tsCore->setPageLimit($max, true);
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_id, u.user_name, u.user_email, u.user_registro, u.user_lastlogin FROM u_miembros AS u WHERE u.' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, u.user_email, u.user_registro, u.user_lastlogin FROM u_miembros AS u WHERE u.' .
             $where . ' LIMIT ' . $limit);
         //
         $data['data'] = result_array($query);
 
         // PAGINAS
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(*) FROM u_miembros WHERE ' . $where);
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM u_miembros WHERE ' . $where);
         list($total) = db_exec('fetch_row', $query);
 
         $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] .
@@ -668,7 +668,7 @@ class tsAdmin {
             'gopfd' => $_POST['global-pointsforday']);
         $permisos = serialize($array);
         //
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `u_rangos` SET r_name = \'' . $tsCore->setSecure($r['name']) .
+        if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE `u_rangos` SET r_name = \'' . $tsCore->setSecure($r['name']) .
             '\', r_color = \'' . $r['color'] . '\', r_image = \'' . $tsCore->setSecure($r['img']) .
             '\', r_cant = \'' . (int)$r['cant'] . '\', r_allows = \'' . $tsCore->setSecure($permisos) .
             '\', r_type = \'' . $r['type'] . '\' WHERE rango_id = \'' . (int)$rid . '\''))
@@ -748,7 +748,7 @@ class tsAdmin {
         $permisos = serialize($array);
         //
 
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO `u_rangos` (`r_name`, `r_color`, `r_image`, `r_cant`, `r_allows`, `r_type`) VALUES (\'' .
+        if (db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO `u_rangos` (`r_name`, `r_color`, `r_image`, `r_cant`, `r_allows`, `r_type`) VALUES (\'' .
             $tsCore->setSecure($r['name']) . '\', \'' . $r['color'] . '\', \'' . $tsCore->
             setSecure($r['img']) . '\', \'' . (int)$r['cant'] . '\', \'' . $tsCore->
             setSecure($permisos) . '\', \'' . (int)$r['type'] . '\')'))
@@ -766,10 +766,10 @@ class tsAdmin {
         //
         if ($rid > 3)
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_miembros SET user_rango = \'' . (int)$_POST['new_rango'] .
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_rango = \'' . (int)$_POST['new_rango'] .
                 '\' WHERE user_rango = \'' . (int)$rid . '\''))
             {
-                if (db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_rangos WHERE rango_id = \'' . (int)$rid . '\''))
+                if (db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_rangos WHERE rango_id = \'' . (int)$rid . '\''))
                     return true;
             }
         } else
@@ -786,11 +786,11 @@ class tsAdmin {
         {
             $rid = $tsCore->setSecure($_GET['rid']);
             //
-            $dato = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT rango_id, r_type FROM u_rangos WHERE rango_id = \'' .
+            $dato = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT rango_id, r_type FROM u_rangos WHERE rango_id = \'' .
                 (int)$rid . '\' LIMIT 1'));
             if (!empty($dato['rango_id']) && $dato['r_type'] == 0)
             {
-                if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE w_configuracion SET c_reg_rango = \'' . (int)$rid . '\' WHERE tscript_id = \'1\''))
+                if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE w_configuracion SET c_reg_rango = \'' . (int)$rid . '\' WHERE tscript_id = \'1\''))
                     return true;
             } else
                 return 'El rango no existe o no es posible utilizarlo';
@@ -859,13 +859,13 @@ class tsAdmin {
             $order = 'u.user_id';
         }
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.*, r.*, p.* FROM u_perfil AS p LEFT JOIN u_miembros AS u ON u.user_id = p.user_id LEFT JOIN u_rangos AS r ON r.rango_id = u.user_rango ORDER BY ' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.*, r.*, p.* FROM u_perfil AS p LEFT JOIN u_miembros AS u ON u.user_id = p.user_id LEFT JOIN u_rangos AS r ON r.rango_id = u.user_rango ORDER BY ' .
             $order . ' ' . ($_GET['m'] == 'a' ? 'ASC' : 'DESC') . ' LIMIT ' . $limit);
         //
         $data['data'] = result_array($query);
 
         // PAGINAS
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(*) FROM u_miembros WHERE user_id > \'0\'');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM u_miembros WHERE user_id > \'0\'');
         list($total) = db_exec('fetch_row', $query);
 
         $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/users?o=" .
@@ -881,7 +881,7 @@ class tsAdmin {
     {
         global $tsCore;
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT p_configs FROM u_perfil WHERE user_id = \'' . (int)
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p_configs FROM u_perfil WHERE user_id = \'' . (int)
             $_GET['uid'] . '\' LIMIT 1');
         $data = db_exec('fetch_assoc', $query);
         $data['p_configs'] = unserialize($data['p_configs']);
@@ -906,7 +906,7 @@ class tsAdmin {
         //
         //
         $updates = $tsCore->getIUP($perfilData, 'p_');
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_perfil SET ' . $updates . ' WHERE user_id = \'' . (int)
+        if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_perfil SET ' . $updates . ' WHERE user_id = \'' . (int)
             $_GET['uid'] . '\''))
             return true;
 
@@ -920,7 +920,7 @@ class tsAdmin {
         //
         $user_id = $tsCore->setSecure($_GET['uid']);
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.*, r.*, p.* FROM u_perfil AS p LEFT JOIN u_miembros AS u ON u.user_id = p.user_id LEFT JOIN u_rangos AS r ON r.rango_id = u.user_rango WHERE u.user_id = \'' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.*, r.*, p.* FROM u_perfil AS p LEFT JOIN u_miembros AS u ON u.user_id = p.user_id LEFT JOIN u_rangos AS r ON r.rango_id = u.user_rango WHERE u.user_id = \'' .
             (int)$user_id . '\' LIMIT 1');
         $data = db_exec('fetch_assoc', $query);
         $data['p_configs'] = unserialize($data['p_configs']);
@@ -934,7 +934,7 @@ class tsAdmin {
     {
         global $tsCore;
         # DATA
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT `user_name`, `user_email`, `user_password` FROM u_miembros WHERE user_id = \'' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `user_name`, `user_email`, `user_password` FROM u_miembros WHERE user_id = \'' .
             (int)$user_id . '\'');
         $data = db_exec('fetch_assoc', $query);
         # LOCALS
@@ -981,7 +981,7 @@ class tsAdmin {
             $db_key = ', user_password = \'' . $tsCore->setSecure($new_key) . '\'';
         }
 
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `u_miembros` SET user_email = \'' . $tsCore->setSecure($email) .
+        if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE `u_miembros` SET user_email = \'' . $tsCore->setSecure($email) .
             '\' ' . $changedis . ' ' . $new_nick . ' ' . $pxd . ' ' . $apoints . ' ' . $db_key .
             ' WHERE user_id = \'' . (int)$user_id . '\''))
         {
@@ -998,42 +998,42 @@ class tsAdmin {
     function deleteContent($user_id){
         global $tsUser;
         
-        if(db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT user_id FROM u_miembros WHERE user_id = \''.$tsUser->uid.'\' && user_password = \''.md5(md5($_POST['password']).$tsUser->nick).'\''))){
+        if(db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT user_id FROM u_miembros WHERE user_id = \''.$tsUser->uid.'\' && user_password = \''.md5(md5($_POST['password']).$tsUser->nick).'\''))){
         $c = $_POST['bocuenta'];
         
-        if($_POST['boposts'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM p_posts WHERE post_user = \''.$user_id.'\'');
-        if($_POST['bofotos'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM f_fotos WHERE f_user = \''.$user_id.'\'');
-        if($_POST['boestados'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_muro WHERE p_user_pub = \''.$user_id.'\'');
-        if($_POST['bocomposts'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM p_comentarios WHERE c_user = \''.$user_id.'\'');
-        if($_POST['bocomfotos'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM f_comentarios WHERE c_user = \''.$user_id.'\'');
-        if($_POST['bocomestados'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_muro_comentarios WHERE c_user = \''.$user_id.'\'');
-        if($_POST['bolikes'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_muro_likes WHERE user_id = \''.$user_id.'\'');
-        if($_POST['boseguidores'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_follows WHERE f_id = \''.$user_id.'\' && f_type = \'1\'');
-        if($_POST['bosiguiendo'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_follows WHERE f_user = \''.$user_id.'\' && f_type = \'1\'');
-        if($_POST['bofavoritos'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM p_favoritos WHERE fav_user = \''.$user_id.'\''); // FIX: 14/12/2014 - 1.1.000.9
-        if($_POST['bovotosposts'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM p_votos WHERE tuser = \''.$user_id.'\'');
-        if($_POST['bovotosfotos'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM f_votos WHERE v_user = \''.$user_id.'\'');
-        if($_POST['boactividad'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_actividad WHERE user_id = \''.$user_id.'\'');
-        if($_POST['boavisos'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_avisos WHERE user_id = \''.$user_id.'\'');
-        if($_POST['bobloqueos'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_bloqueos WHERE b_user = \''.$user_id.'\'');
-        if($_POST['bomensajes'] || $c) { db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_mensajes WHERE mp_from = \''.$user_id.'\'');  db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_respuestas WHERE mr_from = \''.$user_id.'\''); }
-        if($_POST['bosesiones'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_sessions WHERE session_user_id = \''.$user_id.'\'');
-        if($_POST['bovisitas'] || $c) db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM w_visitas WHERE user = \''.$user_id.'\'');
+        if($_POST['boposts'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM p_posts WHERE post_user = \''.$user_id.'\'');
+        if($_POST['bofotos'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM f_fotos WHERE f_user = \''.$user_id.'\'');
+        if($_POST['boestados'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_muro WHERE p_user_pub = \''.$user_id.'\'');
+        if($_POST['bocomposts'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM p_comentarios WHERE c_user = \''.$user_id.'\'');
+        if($_POST['bocomfotos'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM f_comentarios WHERE c_user = \''.$user_id.'\'');
+        if($_POST['bocomestados'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_muro_comentarios WHERE c_user = \''.$user_id.'\'');
+        if($_POST['bolikes'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_muro_likes WHERE user_id = \''.$user_id.'\'');
+        if($_POST['boseguidores'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_follows WHERE f_id = \''.$user_id.'\' && f_type = \'1\'');
+        if($_POST['bosiguiendo'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_follows WHERE f_user = \''.$user_id.'\' && f_type = \'1\'');
+        if($_POST['bofavoritos'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM p_favoritos WHERE fav_user = \''.$user_id.'\''); // FIX: 14/12/2014 - 1.1.000.9
+        if($_POST['bovotosposts'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM p_votos WHERE tuser = \''.$user_id.'\'');
+        if($_POST['bovotosfotos'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM f_votos WHERE v_user = \''.$user_id.'\'');
+        if($_POST['boactividad'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_actividad WHERE user_id = \''.$user_id.'\'');
+        if($_POST['boavisos'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_avisos WHERE user_id = \''.$user_id.'\'');
+        if($_POST['bobloqueos'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_bloqueos WHERE b_user = \''.$user_id.'\'');
+        if($_POST['bomensajes'] || $c) { db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_mensajes WHERE mp_from = \''.$user_id.'\'');  db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_respuestas WHERE mr_from = \''.$user_id.'\''); }
+        if($_POST['bosesiones'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_sessions WHERE session_user_id = \''.$user_id.'\'');
+        if($_POST['bovisitas'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM w_visitas WHERE user = \''.$user_id.'\'');
         
-        $data = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT user_name FROM u_miembros WHERE user_id = \''.$user_id.'\''));
-        $admin = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT user_email FROM u_miembros WHERE user_id = \'1\''));
+        $data = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT user_name FROM u_miembros WHERE user_id = \''.$user_id.'\''));
+        $admin = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT user_email FROM u_miembros WHERE user_id = \'1\''));
         
         if($c && $tsUser->uid != $user_id){
-            db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_miembros WHERE user_id = \''.$user_id.'\'');
-            db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_perfil WHERE user_id = \''.$user_id.'\'');
-            db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_portal WHERE user_id = \''.$user_id.'\'');
-            db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM w_denuncias WHERE d_user = \''.$user_id.'\'');
-            db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_bloqueos WHERE b_auser = \''.$user_id.'\'');
-            db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_mensajes WHERE mp_to = \''.$user_id.'\'');
-            db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM w_visitas WHERE `for` = \''.$user_id.'\' && type = \'1\'');
+            db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_miembros WHERE user_id = \''.$user_id.'\'');
+            db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_perfil WHERE user_id = \''.$user_id.'\'');
+            db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_portal WHERE user_id = \''.$user_id.'\'');
+            db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM w_denuncias WHERE d_user = \''.$user_id.'\'');
+            db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_bloqueos WHERE b_auser = \''.$user_id.'\'');
+            db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_mensajes WHERE mp_to = \''.$user_id.'\'');
+            db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM w_visitas WHERE `for` = \''.$user_id.'\' && type = \'1\'');
         }
         
-        db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO `u_avisos` (`user_id`, `av_subject`, `av_body`, `av_date`, `av_read`, `av_type`) VALUES (\'1\', \'Contenido eliminado\', \'Hola, le informamos que el administrador '.$tsUser->nick.' ('.$tsUser->uid.') ha eliminado '.($c ? 'la cuenta' : 'varios contenidos').' de '.$data[0].'.\', \''.time().'\', \'0\', \'1\')');
+        db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO `u_avisos` (`user_id`, `av_subject`, `av_body`, `av_date`, `av_read`, `av_type`) VALUES (\'1\', \'Contenido eliminado\', \'Hola, le informamos que el administrador '.$tsUser->nick.' ('.$tsUser->uid.') ha eliminado '.($c ? 'la cuenta' : 'varios contenidos').' de '.$data[0].'.\', \''.time().'\', \'0\', \'1\')');
         mail($admin[0], 'Contenido eliminado', '<html><head><title>Contenido de cierta cuenta han sido eliminados.</title></head><body><p>Hola, le informamos que el administrador '.$tsUser->nick.' ('.$tsUser->uid.') ha eliminado '.($c ? 'la cuenta' : 'varios contenidos').' de '.$data[0].'</p></body></html>', 'Content-type: text/html; charset=iso-8859-15');
         return 'OK';
       }else return 'Credenciales incorrectas';
@@ -1046,12 +1046,12 @@ class tsAdmin {
     {
 
         # CONSULTA
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_rango, r.rango_id, r.r_name, r.r_color FROM u_miembros AS u LEFT JOIN u_rangos AS r ON u.user_rango = r.rango_id WHERE u.user_id = \'' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_rango, r.rango_id, r.r_name, r.r_color FROM u_miembros AS u LEFT JOIN u_rangos AS r ON u.user_rango = r.rango_id WHERE u.user_id = \'' .
             (int)$user_id . '\' LIMIT 1');
         $data['user'] = db_exec('fetch_assoc', $query);
 
         # RANGOS DISPONIBLES
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT `rango_id`, `r_name`, `r_color` FROM `u_rangos`');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `rango_id`, `r_name`, `r_color` FROM `u_rangos`');
         $data['rangos'] = result_array($query);
 
         #
@@ -1065,7 +1065,7 @@ class tsAdmin {
     {
 
         # RANGOS DISPONIBLES
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT `rango_id`, `r_name`, `r_color` FROM `u_rangos`');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `rango_id`, `r_name`, `r_color` FROM `u_rangos`');
         $data = result_array($query);
 
         #
@@ -1085,7 +1085,7 @@ class tsAdmin {
             return 'Solo el primer Administrador puede crear más administradores principales';
         else
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_miembros SET user_rango = \'' . (int)$new_rango . '\' WHERE user_id = \'' .
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_rango = \'' . (int)$new_rango . '\' WHERE user_id = \'' .
                 (int)$user_id . '\''))
                 return true;
         }
@@ -1095,7 +1095,7 @@ class tsAdmin {
     {
         global $tsCore;
 
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `u_perfil` SET user_firma = \'' . $tsCore->setSecure($_POST['firma']) .
+        if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE `u_perfil` SET user_firma = \'' . $tsCore->setSecure($_POST['firma']) .
             '\' WHERE user_id = \'' . (int)$user_id . '\''))
             return true;
 
@@ -1107,7 +1107,7 @@ class tsAdmin {
 
         $usuario = $_POST['uid'];
 
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT user_activo FROM u_miembros WHERE user_id = \'' . (int)
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT user_activo FROM u_miembros WHERE user_id = \'' . (int)
             $usuario . '\'');
         $data = db_exec('fetch_assoc', $query);
 
@@ -1115,7 +1115,7 @@ class tsAdmin {
         // COMPROBAMOS
         if ($data['user_activo'] == 1)
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_miembros SET user_activo = \'0\' WHERE user_id = \'' .
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_activo = \'0\' WHERE user_id = \'' .
                 (int)$usuario . '\''))
             {
                 return '2: Cuenta desactivada';
@@ -1123,7 +1123,7 @@ class tsAdmin {
                 return '0: Ocurri&oacute, un error';
         } else
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_miembros SET user_activo = \'1\' WHERE user_id = \'' .
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_activo = \'1\' WHERE user_id = \'' .
                 (int)$usuario . '\''))
             {
                 return '1: Cuenta activada.';
@@ -1139,13 +1139,13 @@ class tsAdmin {
         $max = 20; // MAXIMO A MOSTRAR
         $limit = $tsCore->setPageLimit($max, true);
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_id, u.user_name, s.* FROM u_sessions AS s LEFT JOIN u_miembros AS u ON s.session_user_id = u.user_id ORDER BY s.session_time DESC LIMIT ' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, s.* FROM u_sessions AS s LEFT JOIN u_miembros AS u ON s.session_user_id = u.user_id ORDER BY s.session_time DESC LIMIT ' .
             $limit);
         //
         $data['data'] = result_array($query);
 
         // PAGINAS
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(*) FROM u_sessions');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM u_sessions');
         list($total) = db_exec('fetch_row', $query);
 
         $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] .
@@ -1158,10 +1158,10 @@ class tsAdmin {
     {
         global $tsCore;
         $session_id = $_POST['sesion_id'];
-        if (db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT session_id FROM u_sessions WHERE session_id = \'' .
+        if (db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT session_id FROM u_sessions WHERE session_id = \'' .
             $tsCore->setSecure($session_id) . '\' LIMIT 1')))
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM u_sessions WHERE session_id = \'' . $tsCore->
+            if (db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_sessions WHERE session_id = \'' . $tsCore->
                 setSecure($session_id) . '\''))
                 return '1: Eliminado';
         } else
@@ -1175,13 +1175,13 @@ class tsAdmin {
         $max = 20; // MAXIMO A MOSTRAR
         $limit = $tsCore->setPageLimit($max, true);
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_id, u.user_name, n.* FROM u_nicks AS n LEFT JOIN u_miembros AS u ON n.user_id = u.user_id WHERE estado = \'0\' ORDER BY n.time DESC LIMIT ' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, n.* FROM u_nicks AS n LEFT JOIN u_miembros AS u ON n.user_id = u.user_id WHERE estado = \'0\' ORDER BY n.time DESC LIMIT ' .
             $limit);
         //
         $data['data'] = result_array($query);
 
         // PAGINAS
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(*) FROM u_nicks WHERE estado = \'0\'');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM u_nicks WHERE estado = \'0\'');
         list($total) = db_exec('fetch_row', $query);
 
         $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/nicks?",
@@ -1197,13 +1197,13 @@ class tsAdmin {
         $max = 20; // MAXIMO A MOSTRAR
         $limit = $tsCore->setPageLimit($max, true);
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_id, u.user_name, n.* FROM u_nicks AS n LEFT JOIN u_miembros AS u ON n.user_id = u.user_id WHERE estado > \'0\' ORDER BY n.time DESC LIMIT ' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, n.* FROM u_nicks AS n LEFT JOIN u_miembros AS u ON n.user_id = u.user_id WHERE estado > \'0\' ORDER BY n.time DESC LIMIT ' .
             $limit);
         //
         $data['data'] = result_array($query);
 
         // PAGINAS
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(*) FROM u_nicks WHERE estado > \'0\'');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM u_nicks WHERE estado > \'0\'');
         list($total) = db_exec('fetch_row', $query);
 
         $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/nicks?",
@@ -1218,15 +1218,15 @@ class tsAdmin {
         //
         $nick_id = $_POST['nid'];
         //
-        $datos = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT * FROM u_nicks WHERE id = \'' . (int)
+        $datos = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM u_nicks WHERE id = \'' . (int)
             $nick_id . '\' LIMIT 1'));
         //
         if ($_POST['accion'] == 'aprobar')
         {
-            db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_miembros SET user_name = \'' . $datos['name_2'] . '\', user_password = \'' .
+            db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_name = \'' . $datos['name_2'] . '\', user_password = \'' .
                 $datos['hash'] . '\', user_name_changes = user_name_changes - 1 WHERE user_id = \'' .
                 $datos['user_id'] . '\'');
-            db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_nicks SET estado = \'1\' WHERE id = \'' . (int)$nick_id .
+            db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_nicks SET estado = \'1\' WHERE id = \'' . (int)$nick_id .
                 '\'');
             // AVISO
             $aviso = 'Hola <b>' . $datos['name_1'] . "</b>,\n\n Le informo que desde este momento su nombre de acceso ser&aacute; <b>" .
@@ -1241,9 +1241,9 @@ class tsAdmin {
             El staff de <strong>' . $tsCore->settings['titulo'] . '</strong>';
         } elseif ($_POST['accion'] == 'denegar')
         {
-            db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_miembros SET user_name_changes = user_name_changes - 1 WHERE user_id = \'' .
+            db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_name_changes = user_name_changes - 1 WHERE user_id = \'' .
                 $datos['user_id'] . '\'');
-            db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_nicks SET estado = \'2\' WHERE id = \'' . (int)$nick_id .
+            db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_nicks SET estado = \'2\' WHERE id = \'' . (int)$nick_id .
                 '\'');
             // AVISO
             $aviso = 'Hola <b>' . $datos['name_1'] . "</b>,\n\n Lamento informarle que su petici&oacute;n de cambio de nick a <b>" .
@@ -1294,13 +1294,13 @@ class tsAdmin {
         }
 
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_id, u.user_name, c.c_nombre, c.c_seo, c.c_img, p.* FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE p.post_id > \'0\' ORDER BY ' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, c.c_nombre, c.c_seo, c.c_img, p.* FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE p.post_id > \'0\' ORDER BY ' .
             $order . ' ' . ($_GET['m'] == 'a' ? 'ASC' : 'DESC') . ' LIMIT ' . $limit);
         //
         $data['data'] = result_array($query);
 
         // PAGINAS
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(*) FROM p_posts WHERE post_id > \'0\'');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM p_posts WHERE post_id > \'0\'');
         list($total) = db_exec('fetch_row', $query);
 
         $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/posts?o=" .
@@ -1318,13 +1318,13 @@ class tsAdmin {
         $max = 15; // MAXIMO A MOSTRAR
         $limit = $tsCore->setPageLimit($max, true);
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_id, u.user_name, f.* FROM f_fotos AS f LEFT JOIN u_miembros AS u ON f.f_user = u.user_id WHERE f.foto_id > \'0\' ORDER BY f.foto_id DESC LIMIT ' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, f.* FROM f_fotos AS f LEFT JOIN u_miembros AS u ON f.f_user = u.user_id WHERE f.foto_id > \'0\' ORDER BY f.foto_id DESC LIMIT ' .
             $limit);
         //
         $data['data'] = result_array($query);
 
         // PAGINAS
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(*) FROM f_fotos WHERE foto_id > \'0\'');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM f_fotos WHERE foto_id > \'0\'');
         list($total) = db_exec('fetch_row', $query);
 
         $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/fotos?",
@@ -1337,10 +1337,10 @@ class tsAdmin {
     {
         //
         $foto = intval($_POST['foto_id']);
-        if (db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT foto_id FROM `f_fotos` WHERE foto_id = \'' .
+        if (db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT foto_id FROM `f_fotos` WHERE foto_id = \'' .
             (int)$foto . '\'')))
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM f_fotos WHERE foto_id = \'' . (int)$foto . '\''))
+            if (db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM f_fotos WHERE foto_id = \'' . (int)$foto . '\''))
             {
                 return '1: Foto eliminada';
             } else
@@ -1354,14 +1354,14 @@ class tsAdmin {
     {
         global $tsUser;
 
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT f_closed FROM f_fotos WHERE foto_id = \'' . (int)$_POST['fid'] .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT f_closed FROM f_fotos WHERE foto_id = \'' . (int)$_POST['fid'] .
             '\'');
         $data = db_exec('fetch_assoc', $query);
 
         // COMPROBAMOS
         if ($data['f_closed'] == 1)
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE f_fotos SET f_closed = \'0\' WHERE foto_id = \'' . (int)
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE f_fotos SET f_closed = \'0\' WHERE foto_id = \'' . (int)
                 $_POST['fid'] . '\''))
             {
                 return '2: Comentarios abiertos';
@@ -1369,7 +1369,7 @@ class tsAdmin {
                 return '0: Ocurri&oacute, un error';
         } elseif ($data['f_closed'] == 0)
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE f_fotos SET f_closed = \'1\' WHERE foto_id = \'' . (int)
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE f_fotos SET f_closed = \'1\' WHERE foto_id = \'' . (int)
                 $_POST['fid'] . '\''))
             {
                 return '1: Comentarios cerrados.';
@@ -1383,7 +1383,7 @@ class tsAdmin {
     {
         global $tsUser;
 
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT f_status FROM f_fotos WHERE foto_id = \'' . (int)$_POST['fid'] .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT f_status FROM f_fotos WHERE foto_id = \'' . (int)$_POST['fid'] .
             '\'');
         $data = db_exec('fetch_assoc', $query);
 
@@ -1391,7 +1391,7 @@ class tsAdmin {
         // COMPROBAMOS
         if ($data['f_status'] == 1)
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE f_fotos SET f_status = \'0\' WHERE foto_id = \'' . (int)
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE f_fotos SET f_status = \'0\' WHERE foto_id = \'' . (int)
                 $_POST['fid'] . '\''))
             {
                 return '2: Foto rehabilitada';
@@ -1399,7 +1399,7 @@ class tsAdmin {
                 return '0: Ocurri&oacute, un error';
         } elseif ($data['f_status'] == 0)
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE f_fotos SET f_status = \'1\' WHERE foto_id = \'' . (int)
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE f_fotos SET f_status = \'1\' WHERE foto_id = \'' . (int)
                 $_POST['fid'] . '\''))
             {
                 return '1: Foto deshabilitada.';
@@ -1417,7 +1417,7 @@ class tsAdmin {
 
         $noticia = $_POST['nid'];
 
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT not_active FROM w_noticias WHERE not_id = \'' . (int)
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT not_active FROM w_noticias WHERE not_id = \'' . (int)
             $noticia . '\'');
         $data = db_exec('fetch_assoc', $query);
 
@@ -1425,7 +1425,7 @@ class tsAdmin {
         // COMPROBAMOS
         if ($data['not_active'] == 1)
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE w_noticias SET not_active = \'0\' WHERE not_id = \'' . (int)
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE w_noticias SET not_active = \'0\' WHERE not_id = \'' . (int)
                 $noticia . '\''))
             {
                 return '2: Noticia desactivada';
@@ -1433,7 +1433,7 @@ class tsAdmin {
                 return '0: Ocurri&oacute, un error';
         } else
         {
-            if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE w_noticias SET not_active = \'1\' WHERE not_id = \'' . (int)
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE w_noticias SET not_active = \'1\' WHERE not_id = \'' . (int)
                 $noticia . '\''))
             {
                 return '1: Noticia activada.';
@@ -1451,13 +1451,13 @@ class tsAdmin {
         $max = 20; // MAXIMO A MOSTRAR
         $limit = $tsCore->setPageLimit($max, true);
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_id, u.user_name, b.* FROM w_blacklist AS b LEFT JOIN u_miembros AS u ON b.author = u.user_id ORDER BY b.date DESC LIMIT ' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, b.* FROM w_blacklist AS b LEFT JOIN u_miembros AS u ON b.author = u.user_id ORDER BY b.date DESC LIMIT ' .
             $limit);
         //
         $data['data'] = result_array($query);
 
         // PAGINAS
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(*) FROM w_blacklist');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM w_blacklist');
         list($total) = db_exec('fetch_row', $query);
 
         $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] .
@@ -1468,7 +1468,7 @@ class tsAdmin {
 
     function getBlock()
     {
-        return db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT type, value, reason FROM w_blacklist WHERE id = \'' .
+        return db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT type, value, reason FROM w_blacklist WHERE id = \'' .
             (int)$_GET['id'] . '\' LIMIT 1'));
     }
 
@@ -1483,10 +1483,10 @@ class tsAdmin {
         {
             if ($_POST['type'] == 1 && $_POST['value'] == $_SERVER['REMOTE_ADDR'])
                 return 'No puedes bloquear tu propia IP';
-            if (!db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT id FROM w_blacklist WHERE type = \'' . (int)
+            if (!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT id FROM w_blacklist WHERE type = \'' . (int)
                 $_POST['type'] . '\' && value = \'' . $tsCore->setSecure($_POST['value']) . '\'')))
             {
-                if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE w_blacklist SET type = \'' . (int)$_POST['type'] . '\', value = \'' .
+                if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE w_blacklist SET type = \'' . (int)$_POST['type'] . '\', value = \'' .
                     $tsCore->setSecure($_POST['value']) . '\', author = \'' . $tsUser->uid . '\' WHERE id = \'' .
                     (int)$_GET['id'] . '\''))
                     return true;
@@ -1506,10 +1506,10 @@ class tsAdmin {
         {
             if ($_POST['type'] == 1 && $_POST['value'] == $_SERVER['REMOTE_ADDR'])
                 return 'No puedes bloquear tu propia IP';
-            if (!db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT id FROM w_blacklist WHERE type = \'' . (int)
+            if (!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT id FROM w_blacklist WHERE type = \'' . (int)
                 $_POST['type'] . '\' && value = \'' . $tsCore->setSecure($_POST['value']) . '\'')))
             {
-                if (db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO w_blacklist (type, value, reason, author, date) VALUES (\'' .
+                if (db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO w_blacklist (type, value, reason, author, date) VALUES (\'' .
                     (int)$_POST['type'] . '\', \'' . $tsCore->setSecure($_POST['value']) . '\', \'' .
                     $tsCore->setSecure($_POST['reason']) . '\', \'' . $tsUser->uid . '\', \'' . time
                     () . '\')'))
@@ -1522,7 +1522,7 @@ class tsAdmin {
     function deleteBlock()
     {
 
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM w_blacklist WHERE id = \'' . (int)$_POST['bid'] . '\''))
+        if (db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM w_blacklist WHERE id = \'' . (int)$_POST['bid'] . '\''))
             return '1: Bloqueo retirado';
         else
             return '0: Hubo un error al borrar';
@@ -1538,13 +1538,13 @@ class tsAdmin {
         $max = 20; // MAXIMO A MOSTRAR
         $limit = $tsCore->setPageLimit($max, true);
         //
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT u.user_id, u.user_name, bw.* FROM w_badwords AS bw LEFT JOIN u_miembros AS u ON bw.author = u.user_id ORDER BY bw.wid DESC LIMIT ' .
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, bw.* FROM w_badwords AS bw LEFT JOIN u_miembros AS u ON bw.author = u.user_id ORDER BY bw.wid DESC LIMIT ' .
             $limit);
         //
         $data['data'] = result_array($query);
 
         // PAGINAS
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(*) FROM w_badwords');
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM w_badwords');
         list($total) = db_exec('fetch_row', $query);
 
         $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] .
@@ -1555,7 +1555,7 @@ class tsAdmin {
 
     function getBadWord()
     {
-        return db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT * FROM w_badwords WHERE wid = \'' .
+        return db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM w_badwords WHERE wid = \'' .
             (int)$_GET['id'] . '\' LIMIT 1'));
     }
 
@@ -1570,11 +1570,11 @@ class tsAdmin {
             return 'Rellene todos los campos';
         } else
         {
-            if (!db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT wid FROM w_badwords WHERE LOWER(word) = \'' .
+            if (!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT wid FROM w_badwords WHERE LOWER(word) = \'' .
                 $tsCore->setSecure(strtolower($_POST['before'])) . '\' && LOWER(swop) = \'' . $tsCore->
                 setSecure(strtolower($_POST['after'])) . '\'')))
             {
-                if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `w_badwords` SET method = \'' . $method . '\', type = \'' .
+                if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE `w_badwords` SET method = \'' . $method . '\', type = \'' .
                     (int)$type . '\', word = \'' . $tsCore->setSecure($_POST['before']) . '\', swop = \'' .
                     $tsCore->setSecure($_POST['after']) . '\', author = \'' . $tsUser->uid . '\' WHERE wid = \'' .
                     (int)$_GET['id'] . '\''))
@@ -1597,11 +1597,11 @@ class tsAdmin {
             return 'Rellene todos los campos';
         } else
         {
-            if (!db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT wid FROM w_badwords WHERE LOWER(word) = \'' .
+            if (!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT wid FROM w_badwords WHERE LOWER(word) = \'' .
                 $tsCore->setSecure(strtolower($_POST['before'])) . '\' && LOWER(swop) = \'' . $tsCore->
                 setSecure(strtolower($_POST['after'])) . '\'')))
             {
-                if (db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO w_badwords (word, swop, method, type, author, reason, date) VALUES (\'' .
+                if (db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO w_badwords (word, swop, method, type, author, reason, date) VALUES (\'' .
                     $tsCore->setSecure($_POST['before']) . '\', \'' . $tsCore->setSecure($_POST['after']) .
                     '\', \'' . (int)$method . '\', \'' . (int)$type . '\', \'' . $tsUser->uid . '\', \'' .
                     $tsCore->setSecure($_POST['reason']) . '\', \'' . time() . '\')'))
@@ -1616,7 +1616,7 @@ class tsAdmin {
     function deleteBadWord()
     {
 
-        if (db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM w_badwords WHERE wid = \'' . (int)$_POST['wid'] . '\''))
+        if (db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM w_badwords WHERE wid = \'' . (int)$_POST['wid'] . '\''))
             return '1: Filtro retirado';
         else
             return '0: Hubo un error al borrar';
@@ -1627,7 +1627,7 @@ class tsAdmin {
 
     function GetAdminStats()
     {
-        $num = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT 
+        $num = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT 
         (SELECT count(foto_id) FROM f_fotos WHERE f_status = \'2\') as fotos_eliminadas, 
         (SELECT count(foto_id) FROM f_fotos WHERE f_status = \'1\') as fotos_ocultas, 
         (SELECT count(foto_id) FROM f_fotos WHERE f_status = \'0\') as fotos_visibles, 
