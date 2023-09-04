@@ -180,6 +180,10 @@ class tsCore {
 		header("Location: " . urldecode($tsDir));
 		exit();
 	}
+	public function redireccionar(string $page = '', string $subpage = '', string $param = '') {
+		$param = empty($param) ? '' : "?$param";
+		$this->redirectTo("{$this->settings['url']}/$page/$subpage$param");		
+	}
    /*
       getDomain()
    */

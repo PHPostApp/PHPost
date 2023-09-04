@@ -2521,11 +2521,11 @@ ul.menuTabs .tabbed.here a:hover {
 		text-shadow: #000 0 1px 0;
 	}
 	
-	.menuTabs #tabbedhome.here a {
+	.menuTabs .here a {
 	  	background: url(images/menu_left_corner_here.gif) no-repeat top left;
     }
 
-    .menuTabs li#tabbedhome.here {
+    .menuTabs li.here {
 	 	background: transparent url('images/bgTabbedHere.png') repeat-x scroll left top;
     }
 
@@ -3632,7 +3632,7 @@ li.cleaner {
 
 .mBtn {
 	--bgcolor: #CCC;
-  color: #FFF;
+  color: #FFF!important;
   font-size: 12px;
   -moz-border-radius: .3rem;
   -webkit-border-radius: .3rem;
@@ -5418,9 +5418,11 @@ width:64px;
 			background-position: 0 -1382px;
 		}
 		.btn_g {
-			display: block;
+			display: inline-block;
 			font-weight: bold;
-			padding: 5px 8px;
+		  height: 1.8rem;
+		  line-height: 1.8rem;
+		  padding: 0 1rem;
 			border: 1px solid #bababa;
 			-moz-border-radius: 5px;
 			background: url('images/bg_g.gif') repeat-x bottom left!important;

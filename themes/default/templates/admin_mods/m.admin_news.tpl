@@ -2,7 +2,7 @@
 									<h3>Noticias</h3>
 								</div>
 								<div id="res" class="boxy-content">
-								{if $tsSave}<div style="display: block;" class="mensajes ok">Tus cambios han sido guardados.</div>{/if}																{if $tsDelete == 'true'}<div style="display: block;" class="mensajes ok">Noticia eliminada.</div>{/if}
+								{if $tsSave}<div class="mensajes  ok">Tus cambios han sido guardados.</div>{/if}																{if $tsDelete == 'true'}<div class="mensajes  ok">Noticia eliminada.</div>{/if}
 									{if $tsAct == ''}
 									Si necesitas hacer un comunicado a todos los usuarios en general, desde aqu&iacute; podr&aacute;s administrar tus anuncios y los usuarios sin importar donde se encuentren navegando podr&aacute;n visualizarlos.
 									<hr class="separator" />

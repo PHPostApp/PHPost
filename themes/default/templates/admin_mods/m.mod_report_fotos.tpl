@@ -2,7 +2,7 @@
                                     <h3>Moderaci&oacute;n de fotos</h3>
                                 </div>
                                 <div id="res" class="boxy-content">
-                                {if $tsSave}<div style="display: block;" class="mensajes ok">Tus cambios han sido guardados.</div>{/if}
+                                {if $tsSave}<div class="mensajes  ok">Tus cambios han sido guardados.</div>{/if}
                                 	{if $tsAct == ''}
                                     Recuerda leer el protocolo para poder moderar las fotos que han sido denunciadas por otros usuarios, si te es posible y se puede editar una foto, no la borres, <b>Ed&iacute;tala!</b> 
                                     <hr class="separator" />

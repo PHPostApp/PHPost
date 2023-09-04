@@ -2,7 +2,7 @@
                                     <h3>Moderaci&oacute;n de mensajes</h3>
                                 </div>
                                 <div id="res" class="boxy-content">
-                                {if $tsSave}<div style="display: block;" class="mensajes ok">Tus cambios han sido guardados.</div>{/if}
+                                {if $tsSave}<div class="mensajes  ok">Tus cambios han sido guardados.</div>{/if}
                                 	{if $tsAct == ''}
                                     Recuerda leer el protocolo para poder moderar los mensajes que han sido denunciados por otros usuarios. Si no est&aacute; seguro de la acci&oacute;n a tomar, hable con el denunciante para obtener m&aacute;s informaci&oacute;n.
                                     <hr class="separator" />

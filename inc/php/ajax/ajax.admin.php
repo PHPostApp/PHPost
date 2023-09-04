@@ -24,9 +24,9 @@
 		'admin-noticias-setInActive' => array('n' => 4, 'p' => ''),
 		'admin-sesiones-borrar' => array('n' => 4, 'p' => ''),
 		'admin-nicks-change' => array('n' => 4, 'p' => ''),
-        'admin-blacklist-delete' => array('n' => 4, 'p' => ''),
-        'admin-badwords-delete' => array('n' => 4, 'p' => ''),
-		
+      'admin-blacklist-delete' => array('n' => 4, 'p' => ''),
+      'admin-badwords-delete' => array('n' => 4, 'p' => ''),
+		'admin-ordenar-categorias' => array('n' => 4, 'p' => ''),
 	);
 
 /**********************************\
@@ -122,7 +122,12 @@
             echo $tsAdmin->deleteBadWord();
 			//--->
 		break;
-        default:
-            die('0: Este archivo no existe.');
-        break;
+		case 'admin-ordenar-categorias':
+			//<---
+		      echo $tsAdmin->saveOrden();
+			//--->
+		break;
+      default:
+         die('0: Este archivo no existe.');
+      break;
 	}

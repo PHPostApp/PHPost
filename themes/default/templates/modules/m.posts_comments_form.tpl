@@ -13,12 +13,7 @@
                                     <div class="floatL">
                                     	<input type="hidden" id="auser_post" value="{$tsPost.post_user}" />
                                         <input type="button" onclick="comentario.nuevo('true')" class="mBtn btnOk" value="Enviar Comentario" tabindex="3" id="btnsComment"/>
-                                        &nbsp;<input type="button" onclick="comentario.preview('body_comm','new')" class="mBtn btnGreen" value="Vista Previa" tabindex="2" style="width:auto;" />
                                     </div>
-                                    <div class="floatR">
-                                        <a href="#" onclick="moreEmoticons(true); return false;" class="floatR" id="moreemofn"> M&aacute;s emoticones</a>
-                                    </div>
-                                    {include "m.global_emoticons.tpl"}
                                     <div class="clearfix"></div>
                                 </div>
                                 </div>

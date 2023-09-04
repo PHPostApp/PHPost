@@ -2,7 +2,7 @@
                                     <h3>Administrar Temas</h3>
                                 </div>
                                 <div id="res" class="boxy-content">
-                                {if $tsSave}<div style="display: block;" class="mensajes ok">Tus cambios han sido guardados.</div>{/if}
+                                {if $tsSave}<div class="mensajes  ok">Tus cambios han sido guardados.</div>{/if}
                                     {if $tsAct == ''}
                                 	<table cellpadding="0" cellspacing="0" border="0" width="500" align="center" class="admin_table">
                                     	<thead>
@@ -43,7 +43,7 @@
                                         {if $tsAct == 'borrar'}<p align="center">Te recordamos que debes borrar la carpeta del Tema manualmente en el servidor.</p>{/if}
                                     </form>
                                     {elseif $tsAct == 'nuevo'}
-                                    {if $tsError}<div style="display: block;" class="mensajes error">{$tsError}</div>{/if}
+                                    {if $tsError}<div class="mensajes  error">{$tsError}</div>{/if}
                                     <form action="" method="post" id="admin_form" autocomplete="off">
                                     	<label for="ai_path">Nombre de la carpeta donde esta el tema a instalar:<br /><i>{$tsConfig.url}/themes/</i></label> <input type="text" id="ai_path" name="path" size="30" />
                                         <hr />

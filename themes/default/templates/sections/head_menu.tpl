@@ -2,7 +2,7 @@
 	<!--LEFT MENU-->
 	<ul class="menuTabs">
 		{if $tsConfig.c_allow_portal && $tsUser->is_member == true}
-			<li class="tabbed {if $tsPage != 'home' && $tsPage != 'posts' && $tsPage != 'tops' && $tsPage != 'admin' && $tsPage != 'fotos'}here{/if}">
+			<li class="tabbed tabbedhome {if $tsPage != 'home' && $tsPage != 'posts' && $tsPage != 'tops' && $tsPage != 'admin' && $tsPage != 'fotos'}here{/if}">
 				<a title="Ir a Inicio" href="{$tsConfig.url}/mi/"><span>&nbsp;</span></a>
 			</li>
 		{/if}

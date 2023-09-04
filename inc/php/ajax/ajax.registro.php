@@ -54,26 +54,17 @@
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg; die();}
 	
 	// CLASE
-	
-	require('../class/c.registro.php');
-	
+	require_once TS_CLASS . 'c.registro.php';
 	$tsReg = new tsRegistro();
-	
+
 	// CODIGO
-	
 	switch($action){
-	
 		case 'registro-form':				
-		
-			if($tsCore->settings['c_reg_active'] == 0){          
-		
-				$tsAjax = '1';         		
-			
-				echo '0: <div class="dialog_box">El registro de nuevas cuentas en <b>'.$tsCore->settings['titulo'].'</b> est&aacute; desactivado.</div>';
-			
+			if($tsCore->settings['c_reg_active'] == 0) {
+				$tsAjax = '1';
+				echo '0: <div class="dialog_box">El registro se encuentra momentaneamente desactivado.</div>';
 			} else {    
 				require_once TS_EXTRA . "datos.php";
-				
 				// SOLO MENORES DE 84 AÑOS xD Y MAYORES DE...
 				$now_year = date("Y", time());
 				// 100años - 16años = 84años
@@ -86,61 +77,24 @@
 				$smarty->assign("tsMaxY", (int)$start_year);
 				$smarty->assign("tsEndY", (int)$end_year);
 			}
-			
 		break;
-		
 		case 'registro-check-nick':	
-		
-		case 'registro-check-email':	
-		
-			//<---
-			
-				echo $tsReg->checkUserEmail();
-				
-			//--->
-			
+		case 'registro-check-email':
+			echo $tsReg->checkUserEmail();
 		break;
-		
 		case 'registro-geo':
-		
-			//<--
-			
 			include("../ext/geodata.php");
-			
 			$pais = htmlspecialchars($_GET['pais_code']);
-			
 			//
-			
 			if($pais) $html = '1: ';
-			
 			else $html = '0: El campo <b>pais_code</b> es requerido para esta operacion';
-			
-			foreach($estados[$pais] as $key => $estado){
-			
+			foreach($estados[$pais] as $key => $estado) 
 				$html .= '<option value="'.($key+1).'">'.$estado.'</option>'."\n";
-				
-			}
-			
 			//
-			
-			if(strlen($html) > 3) echo $html;
-			
-			else echo '0: Código de pais incorrecto.';
-			
-			//-->
-			
+			echo (strlen($html) > 3) ? $html : '0: Código de pais incorrecto.';
 		break;
-		
 		case 'registro-nuevo':
-		
-			//<--
-			
-                $result = $tsReg->registerUser();
-				
-				echo $result;
-				
-			//-->
-			
+			$result = $tsReg->registerUser();
+			echo $result;
 		break;
-		
 	}

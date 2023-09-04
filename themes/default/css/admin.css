@@ -52,7 +52,7 @@
 li#a_main {background-image: url(../images/icons/robot.png);}
 li#a_creditos {background-image: url(../images/icons/information-shield.png);}
 li#a_configs {background-image: url(../images/icons/gear.png);}
-li#a_configs {background-image: url(../images/icons/gear.png);}
+li#a_configs, li#a_registro {background-image: url(../images/icons/gear.png);}
 li#a_temas {background-image: url(../images/icons/color.png);}
 li#a_news {background-image: url(../images/icons/newspaper.png);}
 li#a_ads {background-image: url(../images/icons/currency.png);}
@@ -69,8 +69,15 @@ li#a_nicks {background-image: url(../images/icons/key.png);}
 li#a_blacklist {background-image: url(../images/icons/flag_black.png);}
 li#a_badwords {background-image: url(../images/icons/stop.png);}
 
-
-.admin_table {border:1px solid #ddd; border-width:1px 0 0 1px;}
+.arrastrar {
+    cursor: pointer;
+    transform:scale(3);
+    background-color: #444;
+}
+.seleccionado {
+    background-color: #EEE;
+}
+.admin_table {border:1px solid #ddd; border-width:1px 0 0 1px;width: 100%;}
 .admin_table thead {background:#F4F4F4}
 .admin_table th, .admin_table td {padding:3px 4px;border:1px solid #ddd; border-width:0px 1px 1px 0px; vertical-align:middle; text-align:center}
 

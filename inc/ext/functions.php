@@ -80,6 +80,30 @@ function db_exec() {
 	}
 }
 
+function insertInto(array $array = [], string $tabla = '', array $datos = [], string $prefijo = '') {
+   if(empty($tabla) OR empty($datos)) die('No hay datos...');
+   // Convertir el array en una cadena para la consulta INSERT INTO
+   $prefixedKeys = array_map(function ($key) use ($prefijo) {
+      return $prefijo . $key;
+   }, array_keys($datos));
+   // Convertir el array en una cadena para la consulta INSERT INTO
+   $keys = implode(', ', $prefixedKeys);
+   //
+   $values = array_map(function ($value) {
+      // Si el valor es numérico, no agregamos comillas
+      return is_numeric($value) ? $value : "'$value'";
+   }, array_values($datos));
+   $insertString = '(' . implode(', ', $values) . ')';
+   //
+   return db_exec($array, 'query', "INSERT INTO $tabla ($keys) VALUES $insertString");
+}
+
+function deleteID(array $array = [], string $tabla = '', string $dato = '') {
+   if(empty($tabla)) die('No hay tabla');
+   if(empty($dato)) die('No hay dato para eliminar');
+   db_exec($array, 'query', "DELETE FROM $tabla WHERE $dato");
+}
+
 /**
  * Cargar resultados
 */
