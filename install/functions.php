@@ -83,6 +83,18 @@ class Extension {
 		return $msg[$type];
 	}
 
+	public function loaderOpenSSL(string $type = '') {
+		$status = (!extension_loaded('openssl'));
+		ob_start();
+		phpinfo(INFO_MODULES);
+		$phpinfo = ob_get_clean();
+		// Buscar la línea que contiene "OpenSSL Library Version"
+		if (preg_match("/OpenSSL Library Version\s+(.*)/", $phpinfo, $matches)) $opensslVersion = $matches[1];
+		$msg['message'] = $status ? "La extensión OpenSSL no está habilitada!" : $opensslVersion;
+		$msg['status'] = !$status;
+		return $msg[$type];
+	}
+
 }
 
 $database = new DataBase();

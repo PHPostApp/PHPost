@@ -138,7 +138,7 @@ wbbdebug = false;
 					excmd: 'bold',
 					hotkey: 'ctrl+b',
 					transform : {
-						'<b>{SELTEXT}</b>':"[b]{SELTEXT}[/b]",
+						'<strong>{SELTEXT}</strong>':"[b]{SELTEXT}[/b]",
 						'<strong>{SELTEXT}</strong>':"[b]{SELTEXT}[/b]"
 					}
 				},

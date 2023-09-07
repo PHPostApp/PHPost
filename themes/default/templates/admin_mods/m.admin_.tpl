@@ -2,7 +2,7 @@
                                     <h3>Centro de Administraci&oacute;n</h3>
                                 </div>
                                 <div id="res" class="boxy-content">
-                                	<b>Bienvenido(a), {$tsUser->nick}!</b><br />Este es tu &quot;Centro de Administraci&oacute;n de PHPost&quot;. Aqu&iacute; puedes modificar la configuraci&oacute;n de tu web, modificar usuarios, modificar posts, y muchas otras cosas.<br />Si tienes algun problema, por favor revisa la p&aacute;gina de &quot;Soporte y Cr&eacute;ditos&quot;.  Si esa informaci&oacute;n no te sirve, puedes <a href="http://www.phpost.net/" target="_blank">visitarnos para solicitar ayuda</a> acerca de tu problema.
+                                	<strong>Bienvenido(a), {$tsUser->nick}!</strong><br />Este es tu &quot;Centro de Administraci&oacute;n de PHPost&quot;. Aqu&iacute; puedes modificar la configuraci&oacute;n de tu web, modificar usuarios, modificar posts, y muchas otras cosas.<br />Si tienes algun problema, por favor revisa la p&aacute;gina de &quot;Soporte y Cr&eacute;ditos&quot;.  Si esa informaci&oacute;n no te sirve, puedes <a href="https://phpost.net/foro//" target="_blank">visitarnos para solicitar ayuda</a> acerca de tu problema.
                                     <hr class="separator" />
                                     <div class="phpost">
                                         <h1>PHPost en directo</h1>
@@ -15,7 +15,7 @@
                                         <ul id="version_pp" class="pp_list">
                                             <li>
                                                 <div class="title">Versi&oacute;n instalada</div>
-                                                <div class="body"><b>{$tsConfig.version}</b></div>
+                                                <div class="body"><strong>{$tsConfig.version}</strong></div>
                                             </li>
                                         </ul>
                                         <h1>Administradores</h1>

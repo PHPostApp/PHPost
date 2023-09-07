@@ -117,7 +117,7 @@
 			<p><br>
 
 			  <strong>8. Utilizaci&oacute;n de los servicios y contenidos brindados por el Sitio</strong><br>
-			  Los usuarios deber&aacute;n utilizar los servicios, y acceder a los contenidos del sitio de conformidad con las disposiciones establecidas en estas <b style="color: black; background-color: rgb(160, 255, 255);">Condiciones</b> Generales; con el ordenamiento jur&iacute;dico al que se encuentren sometidos en raz&oacute;n del lugar, de las personas, o de la materia de la cual se trate, considerado en su conjunto; y seg&uacute;n las pautas de conducta impuestas por la moral, las buenas costumbres y el debido respeto a los derechos de terceros. </p>
+			  Los usuarios deber&aacute;n utilizar los servicios, y acceder a los contenidos del sitio de conformidad con las disposiciones establecidas en estas <b style="color: black; background-color: rgb(160, 255, 255);">Condiciones</strong> Generales; con el ordenamiento jur&iacute;dico al que se encuentren sometidos en raz&oacute;n del lugar, de las personas, o de la materia de la cual se trate, considerado en su conjunto; y seg&uacute;n las pautas de conducta impuestas por la moral, las buenas costumbres y el debido respeto a los derechos de terceros. </p>
 			<p><br>
 			  <strong>8.1. USO PROHIBIDO de los servicios o contenidos</strong><br>
 			  Cualquier uso de los servicios que tenga por objeto, lesionar los derechos de terceros, contravenir el orden jur&iacute;dico o constituya una pr&aacute;ctica ofensiva al pudor p&uacute;blico, se reputar&aacute; como USO PROHIBIDO de los servicios o contenidos, en tanto transgrede los fines para los que fue puesto a disposici&oacute;n de los usuarios.</p>

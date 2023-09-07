@@ -109,7 +109,7 @@
 		break;
 		case 'admin-nicks-change':
 			//<---
-            echo $tsAdmin->ChangeNick_o_no();
+         echo $tsAdmin->ChangeNick_o_no();
 			//--->
 		break;
         case 'admin-blacklist-delete':

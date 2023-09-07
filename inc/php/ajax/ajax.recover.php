@@ -39,8 +39,7 @@
 			$tsEmail->emailTo = $to;
 			$tsEmail->emailSubject = $subject;
 			$tsEmail->emailBody = $body;
-			$tsEmail->emailHeaders = $tsEmail->setEmailHeaders();
-			$tsEmail->sendEmail($from, $to, $subject, $body)  or die('0: Hubo un error al intentar procesar lo solicitado');
+			$tsEmail->sendEmail()  or die('0: Hubo un error al intentar procesar lo solicitado');
 			die('1: <div class="dialog_box">Las intrucciones para recuperar su contrase&ntilde;a de <b>'.$tsCore->settings['titulo'].'</b> a <b>'.$email.'</b>, si no aparece el e-mail en su bandeja de entrar, revise en correo no deseado porque puede haberse filtrado..</div>');
 			// -->
 			break;

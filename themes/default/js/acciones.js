@@ -701,7 +701,7 @@ var afiliado = {
         form += '<div class="form-line">'
         form += '<label for="aID">RefID <a href="#" onclick="$(this).parent().parent().find('
         form += "'span').css({display: 'block'}); return false"
-        form += '"><img src="' + global_data.img + '/images/icons/help.png"/></a></label><span style="display:none; margin-bottom:5px">Si utilizas <a href="http://www.tscript.in/"><b>T!Script</b></a> y ya nos enlazaste, ingresa el ID generado en tu panel de adminsitraci&oacute;n.</span>'
+        form += '"><img src="' + global_data.img + '/images/icons/help.png"/></a></label><span style="display:none; margin-bottom:5px">Si utilizas <a href="http://www.tscript.in/"><strong>T!Script</strong></a> y ya nos enlazaste, ingresa el ID generado en tu panel de adminsitraci&oacute;n.</span>'
         form += '<input type="text" tabindex="5" name="aID" id="aID" value="" style="width:100px!important"/>'
   		form += '</div>'
         form += '</div>'
@@ -749,6 +749,7 @@ var afiliado = {
     		url: global_data.url + '/afiliado-nuevo.php',
     		data: params,
     		success: function(h){
+    			console.log(h)
     		  mydialog.procesando_fin();
     		  switch(h.charAt(0)){
     		      case '0':

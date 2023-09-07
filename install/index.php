@@ -100,6 +100,11 @@ switch ($step) {
 				'name' => 'Extensión cURL',
 				'status' => $extension->loaderCURL('message'),
 				'css' => $extension->loaderCURL('status') ? 'ok' :'no'
+			],
+			'openssl' => [
+				'name' => 'Extensión OpenSSL',
+				'status' => $extension->loaderOpenSSL('message'),
+				'css' => $extension->loaderOpenSSL('status') ? 'ok' :'no'
 			]
 		];
 

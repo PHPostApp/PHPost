@@ -19,7 +19,7 @@
 					<label>Tags</label>
 					<span style="display: none;" class="errormsg"></span>
 					<input type="text" tabindex="4" name="tags" maxlength="128" class="text-inp required" value="{$tsDraft.b_tags}"/>
-					Una lista separada por comas, que describa el contenido. Ejemplo: <b>gol, ingleses, Copa Oro, futbol, Chicharito, M&eacute;xico</b>
+					Una lista separada por comas, que describa el contenido. Ejemplo: <strong>gol, ingleses, Copa Oro, futbol, Chicharito, M&eacute;xico</strong>
 				</li>
 				<li class="special-left clearbeta">
 					<label>Categor&iacute;a</label>

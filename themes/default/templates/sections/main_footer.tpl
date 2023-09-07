@@ -18,7 +18,7 @@
 	 {* El ID del div NO debe ser alterado de lo contrario nuestro validador *}
 	 {* tomará al sitio como una web sin copyright *}
 	 <div id="pp_copyright" style="display: block!important; opacity: 1!important;">
-		  <a href="{$tsConfig.url}"><strong>{$tsConfig.titulo}</strong></a> &copy; {$smarty.now|date_format:"%Y"} - Powered by <a href="http://www.phpost.net/" target="_blank"><strong>PHPost</strong></a>
+		  <a href="{$tsConfig.url}"><strong>{$tsConfig.titulo}</strong></a> &copy; {$smarty.now|date_format:"%Y"} - Powered by <a href="https://phpost.net/foro//" target="_blank"><strong>PHPost</strong></a>
 	 </div>
 </div>
 {if $tsUser->is_admod && $tsConfig.c_see_mod && $tsConfig.novemods.total}

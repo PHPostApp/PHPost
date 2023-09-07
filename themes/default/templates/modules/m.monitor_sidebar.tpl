@@ -39,9 +39,9 @@
                     <div class="categoriaList">
                         <h6>Notificaciones Live</h6>
                         <ul>
-                            <li class="clearfix"><label><input type="checkbox" {if $tsStatus.live_nots == 'ON'}checked="checked"{/if} onclick="live.ch_status('nots');"/> <b>Mostrar notificaciones</b></label></li>
-                            <li class="clearfix"><label><input type="checkbox" {if $tsStatus.live_mps == 'ON'}checked="checked"{/if} onclick="live.ch_status('mps');"/> <b>Mostrar mensajes nuevos</b></label></li>
-                            <li class="clearfix"><label><input type="checkbox" {if $tsStatus.live_sound == 'ON'}checked="checked"{/if} onclick="live.ch_status('sound');"/> <b>Reproducir sonidos</b></label></li>
+                            <li class="clearfix"><label><input type="checkbox" {if $tsStatus.live_nots == 'ON'}checked="checked"{/if} onclick="live.ch_status('nots');"/> <strong>Mostrar notificaciones</strong></label></li>
+                            <li class="clearfix"><label><input type="checkbox" {if $tsStatus.live_mps == 'ON'}checked="checked"{/if} onclick="live.ch_status('mps');"/> <strong>Mostrar mensajes nuevos</strong></label></li>
+                            <li class="clearfix"><label><input type="checkbox" {if $tsStatus.live_sound == 'ON'}checked="checked"{/if} onclick="live.ch_status('sound');"/> <strong>Reproducir sonidos</strong></label></li>
                         </ul>
                     </div>
                     {/if}

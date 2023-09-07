@@ -386,19 +386,10 @@
     max-width: 130px;
     max-height: 130px;
 }
-.Story_Message .videoDesc{
+.Story_Message .videoDesc {
     color:#808080;
-    display: table-cell;
-    vertical-align: top;
-    width: 10000px;
-}
-.Story_Message .uiVideoThumb i {
-    background: url("../images/icons/muro/fb_video_play.png") no-repeat scroll 0 0 transparent;
-    bottom: 0;
-    height: 32px;
-    left: 0;
-    position: absolute;
-    width: 39px;
+    background-color: #eee;
+    padding: 0.3rem;
 }
 /******************/
 .Story_Foot .Story_Info {

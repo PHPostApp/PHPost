@@ -76,3 +76,23 @@
 #input_add > div .verify:hover {
     background-color: #255C94;
 }
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.tabs li a {
+    display: block;
+    font-weight: 600;
+    padding: 0.3rem 1rem;
+    color: #888;
+    border-radius: .3rem;
+}
+.tabs li:hover a,
+.tabs li.active a {
+    background-color: #3371af;
+    color: #FFF;
+}
+.content-tabs.perfil fieldset {
+    border-top: 3px solid #3371af;
+}

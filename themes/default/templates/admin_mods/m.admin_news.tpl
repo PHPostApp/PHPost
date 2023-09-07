@@ -6,7 +6,7 @@
 									{if $tsAct == ''}
 									Si necesitas hacer un comunicado a todos los usuarios en general, desde aqu&iacute; podr&aacute;s administrar tus anuncios y los usuarios sin importar donde se encuentren navegando podr&aacute;n visualizarlos.
 									<hr class="separator" />
-									<b>Lista de noticias</b>
+									<strong>Lista de noticias</strong>
 									<table cellpadding="0" cellspacing="0" border="0" class="admin_table" width="100%" align="center">
 										<thead>
 											<th>ID</th>
@@ -41,7 +41,7 @@
 									<fieldset>
 										<legend>{if $tsAct == 'nuevo'}Agregar nueva{else}Editar{/if} noticia</legend>
 										<dl>
-											<dt><label for="ai_new">Noticia:</label><br /><span>Puedes utilizar los siguentes BBCodes [url], [i] [b] y [u]. El m&aacute;ximo de caracteres permitidos es de <b>190</b>.</span></dt>
+											<dt><label for="ai_new">Noticia:</label><br /><span>Puedes utilizar los siguentes BBCodes [url], [i] [b] y [u]. El m&aacute;ximo de caracteres permitidos es de <strong>190</strong>.</span></dt>
 											<dd><textarea name="not_body" id="ai_new" rows="3" cols="50">{$tsNew.not_body}</textarea></dd>
 										</dl>
 										<dl>

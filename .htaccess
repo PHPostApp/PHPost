@@ -6,6 +6,11 @@ ErrorDocument 404 /error404.html
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
+
+#RewriteBase /
+#RewriteCond %{SERVER_PORT} 80 
+#RewriteCond %{HTTP_HOST} ^http://TU_SITIO_WEB.com[NC,OR]
+#RewriteRule ^(.*)$ https://TU_SITIO_WEB.com/$1 [L,R=301,NC]
  
 Options +FollowSymLinks
 # Evitar escaneos y cualquier intento de manipulación malintencionada
@@ -29,19 +34,20 @@ IndexIgnore *
 # Protegerse contra los ataques DOS limitando el tamaño de subida de archivos
 LimitRequestBody 10240000
 
-#-#-#-#- PHPost .htaccess -#-#-#-#
 # INDEX
 RewriteRule ^$ index.php?do=home [QSA,L]
 RewriteRule ^pagina([0-9]+)$ index.php?page=$1 [QSA,L]
 RewriteRule ^index.php$ index.php?do=home [QSA,L]
 RewriteRule ^cuenta.php$ inc/php/cuenta.php [QSA,L]
+RewriteRule ^cuenta/([A-Za-z0-9_-]+)$ inc/php/cuenta.php?accion=$1 [QSA,L]
 RewriteRule ^agregar.php$ inc/php/agregar.php [QSA,L]
+
 #PERFIL
 RewriteRule ^perfil/([A-Za-z0-9_-]+)$ inc/php/perfil.php?user=$1 [QSA,L]
 RewriteRule ^perfil/([A-Za-z0-9_-]+)/$ inc/php/perfil.php?user=$1 [QSA,L]
 RewriteRule ^perfil/([A-Za-z0-9_-]+)/([0-9]+)$ inc/php/perfil.php?user=$1&pid=$2 [QSA,L]
+
 # POSTS
-#RewriteRule ^posts$ index.php?do=posts [QSA,L]
 RewriteRule ^posts/$ index.php?do=posts [QSA,L]
 RewriteRule ^mi/$ index.php?do=portal [QSA,L]
 RewriteRule ^posts/([a-z]+)$ index.php?do=posts&action=$1 [QSA,L]
@@ -50,25 +56,31 @@ RewriteRule ^posts/([A-Za-z0-9_-]+)/$ index.php?do=posts&cat=$1 [QSA,L]
 RewriteRule ^posts/([A-Za-z0-9_-]+)/pagina([0-9]+)$ index.php?do=posts&cat=$1&page=$2 [QSA,L]
 RewriteRule ^posts/([A-Za-z0-9_-]+)/([0-9]+)/(.*).html$ index.php?do=posts&cat=$1&post_id=$2&title=$3 [QSA,L]
 RewriteRule ^posts/editar/([0-9]+)$ inc/php/agregar.php?action=editar&pid=$1 [QSA,L]
+
 # RECUPERAR PASS Y VALIDAR CUENTA
 RewriteRule ^password/(.+)/([0-9]+)/(.+)/?$ inc/php/password.php?hash=$1&type=$2&email=$3
-RewriteRule ^validar/(.+)/([0-9]+)/(.+)/?$ inc/php/password.php?hash=$1&type=$2&email=$3
+RewriteRule ^validar/(.+)$ inc/php/validar.php?encode=$1 [QSA,L]
+
 # FOTOS
 RewriteRule ^fotos/([A-Za-z0-9_-]+).php$ inc/php/fotos.php?action=$1 [QSA,L]
 RewriteRule ^fotos/([A-Za-z0-9_-]+)$ inc/php/fotos.php?action=album&user=$1 [QSA,L]
 RewriteRule ^fotos/([A-Za-z0-9_-]+)/([0-9]+)$ inc/php/fotos.php?action=album&user=$1&page=$2 [QSA,L]
 RewriteRule ^fotos/([A-Za-z0-9_-]+)/([0-9]+)/([A-Za-z0-9_-]+).html$ inc/php/fotos.php?action=ver&user=$1&fid=$2 [QSA,L]
+
 # ADMIN
-RewriteRule ^admin/afs/editar/([0-9]+)$ inc/php/admin.php?action=afs&act=editar&aid=$1 [QSA,L]
-RewriteRule ^admin/medals/editar/([0-9]+)$ inc/php/admin.php?action=medals&act=editar&mid=$1 [QSA,L]
 RewriteRule ^admin/medals/nueva inc/php/admin.php?action=medals&act=nueva [QSA,L]
 RewriteRule ^admin/news/editar/([0-9]+)$ inc/php/admin.php?action=news&act=editar&nid=$1 [QSA,L]
 RewriteRule ^admin/news/nueva inc/php/admin.php?action=news&act=nuevo [QSA,L]
+
 # MODERACIÓN
 RewriteRule ^moderacion/buscador/([0-2]+)/([0-2]+)/([A-Za-z0-90.9.:a_zA_z_+_%20_¿?¡!@,'-]+)$ inc/php/moderacion.php?action=buscador&act=search&m=$1&t=$2&texto=$3 [QSA,L]
 
 #HISTORIAL DE MODERACIÓN
 RewriteRule ^mod-history/([A-Za-z0-9_-]+)/ inc/php/mod-history.php?ver=$1 [QSA,L]
+
+# SITEMAP & RSS
+RewriteRule ^rss/([A-Za-z0-9_-]+)/$ inc/php/rss.php?type=$1 [L,NC,QSA]
+RewriteRule ^rss/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)$ inc/php/rss.php?type=$1&user=$2 [L,NC,QSA]
 
 #EXTRAS
 RewriteRule ^([A-Za-z0-9_-]+).php$ inc/php/ajax_files.php?action=$1 [QSA,L]
@@ -82,3 +94,7 @@ RewriteRule ^([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/([0-9]+)$ inc/php/$1.php?action=$
 Order Allow,Deny
 Deny from all
 </FilesMatch>
+
+# m0n.co/9
+RewriteCond %{QUERY_STRING} PHP[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12} [NC]
+RewriteRule .* - [F]

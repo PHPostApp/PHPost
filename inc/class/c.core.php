@@ -586,8 +586,6 @@ class tsCore {
 	*/
 	public function validarIP() {
 		$_SERVER['REMOTE_ADDR'] = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
-		if(!filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) die('0: Su ip no se pudo validar.'); 
-		//
 		return $_SERVER['REMOTE_ADDR'];
 	}
 	/**

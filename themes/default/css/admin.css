@@ -185,3 +185,24 @@ li#a_badwords {background-image: url(../images/icons/stop.png);}
     cursor: default;
     width: auto !important;
 }
+.estadisticasList h4 {
+    font-size: .80rem;
+    padding: .4rem;
+    margin: 0;
+}
+.estadisticasList ul {
+    margin: 0;
+    padding: 0;
+}
+.estadisticasList h4,
+.estadisticasList ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.estadisticasList ul li:nth-child(2n+1) {
+    background-color: #CCC8;
+}
+.estadisticasList ul li {
+    padding: 0.3rem;
+}

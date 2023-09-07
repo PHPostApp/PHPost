@@ -129,98 +129,101 @@
 	// CAMBIOS DE NOMBRE DE USUARIO
 	} elseif($action === 'nicks'){
 		$tsTitle = 'Nicks';
-		 if(!$act) {
-		 $smarty->assign("tsAdminNicks",$tsAdmin->getChangeNicks());
-		 }elseif($act === 'realizados'){
-		 $smarty->assign("tsAdminNicks",$tsAdmin->getChangeNicks_A());
-		 }
+		$smarty->assign("tsAdminNicks", $tsAdmin->getChangeNicks($act));
    // LISTA NEGRA
-    } elseif($action === 'blacklist'){
-		 if(!$act) {
-		 $smarty->assign("tsBlackList",$tsAdmin->getBlackList());
-		 }elseif($act === 'editar'){
-         if($_POST['edit']){
-                $editar = $tsAdmin->saveBlock();
-				if($editar == 1) $tsCore->redirectTo($tsCore->settings['url'].'/admin/blacklist?save=true');
-				else $smarty->assign("tsError",$editar); $smarty->assign("tsBL",array(value => $_POST['value'], type => $_POST['type']));
-         }else $smarty->assign("tsBL",$tsAdmin->getBlock());
-		 }elseif($act === 'nuevo'){
-		  if($_POST['new']){
-                $nuevo = $tsAdmin->newBlock();
-				if($nuevo == 1) $tsCore->redirectTo($tsCore->settings['url'].'/admin/blacklist?save=true');
-				else $smarty->assign("tsError",$nuevo); $smarty->assign("tsBL",array(value => $_POST['value'], type => $_POST['type'], reason => $_POST['reason']));
-          }
-          }
-          // CENSURAS
-          } elseif($action === 'badwords'){
-		 if(!$act) {
-		 $smarty->assign("tsBadWords",$tsAdmin->getBadWords());
-		 }elseif($act === 'editar'){
-         if($_POST['edit']){
-                $editar = $tsAdmin->saveBadWord();
-				if($editar == 1) $tsCore->redirectTo($tsCore->settings['url'].'/admin/badwords?save=true');
-				else $smarty->assign("tsError",$editar); $smarty->assign("tsBW",array(word => $_POST['before'], swop => $_POST['after'], method => $_POST['method'], type => $_POST['type']));
-         }else $smarty->assign("tsBW",$tsAdmin->getBadWord());
-		 }elseif($act === 'nuevo'){
-		  if($_POST['new']){
-                $nuevo = $tsAdmin->newBadWord();
-				if($nuevo == 1) $tsCore->redirectTo($tsCore->settings['url'].'/admin/badwords?save=true');
-				else $smarty->assign("tsError",$nuevo); $smarty->assign("tsBW",array(word => $_POST['before'], swop => $_POST['after'], method => $_POST['method'], type => $_POST['type'], reason => $_POST['reason']));
-          }
-          }
-	// CONECTADOS A LA COMUNIDAD
+   } elseif($action === 'blacklist') {
+		$tsTitle = 'Lista negra';
+		if(!$act) $smarty->assign("tsBlackList",$tsAdmin->getBlackList());
+		elseif(in_array($act, ['editar', 'nuevo'])) {
+			$tsTitle = ucfirst($act) . ' lista negra';
+         if($_POST['edit'] OR $_POST['new']){
+            $response = ($act === 'editar') ? $tsAdmin->saveBlock() : $tsAdmin->newBlock();
+				if($response) $tsCore->redireccionar('admin', $action, 'save=true');
+				else $smarty->assign("tsError", $response); 
+				// Arreglo
+				$block['value'] = $_POST['value'];
+				$block['type'] = $_POST['type'];
+				if($act === 'nuevo') $block['reason'] = $_POST['reason'];
+				//
+				$smarty->assign("tsBL", $block);
+         } else $smarty->assign("tsBL", $tsAdmin->getBlock());
+		}
+   // CENSURAS
+   } elseif($action === 'badwords'){
+		$tsTitle = 'Todas las censuras';
+		if(!$act) $smarty->assign("tsBadWords",$tsAdmin->getBadWords());
+		elseif(in_array($act, ['editar', 'nuevo'])) {
+			$tsTitle = ucfirst($act) . ' censura';
+         if($_POST['edit'] OR $_POST['new']){
+            $response = ($act === 'editar') ? $tsAdmin->saveBadWord() : $tsAdmin->newBadWord();
+				if($response == 1) $tsCore->redireccionar('admin', $action, 'save=true');
+				else $smarty->assign("tsError", $response); 
+				$tsBWA = [
+					'word' => $_POST['before'], 
+					'swop' => $_POST['after'], 
+					'method' => $_POST['method'], 
+					'type' => $_POST['type']
+				];
+				if($act === 'nuevo') $tsBWA['reason'] = $_POST['reason'];
+				$smarty->assign("tsBW", $tsBWA);
+         } else $smarty->assign("tsBW", $tsAdmin->getBadWord());
+		}
+	// Sesiones
 	} elseif($action === 'sesiones'){
-		 if(!$act) {
-		 $smarty->assign("tsAdminSessions",$tsAdmin->GetSessions());
-		 }
-    /** MEDALLAS **/
-    } elseif($action === 'medals'){
+		$tsTitle = 'Todos las sesiones';
+		if(!$act) $smarty->assign("tsAdminSessions",$tsAdmin->GetSessions());
+   // Medallas
+   } elseif($action === 'medals') {
+		$tsTitle = 'Todas las medallas';
     	// CLASE MEDAL
-    	include("../class/c.medals.php");
+    	require_once TS_CLASS . "c.medals.php";
     	$tsMedal = new tsMedal();
-        if(empty($act)){
-            $smarty->assign("tsMedals",$tsMedal->adGetMedals());
-        } elseif($act === 'nueva'){
-            if($_POST['save']){
-				$agregar = $tsMedal->adNewMedal();
-				if($agregar == 1) $tsCore->redirectTo($tsCore->settings['url'].'/admin/medals?save=true');
-				else $smarty->assign("tsError",$agregar); $smarty->assign("tsMed",array(m_title => $_POST['med_title'], m_description => $_POST['med_desc'], m_image => $_POST['med_img'], m_cant => $_POST['med_cant'], m_type => $_POST['med_type'], m_cond_user => $_POST['med_cond_user'], m_cond_user_rango => $_POST['med_cond_user_rango'], m_cond_post => $_POST['med_cond_post'], m_cond_foto => $_POST['med_cond_foto']));
-            }
-				//ICONOS PARA LAS MEDALLAS
-				$smarty->assign("tsIcons",$tsAdmin->getExtraIcons('med', 16));
-				//RANGOS DISPONIBLES
-				$smarty->assign("tsRangos",$tsAdmin->getAllRangos());
-            
-			} elseif($act === 'showassign'){
-				$smarty->assign("tsAsignaciones",$tsMedal->adGetAssign());
-         } elseif($act === 'editar'){
-            if($_POST['edit']){
-                $editar = $tsMedal->editMedal();
-				if($editar == 1) $tsCore->redirectTo($tsCore->settings['url'].'/admin/medals?act=editar&mid='.$_GET['mid'].'&save=true');
-				else $smarty->assign("tsError",$editar); $smarty->assign("tsMed",array(m_title => $_POST['med_title'], m_description => $_POST['med_desc'], m_image => $_POST['med_img'], m_cant => $_POST['med_cant'], m_type => $_POST['med_type'], m_cond_user => $_POST['med_cond_user'], m_cond_user_rango => $_POST['med_cond_user_rango'], m_cond_post => $_POST['med_cond_post'], m_cond_foto => $_POST['med_cond_foto']));
-            }else $smarty->assign("tsMed",$tsMedal->adGetMedal());  //DATOS DE LA MEDALLA
-				// ICONOS PARA LA MEDALLA
-				$smarty->assign("tsIcons",$tsAdmin->getExtraIcons('med', 16));
-				//RANGOS DISPONIBLES
-				$smarty->assign("tsRangos",$tsAdmin->getAllRangos());
-                
-        }
+    	//
+      if(empty($act)) $smarty->assign("tsMedals", $tsMedal->adGetMedals());
+      elseif(in_array($act, ['nueva', 'editar'])) {
+			$tsTitle = ucfirst($act) . ' medalla';
+         if($_POST['save'] OR $_POST['edit']) {
+				$status = ($act === 'nueva') ? $tsMedal->adNewMedal() : $tsMedal->editMedal();
+				//$param = ($act === 'editar') ? "act=editar&mid={$_GET['mid']}&" : "";
+				if($status == 1) $tsCore->redireccionar('admin', $action, 'save=true');
+				else $smarty->assign("tsError", $status); 
+				$smarty->assign("tsMed", [
+					'm_title' => $_POST['med_title'], 
+					'm_description' => $_POST['med_desc'], 
+					'm_image' => $_POST['med_img'], 
+					'm_cant' => $_POST['med_cant'], 
+					'm_type' => $_POST['med_type'], 
+					'm_cond_user' => $_POST['med_cond_user'], 
+					'm_cond_user_rango' => $_POST['med_cond_user_rango'], 
+					'm_cond_post' => $_POST['med_cond_post'], 
+					'm_cond_foto' => $_POST['med_cond_foto']
+				]);
+         } else {
+         	//DATOS DE LA MEDALLA
+         	if($act === 'editar') $smarty->assign("tsMed", $tsMedal->adGetMedal());
+         }
+			//ICONOS PARA LAS MEDALLAS
+			$smarty->assign("tsIcons",$tsAdmin->getExtraIcons('med', 16));
+			//RANGOS DISPONIBLES
+			$smarty->assign("tsRangos",$tsAdmin->getAllRangos());
+      } elseif($act === 'showassign') {
+			$tsTitle = 'Mostrar las asignaciones';
+			$smarty->assign("tsAsignaciones", $tsMedal->adGetAssign());
+		}
+	// Afiliados
 	} elseif($action === 'afs'){
-        // CLASS
-        include("../class/c.afiliado.php");
-        $tsAfiliado = new tsAfiliado;
-        // QUE HACER
-	   if($act === ''){
-        // AFILIADOS
-        $smarty->assign("tsAfiliados",$tsAfiliado->getAfiliados('admin'));
-	   } elseif($act === 'editar'){
-            if($_POST['edit']){
-                if($tsAfiliado->EditarAfiliado()) $tsCore->redirectTo($tsCore->settings['url'].'/admin/afs?act=editar&aid='.$_GET['aid'].'&save=true');
-            }
-				$smarty->assign("tsAf",$tsAfiliado->getAfiliado('admin'));
-
-                
-        }
+      // CLASS
+      require_once TS_CLASS . "c.afiliado.php";
+      $tsAfiliado = new tsAfiliado;
+      // QUE HACER
+	   if(empty($act)) $smarty->assign("tsAfiliados", $tsAfiliado->getAfiliados('admin'));
+	   elseif($act === 'editar'){
+         if($_POST['edit']) {
+         	$aid = (int)$_GET['aid'];
+            if($tsAfiliado->EditarAfiliado()) $tsCore->redireccionar('admin', $action, "act=editar&aid=$aid&save=true");
+         }
+         $smarty->assign("tsAf", $tsAfiliado->getAfiliado('admin'));
+      }
    // Categorías
 	} elseif($action === 'cats'){
 		$tsTitle = 'Todas las categor&iacute;as';
@@ -276,6 +279,7 @@
             if($act === 'nuevo') $smarty->assign("tsError", $save); 
             $smarty->assign("tsType", $_GET['t']);
 				$smarty->assign("tsIcons", $tsAdmin->getExtraIcons('ran'));
+				$smarty->assign('tsColor', $tsAdmin->rangoColor());
 			}
 		// NUEVO RANGO
 		} elseif($act === 'borrar'){
@@ -290,62 +294,45 @@
 		}
 	// Usuarios
 	} elseif($action === 'users'){
-	   if(empty($act)){
-	       $smarty->assign("tsMembers",$tsAdmin->getUsuarios());
-	   }elseif($act === 'show'){
-	       $do = $_GET['t'];
-           $user_id = $_GET['uid'];
-           // HACER
-           switch($do){
+		$tsTitle = 'Todos los Usuarios';
+	   if(empty($act)) $smarty->assign("tsMembers",$tsAdmin->getUsuarios());
+	   elseif($act === 'show'){
+	      $do = (int)$_GET['t'];
+         $user_id = (int)$_GET['uid'];
+         // HACER
+         switch($do){
 				case 5:
-        	       if(!empty($_POST['save'])){
-        	           $update = $tsAdmin->setUserPrivacidad($user_id);
-        	           if($update === 'OK') $tsCore->redirectTo($tsCore->settings['url'].'/admin/users?act=show&uid='.$user_id.'&save=true');
-                       else $smarty->assign("tsError",$update);
-                    }
-					include('../ext/datos.php');
-                    $smarty->assign("tsPerfil",$tsAdmin->getUserPrivacidad());
-					$smarty->assign("tsPrivacidad",$tsPrivacidad);
-                break;
-                case 6:
-        	       if(!empty($_POST['save'])){
-        	           $delete = $tsAdmin->deleteContent($user_id);
-        	           if($delete === 'OK') $tsCore->redirectTo($tsCore->settings['url'].'/admin/users?act=show&uid='.$user_id.'&save=true');
-                       else $smarty->assign("tsError",$delete);
-                    }
-					include('../ext/datos.php');
-                    $smarty->assign("tsPerfil",$tsAdmin->getUserPrivacidad());
-					$smarty->assign("tsPrivacidad",$tsPrivacidad);
-                break;
-                case 7:
-        	       if(!empty($_POST['save'])){
-        	           $update = $tsAdmin->setUserRango($user_id);
-        	           if($update === 'OK') $tsCore->redirectTo($tsCore->settings['url'].'/admin/users?act=show&uid='.$user_id.'&save=true');
-                       else $smarty->assign("tsError",$update);
-                    }
-                    $smarty->assign("tsUserR",$tsAdmin->getUserRango($user_id));
-                break;
+				case 6:
+				case 7:
 				case 8:
-        	       if(!empty($_POST['save'])){
-        	           $update = $tsAdmin->setUserFirma($user_id);
-        	           if($update === 'OK') $tsCore->redirectTo($tsCore->settings['url'].'/admin/users?act=show&uid='.$user_id.'&save=true');
-                       else $smarty->assign("tsError",$update);
-                    }
-					$smarty->assign("tsUserF",$tsAdmin->getUserData());
-                break;
-                default:
-                    if(!empty($_POST['save'])){
-        	           $update = $tsAdmin->setUserData($user_id);
-        	           if($update === 'OK') $tsCore->redirectTo($tsCore->settings['url'].'/admin/users?act=show&uid='.$user_id.'&save=true');
-                       else $smarty->assign("tsError",$update);
-                    }
-    	           $smarty->assign("tsUserD",$tsAdmin->getUserData());
-                break;
-           }
-           // TIPO
-           $smarty->assign("tsType",$_GET['t']);
-           $smarty->assign("tsUserID",$user_id);
-           $smarty->assign("tsUsername",$tsUser->getUserName($user_id));
+        	      if(!empty($_POST['save'])) {
+        	         $both = ($do === 5) ? $tsAdmin->setUserPrivacidad($user_id) : ($do === 7 ? $tsAdmin->setUserRango($user_id) : ($do === 8 ? $tsAdmin->setUserFirma($user_id) : $tsAdmin->deleteContent($user_id)));
+        	         if($both === 'OK') $tsCore->redireccionar('admin', $action, "act=show&uid=$user_id&save=true");
+                  else $smarty->assign("tsError", $both);
+               }
+               if($do === 7) {
+               	$smarty->assign("tsUserR",$tsAdmin->getUserRango($user_id));
+               } elseif($do === 8) {
+               	$smarty->assign("tsUserF", $tsAdmin->getUserData());
+               } else {
+               	include_once TS_EXTRA . "datos.php";
+	            	$smarty->assign("tsPerfil", $tsAdmin->getUserPrivacidad());
+						$smarty->assign("tsPrivacidad", $tsPrivacidad);
+               }
+            break;
+            default:
+               if(!empty($_POST['save'])){
+        	       	$update = $tsAdmin->setUserData($user_id);
+        	       	if($update === 'OK') $tsCore->redirectTo($tsCore->settings['url'].'/admin/users?act=show&uid='.$user_id.'&save=true');
+                  else $smarty->assign("tsError",$update);
+               }
+    	       	$smarty->assign("tsUserD",$tsAdmin->getUserData());
+            break;
+         }
+         // TIPO
+         $smarty->assign("tsType",$_GET['t']);
+         $smarty->assign("tsUserID",$user_id);
+         $smarty->assign("tsUsername",$tsUser->getUserName($user_id));
 	   }
 	}
 

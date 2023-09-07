@@ -109,7 +109,7 @@ var mod = {
 			
             mydialog.title('Borrar Mensaje');
 			
-            mydialog.body('&#191;Quiere eliminar <b>toda</b> la conversaci&oacute;n?');
+            mydialog.body('&#191;Quiere eliminar <strong>toda</strong> la conversaci&oacute;n?');
 			
             mydialog.buttons(true, true, 'S&iacute;', 'mod.mps.borrar(' + mid + ', 1)', true, false, true, 'No', 'close', true, true);
 			

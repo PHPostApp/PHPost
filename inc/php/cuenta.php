@@ -57,32 +57,38 @@
 \*********************************/
 
 	if(empty($action)){
-		include('../ext/datos.php');
-		include('../ext/geodata.php');
-		// SOLO MENORES DE 100 AÑOS xD Y MAYORES DE...
-		$now_year = date("Y",time());
-		$max_year = 100 - $tsCore->settings['c_allow_edad'];
-		$end_year = $now_year - $tsCore->settings['c_allow_edad'];
-		$smarty->assign("tsMax",$max_year);
-		$smarty->assign("tsEndY",$end_year);
+		include_once TS_EXTRA . 'datos.php';
+		include_once TS_EXTRA . 'geodata.php';
+		// SOLO MENORES DE 84 AÑOS xD Y MAYORES DE...
+		$now_year = date("Y", time());
+		// 100años - 16años = 84años
+		$edad = (int)$tsCore->settings['c_allow_edad'];
+		$max_year = 100 - $edad;
+		$start_year = (int)$now_year - (int)$max_year;
+		$end_year = (int)$now_year - (int)$tsCore->settings['c_allow_edad'];
+		//
+		$smarty->assign("tsMax", (int)$max_year);
+		$smarty->assign("tsMaxY", (int)$start_year);
+		$smarty->assign("tsEndY", (int)$end_year);
 		// PERFIL INFO
-        $tsPerfil = $tsCuenta->loadPerfil();
-		$smarty->assign("tsPerfil",$tsPerfil);
+      $tsPerfil = $tsCuenta->loadPerfil();
+		$smarty->assign("tsPerfil", $tsPerfil);
+		$smarty->assign("tsRedes", $tsCuenta->redes);
 		// PERFIL DATA
 		$smarty->assign("tsPData",$tsPerfilData);
-        $smarty->assign("tsPrivacidad",$tsPrivacidad);
+      $smarty->assign("tsPrivacidad",$tsPrivacidad);
 		// DATOS
 		$smarty->assign("tsPaises",$tsPaises);
 		$smarty->assign("tsEstados",$estados[$tsPerfil['user_pais']]);
 		$smarty->assign("tsMeces",$tsMeces);
-        // BLOQUEOS
-        $smarty->assign("tsBlocks",$tsCuenta->loadBloqueos());
+      // BLOQUEOS
+      $smarty->assign("tsBlocks",$tsCuenta->loadBloqueos());
         
-	} elseif($action == 'save'){
-		echo $tsCore->setJSON($tsCuenta->savePerfil());
 	} elseif($action == 'desactivate'){
 		if(!empty($_POST['validar'])) echo $tsCuenta->desCuenta();
 	}
+	$smarty->assign("tsAccion", $_GET["accion"]); 
+	$smarty->assign("tsTab", $_GET["tab"]); 
 	
 /**********************************\
 

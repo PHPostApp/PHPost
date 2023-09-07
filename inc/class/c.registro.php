@@ -169,8 +169,7 @@ class tsRegistro extends reCaptcha {
 						$tsEmail->emailTo = $to;
 						$tsEmail->emailSubject = $subject;
 						$tsEmail->emailBody = $body;
-						$tsEmail->emailHeaders = $tsEmail->setEmailHeaders();
-						$tsEmail->sendEmail($from, $to, $subject, $body)  or die('0: Hubo un error al intentar procesar lo solicitado');				
+						$tsEmail->sendEmail()  or die('0: Hubo un error al intentar procesar lo solicitado');
 						return '1: <div class="box">Te hemos enviado un correo a <b>'.$to.'</b> con los &uacute;ltimos pasos para finalizar con el registro.<br><br>Si en los pr&oacute;ximos minutos no lo encuentras en tu bandeja de entrada, por favor, revisa tu carpeta de correo no deseado, es posible que se haya filtrado.<br><br>&iexcl;Muchas gracias!</div>';	
 				} else {
 					return '0: <div class="box">Ocurri&oacute; un error, int&eacute;ntelo de nuevo.</div>';				

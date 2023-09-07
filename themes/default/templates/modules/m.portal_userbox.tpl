@@ -9,8 +9,8 @@
 						</a>
                         <hr class="divider"/>
                         <div class="tools">
-                            <a href="{$tsConfig.url}/monitor/" class="systemicons monitor">Notificaciones (<b>{$tsNots}</b>)</a>
-                            <a href="{$tsConfig.url}/mensajes/" class="systemicons mps">Mensajes nuevos (<b>{$tsMPs}</b>)</a>
+                            <a href="{$tsConfig.url}/monitor/" class="systemicons monitor">Notificaciones (<strong>{$tsNots}</strong>)</a>
+                            <a href="{$tsConfig.url}/mensajes/" class="systemicons mps">Mensajes nuevos (<strong>{$tsMPs}</strong>)</a>
                             <hr class="divider"/>
                             <a href="{$tsConfig.url}/agregar/" style="background:url({$tsConfig.images}/icons/posts.png) no-repeat left center;">Agregar post</a>
                             <a href="{$tsConfig.url}/fotos/agregar.php" style="background:url({$tsConfig.images}/icons/photo.png) no-repeat left center;">Agregar foto</a>

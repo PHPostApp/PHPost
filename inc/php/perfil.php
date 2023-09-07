@@ -63,13 +63,12 @@
 
 \*********************************/
 
-	
-	include('../ext/datos.php');
+	include_once TS_EXTRA . 'datos.php';
 	$tsInfo = $tsCuenta->loadHeadInfo($usuario['user_id']);
-    $tsInfo['uid'] = $usuario['user_id'];
+   $tsInfo['uid'] = $usuario['user_id'];
 	// IS ONLINE?
-    $is_online = (time() - ($tsCore->settings['c_last_active'] * 60));
-    $is_inactive = (time() - (($tsCore->settings['c_last_active'] * 60) * 2)); // DOBLE DEL ONLINE
+    $is_online = (time() - ((int)$tsCore->settings['c_last_active'] * 60));
+    $is_inactive = (time() - (((int)$tsCore->settings['c_last_active'] * 60) * 2)); // DOBLE DEL ONLINE
     //
     if($tsInfo['user_lastactive'] > $is_online) $tsInfo['status'] = array('t' => 'Online', 'css' => 'online');
     elseif($tsInfo['user_lastactive'] > $is_inactive) $tsInfo['status'] = array('t' => 'Inactivo', 'css' => 'inactive');
@@ -81,15 +80,16 @@
     $tsInfo = array_merge($tsInfo,$tsGeneral);
     // PAIS
 	$tsInfo['user_pais'] = $tsPaises[$tsInfo['user_pais']];
-    // LO SIGO?
-    $tsInfo['follow'] = $tsCuenta->iFollow($usuario['user_id']);
+   // LO SIGO?
+   $tsInfo['follow'] = $tsCuenta->iyfollow($usuario['user_id'], 'iFollow');
 	// ME SIGUE?
-    $tsInfo['yfollow'] = $tsCuenta->yFollow($usuario['user_id']);
+   $tsInfo['yfollow'] = $tsCuenta->iyfollow($usuario['user_id'], 'yFollow');
     // MANDAR A PLANTILLA
 	$smarty->assign("tsInfo",$tsInfo);
+	$smarty->assign("tsRedes", $tsCuenta->redes);
 	$smarty->assign("tsGeneral",$tsGeneral);
     // MURO
-    include("../class/c.muro.php");
+    include TS_CLASS . "c.muro.php";
     $tsMuro = new tsMuro();
     // PERMISOS
     $priv = $tsMuro->getPrivacity($usuario['user_id'], $username, $tsInfo['follow'], $tsInfo['yfollow'] );

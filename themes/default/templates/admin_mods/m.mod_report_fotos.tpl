@@ -4,7 +4,7 @@
                                 <div id="res" class="boxy-content">
                                 {if $tsSave}<div class="mensajes  ok">Tus cambios han sido guardados.</div>{/if}
                                 	{if $tsAct == ''}
-                                    Recuerda leer el protocolo para poder moderar las fotos que han sido denunciadas por otros usuarios, si te es posible y se puede editar una foto, no la borres, <b>Ed&iacute;tala!</b> 
+                                    Recuerda leer el protocolo para poder moderar las fotos que han sido denunciadas por otros usuarios, si te es posible y se puede editar una foto, no la borres, <strong>Ed&iacute;tala!</strong> 
                                     <hr class="separator" />
                                     <table cellpadding="0" cellspacing="0" border="0" class="admin_table" width="100%" align="center">
                                     	<thead>

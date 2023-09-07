@@ -1,500 +1,211 @@
-/*
-    PHPost > Admin
-    Autor: JNeutron
-    ::
-    Funciones para el panel de administración
+/**
+ * Con estas funciones "sameModal()" y "sameFn()"
+ * y de esta forma simplificamos
 */
-
+sameModal = (sametitle, samebody, sameaction) => {
+	mydialog.faster({
+   	title: sametitle,
+   	body: samebody,
+   	buttons: {
+   		ok: { text: 'S&iacute;', action: sameaction },
+   		fail: { text: 'No', action: 'close' }
+   	}
+   });
+}
+sameFn = (page, params, element) => {
+   $('#loading').fadeIn(250);
+   mydialog.procesando_inicio();
+	$.post(`${global_data.url}/${page}.php`, params, a => {
+   	mydialog.procesando_fin();
+   	mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
+   	mydialog.center();
+   	if(a.charAt(0) == '1') $(element).fadeOut(); 
+   	$('#loading').fadeOut(350);
+   });
+}
 var admin = {
-	
-		afs : {
-	    borrar:function(aid, gew){
-          if(!gew){
-            mydialog.show();
-			
-            mydialog.title('Borrar Afiliado');
-			
-            mydialog.body('&#191;Quiere borrar este afiliado?');
-			
-            mydialog.buttons(true, true, 'S&iacute;', 'admin.afs.borrar(' + aid + ', 1)', true, false, true, 'No', 'close', true, true);
-			
-            mydialog.center();
-			
-        }else{
-            
-            $('#loading').fadeIn(250);
-		
-           $.post(global_data.url + '/afiliado-borrar.php', 'afid=' + aid, function(a){
-		   
-           mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
-		   
-           mydialog.center();
-           
-           success:  if(a.charAt(0) == '1') $('#few_' + aid).fadeOut().remove; $('#loading').fadeOut(350);
-           
-      });
-     }
-   },
-
-
-  accion: function(aid){
-    $('#loading').fadeIn(250);
-    $.ajax({
-		type: 'POST',
-		url: global_data.url +'/afiliado-setactive.php',
-		data: 'aid=' + aid,
-		success: function(h){
-			switch(h.charAt(0)){
-				case '0': //Error
-					mydialog.alert('Error', h.substring(3));
-					break;
-				case '1':
-					//
-					$('#status_afiliado_' + aid).html('<font color="green">Activo</font>');
-				break;
-				case '2':
-					//
-					$('#status_afiliado_' + aid).html('<font color="purple">Inactivo</font>');
-				break;
-                
-			}
-            $('#loading').fadeOut(250);
+	// AFILIADOS
+	afs: {
+	   borrar: (afid, gew) => {
+         if(!gew){
+         	sameModal('Borrar Afiliado', '&#191;Quiere borrar este afiliado?', `admin.afs.borrar(${afid}, 1)`)
+	      } else sameFn('afiliado-borrar', { afid }, `#few_${afid}`);
+   	},
+   	accion: (aid) => {
+   		$('#loading').fadeIn(250);
+   		$.post(global_data.url +'/afiliado-setactive.php', { aid }, h => {
+   			let number = parseInt(h.charAt(0));
+				if(number === 0) mydialog.alert('Error', h.substring(3));
+				let color = (number === 1) ? 'green' : 'purple';
+				let text = (number === 1) ? 'A' : 'Ina';
+				$('#status_afiliado_' + aid).html(`<font color="${color}">${text}ctivo</font>`);
+		      $('#loading').fadeOut(250);
+			});
+		}, 
+	},
+	// NOTICIAS
+	news: {
+ 		accion: nid => {
+		   $('#loading').fadeIn(250);
+		   $.post(global_data.url +'/admin-noticias-setInActive.php', { nid }, h => {
+   			let number = parseInt(h.charAt(0));
+				if(number === 0) mydialog.alert('Error', h.substring(3));
+				let color = (number === 1) ? 'green' : 'purple';
+				let text = (number === 1) ? 'A' : 'Ina';
+				$('#status_noticia_' + aid).html(`<font color="${color}">${text}ctiva</font>`);
+		      $('#loading').fadeOut(250);
+		   })
 		}
-	});
-  }, 
-},
-
-news : {
- accion: function(nid){
-    $('#loading').fadeIn(250);
-    $.ajax({
-		type: 'POST',
-		url: global_data.url +'/admin-noticias-setInActive.php',
-		data: 'nid=' + nid,
-		success: function(h){
-			switch(h.charAt(0)){
-				case '0': //Error
-					mydialog.alert('Error', h.substring(3));
-					break;
-				case '1':
-					//
-					$('#status_noticia_' + nid).html('<font color="green">Activa</font>');
-				break;
-				case '2':
-					//
-					$('#status_noticia_' + nid).html('<font color="purple">Inactiva</font>');
-				break;
-			}
-            
-            $('#loading').fadeOut(350);
-		}
-	});
-  }, 
-},
-
-nicks : {
-  accion: function(nid, accion, gew){
-    if(!gew){
-            mydialog.show();
-
-			mydialog.title((accion == 'aprobar' ? 'Aprobar Cambio' : 'Denegar Cambio'));
-			
-			mydialog.body((accion == 'aprobar' ? '&#191;Quiere aprobar el cambio?' : '&#191;Quiere denegar el cambio?'));
-
-            mydialog.buttons(true, true, 'S&iacute;', "admin.nicks.accion(" + nid + ",'" + accion + "' ,true)", true, false, true, 'No', 'close', true, false);
-            
-			mydialog.center();
-			
-        }else{
-            
-            $('#loading').fadeIn(250);
-		
-           $.post(global_data.url + '/admin-nicks-change.php', 'nid=' + nid + '&accion=' + accion, function(a){
-		   
-           mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
-		   
-		   mydialog.center();
-		   
-		   success:  if(a.charAt(0) == '1') $('#nick_' + nid).fadeOut(); $('#loading').fadeOut(350);
-					   
-      });
-     }
-  }, 
-},
-
-sesiones : {
-	    borrar:function(sid, gew){
-          if(!gew){
-            mydialog.show();
-			
-            mydialog.title('Cerrar sesi&oacute;n');
-			
-            mydialog.body('&#191;Quiere cerrar la sesi&oacute;n de este usuario/visitante? Se borrar&aacute; la sesi&oacute;n');
-			
-            mydialog.buttons(true, true, 'S&iacute;', "admin.sesiones.borrar('" + sid + "', true)", true, false, true, 'No', 'close', true, true);
-			
-            mydialog.center();
-			
-        }else{
-            
-            $('#loading').fadeIn(250);
-		
-           $.post(global_data.url + '/admin-sesiones-borrar.php', 'sesion_id=' + sid, function(a){
-		   
-           mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
-		   
-		   mydialog.center();
-		   
-		   success:  if(a.charAt(0) == '1') $('#sesion_' + sid).fadeOut(); $('#loading').fadeOut(350);
-					   
-      });
-     }
-   },  
-},
-
-
-posts : {
-	    borrar:function(pid, gew){
-          if(!gew){
-            mydialog.show();
-			
-            mydialog.title('Borrar Post');
-			
-            mydialog.body('&#191;Quiere borrar este post permanentemente?');
-			
-            mydialog.buttons(true, true, 'S&iacute;', 'admin.posts.borrar(' + pid + ', 1)', true, false, true, 'No', 'close', true, true);
-			
-            mydialog.center();
-			
-        }else{
-		  
-          $('#loading').fadeIn(250);
-        
-           $.post(global_data.url + '/posts-admin-borrar.php', 'postid=' + pid, function(a){
-		   
-           mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
-		   
-		   mydialog.center();
-           
-           success:  if(a.charAt(0) == '1') $('#post_' + pid).fadeOut(); $('#loading').fadeOut(350);
-					   
-      });
-     }
-   },  
-},
-
-blacklist : {
-	    borrar:function(id, gew){
-          if(!gew){
-            mydialog.show();
-			
-            mydialog.title('Retirar Bloqueo');
-			
-            mydialog.body('&#191;Quiere retirar este bloqueo?');
-			
-            mydialog.buttons(true, true, 'S&iacute;', 'admin.blacklist.borrar(' + id + ', true)', true, false, true, 'No', 'close', true, true);
-			
-            mydialog.center();
-			
-        }else{
-		  
-          $('#loading').fadeIn(250);
-        
-           $.post(global_data.url + '/admin-blacklist-delete.php', 'bid=' + id, function(a){
-		   
-           mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
-		   
-		   mydialog.center();
-           
-           success:  if(a.charAt(0) == '1') $('#block_' + id).fadeOut(); $('#loading').fadeOut(350);
-					   
-      });
-     }
-   },  
-},
-
-badwords : {
-	    borrar:function(wid, gew){
-          if(!gew){
-            mydialog.show();
-			
-            mydialog.title('Retirar Filtro');
-			
-            mydialog.body('&#191;Quiere retirar este filtro?');
-			
-            mydialog.buttons(true, true, 'S&iacute;', 'admin.badwords.borrar(' + wid + ', true)', true, false, true, 'No', 'close', true, true);
-			
-            mydialog.center();
-			
-        }else{
-		  
-          $('#loading').fadeIn(250);
-        
-           $.post(global_data.url + '/admin-badwords-delete.php', 'wid=' + wid, function(a){
-		   
-           mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
-		   
-		   mydialog.center();
-           
-           success:  if(a.charAt(0) == '1') $('#wid_' + wid).fadeOut(); $('#loading').fadeOut(350);
-					   
-      });
-     }
-   },  
-},
-
-fotos : {
-	    borrar:function(fid, gew){
-          if(!gew){
-            mydialog.show();
-			
-            mydialog.title('Borrar Foto');
-			
-            mydialog.body('&#191;Quiere borrar esta foto permanentemente?');
-			
-            mydialog.buttons(true, true, 'S&iacute;', 'admin.fotos.borrar(' + fid + ', 1)', true, false, true, 'No', 'close', true, true);
-			
-            mydialog.center();
-			
-        }else{
-		
-            $('#loading').fadeIn(250);
-            
-           $.post(global_data.url + '/admin-foto-borrar.php', 'foto_id=' + fid, function(a){
-		   
-           mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
-		   
-		   mydialog.center();
-		   
-		   success:  $('#foto_' + fid).fadeOut(); $('#loading').fadeOut(350);
-					   
-      });
-     }
-   },
-   setOpenClosed:function(fid){
-         
+	},
+	// NICKS
+	nicks: {
+	  	accion: (nid, accion, gew) => {
+	    	if(!gew){
+	    		apd = (accion == 'aprobar') ? 'Aprobar' : 'Denegar';
+         	sameModal(apd + ' Cambio', '&#191;Quiere ' + apd.toLowerCase() + ' el cambio?', `admin.nicks.accion(${nid}, '${accion}', true)`);
+	      } else sameFn('admin-nicks-change', { nid, accion }, `#nick_${nid}`);
+	  	}
+	},
+	// SESIONES
+	sesiones: {
+	   borrar: (sid, gew) => {
+         if(!gew){
+         	sameModal('Cerrar sesi&oacute;n', '&#191;Quiere cerrar la sesi&oacute;n de este usuario/visitante? Se borrar&aacute; la sesi&oacute;n', `admin.sesiones.borrar(${sid}, true)`);
+        	} else sameFn('posts-sesiones-borrar', `sesion_id=${sid}`, `#sesion_${sid}`);
+      }
+	},
+	// TODOS LOS POSTS
+	posts: {
+	   borrar: (postid, gew) => {
+         if(!gew){
+         	sameModal('Borrar Post', '&#191;Quiere borrar este post permanentemente?', `admin.posts.borrar(${postid}, 1)`);		
+        	} else sameFn('posts-admin-borrar', { postid }, `#post_${postid}`);
+      }
+	},
+	// LISTA NEGRA
+	blacklist: {
+	   borrar: (bid, gew) => {
+         if(!gew) {
+         	sameModal('Retirar Bloqueo', '&#191;Quiere retirar este bloqueo?', `admin.blacklist.borrar(${bid}, true)`);
+        	} else sameFn('admin-blacklist-delete', { bid }, `#block_${bid}`)
+   	}
+	},
+	// CENSURAS
+	badwords: {
+	   borrar: (wid, gew) => {
+         if(!gew){
+         	sameModal('Retirar Filtro', '&#191;Quiere retirar este filtro?', `admin.badwords.borrar(${wid}, true)`);
+         } else sameFn('admin-badwords-delete', { wid }, `#wid_${wid}`)
+	   }
+	},
+	// TODAS LAS FOTOS
+	fotos: {
+	   borrar: (foto_id, gew) => {
+         if(!gew){
+         	sameModal('Borrar Foto', '&#191;Quiere borrar esta foto permanentemente?', `admin.badwords.borrar(${foto_id}, true)`);
+         } else sameFn('admin-foto-borrar', { foto_id }, `#foto_${foto_id}`)
+	   },
+	   // Cerramos o Abrimos los comentario en foto
+	   setOpenClosed: (fid) => {
+	   	$('#loading').fadeIn(250);
+         $.post(global_data.url +'/admin-foto-setOpenClosed.php', { fid }, h => {
+         	let number = parseInt(h.charAt(0));
+         	if(number === 0) mydialog.alert('Error', h.substring(3));
+         	let color = number ? 'red' : 'green';
+         	let text = number ? 'Cerrados' : 'Abiertos';
+         	$('#comments_foto_' + fid).html(`<font color="${color}">${text}</font>`);
+         	$('#loading').fadeOut(350);
+         });
+      },
+      // Ocultamos | Mostramos la foto
+      setShowHide: (fid) => {
          $('#loading').fadeIn(250);
-         
-		 $.ajax({
-		type: 'POST',
-		url: global_data.url +'/admin-foto-setOpenClosed.php',
-		data: 'fid=' + fid,
-		success: function(h){
-			switch(h.charAt(0)){
-				case '0': //Error
-					mydialog.alert('Error', h.substring(3));
-					break;
-				case '1':
-					//
-					$('#comments_foto_' + fid).html('<font color="red">Cerrados</font>');
-				break;
-				case '2':
-					//
-					$('#comments_foto_' + fid).html('<font color="green">Abiertos</font>');
-				break;
+         $.post(global_data.url +'/admin-foto-setShowHide.php', { fid }, h => {
+         	let number = parseInt(h.charAt(0));
+         	if(number === 0) mydialog.alert('Error', h.substring(3));
+         	let color = number ? 'purple' : 'green';
+         	let text = number ? 'Oculta' : 'Visible';
+         	$('#status_foto_' + fid).html(`<font color="${color}">${text}</font>`);
+         	$('#loading').fadeOut(350);
+         });
+      }
+	},
+	// TODAS LAS MEDALLAS
+	medallas : {
+	   borrar: (medal_id, gew) => {
+	   	if(!gew) {
+	   		sameModal('Borrar Medalla', '&#191;Quiere borrar esta medalla?', `admin.medallas.borrar(${medal_id}, 2)`);
+		  	} else if(gew == '2') {
+	   		sameModal('Borrar Medalla', 'Si borra la medalla, los usuarios que tengan esta medalla la perder&aacute;n, &#191;seguro que quiere continuar?', `admin.medallas.borrar(${medal_id}, 3)`);
+	   	} else sameFn('admin-medalla-borrar', { medal_id }, `#medal_id_${medal_id}`)
+   	},   
+   	borrar_asignacion: (aid, medal_id, gew) => {
+         if(!gew) {
+	   		sameModal('Borrar Asignacion', '&#191;Quiere continuar borrando esta asignaci&oacute;n?', `admin.medallas.borrar_asignacion(${aid}, ${medal_id}, true)`);
+       	} else sameFn('admin-medallas-borrar-asignacion', { aid, medal_id }, `#assign_id_${medal_id}`)
+      },
+	   asignar: (medal_id, gew) => {
+	   	if(!gew){
+	   		var form = `<div id="AFormInputs">
+	   			<div class="form-line">
+	   				<label for="m_usuario">Al usuario (nombre):</label>
+	   				<input name="m_usuario" id="m_usuario"/><br />
+	   				<label for="m_post">Al post (id):</label>
+	   				<input name="m_post" id="m_post"/><br />
+	   				<label for="m_foto">A la foto (id):</label>
+	   				<input name="m_foto" id="m_foto"/>
+	   			</div>
+	   		</div>`;
+	   		sameModal('Asignar medalla', form, `admin.medallas.asignar(${medal_id}, true)`);
+		 	} else {
+				$('#loading').fadeIn(250);
+				var params = [
+					'mid=' + medal_id,
+					'm_usuario=' + $('#m_usuario').val(),
+					'pid=' + $('#m_post').val(),
+					'fid=' + $('#m_foto').val()
+				].join('&');
+				$.post(global_data.url + '/admin-medalla-asignar.php', params, c => {
+					mydialog.alert((c.charAt(0) == '0' ? 'Opps!' : 'Hecho'), c.substring(3), false);
+			   	if(c.charAt(0) != '0') {
+						var nmeds = parseInt($('#total_med_assig_' + medal_id).text());
+						$('#total_med_assig_' + medal_id).text(nmeds + 1);
+	               $('#loading').fadeOut(350);
+					}
+					mydialog.center();
+				});
 			}
-            $('#loading').fadeOut(350);
+	   }
+   },
+   // TODOS LOS USUARIOS
+   users: {
+		setInActive: (uid) => {
+			$('#loading').fadeIn(250);
+			$.post(global_data.url +'/admin-users-InActivo.php', { uid }, h => {
+   			let number = parseInt(h.charAt(0));
+				if(number === 0) mydialog.alert('Error', h.substring(3));
+				let color = (number === 1) ? 'green' : 'purple';
+				let text = (number === 1) ? 'A' : 'Ina';
+				$('#status_user_' + uid).html(`<font color="${color}">${text}ctivo</font>`);
+		      $('#loading').fadeOut(250);
+		      $('#loading').fadeOut(350);
+			});
 		}
-	});
-		 
-		 
-   },
-   setShowHide:function(fid){
-         $('#loading').fadeIn(250);
-		 $.ajax({
-		type: 'POST',
-		url: global_data.url +'/admin-foto-setShowHide.php',
-		data: 'fid=' + fid,
-		success: function(h){
-			switch(h.charAt(0)){
-				case '0': //Error
-					mydialog.alert('Error', h.substring(3));
-					break;
-				case '1':
-					//
-					$('#status_foto_' + fid).html('<font color="purple">Oculta</font>');
-				break;
-				case '2':
-					//
-					$('#status_foto_' + fid).html('<font color="green">Visible</font>');
-				break;
-			}
-            $('#loading').fadeOut(350);
-		}
-	});
-		 
-		 
-   },
-
-
-	
-   
-},
-
-medallas : {
-	    borrar:function(mid, gew){
-		
-		    mydialog.show();
-			
-            mydialog.title('Borrar Medalla');
-			
-          if(!gew){
-			
-            mydialog.body('&#191;Quiere borrar esta medalla?');
-			
-            mydialog.buttons(true, true, 'S&iacute;', 'admin.medallas.borrar(' + mid + ', 2)', true, false, true, 'No', 'close', true, true);
-				
-		  }else if(gew == '2'){
-			
-            mydialog.body('Si borra la medalla, los usuarios que tengan esta medalla la perder&aacute;n, &#191;seguro que quiere continuar?');
-			
-            mydialog.buttons(true, true, 'S&iacute;', 'admin.medallas.borrar(' + mid + ', 3)', true, false, true, 'No', 'close', true, true);
-						
-        }else{
-		      
-              $('#loading').fadeIn(250);
-              
-           $.post(global_data.url + '/admin-medalla-borrar.php', 'medal_id=' + mid, function(a){
-		   
-           mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
-		   
-		   mydialog.center();
-		   
-		   success:  $('#medal_id_' + mid).fadeOut(); $('#loading').fadeOut(350);
-					   
-      });
-     }
-	 
-	 mydialog.center();
-   },
-   
-   borrar_asignacion:function(aid, mid, gew){
-          if(!gew){
-            mydialog.show();
-			
-            mydialog.title('Borrar Asignacion');
-			
-            mydialog.body('&#191;Quiere continuar borrando esta asignaci&oacute;n?');
-			
-            mydialog.buttons(true, true, 'S&iacute;', 'admin.medallas.borrar_asignacion(' + aid + ',' + mid + ', true)', true, false, true, 'No', 'close', true, true);
-			
-            mydialog.center();
-			
-        }else{
-		
-           $('#loading').fadeIn(250);
-            
-           $.post(global_data.url + '/admin-medallas-borrar-asignacion.php', 'aid=' + aid + '&mid=' + mid, function(a){
-		   
-           mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
-		   
-		   mydialog.center();
-		   
-		   success:  $('#assign_id_' + aid).fadeOut(); $('#loading').fadeOut(350);
-					   
-      });
-     }
-   },
-   asignar:function(mid, gew){
-		
-		    if(!gew){
-	 
-	var form = '';
-        form += '<div style="padding:5px 35px;" id="AFormInputs">'
-        form += '<div class="form-line">'
-        form += '<label for="m_usuario">Al usuario (nombre):</label>'
-        form += '<input name="m_usuario" id="m_usuario"/><br />'
-		form += '<label for="m_post">Al post (id):</label>'
-        form += '<input name="m_post" id="m_post"/><br />'
- 		form += '<label for="m_foto">A la foto (id):</label>'
-        form += '<input name="m_foto" id="m_foto"/>'
-		form += '</div>'
-		form += '</div>'
-        //
-        mydialog.class_aux = 'registro';
-		mydialog.show(true);
-		mydialog.title('Asignar medalla');
-		mydialog.body(form);
-		mydialog.buttons(true, true, 'Asignar', 'admin.medallas.asignar(' + mid + ',true)', true, true, true, 'Cancelar', 'close', true, false);		
-		mydialog.center();
-	
-	 }else{
-	 
-	var m_usuario = $('#m_usuario').val(); 
-	var m_post = $('#m_post').val(); 
-	var m_foto = $('#m_foto').val();
-    
-    $('#loading').fadeIn(250); 
-	
-	$.post(global_data.url + '/admin-medalla-asignar.php', 'mid=' + mid + '&m_usuario=' + m_usuario + '&pid=' + m_post + '&fid=' + m_foto, function(c){
-		   
-           mydialog.alert((c.charAt(0) == '0' ? 'Opps!' : 'Hecho'), '<div class="dialog_box">' + c.substring(3) + '</div>', false);
-		   
-		   success: if(c.charAt(0) != '0') {
-				var nmeds = parseInt($('#total_med_assig_' + mid).text());
-				$('#total_med_assig_' + mid).text(nmeds + 1);
-                $('#loading').fadeOut(350);
-				}
-		   
-           mydialog.center();
-		    
-		  });
-	}
-   },
-
-
-	
-   
-},
-
-    users: {
-		setInActive: function(uid){
-        
-        $('#loading').fadeIn(250);
-		$.ajax({
-		type: 'POST',
-		url: global_data.url +'/admin-users-InActivo.php',
-		data: 'uid=' + uid,
-		success: function(h){
-			switch(h.charAt(0)){
-				case '0': //Error
-					mydialog.alert('Error', h.substring(3));
-					break;
-				case '1':
-					//
-					$('#status_user_' + uid).html('<font color="green">Activo</font>');
-				break;
-				case '2':
-					//
-					$('#status_user_' + uid).html('<font color="purple">Inactivo</font>');
-				break;
-			}
-            $('#loading').fadeOut(350);
-		}
-	});
-	 
-        
-    },
-	
-    },
+   }
 }
 
 /* AFILIADOS */
 var ad_afiliado = {
-    cache: {},
-    detalles: function(aid){
-    	$.ajax({
-    		type: 'POST',
-    		url: global_data.url + '/afiliado-detalles.php',
-    		data: 'ref=' + aid,
-    		success: function(h){
-        		mydialog.show(true);
-        		mydialog.title('Detalles del Afiliado');
-        		mydialog.body(h);
-                mydialog.buttons(true, true, 'Aceptar', 'mydialog.close()', true, true);
-                mydialog.center();
-                
-    		}
-    	});   
-    }
+   cache: {},
+   detalles: (aid) => {
+   	$.post(global_data.url + '/afiliado-detalles.php', 'ref=' + aid, response => {
+   		mydialog.faster({
+   			title: 'Detalles del Afiliado',
+   			body: response,
+   			buttons: {
+   				ok: { text: 'Aceptar', action: 'close' }
+   			}
+   		})
+   	}); 
+   }
 }

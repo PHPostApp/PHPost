@@ -50,7 +50,7 @@
 						</li>
 						{/if}
                         {else}
-                        <li><a><span style="color:red;width:auto;background:none;"><b>VISTA PREVIA</b></span></a></li>
+                        <li><a><span style="color:red;width:auto;background:none;"><strong>VISTA PREVIA</strong></span></a></li>
                         {/if}
                     </ul>
                 </div>

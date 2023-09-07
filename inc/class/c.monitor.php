@@ -289,7 +289,7 @@ public function setNotificacion($type, $user_id, $obj_user, $obj_uno = 0, $obj_d
 		
             # CARGO LOS FILTROS
 			$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT c_monitor FROM u_portal WHERE user_id = \''.$tsUser->uid.'\' LIMIT 1');
-            $filtros = db_exec('fetch_assoc', $cuery);
+            $filtros = db_exec('fetch_assoc', $query);
             
             //
             $filtros = unserialize($filtros['c_monitor']);
@@ -328,12 +328,11 @@ public function setNotificacion($type, $user_id, $obj_user, $obj_uno = 0, $obj_d
 			// CONSULTAMOS
 			if(is_array($sql)){
 				$dato = $sql;
-			}else {
+			} else {
 				$query = db_exec([__FILE__, __LINE__], 'query', $sql);
 				$dato = db_exec('fetch_assoc', $query);
-				
 			}
-			$dato = array_merge($dato, $val);
+			if($dato !== NULL) $dato = array_merge($dato, $val);
             // SI AUN EXISTE LO QUE VAMOS A NOTIFICAR..
             if($dato) $data[] = $this->makeOracion($dato);
 		}

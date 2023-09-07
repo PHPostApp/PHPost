@@ -1,3 +1,6 @@
+html, body {
+	scroll-behavior: smooth;
+}
 body {
 	padding:0;
 	margin: 10px 0 0 0;
@@ -16,7 +19,6 @@ input:active {outline:0}
 .color_green{color:green!important}
 .color_blue{color:blue}
 .color_gray, .color_gray a {color: gray!important}
-
 .clearBoth:after {
 	content: ".";
 	display: block;
@@ -62,6 +64,21 @@ hr {
 	color:#CCC;
 	height:1px;
 	border:0 none;
+}
+/**
+ * Scrollbar
+*/
+::-webkit-scrollbar {
+	width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+	background: #888;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 /**
  * Modal
@@ -6546,34 +6563,6 @@ cursor: pointer;
 .tabbed-d a {
 	color: #0a3c6f;
 }
-
-.tabbed-d .content-tabs h3 {
-	color: #FFF;
-	font-size: 13px;
-	border: 1px solid #666;
-	height: 16px;
-	padding: 5px 10px;
-	background: #999;
-	text-shadow: 0 1px 0 #000;
-	margin: 0;
-	cursor: pointer;
-	margin-top: 8px;
-}
-
-
-.tabbed-d .content-tabs h3:hover {
-	background: #3371af;
-}
-
-
-.tabbed-d .content-tabs h3.active {
-	color: #FFF;
-	background: url(images/bg_perfil_h3.gif) repeat-x top left;
-	text-shadow: 0 1px 0 #000;
-		border: 1px solid #002347;
-	
-}
-
 /* Here's our form stuff */
 
 .tabbed-d fieldset {clear: both;border: 0;}

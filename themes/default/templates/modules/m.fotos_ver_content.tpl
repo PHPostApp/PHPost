@@ -39,7 +39,7 @@
                         <img class="img" src="{$tsFoto.f_url}" />
                     </div>
                     <h2 class="floatL">{$tsFoto.f_title}</h2>
-                    <span class="floatR"><b>{$tsFoto.f_date|date_format:"%d/%m/%Y"}</b></span>
+                    <span class="floatR"><strong>{$tsFoto.f_date|date_format:"%d/%m/%Y"}</strong></span>
                     <div class="clearBoth"></div>
                     <p style="word-wrap: break-word;">{$tsFoto.f_description|nl2br}</p>
                     <span class="spacer"></span>
@@ -130,7 +130,7 @@
                                 <img src="{$tsConfig.url}/files/avatar/{$tsUser->uid}_50.jpg" width="50" height="50"/>
                             </div>
                             <form method="post" action="" name="firmar">
-                                <label for="mensaje" style="font-size:12px"><b>Mensaje</b></label>
+                                <label for="mensaje" style="font-size:12px"><strong>Mensaje</strong></label>
                                 <div class="error"></div>
                                 <textarea name="mensaje" id="mensaje" rows="2" class="onblur_effect autorow" style="width:504px;margin:5px 0; min-height:36px; max-height:160px" title="Escribe un mensaje." onblur="onblur_input(this)" onfocus="onfocus_input(this)">Escribe un mensaje.</textarea>
                                 <input type="hidden" name="auser_post" value="{$tsFoto.f_user}" />

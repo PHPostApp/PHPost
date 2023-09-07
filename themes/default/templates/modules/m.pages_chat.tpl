@@ -23,15 +23,15 @@
 		</div>
 	</div>
 	<div class="box_cuerpo" style="display:none;" id="protocolo" >	
-	<font class="size12"><b>1.</b> No se permite el uso de nicks que contengan t&eacute;rminos insultantes, sexuales, spam, apolog&iacute;as a la violencia o alg&uacute;n pedido de car&aacute;cter sexual, compa&ntilde;&iacute;a, parejas y/o a fines.
+	<font class="size12"><strong>1.</strong> No se permite el uso de nicks que contengan t&eacute;rminos insultantes, sexuales, spam, apolog&iacute;as a la violencia o alg&uacute;n pedido de car&aacute;cter sexual, compa&ntilde;&iacute;a, parejas y/o a fines.
 	<br /><br />
-	<b>2.</b> Est&aacute; prohibido faltar el respeto, insultar, provocar, difamar, acosar, amenazar o hacer cualquier otra cosa no deseada, tanto directa como indirecta a otro usuario.
+	<strong>2.</strong> Est&aacute; prohibido faltar el respeto, insultar, provocar, difamar, acosar, amenazar o hacer cualquier otra cosa no deseada, tanto directa como indirecta a otro usuario.
 	<br /><br />
-	<b>3.</b> No est&aacute; permitido el SPAM, publicidad o propaganda de p&aacute;ginas personales, chats, foros, mensajes comerciales destinados a vender productos o servicios, etc.
+	<strong>3.</strong> No est&aacute; permitido el SPAM, publicidad o propaganda de p&aacute;ginas personales, chats, foros, mensajes comerciales destinados a vender productos o servicios, etc.
     <br><br>
-    <b>4.</b> No repetir o enviar varias l&iacute;neas de texto en un cierto tiempo, NO FLOOD.
+    <strong>4.</strong> No repetir o enviar varias l&iacute;neas de texto en un cierto tiempo, NO FLOOD.
     <br /><br />
-    <b>5.</b> Recomendamos no abusar de las MAY&Uacute;SCULAS, solo utilizarlas por reglas ortograficas (comienzos de oraci&oacute;n, nombres propios o siglas), ya que el uso de &eacute;sta significa GRITAR.</font>
+    <strong>5.</strong> Recomendamos no abusar de las MAY&Uacute;SCULAS, solo utilizarlas por reglas ortograficas (comienzos de oraci&oacute;n, nombres propios o siglas), ya que el uso de &eacute;sta significa GRITAR.</font>
 	<br /><br /><p style="padding: 0px; margin: 0px;" align="right">
 	<i>Este protocolo es solo para el chat, para la web en general existe otro <a href="{$tsConfig.url}/pages/protocolo/">protocolo</a>.</i></p>
 		

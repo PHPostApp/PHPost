@@ -16,9 +16,8 @@
 		'afiliado-nuevo' => array('n' => 0, 'p' => ''),
 		'afiliado-borrar' => array('n' => 0, 'p' => ''),
 		'afiliado-setaction' => array('n' => 0, 'p' => ''),
-        'afiliado-url' => array('n' => 0, 'p' => ''),
-        'afiliado-detalles' => array('n' => 0, 'p' => 'detalles'),
-		'afiliado-editar' => array('n' => 0, 'p' => ''),
+      'afiliado-url' => array('n' => 0, 'p' => ''),
+      'afiliado-detalles' => array('n' => 0, 'p' => 'detalles'),
 	);
 
 /**********************************\
@@ -41,51 +40,38 @@
 	// DEPENDE EL NIVEL
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg['mensaje']; die();}
-    // CLASS
-    include("../class/c.afiliado.php");
-    $tsAfiliado = new tsAfiliado();
-    //
+   // CLASS
+   require_once TS_CLASS . "c.afiliado.php";
+   $tsAfiliado = new tsAfiliado;
 	// CODIGO
 	switch($action){
 		case 'afiliado-nuevo':
 			//<---
-            echo $tsAfiliado->newAfiliado();
+         echo $tsAfiliado->newAfiliado();
 			//--->
 		break;
 		case 'afiliado-borrar':
 			//<---
-			$aid = $_POST['afid'];
-            echo $tsAfiliado->DeleteAfiliado($aid);
-			//--->
-		break;
-		case 'afiliado-editar':
-			//<---
-			$a_id = $_POST['a_id'];
-			$a_name = $_POST['a_name'];
-			$a_url = $_POST['a_url'];
-			$a_banner = $_POST['a_banner'];
-			$a_descripcion = $_POST['a_descripcion'];
-			
-            echo $tsAfiliado->EditarAfiliado($a_id, $a_name, $a_url, $a_banner, $a_descripcion);
+			$aid = (int)$_POST['afid'];
+         echo $tsAfiliado->DeleteAfiliado($aid);
 			//--->
 		break;
 		case 'afiliado-setactive':
 			//<---
-            echo $tsAfiliado->SetActionAfiliado();
+         echo $tsAfiliado->SetActionAfiliado();
 			//--->
 		break;
 		case 'afiliado-url':
 			//<---
-            $tsAfiliado->urlOut();
+         $tsAfiliado->urlOut();
 			//--->
 		break;
 		case 'afiliado-detalles':
 			//<---
-            $smarty->assign("tsAf",$tsAfiliado->getAfiliado());
+         $smarty->assign("tsAf",$tsAfiliado->getAfiliado());
 			//--->
 		break;
-        default:
-            die('0: Este archivo no existe.');
-        break;
+      default:
+         die('0: Este archivo no existe.');
+      break;
 	}
-?>

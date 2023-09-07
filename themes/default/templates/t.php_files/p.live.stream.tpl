@@ -27,7 +27,7 @@
                     </div>
                     <span class="beeper_x" bid="m{$id}">&nbsp;</span>
                     <div class="UIBeep_Title">
-                        <b>Nuevo mensaje</b><br />                    
+                        <strong>Nuevo mensaje</strong><br />                    
                         <span class="blueName">{$mp.user_name}</span> {$mp.mp_preview}
                     </div>
                 </a>

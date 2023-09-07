@@ -79,10 +79,12 @@ class tsAdmin {
 			$ext = substr($archivo, -3);
 			# Es una imagen?
 			if (in_array($ext, $this->extension)) {
-				if ($size != 16) {
-					$im_size = substr($archivo, -6, 2);
-					if ($size == $im_size) $icons[] = substr($archivo, 0, -7);
-				} else $icons[] = $archivo;
+				$im_size = (int)substr($archivo, -6, 2);
+				if ($size === $im_size) {
+					$ext = pathinfo($archivo)['extension'];
+					$rem = "_$im_size.$ext";
+					$icons[] = str_replace($rem, '', $archivo);
+				}
 			}
 		}
 		# Retornamos las imagenes
@@ -106,11 +108,17 @@ class tsAdmin {
 	*/
 	public function getVersions() {
 		$temp = @gd_info();
+		ob_start();
+		phpinfo(INFO_MODULES);
+		$phpinfo = ob_get_clean();
+		// Buscar la línea que contiene "OpenSSL Library Version"
+		if (preg_match("/OpenSSL Library Version\s+(.*)/", $phpinfo, $matches)) $opensslVersion = $matches[1];
 		return [
 			'php' => PHP_VERSION,
 			'mysql' => db_exec('fetch_row',db_exec([__FILE__, __LINE__], 'query', 'SELECT VERSION()')),
 			'server' => $_SERVER['SERVER_SOFTWARE'],
-			'gd' => $temp['GD Version'] ?? 'La biblioteca GD no está instalada'
+			'gd' => $temp['GD Version'] ?? 'La biblioteca GD no está instalada',
+			'openssl' => (extension_loaded('openssl')) ? $opensslVersion : "La extensión OpenSSL no está habilitada!"
 		];
 	}
 	/**
@@ -448,454 +456,308 @@ class tsAdmin {
 			} else return 'El rango no existe o no es posible utilizarlo';
 		} else return 'Petici&oacute;n inv&aacute;lida';
 	}
-	 
-	 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-	 // ADMINISTRAR USUARIOS \\
-	 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-	 /*
-	 getUsuarios()
-	 */
-	 function getUsuarios()
-	 {
-		  global $tsCore;
-		  //
-		  $max = 20; // MAXIMO A MOSTRAR
-		  $limit = $tsCore->setPageLimit($max, true);
-		  //
-		  if ($_GET['o'] == 'e')
-		  {
-				$order = 'u.user_activo, u.user_baneado';
-		  } elseif ($_GET['o'] == 'c')
-		  {
-				$order = 'u.user_email';
-		  } elseif ($_GET['o'] == 'i')
-		  {
-				$order = 'u.user_last_ip';
-		  } elseif ($_GET['o'] == 'u')
-		  {
-				$order = 'u.user_lastactive';
-		  } else
-		  {
-				$order = 'u.user_id';
-		  }
-		  //
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.*, r.*, p.* FROM u_perfil AS p LEFT JOIN u_miembros AS u ON u.user_id = p.user_id LEFT JOIN u_rangos AS r ON r.rango_id = u.user_rango ORDER BY ' .
-				$order . ' ' . ($_GET['m'] == 'a' ? 'ASC' : 'DESC') . ' LIMIT ' . $limit);
-		  //
-		  $data['data'] = result_array($query);
-
-		  // PAGINAS
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM u_miembros WHERE user_id > \'0\'');
-		  list($total) = db_exec('fetch_row', $query);
-
-		  $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/users?o=" .
-				$_GET['o'] . "&m=" . $_GET['m'] . "", $_GET['s'], $total, $max);
-		  //
-		  return $data;
-	 }
-
-	 /*
-	 getUserData()
-	 */
-	 function getUserPrivacidad()
-	 {
-		  global $tsCore;
-		  //
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p_configs FROM u_perfil WHERE user_id = \'' . (int)
-				$_GET['uid'] . '\' LIMIT 1');
-		  $data = db_exec('fetch_assoc', $query);
-		  $data['p_configs'] = unserialize($data['p_configs']);
-		  //
-		  return $data;
-	 }
-	 /*
-	 getUserData()
-	 */
-	 function setUserPrivacidad()
-	 {
-		  global $tsCore;
-		  //
-		  $muro_firm = ($_POST['muro_firm'] > 4) ? 5 : $_POST['muro_firm'];
-		  $see_hits = ($_POST['last_hits'] == 1 || $_POST['last_hits'] == 2) ? 0 : $_POST['last_hits'];
-		  $array = array(
-				'm' => $_POST['muro'],
-				'mf' => $muro_firm,
-				'rmp' => $_POST['rec_mps'],
-				'hits' => $see_hits);
-		  $perfilData['configs'] = serialize($array);
-		  //
-		  //
-		  $updates = $tsCore->getIUP($perfilData, 'p_');
-		  if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_perfil SET ' . $updates . ' WHERE user_id = \'' . (int)
-				$_GET['uid'] . '\''))
-				return true;
-
-	 }
-	 /*
-	 getUserData()
-	 */
-	 function getUserData()
-	 {
-		  global $tsCore;
-		  //
-		  $user_id = $tsCore->setSecure($_GET['uid']);
-		  //
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.*, r.*, p.* FROM u_perfil AS p LEFT JOIN u_miembros AS u ON u.user_id = p.user_id LEFT JOIN u_rangos AS r ON r.rango_id = u.user_rango WHERE u.user_id = \'' .
-				(int)$user_id . '\' LIMIT 1');
-		  $data = db_exec('fetch_assoc', $query);
-		  $data['p_configs'] = unserialize($data['p_configs']);
-		  //
-		  return $data;
-	 }
-	 /*
-	 setUserData
-	 */
-	 function setUserData($user_id)
-	 {
-		  global $tsCore;
-		  # DATA
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `user_name`, `user_email`, `user_password` FROM u_miembros WHERE user_id = \'' .
-				(int)$user_id . '\'');
-		  $data = db_exec('fetch_assoc', $query);
-		  # LOCALS
-		  $email = empty($_POST['email']) ? $data['user_email'] : $_POST['email'];
-		  $password = $_POST['pwd'];
-		  $cpassword = $_POST['cpwd'];
-		  $user_nick = empty($_POST['nick']) ? $data['user_name'] : $_POST['nick'];
-		  $user_points = empty($_POST['points']) ? $data['user_puntos'] : $_POST['points'];
-		  $pointsxdar = empty($_POST['pointsxdar']) ? $data['user_puntos'] : $_POST['pointsxdar'];
-		  $changenames = empty($_POST['changenicks']) ? $data['user_name_changes'] : $_POST['changenicks'];
-		  #
-
-		  if (!filter_var($email, FILTER_VALIDATE_EMAIL))
-				return 'Correo electr&oacute;nico incorrecto';
-		  if ($user_points >= 0)
-		  {
-				$apoints = ', user_puntos = \'' . (int)$user_points . '\'';
-		  } else
-				return 'Los puntos del usuario no se reconocen';
-		  if ($changenames >= 0)
-		  {
-				$changedis = ', user_name_changes = \'' . (int)$changenames . '\'';
-		  } else
-				return 'Las disponibilidades de cambios de nombre de usuario deben ser num&eacute;ricas.';
-		  if ($pointsxdar >= 0)
-		  {
-				$pxd = ', user_puntosxdar = \'' . (int)$pointsxdar . '\'';
-		  } else
-				return 'Los puntos para dar no se reconocen';
-		  if (!empty($password) && !empty($cpassword))
-		  {
-
-				if (strlen($user_nick) < 3)
-					 return 'Nick demasiado corto.';
-				if (!preg_match('/^([A-Za-z0-9]+)$/', $user_nick))
-					 return 'Nick inv&aacute;lido';
-				$new_nick = ', user_name = \'' . $tsCore->setSecure($user_nick) . '\'';
-
-				if (strlen($password) < 6)
-					 return 'Contrase&ntilde;a no v&aacute;lida.';
-				if ($password != $cpassword)
-					 return 'Las contrase&ntilde;as no coinciden';
-				$new_key = $tsCore->createPassword($user_nick, $password);
-				$db_key = ', user_password = \'' . $tsCore->setSecure($new_key) . '\'';
-		  }
-
-		  if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE `u_miembros` SET user_email = \'' . $tsCore->setSecure($email) .
-				'\' ' . $changedis . ' ' . $new_nick . ' ' . $pxd . ' ' . $apoints . ' ' . $db_key .
-				' WHERE user_id = \'' . (int)$user_id . '\''))
-		  {
-
-				if ($_POST['sendata'])
-					 mail($email, 'Nuevos datos de acceso', 'Sus datos de acceso a ' . $tsCore->
-						  settings['titulo'] .
-						  ' han sido cambiados por un administrador. Los nuevos datos son: usuario: ' . $user_nick .
-						  ', contraseña: ' . $password . '. Disculpe las molestias', 'From: ' . $tsCore->settings['titulo'] . ' <no-reply@' . $tsCore->settings['domain'] . '>'); // FIX: 30/06/2014
-
-				return true;
-		  }
-	 }
-	 function deleteContent($user_id){
-		  global $tsUser;
+	public function rangoColor() {
+		return [
+			"000000","000033","000066","000099","0000cc","0000ff","330000","330033","330066","330099","3300cc","3300ff","660000","660033","660066","660099","6600cc","6600ff","990000","990033","990066","990099","9900cc","9900ff","cc0000","cc0033","cc0066","cc0099","cc00cc","cc00ff","ff0000","ff0033","ff0066","ff0099","ff00cc","ff00ff","003300","003333","003366","003399","0033cc","0033ff","333300","333333","333366","333399","3333cc","3333ff","663300","663333","663366","663399","6633cc","6633ff","993300","993333","993366","993399","9933cc","9933ff","cc3300","cc3333","cc3366","cc3399","cc33cc","cc33ff","ff3300","ff3333","ff3366","ff3399","ff33cc","ff33ff","006600","006633","006666","006699","0066cc","0066ff","336600","336633","336666","336699","3366cc","3366ff","666600","666633","666666","666699","6666cc","6666ff","996600","996633","996666","996699","9966cc","9966ff","cc6600","cc6633","cc6666","cc6699","cc66cc","cc66ff","ff6600","ff6633","ff6666","ff6699","ff66cc","ff66ff","009900","009933","009966","009999","0099cc","0099ff","339900","339933","339966","339999","3399cc","3399ff","669900","669933","669966","669999","6699cc","6699ff","999900","999933","999966","999999","9999cc","9999ff","cc9900","cc9933","cc9966","cc9999","cc99cc","cc99ff","ff9900","ff9933","ff9966","ff9999","ff99cc","ff99ff","00cc00","00cc33","00cc66","00cc99","00cccc","00ccff","33cc00","33cc33","33cc66","33cc99","33cccc","33ccff","66cc00","66cc33","66cc66","66cc99","66cccc","66ccff","99cc00","99cc33","99cc66","99cc99","99cccc","99ccff","cccc00","cccc33","cccc66","cccc99","cccccc","ccccff","ffcc00","ffcc33","ffcc66","ffcc99","ffcccc","ffccff","00ff00","00ff33","00ff66","00ff99","00ffcc","00ffff","33ff00","33ff33","33ff66","33ff99","33ffcc","33ffff","66ff00","66ff33","66ff66","66ff99","66ffcc","66ffff","99ff00","99ff33","99ff66","99ff99","99ffcc","99ffff","ccff00","ccff33","ccff66","ccff99","ccffcc","ccffff","ffff00","ffff33","ffff66","ffff99","ffffcc","ffffff"
+		];
+	}
+	# ===================================================
+	# USUARIOS
+	# * getUsuarios() :: Obtenemos todos los usuarios
+	# * getUserPrivacidad() :: Obtener privacidad del usuario
+	# * setUserPrivacidad() :: Conjunto de privacidad
+	# * getUserData() :: Obtenemos datos del usuario
+	# * setUserData() :: Conjunto de datos del usuario
+	# * deleteContent() :: Eliminamos contenido
+	# * getUserRango() :: Obtenemos el rango del usuario
+	# * getAllRangos() :: Obtenemos todos los rangos
+	# * setUserRango() :: Cambiamos el rango al usuario
+	# * setUserFirma() :: Cambiamos la firma del usuario
+	# * setUserInActivo() :: Des/Activamos usuario (AJAX)
+	# ===================================================
+	public function getUsuarios() {
+		global $tsCore;
+		//
+		$max = 20; // MAXIMO A MOSTRAR
+		$limit = $tsCore->setPageLimit($max, true);
+		//
+		$ord = ['' => 'id', 'e' => 'activo, u.user_baneado', 'c' => 'email', 'i' => 'last_ip', 'u' => 'lastactive'];
+		$order = $ord[$_GET['o']];
+		$asd = ($_GET['m'] == 'a') ? 'ASC' : 'DESC';
+		//
+		$data['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT u.*, r.*, p.* FROM u_perfil AS p LEFT JOIN u_miembros AS u ON u.user_id = p.user_id LEFT JOIN u_rangos AS r ON r.rango_id = u.user_rango ORDER BY u.user_$order $asd LIMIT $limit"));
+		// PAGINAS
+		list($total) = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(*) FROM u_miembros WHERE user_id > 0"));
+		$data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/users?o=" . $_GET['o'] . "&m=" . $_GET['m'] . "", $_GET['s'], $total, $max);
+		//
+		return $data;
+	}
+	public function getUserPrivacidad() {
+		$uid = (int)$_GET['uid'];
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT p_configs FROM u_perfil WHERE user_id = $uid LIMIT 1"));
+		$data['p_configs'] = unserialize($data['p_configs']);
+		//
+		return $data;
+	}
+	public function setUserPrivacidad() {
+		global $tsCore;
+		//
+		$uid = (int)$_GET['uid'];
+		$perfilData['configs'] = serialize([
+			'm' => $_POST['muro'],
+			'mf' => ($_POST['muro_firm'] > 4) ? 5 : $_POST['muro_firm'],
+			'rmp' => $_POST['rec_mps'],
+			'hits' => ($_POST['last_hits'] == 1 || $_POST['last_hits'] == 2) ? 0 : $_POST['last_hits']
+		]);
+		//
+		$updates = $tsCore->getIUP($perfilData, 'p_');
+		if (db_exec([__FILE__, __LINE__], 'query', "UPDATE u_perfil SET $updates WHERE user_id = $uid")) return true;
+	}
+	public function getUserData() {
+		$user_id = (int)$_GET['uid'];
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.*, r.*, p.* FROM u_perfil AS p LEFT JOIN u_miembros AS u ON u.user_id = p.user_id LEFT JOIN u_rangos AS r ON r.rango_id = u.user_rango WHERE u.user_id = $user_id LIMIT 1"));
+		$data['p_configs'] = unserialize($data['p_configs']);
+		//
+		return $data;
+	}
+	public function setUserData(int $user_id = 0) {
+		global $tsCore;
+		$user_id = (int)$_GET['uid'];
+		# DATA
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT `user_name`, `user_email`, `user_password` FROM u_miembros WHERE user_id = $user_id"));
+		# DATOS LOCALES
+		$email = empty($_POST['email']) ? $data['user_email'] : $tsCore->setSecure($_POST['email']);
+		$password = $_POST['pwd'];
+		$cpassword = $_POST['cpwd'];
+		$user_nick = empty($_POST['nick']) ? $data['user_name'] : $tsCore->setSecure($_POST['nick']);
+		$user_points = empty($_POST['points']) ? (int)$data['user_puntos'] : (int)$_POST['points'];
+		$pointsxdar = empty($_POST['pointsxdar']) ? (int)$data['user_puntos'] : (int)$_POST['pointsxdar'];
+		$changenames = empty($_POST['changenicks']) ? (int)$data['user_name_changes'] : (int)$_POST['changenicks'];
+		// CORREO
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) return 'Correo electr&oacute;nico incorrecto';
+		// PUNTOS
+		if ($user_points >= 0) $apoints = ", user_puntos = $user_points";
+		else return 'Los puntos del usuario no se reconocen';
+		// CAMBIAR NICK
+		if ($changenames >= 0) $changedis = ", user_name_changes = $changenames";
+		else return 'Las disponibilidades de cambios de nombre de usuario deben ser num&eacute;ricas.';
+		// PUNTOS PARA DAR
+		if ($pointsxdar >= 0) $pxd = ", user_puntosxdar = $pointsxdar";
+		else return 'Los puntos para dar no se reconocen';
+		// CONTRASEÑA
+		if (!empty($password) AND !empty($cpassword)) {
+			if (strlen($user_nick) < 4) return 'Nick demasiado corto.';
+			if (!preg_match('/^([A-Za-z0-9]+)$/', $user_nick)) return 'Nick inv&aacute;lido';
+			$new_nick = ", user_name = '$user_nick'";
+			// SI LA CONTRASEÑA ES CORTA
+			if (strlen($password) < 6) return 'Contrase&ntilde;a no v&aacute;lida.';
+			// SI LA CONTRASEÑA NO SON IGUALES
+			if ($password != $cpassword) return 'Las contrase&ntilde;as no coinciden';
+			$new_key = $tsCore->createPassword($user_nick, $password);
+			$db_key = ", user_password = '$new_key'";
+		}
+		// ACTUALIZAMOS LA TABLA
+		if (db_exec([__FILE__, __LINE__], 'query', "UPDATE `u_miembros` SET user_email = '$email'$changedis$new_nick$pxd$apoints$db_key WHERE user_id = $user_id")) {
+			if ($_POST['sendata']) {
+				mail($email, 'Nuevos datos de acceso', "Sus datos de acceso a {$tsCore->settings['titulo']} han sido cambiados por un administrador. Los nuevos datos son: usuario: $user_nick, contraseña: $password. Disculpe las molestias", 'From: ' . $tsCore->settings['titulo'] . ' <no-reply@' . $tsCore->settings['domain'] . '>');
+			}
+			return 'Los cambios fueron aplicados';
+		}
+	}
+	public function deleteContent(int $user_id = 0){
+		global $tsCore, $tsUser;
+		$password = $tsCore->createPassword($tsUser->nick, $_POST['password']);
+		if(db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id FROM u_miembros WHERE user_id = {$tsUser->uid} && user_password = '$password'"))){
+			$c = $_POST['bocuenta'];
+			if($_POST['boposts'] || $c) 
+		  		deleteID([__FILE__, __LINE__], 'p_posts', "post_user = $user_id");
+			if($_POST['bofotos'] || $c) 
+				deleteID([__FILE__, __LINE__], 'f_fotos', "f_user = $user_id");
+			if($_POST['boestados'] || $c) 
+				deleteID([__FILE__, __LINE__], 'u_muro', "p_user_pub = $user_id");
+			if($_POST['bocomposts'] || $c) 
+				deleteID([__FILE__, __LINE__], 'p_comentarios', "c_user = $user_id");
+			if($_POST['bocomfotos'] || $c) 
+				deleteID([__FILE__, __LINE__], 'f_comentarios', "c_user = $user_id");
+			if($_POST['bocomestados'] || $c) 
+				deleteID([__FILE__, __LINE__], 'u_muro_comentarios', "c_user = $user_id");
+			if($_POST['bolikes'] || $c) 
+				deleteID([__FILE__, __LINE__], 'u_muro_likes', "user_id = $user_id");
+			if($_POST['boseguidores'] || $c) 
+				deleteID([__FILE__, __LINE__], 'u_follows', "f_id = $user_id && f_type = 1");
+			if($_POST['bosiguiendo'] || $c) 
+				deleteID([__FILE__, __LINE__], 'u_follows', "f_user = $user_id && f_type = 1");
+			if($_POST['bofavoritos'] || $c) 
+				deleteID([__FILE__, __LINE__], 'p_favoritos', "fav_user = $user_id"); 
+			if($_POST['bovotosposts'] || $c) 
+				deleteID([__FILE__, __LINE__], 'p_votos', "tuser = $user_id");
+			if($_POST['bovotosfotos'] || $c) 
+				deleteID([__FILE__, __LINE__], 'f_votos', "v_user = $user_id");
+			if($_POST['boactividad'] || $c) 
+				deleteID([__FILE__, __LINE__], 'u_actividad', "user_id = $user_id");
+			if($_POST['boavisos'] || $c) 
+				deleteID([__FILE__, __LINE__], 'u_avisos', "user_id = $user_id");
+			if($_POST['bobloqueos'] || $c) 
+				deleteID([__FILE__, __LINE__], 'u_bloqueos', "b_user = $user_id");
+			if($_POST['bomensajes'] || $c) { 
+				deleteID([__FILE__, __LINE__], 'u_mensajes', "mp_from = $user_id"); 
+				deleteID([__FILE__, __LINE__], 'u_respuestas', "mr_from = $user_id");
+			}
+			if($_POST['bosesiones'] || $c) 
+				deleteID([__FILE__, __LINE__], 'u_sessions', "session_user_id = $user_id");
+			if($_POST['bovisitas'] || $c) 
+				deleteID([__FILE__, __LINE__], 'w_visitas', "user = $user_id");
 		  
-		  if(db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT user_id FROM u_miembros WHERE user_id = \''.$tsUser->uid.'\' && user_password = \''.md5(md5($_POST['password']).$tsUser->nick).'\''))){
-		  $c = $_POST['bocuenta'];
+		  	$data = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT user_name FROM u_miembros WHERE user_id = $user_id"));
+		  	$admin = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT user_email FROM u_miembros WHERE user_id = 1"));
 		  
-		  if($_POST['boposts'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM p_posts WHERE post_user = \''.$user_id.'\'');
-		  if($_POST['bofotos'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM f_fotos WHERE f_user = \''.$user_id.'\'');
-		  if($_POST['boestados'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_muro WHERE p_user_pub = \''.$user_id.'\'');
-		  if($_POST['bocomposts'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM p_comentarios WHERE c_user = \''.$user_id.'\'');
-		  if($_POST['bocomfotos'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM f_comentarios WHERE c_user = \''.$user_id.'\'');
-		  if($_POST['bocomestados'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_muro_comentarios WHERE c_user = \''.$user_id.'\'');
-		  if($_POST['bolikes'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_muro_likes WHERE user_id = \''.$user_id.'\'');
-		  if($_POST['boseguidores'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_follows WHERE f_id = \''.$user_id.'\' && f_type = \'1\'');
-		  if($_POST['bosiguiendo'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_follows WHERE f_user = \''.$user_id.'\' && f_type = \'1\'');
-		  if($_POST['bofavoritos'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM p_favoritos WHERE fav_user = \''.$user_id.'\''); // FIX: 14/12/2014 - 1.1.000.9
-		  if($_POST['bovotosposts'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM p_votos WHERE tuser = \''.$user_id.'\'');
-		  if($_POST['bovotosfotos'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM f_votos WHERE v_user = \''.$user_id.'\'');
-		  if($_POST['boactividad'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_actividad WHERE user_id = \''.$user_id.'\'');
-		  if($_POST['boavisos'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_avisos WHERE user_id = \''.$user_id.'\'');
-		  if($_POST['bobloqueos'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_bloqueos WHERE b_user = \''.$user_id.'\'');
-		  if($_POST['bomensajes'] || $c) { db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_mensajes WHERE mp_from = \''.$user_id.'\'');  db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_respuestas WHERE mr_from = \''.$user_id.'\''); }
-		  if($_POST['bosesiones'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_sessions WHERE session_user_id = \''.$user_id.'\'');
-		  if($_POST['bovisitas'] || $c) db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM w_visitas WHERE user = \''.$user_id.'\'');
-		  
-		  $data = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT user_name FROM u_miembros WHERE user_id = \''.$user_id.'\''));
-		  $admin = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT user_email FROM u_miembros WHERE user_id = \'1\''));
-		  
-		  if($c && $tsUser->uid != $user_id){
-				db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_miembros WHERE user_id = \''.$user_id.'\'');
-				db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_perfil WHERE user_id = \''.$user_id.'\'');
-				db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_portal WHERE user_id = \''.$user_id.'\'');
-				db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM w_denuncias WHERE d_user = \''.$user_id.'\'');
-				db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_bloqueos WHERE b_auser = \''.$user_id.'\'');
-				db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_mensajes WHERE mp_to = \''.$user_id.'\'');
-				db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM w_visitas WHERE `for` = \''.$user_id.'\' && type = \'1\'');
-		  }
-		  
-		  db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO `u_avisos` (`user_id`, `av_subject`, `av_body`, `av_date`, `av_read`, `av_type`) VALUES (\'1\', \'Contenido eliminado\', \'Hola, le informamos que el administrador '.$tsUser->nick.' ('.$tsUser->uid.') ha eliminado '.($c ? 'la cuenta' : 'varios contenidos').' de '.$data[0].'.\', \''.time().'\', \'0\', \'1\')');
-		  mail($admin[0], 'Contenido eliminado', '<html><head><title>Contenido de cierta cuenta han sido eliminados.</title></head><body><p>Hola, le informamos que el administrador '.$tsUser->nick.' ('.$tsUser->uid.') ha eliminado '.($c ? 'la cuenta' : 'varios contenidos').' de '.$data[0].'</p></body></html>', 'Content-type: text/html; charset=iso-8859-15');
-		  return 'OK';
-		}else return 'Credenciales incorrectas';
-	 }
-	 
-	 /*
-	 getUserRango
-	 */
-	 function getUserRango($user_id)
-	 {
-
-		  # CONSULTA
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_rango, r.rango_id, r.r_name, r.r_color FROM u_miembros AS u LEFT JOIN u_rangos AS r ON u.user_rango = r.rango_id WHERE u.user_id = \'' .
-				(int)$user_id . '\' LIMIT 1');
-		  $data['user'] = db_exec('fetch_assoc', $query);
-
-		  # RANGOS DISPONIBLES
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `rango_id`, `r_name`, `r_color` FROM `u_rangos`');
-		  $data['rangos'] = result_array($query);
-
-		  #
-		  return $data;
-	 }
-
-	 /*
-	 getAllRangos
-	 */
-	 function getAllRangos()
-	 {
-
-		  # RANGOS DISPONIBLES
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `rango_id`, `r_name`, `r_color` FROM `u_rangos`');
-		  $data = result_array($query);
-
-		  #
-		  return $data;
-	 }
-	 /*
-	 setUserRango($user_id)
-	 */
-	 function setUserRango($user_id)
-	 {
-		  global $tsUser;
-		  # SOLO EL PRIMER ADMIN PUEDE PONER A OTROS ADMINS
-		  $new_rango = (int)$_POST['new_rango'];
-		  if ($user_id == $tsUser->uid)
-				return 'No puedes cambiarte el rango a ti mismo';
-		  elseif ($tsUser->uid != 1 && $new_rango == 1)
-				return 'Solo el primer Administrador puede crear más administradores principales';
-		  else
-		  {
-				if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_rango = \'' . (int)$new_rango . '\' WHERE user_id = \'' .
-					 (int)$user_id . '\''))
-					 return true;
-		  }
-	 }
-
-	 function setUserFirma($user_id)
-	 {
-		  global $tsCore;
-
-		  if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE `u_perfil` SET user_firma = \'' . $tsCore->setSecure($_POST['firma']) .
-				'\' WHERE user_id = \'' . (int)$user_id . '\''))
-				return true;
-
-	 }
-
-	 function setUserInActivo()
-	 {
-		  global $tsUser;
-
-		  $usuario = $_POST['uid'];
-
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT user_activo FROM u_miembros WHERE user_id = \'' . (int)
-				$usuario . '\'');
-		  $data = db_exec('fetch_assoc', $query);
-
-
-		  // COMPROBAMOS
-		  if ($data['user_activo'] == 1)
-		  {
-				if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_activo = \'0\' WHERE user_id = \'' .
-					 (int)$usuario . '\''))
-				{
-					 return '2: Cuenta desactivada';
-				} else
-					 return '0: Ocurri&oacute, un error';
-		  } else
-		  {
-				if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_activo = \'1\' WHERE user_id = \'' .
-					 (int)$usuario . '\''))
-				{
-					 return '1: Cuenta activada.';
-				} else
-					 return 'Ocurri&oacute; un error';
-		  }
-	 }
-
-	 function getSessions()
-	 {
-		  global $tsCore;
+		  	if($c && $tsUser->uid != $user_id) {
+		  		deleteID([__FILE__, __LINE__], 'u_miembros', "user_id = $user_id");
+		  		deleteID([__FILE__, __LINE__], 'u_perfil', "user_id = $user_id");
+		  		deleteID([__FILE__, __LINE__], 'u_portal', "user_id = $user_id");
+		  		deleteID([__FILE__, __LINE__], 'w_denuncias', "d_user = $user_id");
+		  		deleteID([__FILE__, __LINE__], 'u_bloqueos', "b_auser = $user_id");
+		  		deleteID([__FILE__, __LINE__], 'u_mensajes', "mp_to = $user_id");
+		  		deleteID([__FILE__, __LINE__], 'w_visitas', "`for` = $user_id && type = 1");
+		  	}
+		  	$avBody = "Hola, le informamos que el administrador {$tsUser->nick} ({$tsUser->uid}) ha eliminado ".($c ? 'la cuenta' : 'varios contenidos')." de {$data[0]}.";
+		  	insertInto([__FILE__, __LINE__], 'u_avisos', [
+		  		'user_id' => 1,
+		  		'av_subject' => 'Contenido eliminado',
+		  		'av_body' => $avBody,
+		  		'av_date' => time(),
+		  		'av_type' => 1
+		  	]);
+		  	mail($admin[0], 'Contenido eliminado', "<html><head><title>Contenido de cierta cuenta han sido eliminados.</title></head><body><p>$avBody</p></body></html>", 'Content-type: text/html; charset=iso-8859-15');
+		  	return 'OK';
+		} else return 'Credenciales incorrectas';
+	}
+	public function getUserRango(int $user_id = 0) {
+		# CONSULTA
+		$data['user'] = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_rango, r.rango_id, r.r_name, r.r_color FROM u_miembros AS u LEFT JOIN u_rangos AS r ON u.user_rango = r.rango_id WHERE u.user_id = $user_id LIMIT 1"));
+		# RANGOS DISPONIBLES
+		$data['rangos'] = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT rango_id, r_name, r_color FROM u_rangos'));
+		#
+		return $data;
+	}
+	public function getAllRangos() {
+		# RANGOS DISPONIBLES
+		$data = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT rango_id, r_name, r_color FROM u_rangos'));
+		#
+		return $data;
+	}
+	public function setUserRango(int $user_id = 0) {
+		global $tsUser;
+		# SOLO EL PRIMER ADMIN PUEDE PONER A OTROS ADMINS
+		$new_rango = (int)$_POST['new_rango'];
+		if ($user_id == $tsUser->uid) return 'No puedes cambiarte el rango a ti mismo';
+		elseif ($tsUser->uid != 1 && $new_rango == 1) return 'Solo el primer Administrador puede crear más administradores principales';
+		else {
+			if (db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_rango = $new_rango WHERE user_id = $user_id ")) return 'El rango fue cambiado correctamente';
+		}
+	}
+	public function setUserFirma(int $user_id = 0) {
+		global $tsCore;
+		$firma = $tsCore->setSecure($_POST['firma']);
+		if (db_exec([__FILE__, __LINE__], 'query', "UPDATE u_perfil SET user_firma = '$firma' WHERE user_id = $user_id")) return 'La firma se cambio correctamente';
+	}
+	public function setUserInActivo() {
+		global $tsUser;
+		//
+		$usuario = (int)$_POST['uid'];
+		$data = db_exec('fetch_assoc',db_exec([__FILE__, __LINE__], 'query', "SELECT user_activo FROM u_miembros WHERE user_id = $usuario"));
+		$user_activo = ((int)$data['user_activo'] === 1);
+		$act = $user_activo ? 0 : 1;
+		$des = $user_activo ? "des" : "";
+		$t = $user_activo ? 2 : 1;
+		return (db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_activo = $act WHERE user_id = $usuario")) ? "$t: Cuenta {$des}activada" : "0: Ocurri&oacute, un error";
+	}
+	# ===================================================
+	# SESIONES
+	# * getSessions() :: Obtenemos todas las sesiones
+	# * delSession() :: Eliminamos la sesión
+	# ===================================================
+	public function getSessions() {
+		global $tsCore;
+		//
+		$max = 20; // MAXIMO A MOSTRAR
+		$limit = $tsCore->setPageLimit($max, true);
+		//
+		$data['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, s.* FROM u_sessions AS s LEFT JOIN u_miembros AS u ON s.session_user_id = u.user_id ORDER BY s.session_time DESC LIMIT ' . $limit));
+		// PAGINAS
+		list($total) = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM u_sessions'));
+		$data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/sesiones?", $_GET['s'], $total, $max);
+		//
+		return $data;
+	}
+	public function delSession() {
+		global $tsCore;
+		$session_id = $tsCore->setSecure($_POST['sesion_id']);
+		if (db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT session_id FROM u_sessions WHERE session_id = '$session_id' LIMIT 1"))) {
+			if(deleteID([__FILE__, __LINE__], 'u_sessions', "session_id = '$session_id'")) return '1: Eliminado';
+		} else return '0: No existe esa sesi&oacute;n';
+	}
+	# ===================================================
+	# CAMBIOS DE NICK
+	# * getChangeNicks() :: Obtenemos todos los nicks
+	# * ChangeNick_o_no() :: Aprobamos/Denegamos nick
+	# ===================================================
+	public function getChangeNicks(string $realizado = '') {
+		global $tsCore;
+		# Cambio realizado
+		$hecho = 'estado ' . ($realizado === 'realizados' ? ">" : "=") . ' 0';
+		//
+		$max = 20; // MAXIMO A MOSTRAR
+		$limit = $tsCore->setPageLimit($max, true);
+		//
+		$data['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, n.* FROM u_nicks AS n LEFT JOIN u_miembros AS u ON n.user_id = u.user_id WHERE $hecho ORDER BY n.time DESC LIMIT $limit"));
+		// PAGINAS
+		list($total) = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(*) FROM u_nicks WHERE estado = 0"));
+		$data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/nicks?", $_GET['s'], $total, $max);
+		//
+		return $data;
+	}
+	public function ChangeNick_o_no() {
+		global $tsCore, $tsMonitor;
+		//
+		$nick_id = (int)$_POST['nid'];
+		$aprobado = ($_POST['accion'] == 'aprobar');
 		  //
-		  $max = 20; // MAXIMO A MOSTRAR
-		  $limit = $tsCore->setPageLimit($max, true);
-		  //
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, s.* FROM u_sessions AS s LEFT JOIN u_miembros AS u ON s.session_user_id = u.user_id ORDER BY s.session_time DESC LIMIT ' .
-				$limit);
-		  //
-		  $data['data'] = result_array($query);
+		$datos = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT id, user_id, user_email, name_1, name_2, hash, 'time', ip, estado FROM u_nicks WHERE id = $nick_id LIMIT 1"));
+		$nickA['name_changes'] = 'user_name_changes - 1';
+		if ($aprobado) {
+			$nickA['name'] = $datos['name_2'];
+			$nickA['password'] = $datos['hash'];
+		}
+		$set = $tsCore->getIUP($nickA, 'user_');
+		$estado = $aprobado ? 1 : 2;
+		db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET $set WHERE user_id = {$datos['user_id']}");
+		db_exec([__FILE__, __LINE__], 'query', "UPDATE u_nicks SET estado = $estado WHERE id = $nick_id");
+		// AVISO
+		$aviso = "Hola <strong>{$datos['name_1']}</strong>,\n\n";
+		$aviso .= $aprobado ? "Le informo que desde este momento su nombre de acceso ser&aacute; <strong>{$datos['name_2']}</strong> . Hasta pronto." : " Lamento informarle que su petici&oacute;n de cambio de nick a <strong>{$datos['name_2']}</strong>, ha sido denegada.";
+		$tsMonitor->setAviso($datos['user_id'], 'Cambio realizado', $aviso, ($aprobado ? 4 : 3));
+		// ENVIAMOS CORREO
+		$subject = "{$datos['name_1']}, su petición de cambio ha sido " . ($_POST['accion'] == 'aprobar' ? 'aprobada' : 'denegada');
+		$body = "Hola {$datos['name_1']}:<br />Le enviamos este email para informarle que su petici&oacute;n de cambio de nick ha sido";
+		$body .= $aprobado ? " aceptada. <br> Desde este momento, podr&aacute; acceder en {$tsCore->settings['titulo']} con el nombre de usuario {$datos['name_2']}." : " denegada";
+		$body .= " <br /><br />El staff de <strong>{$tsCore->settings['titulo']}</strong>";
+		// <--
+		require_once TS_CLASS . "c.emails.php";
+		$tsEmail = new tsEmail;
 
-		  // PAGINAS
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM u_sessions');
-		  list($total) = db_exec('fetch_row', $query);
-
-		  $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] .
-				"/admin/sesiones?", $_GET['s'], $total, $max);
-		  //
-		  return $data;
-	 }
-
-	 function delSession()
-	 {
-		  global $tsCore;
-		  $session_id = $_POST['sesion_id'];
-		  if (db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT session_id FROM u_sessions WHERE session_id = \'' .
-				$tsCore->setSecure($session_id) . '\' LIMIT 1')))
-		  {
-				if (db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_sessions WHERE session_id = \'' . $tsCore->
-					 setSecure($session_id) . '\''))
-					 return '1: Eliminado';
-		  } else
-				return '0: No existe esa sesi&oacute;n';
-	 }
-
-	 function getChangeNicks()
-	 {
-		  global $tsCore;
-		  //
-		  $max = 20; // MAXIMO A MOSTRAR
-		  $limit = $tsCore->setPageLimit($max, true);
-		  //
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, n.* FROM u_nicks AS n LEFT JOIN u_miembros AS u ON n.user_id = u.user_id WHERE estado = \'0\' ORDER BY n.time DESC LIMIT ' .
-				$limit);
-		  //
-		  $data['data'] = result_array($query);
-
-		  // PAGINAS
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM u_nicks WHERE estado = \'0\'');
-		  list($total) = db_exec('fetch_row', $query);
-
-		  $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/nicks?",
-				$_GET['s'], $total, $max);
-		  //
-		  return $data;
-	 }
-
-	 function getChangeNicks_A()
-	 {
-		  global $tsCore;
-		  //
-		  $max = 20; // MAXIMO A MOSTRAR
-		  $limit = $tsCore->setPageLimit($max, true);
-		  //
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, n.* FROM u_nicks AS n LEFT JOIN u_miembros AS u ON n.user_id = u.user_id WHERE estado > \'0\' ORDER BY n.time DESC LIMIT ' .
-				$limit);
-		  //
-		  $data['data'] = result_array($query);
-
-		  // PAGINAS
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM u_nicks WHERE estado > \'0\'');
-		  list($total) = db_exec('fetch_row', $query);
-
-		  $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/nicks?",
-				$_GET['s'], $total, $max);
-		  //
-		  return $data;
-	 }
-
-	 function ChangeNick_o_no()
-	 {
-		  global $tsCore, $tsMonitor;
-		  //
-		  $nick_id = $_POST['nid'];
-		  //
-		  $datos = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM u_nicks WHERE id = \'' . (int)
-				$nick_id . '\' LIMIT 1'));
-		  //
-		  if ($_POST['accion'] == 'aprobar')
-		  {
-				db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_name = \'' . $datos['name_2'] . '\', user_password = \'' .
-					 $datos['hash'] . '\', user_name_changes = user_name_changes - 1 WHERE user_id = \'' .
-					 $datos['user_id'] . '\'');
-				db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_nicks SET estado = \'1\' WHERE id = \'' . (int)$nick_id .
-					 '\'');
-				// AVISO
-				$aviso = 'Hola <b>' . $datos['name_1'] . "</b>,\n\n Le informo que desde este momento su nombre de acceso ser&aacute; <b>" .
-					 $datos['name_2'] . "</b> . Hasta pronto.";
-				$tsMonitor->setAviso($datos['user_id'], 'Cambio realizado', $aviso, 4);
-				//ENVIAMOS CORREO
-				$subject = $datos['name_1'] . ', su petici&oacute;n de cambio ha sido aceptada';
-				$body = 'Hola ' . $datos['name_1'] . ':<br />
-				Le enviamos este email para informarle que su petici&oacute;n de cambio de nick ha sido aceptada.
-				Desde este momento, podr&aacute; acceder en ' . $tsCore->settings['titulo'] .
-					 ' con el nombre de usuario ' . $datos['name_2'] . '. <br /><br />
-				El staff de <strong>' . $tsCore->settings['titulo'] . '</strong>';
-		  } elseif ($_POST['accion'] == 'denegar')
-		  {
-				db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_name_changes = user_name_changes - 1 WHERE user_id = \'' .
-					 $datos['user_id'] . '\'');
-				db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_nicks SET estado = \'2\' WHERE id = \'' . (int)$nick_id .
-					 '\'');
-				// AVISO
-				$aviso = 'Hola <b>' . $datos['name_1'] . "</b>,\n\n Lamento informarle que su petici&oacute;n de cambio de nick a <b>" .
-					 $datos['name_2'] . "</b> , ha sido denegada.";
-				$tsMonitor->setAviso($datos['user_id'], 'Cambio realizado', $aviso, 3);
-				//ENVIAMOS CORREO
-				$subject = $datos['name_1'] . ', su petici&oacute;n de cambio ha sido denegada';
-				$body = 'Hola ' . $datos['name_1'] . ':<br />
-				Le enviamos este email para informarle que su petici&oacute;n de cambio de nick ha sido denegada. <br /><br />
-				El staff de <strong>' . $tsCore->settings['titulo'] . '</strong>';
-		  } else
-				return '0: Mijo, ve de paseo';
-
-		  // <--
-		  include (TS_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'class' .
-				DIRECTORY_SEPARATOR . 'c.emails.php');
-		  $tsEmail = new tsEmail('confirmar', 'nombre');
-		  $tsEmail->emailTo = $datos['user_email'];
-		  $tsEmail->emailSubject = $subject;
-		  $tsEmail->emailBody = $body;
-		  $tsEmail->emailHeaders = $tsEmail->setEmailHeaders();
-		  $tsEmail->sendEmail($from, $to, $subject, $body) or die('0: Hubo un error al enviar el correo.');
-		  die('1: <div class="box_cuerpo" style="padding: 12px 20px; border-top:1px solid #CCC">Hemos enviado un correo a <b>' .
-				$datos['user_email'] .
-				'</b> con la decisi&oacute;n tomada. Tambi&eacute;n le hemos enviado un aviso al usuario.</div>');
+		$tsEmail->emailTo = $datos['user_email'];
+		$tsEmail->emailSubject = $subject;
+		$tsEmail->emailBody = $body;
+		$tsEmail->sendEmail() or die('0: Hubo un error al enviar el correo.');
+		 die("1: <div class=\"box_cuerpo\" style=\"padding: 12px 20px; border-top:1px solid #CCC\">Hemos enviado un correo a <strong>{$datos['user_email']}</strong> con la decisi&oacute;n tomada. Tambi&eacute;n le hemos enviado un aviso al usuario.</div>");
 		  // -->
-	 }
-
-
-	 /****************** ADMINISTRACIÓN DE POSTS ******************/
-
-	 function GetAdminPosts()
+	}
+	# ===================================================
+	# POSTS
+	# * GetAdminPosts() :: Obtenemos todos los posts
+	# ===================================================
+	public function GetAdminPosts()
 	 {
 		  global $tsCore;
 		  //
@@ -1061,123 +923,95 @@ class tsAdmin {
 					 return 'Ocurri&oacute; un error';
 		  }
 	 }
-
-	 /****************** ADMINISTRACIÓN DE LISTA NEGRA ******************/
-
-	 function getBlackList()
-	 {
-		  global $tsCore;
-		  //
-		  $max = 20; // MAXIMO A MOSTRAR
-		  $limit = $tsCore->setPageLimit($max, true);
-		  //
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, b.* FROM w_blacklist AS b LEFT JOIN u_miembros AS u ON b.author = u.user_id ORDER BY b.date DESC LIMIT ' .
-				$limit);
-		  //
-		  $data['data'] = result_array($query);
-
-		  // PAGINAS
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM w_blacklist');
-		  list($total) = db_exec('fetch_row', $query);
-
-		  $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] .
-				"/admin/blacklist?", $_GET['s'], $total, $max);
-		  //
-		  return $data;
-	 }
-
-	 function getBlock()
-	 {
-		  return db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT type, value, reason FROM w_blacklist WHERE id = \'' .
-				(int)$_GET['id'] . '\' LIMIT 1'));
-	 }
-
-	 function saveBlock()
-	 {
-		  global $tsCore, $tsUser;
-
-		  if (empty($_POST['value']) || empty($_POST['type']))
-		  {
-				return 'Debe rellenar todos los campos';
-		  } else
-		  {
-				if ($_POST['type'] == 1 && $_POST['value'] == $_SERVER['REMOTE_ADDR'])
-					 return 'No puedes bloquear tu propia IP';
-				if (!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT id FROM w_blacklist WHERE type = \'' . (int)
-					 $_POST['type'] . '\' && value = \'' . $tsCore->setSecure($_POST['value']) . '\'')))
-				{
-					 if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE w_blacklist SET type = \'' . (int)$_POST['type'] . '\', value = \'' .
-						  $tsCore->setSecure($_POST['value']) . '\', author = \'' . $tsUser->uid . '\' WHERE id = \'' .
-						  (int)$_GET['id'] . '\''))
-						  return true;
-				} else
-					 return 'Ya existe un bloqueo as&iacute;';
-		  }
-	 }
-
-	 function newBlock()
-	 {
-		  global $tsCore, $tsUser;
-
-		  if (empty($_POST['value']) || empty($_POST['type']) || empty($_POST['reason']))
-		  {
-				return 'Rellene todos los campos';
-		  } else
-		  {
-				if ($_POST['type'] == 1 && $_POST['value'] == $_SERVER['REMOTE_ADDR'])
-					 return 'No puedes bloquear tu propia IP';
-				if (!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT id FROM w_blacklist WHERE type = \'' . (int)
-					 $_POST['type'] . '\' && value = \'' . $tsCore->setSecure($_POST['value']) . '\'')))
-				{
-					 if (db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO w_blacklist (type, value, reason, author, date) VALUES (\'' .
-						  (int)$_POST['type'] . '\', \'' . $tsCore->setSecure($_POST['value']) . '\', \'' .
-						  $tsCore->setSecure($_POST['reason']) . '\', \'' . $tsUser->uid . '\', \'' . time
-						  () . '\')'))
-						  return true;
-				} else
-					 return 'Ya existe un bloqueo as&iacute;';
-		  }
-	 }
-
-	 function deleteBlock()
-	 {
-
-		  if (db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM w_blacklist WHERE id = \'' . (int)$_POST['bid'] . '\''))
-				return '1: Bloqueo retirado';
-		  else
-				return '0: Hubo un error al borrar';
-
-	 }
-
-	 /****************** ADMINISTRACIÓN DE LISTA NEGRA ******************/
-
-	 function getBadWords()
-	 {
-		  global $tsCore;
-		  //
-		  $max = 20; // MAXIMO A MOSTRAR
-		  $limit = $tsCore->setPageLimit($max, true);
-		  //
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, bw.* FROM w_badwords AS bw LEFT JOIN u_miembros AS u ON bw.author = u.user_id ORDER BY bw.wid DESC LIMIT ' .
-				$limit);
-		  //
-		  $data['data'] = result_array($query);
-
-		  // PAGINAS
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM w_badwords');
-		  list($total) = db_exec('fetch_row', $query);
-
-		  $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] .
-				"/admin/badwords?", $_GET['s'], $total, $max);
-		  //
-		  return $data;
-	 }
-
-	 function getBadWord()
-	 {
-		  return db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM w_badwords WHERE wid = \'' .
-				(int)$_GET['id'] . '\' LIMIT 1'));
-	 }
+	# ===================================================
+	# LISTA NEGRA
+	# * getBlackList() :: Obtenemos todos los bloqueos
+	# * getBlock() :: Obtenemos bloqueo de la lista
+	# * saveBlock() :: Guardamos el bloqueo en la lista
+	# * newBlock() :: Creamos nuevo bloqueo en la lista
+	# * deleteBlock() :: Eliminamos el bloqueo de la lista
+	# ===================================================
+	public function getBlackList() {
+		global $tsCore;
+		//
+		$max = 20; // MAXIMO A MOSTRAR
+		$limit = $tsCore->setPageLimit($max, true);
+		//
+		$data['data'] = result_array( db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, b.* FROM w_blacklist AS b LEFT JOIN u_miembros AS u ON b.author = u.user_id ORDER BY b.date DESC LIMIT $limit"));
+		// PAGINAS
+		list($total) = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM w_blacklist'));
+		$data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/blacklist?", $_GET['s'], $total, $max);
+		//
+		return $data;
+	}
+	public function getBlock() {
+		$id = (int)$_GET['id'];
+		return db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT type, value, reason FROM w_blacklist WHERE id = $id LIMIT 1"));
+	}
+	public function saveBlock() {
+		global $tsCore, $tsUser;
+		// Verificamos campos
+		if (empty($_POST['value']) || empty($_POST['type'])) return 'Debe rellenar todos los campos';
+		// No lo pongo antes, ya que tiene que verificar el contenido del mismo
+		$type = (int)$_POST['type'];
+		$value = $tsCore->setSecure($_POST['value']);
+		$id = (int)$_GET['id'];
+		// Verificamos la IP
+		if ($type == 1 && $value == $_SERVER['REMOTE_ADDR']) return 'No puedes bloquear tu propia IP';
+		// Ya existe el bloqueo?
+		if (db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT id FROM w_blacklist WHERE type = $type && value = '$value'"))) return 'Ya existe un bloqueo as&iacute;';
+		// Actualizamos tabla
+		$set = $tsCore->getIUP([
+			'type' => $type, 
+			'value' => $value, 
+			'author' => $tsUser->uid
+		]);
+		if (db_exec([__FILE__, __LINE__], 'query', "UPDATE w_blacklist SET $set WHERE id = $id")) return true;		 
+	}
+	public function newBlock() {
+		global $tsCore, $tsUser;
+		// Comprobamos todos los campos
+		if (in_array('', $_POST)) return 'Rellene todos los campos';
+		// Datos 
+		$type = (int)$_POST['type'];
+		$value = $tsCore->setSecure($_POST['value']);
+		$reason = $tsCore->setSecure($_POST['reason']);
+		// Verificamos la IP
+		if ($_POST['type'] == 1 && $_POST['value'] == $_SERVER['REMOTE_ADDR']) return 'No puedes bloquear tu propia IP';
+		// Ya existe el bloqueo?...
+		if (db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT id FROM w_blacklist WHERE type = $type && value = '$value'"))) return 'Ya existe un bloqueo as&iacute;';
+		// Insertamos los datos
+		if (insertInto([__FILE__, __LINE__], 'w_blacklist', ['type' => $type, 'value' => $value, 'reason' => $reason, 'author' => $tsUser->uid, 'date' => time()])) return true;
+	}
+	public function deleteBlock() {
+		$id = (int)$_POST['bid'];
+		return (deleteID([__FILE__, __LINE__], 'w_blacklist', "id = $id")) ? '1: Bloqueo retirado' : '0: Hubo un error al borrar';
+	}
+	# ===================================================
+	# CENSURA
+	# * getBadWords() :: Obtenemos todas las censuras
+	# * getBadWord() :: Obtenemos censuras de la lista
+	# * saveBlock() :: Guardamos el censuras en la lista
+	# * newBlock() :: Creamos nuevo censuras en la lista
+	# * deleteBlock() :: Eliminamos el censuras de la lista
+	# ===================================================
+	public function getBadWords() {
+		global $tsCore;
+		//
+		$max = 20; // MAXIMO A MOSTRAR
+		$limit = $tsCore->setPageLimit($max, true);
+		//
+		$data['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, bw.* FROM w_badwords AS bw LEFT JOIN u_miembros AS u ON bw.author = u.user_id ORDER BY bw.wid DESC LIMIT $limit"));
+		// PAGINAS
+		list($total) = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM w_badwords'));
+		$data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/badwords?", $_GET['s'], $total, $max);
+		//
+		return $data;
+	}
+	public function getBadWord() {
+		$wid = (int)$_GET['id'];
+		return db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT * FROM w_badwords WHERE wid = $wid LIMIT 1"));
+	}
 
 	 function saveBadWord()
 	 {
@@ -1242,59 +1076,54 @@ class tsAdmin {
 				return '0: Hubo un error al borrar';
 
 	 }
-
-	 /****************** ADMINISTRACIÓN DE ESTADÍSTICAS ******************/
-
-	 function GetAdminStats()
-	 {
-		  $num = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT 
-		  (SELECT count(foto_id) FROM f_fotos WHERE f_status = \'2\') as fotos_eliminadas, 
-		  (SELECT count(foto_id) FROM f_fotos WHERE f_status = \'1\') as fotos_ocultas, 
-		  (SELECT count(foto_id) FROM f_fotos WHERE f_status = \'0\') as fotos_visibles, 
-		  (SELECT count(post_id) FROM p_posts WHERE post_status = \'0\') as posts_visibles, 
-		  (SELECT count(post_id) FROM p_posts WHERE post_status = \'1\') as posts_ocultos, 
-		  (SELECT count(post_id) FROM p_posts  WHERE post_status = \'2\') as posts_eliminados, 
-		  (SELECT count(post_id) FROM p_posts  WHERE post_status = \'3\') as posts_revision, 
-		  (SELECT count(cid) FROM p_comentarios WHERE c_status = \'0\') as comentarios_posts_visibles, 
-		  (SELECT count(cid) FROM p_comentarios WHERE c_status = \'1\') as comentarios_posts_ocultos, 
-		  (SELECT count(user_id) FROM u_miembros WHERE user_activo = \'1\') as usuarios_activos, 
-		  (SELECT count(user_id) FROM u_miembros WHERE user_activo = \'0\' ) as usuarios_inactivos, 
-		  (SELECT count(user_id) FROM u_miembros WHERE user_baneado = \'1\' ) as usuarios_baneados, 
-		  (SELECT count(cid) FROM f_comentarios) as comentarios_fotos_total, 
-		  (SELECT count(follow_id) FROM u_follows WHERE f_type  = \'1\' ) AS usuarios_follows,
-		  (SELECT count(follow_id) FROM u_follows WHERE f_type  = \'2\' ) AS posts_follows,
-		  (SELECT count(follow_id) FROM u_follows WHERE f_type  = \'3\' ) AS posts_compartidos,
-		  (SELECT count(fav_id) FROM p_favoritos) AS posts_favoritos,  
-		  (SELECT count(mr_id) FROM u_respuestas) AS usuarios_respuestas,
-		  (SELECT count(mp_id) FROM u_mensajes) AS mensajes_total, 
-		  (SELECT count(mp_id) FROM u_mensajes WHERE mp_del_to = \'1\') AS mensajes_de_eliminados,
-		  (SELECT count(mp_id) FROM u_mensajes WHERE mp_del_from = \'1\') AS mensajes_para_eliminados,
-		  (SELECT count(bid) FROM p_borradores) AS posts_borradores,
-		  (SELECT count(bid) FROM u_bloqueos) AS usuarios_bloqueados, 
-		  (SELECT count(bid) FROM u_bloqueos) AS usuarios_bloqueados,
-		  (SELECT count(medal_id) FROM w_medallas WHERE m_type = \'1\') AS medallas_usuarios,
-		  (SELECT count(medal_id) FROM w_medallas WHERE m_type = \'2\') AS medallas_posts,
-		  (SELECT count(medal_id) FROM w_medallas WHERE m_type = \'3\') AS medallas_fotos,
-		  (SELECT count(id) FROM w_medallas_assign) AS medallas_asignadas, 
-		  (SELECT count(aid) FROM w_afiliados WHERE a_active = \'1\') AS afiliados_activos, 
-		  (SELECT count(aid) FROM w_afiliados WHERE a_active = \'0\') AS afiliados_inactivos,
-		  (SELECT count(pub_id) FROM u_muro) AS muro_estados, 
-		  (SELECT count(cid) FROM u_muro_comentarios) AS muro_comentarios
-		  '));
-
-		  $num['usuarios_total'] = $num['usuarios_activos'] + $num['usuarios_inactivos'] +
-				$num['usuarios_baneados'];
-		  $num['seguidos_total'] = $num['posts_follows'] + $num['usuarios_follows'];
-		  $num['muro_total'] = $num['muro_estados'] + $num['muro_comentarios'];
-		  $num['afiliados_total'] = $num['afiliados_activos'] + $num['afiliados_inactivos'];
-		  $num['posts_total'] = $num['posts_visibles'] + $num['posts_ocultos'] + $num['posts_eliminados'];
-		  $num['comentarios_posts_total'] = $num['comentarios_posts_visibles'] + $num['comentarios_posts_ocultos'];
-		  $num['medallas_total'] = $num['medallas_usuarios'] + $num['medallas_posts'] + $num['medallas_fotos'];
-		  $num['fotos_total'] = $num['fotos_visibles'] + $num['fotos_ocultas'] + $num['fotos_eliminadas'];
-
-		  return $num;
-	 }
-
-	 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+	# ===================================================
+	# ESTADÍSTICASA
+	# * GetAdminStats() :: Obtenemos todas las estadisticas
+	# ===================================================
+	public function GetAdminStats() {
+		$num = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT 
+			(SELECT count(foto_id) FROM f_fotos WHERE f_status = 2) as fotos_eliminadas, 
+			(SELECT count(foto_id) FROM f_fotos WHERE f_status = 1) as fotos_ocultas, 
+			(SELECT count(foto_id) FROM f_fotos WHERE f_status = 0) as fotos_visibles, 
+			(SELECT count(post_id) FROM p_posts WHERE post_status = 0) as posts_visibles, 
+			(SELECT count(post_id) FROM p_posts WHERE post_status = 1) as posts_ocultos, 
+			(SELECT count(post_id) FROM p_posts  WHERE post_status = 2) as posts_eliminados, 
+			(SELECT count(post_id) FROM p_posts  WHERE post_status = 3) as posts_revision, 
+			(SELECT count(cid) FROM p_comentarios WHERE c_status = 0) as comentarios_posts_visibles, 
+			(SELECT count(cid) FROM p_comentarios WHERE c_status = 1) as comentarios_posts_ocultos, 
+			(SELECT count(user_id) FROM u_miembros WHERE user_activo = 1) as usuarios_activos, 
+			(SELECT count(user_id) FROM u_miembros WHERE user_activo = 0 ) as usuarios_inactivos, 
+			(SELECT count(user_id) FROM u_miembros WHERE user_baneado = 1 ) as usuarios_baneados, 
+			(SELECT count(cid) FROM f_comentarios) as comentarios_fotos_total, 
+			(SELECT count(follow_id) FROM u_follows WHERE f_type  = 1 ) AS usuarios_follows,
+			(SELECT count(follow_id) FROM u_follows WHERE f_type  = 2 ) AS posts_follows,
+			(SELECT count(follow_id) FROM u_follows WHERE f_type  = 3 ) AS posts_compartidos,
+			(SELECT count(fav_id) FROM p_favoritos) AS posts_favoritos,  
+			(SELECT count(mr_id) FROM u_respuestas) AS usuarios_respuestas,
+			(SELECT count(mp_id) FROM u_mensajes) AS mensajes_total, 
+			(SELECT count(mp_id) FROM u_mensajes WHERE mp_del_to = 1) AS mensajes_de_eliminados,
+			(SELECT count(mp_id) FROM u_mensajes WHERE mp_del_from = 1) AS mensajes_para_eliminados,
+			(SELECT count(bid) FROM p_borradores) AS posts_borradores,
+			(SELECT count(bid) FROM u_bloqueos) AS usuarios_bloqueados, 
+			(SELECT count(bid) FROM u_bloqueos) AS usuarios_bloqueados,
+			(SELECT count(medal_id) FROM w_medallas WHERE m_type = 1) AS medallas_usuarios,
+			(SELECT count(medal_id) FROM w_medallas WHERE m_type = 2) AS medallas_posts,
+			(SELECT count(medal_id) FROM w_medallas WHERE m_type = 3) AS medallas_fotos,
+			(SELECT count(id) FROM w_medallas_assign) AS medallas_asignadas, 
+			(SELECT count(aid) FROM w_afiliados WHERE a_active = 1) AS afiliados_activos, 
+			(SELECT count(aid) FROM w_afiliados WHERE a_active = 0) AS afiliados_inactivos,
+			(SELECT count(pub_id) FROM u_muro) AS muro_estados, 
+			(SELECT count(cid) FROM u_muro_comentarios) AS muro_comentarios
+		'));
+		$num['usuarios_total'] = $num['usuarios_activos'] + $num['usuarios_inactivos'] + $num['usuarios_baneados'];
+		$num['seguidos_total'] = $num['posts_follows'] + $num['usuarios_follows'];
+		$num['muro_total'] = $num['muro_estados'] + $num['muro_comentarios'];
+		$num['afiliados_total'] = $num['afiliados_activos'] + $num['afiliados_inactivos'];
+		$num['posts_total'] = $num['posts_visibles'] + $num['posts_ocultos'] + $num['posts_eliminados'];
+		$num['comentarios_posts_total'] = $num['comentarios_posts_visibles'] + $num['comentarios_posts_ocultos'];
+		$num['medallas_total'] = $num['medallas_usuarios'] + $num['medallas_posts'] + $num['medallas_fotos'];
+		$num['fotos_total'] = $num['fotos_visibles'] + $num['fotos_ocultas'] + $num['fotos_eliminadas'];
+		return $num;
+	}
 
 }

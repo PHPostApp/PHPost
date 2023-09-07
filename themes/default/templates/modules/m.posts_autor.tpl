@@ -49,7 +49,7 @@
                             {if $tsUser->is_admod || $tsUser->permisos.modu || $tsUser->permisos.mosu}
                             <hr class="divider"/>
                             <div class="mod-actions">
-                                <b>Herramientas</b>
+                                <strong>Herramientas</strong>
                                 <a href="{$tsConfig.url}/moderacion/buscador/1/1/{$tsPost.post_ip}" class="geoip" target="_blank">{$tsPost.post_ip}</a>
                                 {if $tsUser->is_admod == 1}<a href="{$tsConfig.url}/admin/users?act=show&amp;uid={$tsAutor.user_id}" class="edituser">Editar Usuario</a>{/if}
                                 {if $tsAutor.user_id != $tsUser->uid} <a href="#" onclick="mod.users.action({$tsAutor.user_id}, 'aviso', false); return false;" class="alert">Enviar Aviso</a>{/if}

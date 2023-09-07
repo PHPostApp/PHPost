@@ -1,5 +1,5 @@
                                 <div class="before floatL">
-                                    <a href="#ver-comentarios" {if $tsPages.prev > 0}onclick="comentario.cargar({$tsPages.post_id}, {$tsPages.prev}, {$tsPages.autor});"{else}class="desactivado"{/if}><b>&laquo; Anterior</b></a>
+                                    <a href="#ver-comentarios" {if $tsPages.prev > 0}onclick="comentario.cargar({$tsPages.post_id}, {$tsPages.prev}, {$tsPages.autor});"{else}class="desactivado"{/if}><strong>&laquo; Anterior</strong></a>
                                 </div>
                                 <div style="float:left;width: 530px">
                                     <ul>
@@ -9,6 +9,6 @@
                                     </ul>
                                   </div>
                                 <div class="floatR next">
-                                    <a href="#ver-comentarios" {if $tsPages.next <= $tsPages.pages}onclick="comentario.cargar({$tsPages.post_id}, {$tsPages.next}, {$tsPages.autor});"{else}class="desactivado"{/if}><b>Siguiente &raquo;</b></a>
+                                    <a href="#ver-comentarios" {if $tsPages.next <= $tsPages.pages}onclick="comentario.cargar({$tsPages.post_id}, {$tsPages.next}, {$tsPages.autor});"{else}class="desactivado"{/if}><strong>Siguiente &raquo;</strong></a>
                                 </div>
                                 <div class="clearBoth"></div>
