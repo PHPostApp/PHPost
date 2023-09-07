@@ -161,7 +161,6 @@ var muro = {
 				var valid = muro.stream.validar(inpt);
 				if(valid == true){
 					 // ADJUNTAMOS...
-					 console.log(inpt.val(), inpt)
 					 muro.stream.ajaxCheck(inpt.val(), inpt);
 				} else {
 					 mydialog.alert('Error al publicar', valid);
@@ -179,7 +178,6 @@ var muro = {
 					url: global_data.url + '/muro-stream.php?do=check&type=' + muro.stream.type,
 					data: 'url=' + encodeURIComponent(url),
 					success: function(h){
-						console.log(h)
 						switch(h.charAt(0)){
 							case '0': //Error
 									 mydialog.alert('Error al publicar', h.substring(3));
@@ -290,7 +288,6 @@ var muro = {
 					url: global_data.url + '/muro-stream.php?do=post&type=' + muro.stream.type,
 					data: 'adj=' + muro.stream.adjunto +'&data=' + encodeURIComponent(data) + '&pid=' + $('#info').attr('pid'),
 					success: function(h){
-						  console.log(h)
 						switch(h.charAt(0)){
 							case '0': //Error
 									 mydialog.alert('Error al publicar', h.substring(3));
