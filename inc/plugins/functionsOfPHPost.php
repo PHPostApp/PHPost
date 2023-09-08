@@ -24,12 +24,11 @@ class fnPHPost {
 	}
 
 	/**
-	 * Funcion para generar cache
+	 * Funcion para generar cache (básico)
 	 * @return string ej: abcdef...
 	*/
 	private function getCache() {
-		$clave_unica = uniqid('p');
-		return $clave_unica;
+		return uniqid('p');
 	}
 
 	/**
