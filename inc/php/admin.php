@@ -86,7 +86,8 @@
 				if($act === 'editar') $smarty->assign("tsTema", $tsAdmin->getTema());
 				if($act === 'nuevo') $smarty->assign("tsError", $tsAdmin->newTema());
 			} 
-		} elseif($act === 'activar') {
+		} elseif($act === 'usar') {
+			$tsTitle = 'Activar tema';
 			if($tsAdmin->changeTema()) $tsCore->redireccionar('admin', $action, 'save=true');
 		} elseif($act === 'borrar') {
 			$tsTitle = 'Borrar tema';

@@ -248,7 +248,7 @@ class tsAdmin {
 		// Comprobamos que sea seguro
 		foreach ($tema as $key => $val) $tema[$key] = $tsCore->setSecure($val);
 		// Instalamos...
-		return (insertInto([__FILE__, __LINE__], 'w_temas', ['name' => $tema['nombre'], 'url' => $tema['url'],'path' => $nuevo_tema, 'copy' => $tema['copy']], 't_')) ? '1: Tema instalado correctamente.' : '0: Ocurri&oacute; un error durante la instalaci&oacute;n.';
+		return (insertInto([__FILE__, __LINE__], 'w_temas', ['name' => $tema['nombre'], 'url' => $tema['url'], 'path' => $tema_path, 'copy' => $tema['copy']], 't_')) ? '1: Tema instalado correctamente.' : '0: Ocurri&oacute; un error durante la instalaci&oacute;n.';
 	}
 	# ===================================================
 	# PUBLICIDADES

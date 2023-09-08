@@ -49,10 +49,21 @@ if(file_exists(BLOCKED)) header("Location: ../");
 
 switch ($step) {
 	case 0:
+		// Copiamos el archivo a la ruta del sitio
 		if(!file_exists(CONFIGINC)) {
 			copy(CONFIGINC2, CONFIGINC);
+			// Forzamos los permisos
 			chmod(CONFIGINC, 0666);
 		}
+		// Creamos la carpeta en caso que no exista!
+		if(!is_dir(SCRIPT_ROOT . 'cache')) {
+			mkdir(SCRIPT_ROOT . 'cache', 0777);
+			// Forzamos los permisos
+			chmod(SCRIPT_ROOT . 'cache', 0777);
+		}
+		// Forzamos los permisos
+		chmod(SCRIPT_ROOT . 'files' . DS . 'avatar', 0777);
+		chmod(SCRIPT_ROOT . 'files' . DS . 'uploads', 0777);
 		$_SESSION['license'] = false;
 		$license = file_get_contents(LICENSE);
 	break;

@@ -46,12 +46,12 @@ class tsCore {
 	/*
 		getSettings() :: CARGA DESDE LA DB LAS CONFIGURACIONES DEL SITIO
 	*/
-	function getSettings() {
+	public function getSettings() {
 		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM w_configuracion');
 		return db_exec('fetch_assoc', $query);
 	}
 	
-	function getNovemods() {
+	public function getNovemods() {
       $datos = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT 
         	(SELECT count(post_id) FROM p_posts WHERE post_status = \'3\') as revposts, 
         	(SELECT count(cid) FROM p_comentarios WHERE c_status = \'1\' ) as revcomentarios, 
@@ -69,25 +69,19 @@ class tsCore {
 	/*
 		getCategorias()
 	*/
-	function getCategorias()
-    {
+	public function getCategorias() {
 		// CONSULTA
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT cid, c_orden, c_nombre, c_seo, c_img FROM p_categorias ORDER BY c_orden');
-		// GUARDAMOS
-		$categorias = result_array($query);
-        //
-        return $categorias;
+		$categorias = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT cid, c_orden, c_nombre, c_seo, c_img FROM p_categorias ORDER BY c_orden'));
+      //
+      return $categorias;
 	}
 	/*
 		getTema()
 	*/
-	function getTema()
-    {
-		//
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM w_temas WHERE tid = '.$this->settings['tema_id'].' LIMIT 1');
-		//
-		$data = db_exec('fetch_assoc', $query);
-        $data['t_url'] = $this->settings['url'] . '/themes/' . $data['t_path'];
+	public function getTema() {
+		$id = $this->settings['tema_id'];
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT tid, t_name, t_url, t_path, t_copy FROM w_temas WHERE tid = $id LIMIT 1"));
+      $data['t_url'] = $this->settings['url'] . '/themes/' . $data['t_path'];
 		//
 		return $data;
 	}

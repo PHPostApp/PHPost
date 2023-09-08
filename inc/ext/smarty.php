@@ -78,36 +78,3 @@ if( SECURITY ) $smarty->enableSecurity( $SECURITY_POLICY );
 if( COMPRESS_HTML ) $smarty->loadFilter('output', 'trimwhitespace');
 
 $smarty->muteUndefinedOrNullWarnings();
-
-/**
- * Registro un plugin - Function
-*/
-$smarty->registerPlugin('function', 'includeAsset', '__appendFilePage');
-
-function __appendFilePage($params, $smarty) {
-	global $tsCore;
-   if (isset($params['file'])) {
-   	$type = pathinfo($params['file'])['extension'];
-   	$ruta = $tsCore->settings[$type];
-   
-   	$file = $params['file'];
-      $fileroute = "$ruta/$file?" . time();
-
-      if ($type === 'css') {
-      	if(file_exists($smarty->template_dir[$type].$file)) {
-      		return trim("<link href=\"$fileroute\" rel=\"stylesheet\" type=\"text/css\" />");
-      	} elseif(file_exists($smarty->template_dir['tema'].$file)) {
-      		$fromtheme = "{$tsCore->settings['tema']['t_url']}/$file?" . time();
-      		return trim("<link href=\"$fromtheme\" rel=\"stylesheet\" type=\"text/css\" />");
-      	}
-      } elseif ($type === 'js') {
-      	if($file !== 'moderacion.js' AND $file !== 'cuenta.js') {
-	      	if(file_exists($smarty->template_dir[$type].$file)) {
-	      		return trim("<script src=\"$fileroute\"></script>");
-	      	}
-	      }
-      }
-   }
-
-   return '';
-}
