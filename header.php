@@ -55,6 +55,8 @@
 	define('TS_AVATAR', TS_FILES . 'avatar' . TS_PATH);
 
 	define('TS_UPLOADS', TS_FILES . 'uploads' . TS_PATH);
+
+	define('TS_PUBLIC', TS_ROOT . 'public' . TS_PATH);
 	
 	set_include_path(get_include_path() . PATH_SEPARATOR . realpath('./'));
 

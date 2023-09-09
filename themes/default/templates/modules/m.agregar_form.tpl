@@ -13,7 +13,7 @@
 					<a name="post"></a>
 					<label>Contenido del Post</label>
 					<span style="display: none;" class="errormsg"></span>
-					<textarea id="markItUp" name="cuerpo" tabindex="2" style="min-height:400px;" class="required">{$tsDraft.b_body}</textarea>
+					<textarea id="markItUp" name="cuerpo" tabindex="2" style="min-height:400px;" class="text-inp required">{$tsDraft.b_body}</textarea>
 				</li>
 				<li>
 					<label>Tags</label>
@@ -24,7 +24,7 @@
 				<li class="special-left clearbeta">
 					<label>Categor&iacute;a</label>
 					<span style="display: none;" class="errormsg"></span>
-					<select class="agregar required" tabindex="5" size="9" style="width:300px; float:left" size="{$tsConfig.categorias.ncats}" name="categoria">
+					<select class="text-inp agregar required" tabindex="5" size="9" style="width:300px; float:left" size="{$tsConfig.categorias.ncats}" name="categoria">
 						<option value="" selected="selected" style="color: #000; font-weight: bold; padding: 3px; background:none;">Elegir una categor&iacute;a</option>
 						{foreach from=$tsConfig.categorias item=c}
 							<option value="{$c.cid}"{if $tsDraft.b_category == $c.cid} selected{/if} style="background-image:url({$tsConfig.images}/icons/cat/{$c.c_img})">{$c.c_nombre}</option>

@@ -44,6 +44,7 @@ $addDir['sections'] 	= TS_SECTIONS;
 $addDir['modules'] 	= TS_MODULES;
 $addDir['admod'] 		= TS_ADMOD;
 $addDir['plugins'] 	= TS_PLUGINS;
+$addDir['public'] 	= TS_PUBLIC;
 //
 $smarty->setTemplateDir($addDir);
 

@@ -40,16 +40,31 @@ class fnPHPost {
 		return pathinfo($file)['extension'];
 	}
 
-	private function searchFile(string $folder = '', string $file = '') {
+	private function searchFile(string $folder = '', string $file = '', bool $public = false) {
 		global $smarty;
-		return file_exists($smarty->template_dir[$folder] . $file);
+		if($public) {
+			// Acá busca dentro de la carpeta "root/public/.."
+			$public_theme = $smarty->template_dir['public'] . $folder . TS_PATH;
+		} else {
+			// Acá busca dentro de la carpeta "root/themes/{tema_activo}/.."
+			$public_theme = $smarty->template_dir[$folder];
+		}
+		return file_exists($public_theme . $file);
 	}
 
-	private function setURL(string $folder = '', string $file = '') {
+	private function setURL(string $folder = '', string $file = '', bool $public = false) {
 		global $tsCore;
-		$url = ($folder === 'tema') ? $tsCore->settings['tema']['t_url'] : $tsCore->settings[$folder];
-		$url = "$url/$file";
-		return $url;
+		if($folder === 'tema') {
+			// Acá busca dentro de la carpeta "root/themes/{tema_activo}/"
+			$public_theme = $tsCore->settings['tema']['t_url'];
+		} elseif($public) {
+			// Acá busca dentro de la carpeta "root/public/{folder}"
+			$public_theme = "{$tsCore->settings['public']}/$folder";
+		} else {
+			// Acá busca dentro de la carpeta "root/themes/{tema_activo}/{folder}"
+			$public_theme = $tsCore->settings[$folder];
+		}
+		return "$public_theme/$file";
 	}
 
 	/**
@@ -105,12 +120,22 @@ class fnPHPost {
 	 * Funcion para añadir los estilos
 	*/
 	public function getStyle(string $css = '') {
-		global $tsCore;
+		global $tsCore, $tsPage;
+		// themes/{tema_activo}
 		if(self::searchFile('tema', $css)) {
 			$source = self::setURL('tema', $css) . "?" . self::getCache();
 			$link .= "<link href=\"$source\" rel=\"stylesheet\" type=\"text/css\" />\n";
+		// themes/{tema_activo}/css
 		} elseif(self::searchFile('css', $css)) {
 			$source = self::setURL('css', $css) . "?" . self::getCache();
+			$link .= "<link href=\"$source\" rel=\"stylesheet\" type=\"text/css\" />\n";
+		// public/css
+		} elseif(self::searchFile('css', $css, true)) {
+			$source = self::setURL('css', $css, true) . "?" . self::getCache();
+			$link .= "<link href=\"$source\" rel=\"stylesheet\" type=\"text/css\" />\n";
+		// Solo si esta en la página "posts"
+		} elseif($tsPage === 'posts') {
+			$source = self::setURL('css', 'AtomOneDark.css', true) . "?" . self::getCache();
 			$link .= "<link href=\"$source\" rel=\"stylesheet\" type=\"text/css\" />\n";
 		}
 		return $link;
@@ -140,7 +165,15 @@ class fnPHPost {
 		if(self::searchFile('js', $js)) {
 			// Evitamos que los archivos se dupliquen
 			if(!in_array($js, $denegar)) {
+				// themes/{tema_activo}
 				$source = self::setURL('js', $js) . "?" . self::getCache();
+				$link .= "<script src=\"$source\" type=\"text/javascript\"></script>\n";
+			}
+		} elseif(self::searchFile('js', $js, true)) {
+			// Evitamos que los archivos se dupliquen
+			if(!in_array($js, $denegar)) {
+				// themes/{tema_activo}/js
+				$source = self::setURL('js', $js, true) . "?" . self::getCache();
 				$link .= "<script src=\"$source\" type=\"text/javascript\"></script>\n";
 			}
 		}

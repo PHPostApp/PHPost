@@ -1,7 +1,7 @@
 var button_title = '{if $tsDraft}Aplicar Cambios{else}Agregar post{/if}';
 // Ejecutamos el wysibb
 $(document).ready(() => $('#markItUp').css({height: 400}).wysibb());
-console.log('Soy agregar.js')
+
 function countUpperCase(string) {
 	var len = string.length, 
 	strip = string.replace(/([A-Z])+/g, '').length, 
@@ -16,7 +16,7 @@ error = (objeto, mensaje, tipo) => {
 	// Buscamos al elemento hijo
 	.children('.errormsg')
 	// Y le añadimos un mensaje, lo mostramos u ocultamos
-	.html(mensaje)[(tipo?'show':'hide')]()
+	.html(mensaje)[(tipo?'show':'hide')]();
 }
 //
 var borrador_setTimeout;
@@ -76,6 +76,12 @@ function confirmleave() {
 }
 //
 preliminar = () => {
+	//COMPROBAR TITULO
+   if (countUpperCase($('input[name=titulo]').val()) < 5) {
+		error($('input[name=titulo]'), 'Debes ingresar un titulo para el post', true);
+		$('input[name=titulo]').focus();
+		return false;
+	}
 	//COMPROBAR CONTENIDO
 	if ($('textarea[name=cuerpo]').bbcode().length < 1) {
 		error($('.wysibb'), 'Ingresa contenido para el post', true);
@@ -84,6 +90,7 @@ preliminar = () => {
 		return false;
 	}
 	mydialog.class_aux = 'vistaPrevia';
+	mydialog.size = 'big';
 	mydialog.show(true);
 	mydialog.title('Vista preliminar');
 	mydialog.body('<div class="carf"><p>Cargando vista previa</p></div>');
@@ -94,6 +101,7 @@ preliminar = () => {
 		mydialog.title($('input[name=titulo]').val());
 		mydialog.body(r);
 		mydialog.buttons(true, true, 'Cerrar', 'close', true, false);
+		window.scrollTo(0, 50)
 	})	
 	mydialog.center();
 }
@@ -102,7 +110,7 @@ preliminar = () => {
 publicar = () => {
 	// Comprobamos que tengo contenido
    if ($('input[name=titulo]').val().length < 5) {
-		error($('input[name=titulo]').get(0), 'Debes ingresar un titulo para el post', true);
+		error($('input[name=titulo]'), 'Debes ingresar un titulo para el post', true);
 		$('input[name=titulo]').focus();
 		return false;
 	}
@@ -133,6 +141,7 @@ publicar = () => {
 	//GUARDAR POST DESPUES DE COMPROBAR CAMPOS
 	crear_el_post();
 }
+
 // Con esta función ya publicaremos el post
 crear_el_post = () => {
 	mydialog.show(true);

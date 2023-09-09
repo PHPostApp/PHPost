@@ -456,5 +456,15 @@ $(document).ready(() => {
       var wbbOpt = { buttons: "smilebox,|,bold,italic,underline,strike,sup,sub,|,img,video,link" }
       $('#body_comm').removeAttr('onblur onfocus class style title').css('height', '80').html('').wysibb(wbbOpt);
    }
-   insertarRed()
+   insertarRed();
+      // Función para escapar HTML
+    function escapeHtml(html) {
+        var div = document.createElement('div');
+        div.textContent = html; 
+        return div.innerHTML.replace(/(?:\r\n|\n\n)/g, "\n");
+    }
+    var bloques = [].slice.call(document.querySelectorAll('.post-wrapper pre code'))
+    bloques.map( bloque => $(bloque).html(escapeHtml(bloque.innerText)))
+    // Inicializar highlight.js
+    hljs.highlightAll();
 })

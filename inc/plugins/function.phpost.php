@@ -22,7 +22,7 @@
 require_once realpath(__DIR__) . DIRECTORY_SEPARATOR . "functionsOfPHPost.php";
 
 function smarty_function_phpost($params, &$smarty) {
-	global $tsCore;
+	global $tsCore, $tsPage;
 	//
 	$HTML = '';
 	$funcs = new fnPHPost;
@@ -38,6 +38,8 @@ function smarty_function_phpost($params, &$smarty) {
 
 	// Añadimos todos los estilos
 	$HTML .= "<!-- Scripts de {$tsCore->settings['tema']['t_name']} -->\n";
+	if($tsPage === 'posts') array_push($params['js'], 'highlight.min.js');
+	
 	foreach($params['js'] as $js) $HTML .= $funcs->getScript($js, $params['deny']);
 
 	// Si es administrador, moderador o tiene permisos

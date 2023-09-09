@@ -35,6 +35,7 @@ class tsCore {
 		//
 		$this->settings['avatar'] = $this->settings['url'].'/files/avatar';
 		$this->settings['uploads'] = $this->settings['url'].'/files/uploads';
+		$this->settings['public'] = $this->settings['url'].'/public';
       //
      	if($_GET['do'] == 'portal' || $_GET['do'] == 'posts') 
      		$this->settings['news'] = $this->getNews();

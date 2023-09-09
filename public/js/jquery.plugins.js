@@ -204,7 +204,7 @@ var mydialog = {
 	body: body => $('#mydialog #cuerpo #modalBody').html(body),
 	buttons: (...args) => {
 		if(args.length === 1) {
-			$('#mydialog #buttons').remove();
+			$('#mydialog #buttons').hide();
 			return;
 		}
 		const obj = {
@@ -216,7 +216,7 @@ var mydialog = {
 	},
 	buttons_action: (remBtn, dataObject) => {	
 		var is_html = '';	
-		if(!dataObject.ok && !dataObject.fail && remBtn) $('#mydialog #buttons').remove()
+		if(!dataObject.ok && !dataObject.fail && remBtn) $('#mydialog #buttons').hide()
 		// Si existe "OK"
 		if(dataObject.ok) {
 			// Si tiene accion definido
@@ -231,7 +231,10 @@ var mydialog = {
 			let classdisabled = dataObject.fail.active ? '' : ' disabled';
 			is_html += `<input type="button" class="mBtn btnCancel${classdisabled}" style="display:inline-block!important;" onclick="${dataObject.ok.action}" value="${dataObject.fail.text}"${classdisabled} />`;
 		}
-		$('#mydialog #buttons').html(is_html)
+		// Por que si se ejecuta 2 veces y el 1ro tiene mydialog.buttons(false)
+		// El 2do ya no se visualizará ya que no existe en el DOM #buttons
+		$('#mydialog #buttons').show().html(is_html)
+		
 		if(!dataObject.ok && !dataObject.fail) {
 			if(dataObject.ok.focus) $('#mydialog #buttons .mBtn.btnOk').focus();
 			else if(dataObject.fail.focus) $('#mydialog #buttons .mBtn.btnCancel').focus();
