@@ -7,11 +7,10 @@
 {phpost 
 	favicon="favicon.ico" 
 	css=["estilo.css", "phpost.css", "extras.css", "$tsPage.css", "wysibb.css"] 
-	js=["jquery.min.js", "jquery.plugins.js", "acciones.js", "wysibb.js", "$tsPage.js"] 
+	js=["acciones.js", "wysibb.js", "$tsPage.js"] 
 	deny=["moderacion.js", "cuenta.js"]
 }
 </head>
-
 <body>
 {if $tsUser->is_admod == 1}{$tsConfig.install}{/if}
 <!--JAVASCRIPT-->

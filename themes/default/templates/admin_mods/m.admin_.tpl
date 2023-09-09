@@ -76,7 +76,7 @@ $(() => {
 					<time>${tiempo}</time>
 					<small>sha: ${code}</small>
 				</div>
-				<div class="body">${content}</div>
+				<div class="body">${content}<hr><small>Agregados/Modificados: ${data.stats.additions} | Eliminados: ${data.stats.deletions}</small></div>
 			</li>`;
 			$('#last_gh').append(html);
       })

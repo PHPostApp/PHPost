@@ -749,7 +749,6 @@ var afiliado = {
     		url: global_data.url + '/afiliado-nuevo.php',
     		data: params,
     		success: function(h){
-    			console.log(h)
     		  mydialog.procesando_fin();
     		  switch(h.charAt(0)){
     		      case '0':
