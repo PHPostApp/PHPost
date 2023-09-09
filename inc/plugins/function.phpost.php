@@ -39,6 +39,10 @@ function smarty_function_phpost($params, &$smarty) {
 	// Añadimos todos los estilos
 	$HTML .= "<!-- Scripts de {$tsCore->settings['tema']['t_name']} -->\n";
 	if($tsPage === 'posts') array_push($params['js'], 'highlight.min.js');
+	if($tsPage === 'admin') {
+		array_push($params['js'], 'timeago.min.js');
+		array_push($params['js'], 'timeago.es.js');
+	}
 	
 	foreach($params['js'] as $js) $HTML .= $funcs->getScript($js, $params['deny']);
 

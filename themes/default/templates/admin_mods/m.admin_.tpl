@@ -36,8 +36,6 @@
 	</div>
 	<div class="clearBoth"></div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/timeago@1"></script>
-<script src="{$tsConfig.js}/timeago.es.js"></script>
 {literal}
 <script type="text/javascript">
 $(() => {
