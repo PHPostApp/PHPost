@@ -7,224 +7,264 @@
  */
 
 class tsPosts {
-	/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*\
-								PUBLICAR POSTS
-	/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-	 /** simiPosts($q)
-	  * @access public
-	  * @param string
-	  * @return array
-	  */
-	 public function simiPosts($q)
-	 {
-		global $tsUser, $tsCore;
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_title, c.c_seo FROM p_posts AS p LEFT JOIN u_miembros AS u ON u.user_id = p.post_user LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE p.post_status = \'0\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : '&& u.user_activo = \'1\' && u.user_baneado = \'0\'').' && MATCH(p.post_title) AGAINST(\''.$q.'\' IN BOOLEAN MODE) ORDER BY RAND() DESC LIMIT 5');
-		  $data = result_array($query);
-		  
-		  //
-		  return $data;
-	 }
-	 /** genTags($q)
-	  * @access public
-	  * @param string
-	  * @return string
-	  */
-	  public function genTags($q){
-		  $content = trim(preg_replace("/[^ A-Za-z0-9]/", "", $q));
-		  $ketxt = preg_replace('/ {2,}/si', " ", $content);
-		  $t = explode(" ", $ketxt);
-		  $total = count($t);
-		  $tg = "";
-		  $i = 0;
-		  foreach($t as $v){ $i++;
-				$coma = ($i < $total) ? ", " : " ";
-				$tg .= (strlen($v) >= 4 && strlen($v) <= 8) ? ($v.$coma) : "";
-		  }
-		  $tag = strtolower($tg);
-		  //
-		  return ($tag);
-	  }
-	/*
-		getPreview()
+
+	/** 
+	 * isAdmod($fix, $add)
+	 * @access public
+	 * @param string
+	 * @param string
+	 * @return string
 	*/
-	function getPreview(){
+	private function isAdmod(string $fix = 'u.', string $add = '') {
+      global $tsCore, $tsUser;
+      //
+      $isAdmod = ($tsUser->is_admod AND (int)$tsCore->settings['c_see_mod'] === 1) ? '' : "AND {$fix}user_activo = 1 AND {$fix}user_baneado = 0 $add";
+      //
+      return $isAdmod;
+	}
+
+	/**
+    * Acortador de post automático 
+    * @author KMario19
+    * Formateado por
+    * @author Miguel92
+    * @link https://www.phpost.net/foro/topic/24984-mod-acortador-de-post-autom%C3%A1tico/
+   */
+   public function short_url_post() {
+      global $tsCore, $tsUser;
+      # Obtenemos el nombre del post!
+      $post = (int)$_GET['p'];
+      # Adicionamos si es administrador o no! 
+      $admod = self::isAdmod();
+      # Buscamos el post en la base
+      $q = db_exec('fetch_assoc', $search = db_exec([__FILE__, __LINE__], 'query', "SELECT p.post_id, p.post_title, p.post_category, p.post_user, u.user_name, c.* FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id LEFT JOIN p_categorias AS c ON p.post_category = c.cid WHERE p.post_id = $post AND p.post_status = 0 {$admod}"));
+      # Si no existe redirecciomos a la página posts
+      if(!db_exec('num_rows', $search)){
+         $tsCore->redirectTo($tsCore->settings['url'].'/posts/');
+         die;
+      }
+      $tsCore->redirectTo("{$tsCore->settings['url']}/posts/{$q['c_seo']}/{$q['post_id']}/{$tsCore->setSEO($q['post_title'], '-')}.html");
+   }
+
+	/** 
+	 * simiPosts($q, $like)
+	 * @access public
+	 * @param string
+	 * @return array
+	 */
+	public function simiPosts(string $q = '', bool $like = true) {
+		global $tsUser, $tsCore;
+		// Es administrador o moderador?...
+		$isAdmod = self::isAdmod();
+		// Modo de busqueda
+		$typeSearch = $like ? "p.post_title LIKE '%$q%'" : "MATCH(p.post_title) AGAINST('$q' IN BOOLEAN MODE)";
+		// Buscamos posts con el título similar...
+		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT p.post_id, p.post_title, c.c_seo FROM p_posts AS p LEFT JOIN u_miembros AS u ON u.user_id = p.post_user LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE p.post_status = 0 $isAdmod && $typeSearch ORDER BY RAND() DESC LIMIT 5"));
+		//
+		return $data;
+	}
+
+	/** 
+	 * genTags($q)
+	 * @access public
+	 * @param string
+	 * @return string
+	*/
+	public function genTags(string $q = ''){
+		$texto = preg_replace('/ {2,}/si', " ", trim(preg_replace("/[^ A-Za-z0-9]/", "", $q)));
+		$array = []; # Para iniciar el arreglo
+		foreach (explode(' ', $texto) as $tag) { # Solo agregamos de más de 4 y menos de 12 letras
+			# Añadimos cada palabra al array
+			if(strlen($tag) >= 4 AND strlen($tag) <= 12) array_push($array, strtolower($tag));
+		}
+		return join(', ', $array);
+	}
+
+	/** 
+	 * getPreview()
+	 * @access public
+	 * @return array
+	 * En este caso solo se dejará el cuerpo
+	*/
+	public function getPreview() {
 		global $tsCore;
 		//
-		$titulo = $tsCore->setSecure($_POST['titulo'], true);
 		$cuerpo = $tsCore->setSecure($_POST['cuerpo'], true);
-		//
-		return array('titulo' => $titulo, 'cuerpo' => $tsCore->parseBadWords($tsCore->parseBBCode($cuerpo), true));
+		$cuerpo = $tsCore->parseBadWords($cuerpo, true);
+		$cuerpo = $tsCore->parseBBCode($cuerpo);
+		return ['cuerpo' => $cuerpo];
 	}
-	 /*
-		  validTags($tags)
-	 */
-	 function validTags($tags){
-		  $tags = trim(preg_replace('/[^ A-Za-z0-9,]/', '', $tags));
-		  $tags = str_replace(' ','',$tags);
-		  if(empty($tags)) return false;
-		  else {
-				$tags = explode(',',$tags);
-				if(count($tags) < 4) return false;
-				foreach($tags as $val){
-					 if(empty($val)) return false;
-				}   
-		  }
-		  //
-		  return true;
-	 }
-	/*
-		newPost()
+
+	/** 
+	 * validTags()
+	 * @access public
+	 * @return bool
 	*/
-	function newPost(){
+	public function validTags(string $tags = ''){
+    	$tags = preg_replace('/[^A-Za-z0-9, ]/', '', trim($tags));
+    	if (empty($tags)) return false;
+    	$tagsArray = array_filter(explode(',', $tags), 'trim');
+    	if (count($tagsArray) < 4) return false;
+    	foreach ($tagsArray as $tag) {
+        	if (empty($tag)) return false;
+      }
+    	return true;
+	}
+
+	/**
+	 * newEditPost($data, $type)
+	 * @access private
+	 * @param array
+	 * @param string
+	 * @return array
+	*/
+	private function newEditPost(array $data = [], string $type = 'new') {
+		global $tsCore;
+		$data = [
+			'title' => $tsCore->parseBadWords($tsCore->setSecure($data['titulo'], true)),
+			'body' => $tsCore->setSecure($data['cuerpo']),
+			'tags' => $tsCore->parseBadWords($tsCore->setSecure($data['tags'], true)),
+			'category' => (int)$data['categoria']
+		];
+		if($type === 'new') $data['date'] = time();
+		return $data;
+	}
+
+	/** 
+	 * newPost()
+	 * @access public
+	 * @return ID
+	*/
+	public function newPost() {
 		global $tsCore, $tsUser, $tsMonitor, $tsActividad;
 		//
 		if($tsUser->is_admod || $tsUser->permisos['gopp']){
-		//
-		$postData = array(
-			'date' => time(),
-			'title' => $tsCore->parseBadWords($tsCore->setSecure($_POST['titulo'], true)),2,
-			'body' => $tsCore->setSecure($_POST['cuerpo']),
-			'tags' => $tsCore->parseBadWords($tsCore->setSecure($_POST['tags'], true)),true,1,
-			'category' => intval($_POST['categoria']),
-		);
-		  //ANTIFLOOD
-		  $antiflood = 2;
-		  $d = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(post_id) AS few FROM `p_posts` WHERE post_body = \''.$postData['body'].'\' LIMIT 1'));
-		if($d[0]) die('No se puede agregar el post. C&oacute;digo de error [#0aP]');
-		  // VACIOS
-		foreach($postData as $key => $val){
+			// Avitando que se repita en nuevo post y editar post
+			$postData = self::newEditPost($_POST, 'new');
+		  	$d = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(post_id) AS few FROM `p_posts` WHERE post_body = '{$postData['body']}' LIMIT 1"));
+			if($d[0]) die('No se puede agregar el post.');
+		  	// VACIOS
+			foreach($postData as $key => $val){
 				$val = trim(preg_replace('/[^ A-Za-z0-9]/', '', $val));
 				$val = str_replace(' ', '', $val);
-			if(empty($val)) return 0;
-		}
+				if(empty($val)) return 0;
+			}
 		  // TAGS
 		  $tags = $this->validTags($postData['tags']);
 		  if(empty($tags)) return 'Tienes que ingresar por lo menos <b>4</b> tags.';
-		// ESTOS PUEDEN IR VACIOS
-		$postData['visitantes'] = empty($_POST['visitantes']) ? 0 : 1;
-		$postData['smileys'] = empty($_POST['smileys']) ? 0 : 1;
-		$postData['private'] = empty($_POST['privado']) ? 0 : 1;
-		$postData['block_comments'] = empty($_POST['sin_comentarios']) ? 0 : 1;
-		  // SOLO MODERADORES Y ADMINISTRADORES
-		  if(empty($tsUser->is_admod)  && $tsUser->permisos['most'] == false) {
-			$postData['sponsored'] = 0;
-				$postData['sticky'] = 0;   
-		  } else {
-			$postData['sponsored'] = empty($_POST['patrocinado']) ? 0 : 1;
-				$postData['sticky'] = empty($_POST['sticky']) ? 0 : 1;
-		  }
-		// ANTI FLOOD
-		if($tsUser->info['user_lastpost'] < (time() - $antiflood)) {
+		  // ESTOS PUEDEN IR VACIOS
+			$keys = ['visitantes', 'smileys', 'private', 'block_comments', 'sponsored', 'sticky'];
+			foreach ($keys as $key) {
+				$postData[$key] = ($_POST[$key] === 'on') ? 1 : 0;
+    			if ($key === 'sponsored' || $key === 'sticky') {
+        			$postData[$key] = (!$tsUser->is_admod AND $tsUser->permisos['most'] != false) ? 0 : ($_POST[$key] === 'on' ? 1 : 0);
+    			}
+			}
+		  	// ANTIFLOOD
+		  	$antiflood = 2;
+			if((int)$tsUser->info['user_lastpost'] < (time() - $antiflood)) {
 				// EXISTE LA CATEGORIA?
-			$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT cid FROM p_categorias WHERE cid = \''.(int)$postData['category'].'\' LIMIT 1');
-				if(db_exec('num_rows', $query) == 0) return 'La categor&iacute;a especificada no existe.';
-			// INSERTAMOS
-			$_SERVER['REMOTE_ADDR'] = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
-				if(!filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) { die('0: Su ip no se pudo validar.'); }
-			if(db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO `p_posts` (post_user, post_category, post_title, post_body, post_date, post_tags, post_ip, post_private, post_block_comments, post_sponsored, post_sticky, post_smileys, post_visitantes, post_status) VALUES (\''.$tsUser->uid.'\', \''.(int)$postData['category'].'\', \''.$postData['title'].'\',  \''.$postData['body'].'\', \''.$postData['date'].'\', \''.$postData['tags'].'\', \''.$_SERVER['REMOTE_ADDR'].'\', \''.(int)$postData['private'].'\', \''.(int)$postData['block_comments'].'\', \''.(int)$postData['sponsored'].'\', \''.(int)$postData['sticky'].'\', \''.(int)$postData['smileys'].'\', \''.(int)$postData['visitantes'].'\', '.(!$tsUser->is_admod && ($tsCore->settings['c_desapprove_post'] == 1 || $tsUser->permisos['gorpap'] == true) ? '\'3\'' : '\'0\'').')')) {
-				$postID = db_exec('insert_id');
-				// Si está oculto, lo creamos en el historial e.e
-				if(!$tsUser->is_admod && ($tsCore->settings['c_desapprove_post'] == 1 || $tsUser->permisos['gorpap'] == true)) db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO `w_historial` (`pofid`, `action`, `type`, `mod`, `reason`, `date`, `mod_ip`) VALUES (\''.(int)$postID.'\', \'3\', \'1\', \''.$tsUser->uid.'\', \'Revisi&oacute;n al publicar\', \''.time().'\', \''.$_SERVER['REMOTE_ADDR'].'\')');
-				$time = time();
-					 // ESTADÍSTICAS
-					 db_exec([__FILE__, __LINE__], 'query', 'UPDATE `w_stats` SET `stats_posts` = stats_posts + \'1\' WHERE `stats_no` = \'1\'');
-				// ULTIMO POST
-				db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_lastpost = \''.$time.'\' WHERE user_id = \''.$tsUser->uid.'\'');
-				// AGREGAR AL MONITOR DE LOS USUARIOS QUE ME SIGUEN
-				$tsMonitor->setFollowNotificacion(5, 1, $tsUser->uid, $postID);
-					 // REGISTRAR MI ACTIVIDAD
-					 $tsActividad->setActividad(1, $postID);
-				// SUBIR DE RANGO?
-				$this->subirRango($tsUser->uid);
-				//
-				return $postID;
-			} else return show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db');
-		} else return -1;
-	} else return 'No tienes permiso para crear posts.';
-  }
-	/*
-		savePost()
+				$query = db_exec([__FILE__, __LINE__], 'query', "SELECT cid FROM p_categorias WHERE cid = {$postData['category']} LIMIT 1");
+				if(db_exec('num_rows', $query) === 0) return 'La categor&iacute;a especificada no existe.';
+				// Agregamos este item al array
+				$postData['ip'] = $tsCore->validarIP();
+				if(!filter_var($postData['ip'], FILTER_VALIDATE_IP)) die('0: Su ip no se pudo validar.');
+				// Agregamos estos items al array
+				$postData['user'] = $tsUser->uid;
+				$postData['status'] = (!$tsUser->is_admod AND (int)$tsCore->settings['c_desapprove_post'] === 1) ? 3 : 0;
+				// INSERTAMOS
+				if(insertInto([__FILE__, __LINE__], 'p_posts', $postData, 'post_')) {
+					$postID = (int)db_exec('insert_id');
+					$time = time();
+					// Si está oculto, lo creamos en el historial e.e
+					if(!$tsUser->is_admod && ((int)$tsCore->settings['c_desapprove_post'] == 1 || $tsUser->permisos['gorpap'] == true)) db_exec(insertInto([__FILE__, __LINE__], 'w_historial', [`pofid` => $postID, `action` => 3, `type` => 1, `mod` => $tsUser->uid, `reason` => 'Revisi&oacute;n al publicar', `date` => $time, `mod_ip` => $postData['ip']]));
+					// ESTADÍSTICAS
+					db_exec([__FILE__, __LINE__], 'query', "UPDATE `w_stats` SET `stats_posts` = stats_posts + 1 WHERE `stats_no` = 1");
+					// ULTIMO POST
+					db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_lastpost = $time WHERE user_id = {$tsUser->uid}");
+					// AGREGAR AL MONITOR DE LOS USUARIOS QUE ME SIGUEN
+					$tsMonitor->setFollowNotificacion(5, 1, $tsUser->uid, $postID);
+					// REGISTRAR MI ACTIVIDAD
+					$tsActividad->setActividad(1, $postID);
+					// SUBIR DE RANGO?
+					$this->subirRango($tsUser->uid);
+					//
+					return $postID;
+				} else return show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db');
+			} else return -1;
+		} else return 'No tienes permiso para crear posts.';
+  	}
+
+	/** 
+	 * savePost()
+	 * @access public
+	 * @return ID
 	*/
-	function savePost(){
+	public function savePost() {
 		global $tsCore, $tsUser;
-		//
+		// Buscamos el post por ID
 		$post_id = (int)$_GET['pid'];
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT post_user, post_sponsored, post_sticky, post_status FROM p_posts WHERE post_id = \''.(int)$post_id.'\' LIMIT 1');
-		$data = db_exec('fetch_assoc', $query);
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT post_user, post_sponsored, post_sticky, post_status FROM p_posts WHERE post_id = $post_id LIMIT 1"));
 		//
-		  if($data['post_status'] != '0' && !$tsUser->is_admod && !$tsUser->permisos['moedpo']) {
-				return 'El post no puede ser editado.';
-		  }
+		if((int)$data['post_status'] != 0 && !$tsUser->is_admod && !$tsUser->permisos['moedpo']) return 'El post no puede ser editado.';
 		//
-		$postData = array(
-			'title' => $tsCore->parseBadWords($_POST['titulo'], true),
-			'body' => $tsCore->setSecure($_POST['cuerpo'], true),
-			'tags' => $tsCore->parseBadWords($tsCore->setSecure($_POST['tags'], true)),
-			'category' => $_POST['categoria'],
-		);
+		$postData = self::newEditPost($_POST, 'edit');
 		// VACIOS
 		foreach($postData as $key => $val){
-				$val = trim(preg_replace('/[^ A-Za-z0-9]/', '', $val));
-				$val = str_replace(' ', '', $val);
+			$val = trim(preg_replace('/[^ A-Za-z0-9]/', '', $val));
+			$val = str_replace(' ', '', $val);
 			if(empty($val)) return 0;
 		}
-		  // TAGS
-		  $tags = $this->validTags($postData['tags']);
-		  if(empty($tags)) return 'Tienes que ingresar por lo menos <b>4</b> tags.';
-		//
-		$postData['visitantes'] = empty($_POST['visitantes']) ? 0 : 1;
-		$postData['smileys'] = empty($_POST['smileys']) ? 0 : 1;			
-		$postData['private'] = empty($_POST['privado']) ? 0 : 1;
-		$postData['block_comments'] = empty($_POST['sin_comentarios']) ? 0 : 1;
-		  // SOLO MODERADORES Y ADMINISTRADORES
-		  if(empty($tsUser->is_admod)  && $tsUser->permisos['most'] == false) {
-			$postData['sponsored'] = $data['post_sponsored'];
-				$postData['sticky'] = $data['post_sticky'];   
-		  } else {
-			$postData['sponsored'] = empty($_POST['patrocinado']) ? 0 : 1;
-				$postData['sticky'] = empty($_POST['sticky']) ? 0 : 1;
-		  }
+		// TAGS
+		$tags = $this->validTags($postData['tags']);
+		if(empty($tags)) return 'Tienes que ingresar por lo menos <b>4</b> tags.';
+		// ESTOS PUEDEN IR VACIOS
+		$keys = ['visitantes', 'smileys', 'private', 'block_comments', 'sponsored', 'sticky'];
+		foreach ($keys as $key) {
+			$postData[$key] = ($_POST[$key] === 'on') ? 1 : 0;
+    		if ($key === 'sponsored' || $key === 'sticky') {
+      		$postData[$key] = (!$tsUser->is_admod AND $tsUser->permisos['most'] != false) ? 0 : ($_POST[$key] === 'on' ? 1 : 0);
+    		}
+		}
 		// ACTUALIZAMOS
-		if($tsUser->uid == $data['post_user'] || !empty($tsUser->is_admod) || !empty($tsUser->permisos['moedpo'])){
-			 if(db_exec([__FILE__, __LINE__], 'query', 'UPDATE p_posts SET post_title = \''.$postData['title'].'\', post_body = \''.$postData['body'].'\', post_tags = \''.$tsCore->setSecure($postData['tags']).'\', post_category = \''.(int)$postData['category'].'\', post_private = \''.$postData['private'].'\', post_block_comments = \''.$postData['block_comments'].'\', post_sponsored = \''.$postData['sponsored'].'\', post_smileys = \''.$postData['smileys'].'\', post_visitantes = \''.$postData['visitantes'].'\', post_sticky = \''.$postData['sticky'].'\' WHERE post_id = \''.(int)$post_id.'\'') or exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') )) {
-				  // GUARDAR EN EL HISTORIAL	DE MODERACION		 
-				  if(($tsUser->is_admod || $tsUser->permisos['moedpo']) && $tsUser->uid != $data['post_user'] && $_POST['razon']){
-					 include("c.moderacion.php");
-							$tsMod = new tsMod();
-					 return $tsMod->setHistory('editar', 'post', array('post_id' => $post_id, 'title' => $postData['title'], 'autor' => $data['post_user'], 'razon' => $_POST['razon']));
-				  } else return 1;
-			}
+		if((int)$tsUser->uid === (int)$data['post_user'] || !empty($tsUser->is_admod) || !empty($tsUser->permisos['moedpo'])) {
+			if(db_exec([__FILE__, __LINE__], 'query', "UPDATE p_posts SET {$tsCore->getIUP($postData, 'post_')} WHERE post_id = $post_id")) {
+				// Guardamos en el historial de moderación
+				if(($tsUser->is_admod || $tsUser->permisos['moedpo']) && $tsUser->uid != $data['post_user'] && $_POST['razon']) {
+					include_once TS_CLASS . "c.moderacion.php";
+					$tsMod = new tsMod();
+					return $tsMod->setHistory('editar', 'post', [
+						'post_id' => $post_id, 
+						'title' => $postData['title'], 
+						'autor' => $data['post_user'], 
+						'razon' => $tsCore->setSecure($_POST['razon'])
+					]);
+				} else return 1;
+			} else exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
 		}
 	}
-	 /*
-		  setNP()
-		  :: POST ANTERIOR, SIGUIENTE O ALEATORIO
-	 */
-	 function setNP()
-	 {
-		  global $tsUser, $tsCore;
-		  $action = $_GET['action'];
-		  if($action == 'fortuitae'){
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_user, p.post_category, p.post_title, u.user_name, c.c_nombre, c.c_seo FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE p.post_status = \'0\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' ORDER BY RAND() DESC LIMIT 1') or exit(show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db'));
-		  if(!db_exec('num_rows', $query)){ 
-		die('Serooo');
-		  $tsCore->redirectTo($tsCore->settings['url'].'/posts/');
-		die;
-		  }
-		  $q = db_exec('fetch_assoc', $query);
-		  }else{
-		  $action = $action == 'prev' ? '<' : '>';
-		  $pid = isset($_GET['id']) ? (int) $_GET['id'] : 1;
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_user, p.post_category, p.post_title, u.user_name, c.c_nombre, c.c_seo FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE p.post_status = \'0\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' AND p.post_id '.$action.' '.(int)$pid.' ORDER BY p.post_id '.($action == '<' ? 'DESC' : 'ASC').' LIMIT 1') or exit(show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db'));
-		if(!db_exec('num_rows', $query)){
-		  die('No hay mas posts');
-		  $tsCore->redirectTo($tsCore->settings['url'].'/posts/');
-		  die;
-		  }
-		  $q = db_exec('fetch_assoc', $query);
-		  }
-		  $tsCore->redirectTo($tsCore->settings['url'].'/posts/'.$q['c_seo'].'/'.$q['post_id'].'/'.$tsCore->setSEO($q['post_title']).'.html');
-	 }
+
+	/**
+	 * setNP()
+	 * @access public
+	 * return redirecciona a post
+	*/
+	public function setNP() {
+		global $tsUser, $tsCore;
+		// Tipo de acción
+		$action = $_GET['action'];
+		// Es administrador, moderador o especial
+		$isAdmod = self::isAdmod();
+		$order = ($action == 'fortuitae') ? 'RAND() DESC' : 'p.post_id ' . ($action === 'prev' ? 'DESC' : 'ASC');
+		if($action != 'fortuitae') {
+			$pid = isset($_GET['id']) ? (int) $_GET['id'] : 1;
+			$isAdmod .= ' AND p.post_id ' . ($action === 'prev' ? "< " : "> ") . $pid;
+		}
+		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT p.post_id, p.post_user, p.post_category, p.post_title, u.user_name, c.c_nombre, c.c_seo FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE p.post_status = 0 $isAdmod ORDER BY $order LIMIT 1") or exit(show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db'));
+		if(!db_exec('num_rows', $query)) $tsCore->redirectTo($tsCore->settings['url'].'/posts/');
+		$q = db_exec('fetch_assoc', $query);
+		$tsCore->redirectTo($tsCore->settings['url'].'/posts/'.$q['c_seo'].'/'.$q['post_id'].'/'.$tsCore->setSEO($q['post_title']).'.html');
+	}
 	
 	 /*
 		  getCatData()
@@ -694,29 +734,24 @@ class tsPosts {
 	function delComentario(){
 		global $tsCore, $tsUser;
 		//
-		$comid = $tsCore->setSecure($_POST['comid']);
-		$autor = $tsCore->setSecure($_POST['autor']);
-		//if(!empty($_POST['postid']) $post_id = intval($_POST['postid']); else  $post_id = intval($_POST['post_id']);
-		$post_id = isset($_POST['postid']) ? intval($_POST['postid']) : intval($_POST['post_id']);
-		$post_id = $tsCore->setSecure($_POST['postid']);
-		// ES DE MI POST EL COMENTARIO?		        
-		if(!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT cid FROM p_comentarios WHERE cid = \''.(int)$comid.'\''))){ return '0: El comentario no existe'; } // [17/04/2012] Evitar miles de comentarios
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT post_id FROM p_posts WHERE post_id = \''.(int)$post_id.'\' AND post_user = \''.$tsUser->uid.'\'');
-		$is_mypost = db_exec('num_rows', $query);
-		
-		// ES MI COMENTARIO?
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT cid FROM p_comentarios WHERE cid = \''.(int)$comid.'\' AND c_user = \''.$tsUser->uid.'\'');
-		$is_mycmt = db_exec('num_rows', $query);
-		
+		$comid = (int)$_POST['comid'];
+		$autor = (int)$_POST['autor'];
+		$post_id = isset($_POST['postid']) ? (int)$_POST['postid'] : (int)$_POST['post_id'];
+		// Cargamos los comentarios solamente del post acutual        
+		if(!db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT cid FROM p_comentarios WHERE cid = $comid"))) return '0: El comentario no existe';
+		// Es mi post?...
+		$is_mypost = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT post_id FROM p_posts WHERE post_id = $post_id AND post_user = {$tsUser->uid}"));
+		// Es mi comentario?...
+		$is_mycmt = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT cid FROM p_comentarios WHERE cid = $comid AND c_user = {$tsUser->uid}"));
 		// SI ES....
 		if(!empty($is_mypost) || (!empty($is_mycmt) && !empty($tsUser->permisos['godpc'])) || !empty($tsUser->is_admod) || !empty($tsUser->permisos['moecp'])){
-			 if(db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM p_comentarios WHERE cid = \''.(int)$comid.'\' AND c_user = \''.(int)$autor.'\' AND c_post_id = \''.(int)$post_id.'\'')) {
+			if(deleteID([__FILE__, __LINE__], 'p_comentarios', "cid = $comid AND c_user = $autor AND c_post_id = $post_id")) {
 				// BORRAR LOS VOTOS
-				db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM p_votos WHERE tid = \''.(int)$comid.'\'');
-					 // RESTAR EN LAS ESTADÍSTICAS
-					 db_exec([__FILE__, __LINE__], 'query', 'UPDATE w_stats SET stats_comments = stats_comments - 1 WHERE stats_no = \'1\'');
-					 db_exec([__FILE__, __LINE__], 'query', 'UPDATE p_posts SET post_comments = post_comments - 1 WHERE post_id = \''.(int)$post_id.'\'');
-					 db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_comentarios = user_comentarios - 1 WHERE user_id = \''.(int)$autor.'\'');
+				deleteID([__FILE__, __LINE__], 'p_votos', "tid = $comid");
+				// RESTAR EN LAS ESTADÍSTICAS
+				db_exec([__FILE__, __LINE__], 'query', "UPDATE w_stats SET stats_comments = stats_comments - 1 WHERE stats_no = 1");
+				db_exec([__FILE__, __LINE__], 'query', "UPDATE p_posts SET post_comments = post_comments - 1 WHERE post_id = $post_id");
+				db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_comentarios = user_comentarios - 1 WHERE user_id = $autor");
 				//
 				return '1: Comentario borrado.';
 			}else return '0: Ocurri&oacute; un error, intentalo m&aacute;s tarde.';
@@ -730,17 +765,20 @@ class tsPosts {
 		global $tsCore, $tsUser;
 		//
 		if($tsUser->is_admod || $tsUser->permisos['moaydcp']){
-		//
-		$data = db_exec('fetch_assoc', $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT cid, c_user, c_post_id, c_status FROM p_comentarios WHERE cid = \''.(int)$_POST['comid'].'\''));
-		db_exec([__FILE__, __LINE__], 'query', 'UPDATE w_stats SET stats_comments = stats_comments '.($data['c_status'] == 1 ? '+' : '-').' 1 WHERE stats_no = \'1\'');
-		  db_exec([__FILE__, __LINE__], 'query', 'UPDATE p_posts SET post_comments = post_comments '.($data['c_status'] == 1 ? '+' : '-').' 1 WHERE post_id = \''.$data['c_post_id'].'\'');
-		  db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_comentarios = user_comentarios '.($data['c_status'] == 1 ? '+' : '-').' 1 WHERE user_id = \''.$data['c_user'].'\'');
-		// OCULTAMOS O MOSTRAMOS
-		if(db_exec([__FILE__, __LINE__], 'query', 'UPDATE p_comentarios SET c_status = '.($data['c_status'] == 1 ? '\'0\'' : '\'1\'').' WHERE cid = \''.(int)$_POST['comid'].'\'')) {
-		if($data['c_status'] == 1) return '2: El comentario fue habilitado.';
-		else return '1: El comentario fue ocultado.';
-		} else return 'Ocurri&oacute; un error';
-	 } else return '0: No tienes permiso para hacer eso.';
+			//
+			$comid = (int)$_POST['comid'];
+			$autor = (int)$_POST['autor'];
+			$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT cid, c_user, c_post_id, c_status, user_id FROM p_comentarios LEFT JOIN u_miembros ON user_id = $autor WHERE cid = $comid"));
+			
+			db_exec([__FILE__, __LINE__], 'query', 'UPDATE w_stats SET stats_comments = stats_comments '.($data['c_status'] == 1 ? '+' : '-').' 1 WHERE stats_no = \'1\'');
+			  db_exec([__FILE__, __LINE__], 'query', 'UPDATE p_posts SET post_comments = post_comments '.($data['c_status'] == 1 ? '+' : '-').' 1 WHERE post_id = \''.$data['c_post_id'].'\'');
+			  db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_comentarios = user_comentarios '.($data['c_status'] == 1 ? '+' : '-').' 1 WHERE user_id = \''.$data['c_user'].'\'');
+			// OCULTAMOS O MOSTRAMOS
+			if(db_exec([__FILE__, __LINE__], 'query', 'UPDATE p_comentarios SET c_status = '.($data['c_status'] == 1 ? '\'0\'' : '\'1\'').' WHERE cid = \''.(int)$_POST['comid'].'\'')) {
+			if($data['c_status'] == 1) return '2: El comentario fue habilitado.';
+			else return '1: El comentario fue ocultado.';
+			} else return 'Ocurri&oacute; un error';
+		 } else return '0: No tienes permiso para hacer eso.';
 		
 	}
 	/*

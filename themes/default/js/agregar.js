@@ -26,7 +26,7 @@ var confirm = true;
 var tags = false;
 //
 guardar = () => {
-	let replace_body = 'cuerpo=' + encodeURIComponent($(cuerpo).bbcode());
+	let replace_body = 'cuerpo=' + encodeURIComponent($('textarea[name=cuerpo]').bbcode());
 	let params = $("form[name=newpost]").serialize().replace('cuerpo=', replace_body);
 	const borrador_id = $('input[name="borrador_id"]').val()
 	$('div#borrador-guardado').html('Guardando...');

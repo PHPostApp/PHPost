@@ -1,11 +1,3 @@
-<script>
-	$(() => {
-		$('#cat_img').on('change', () => {
-			var cssi = $("#cat_img option:selected").css('background');
-			$('#c_icon').css({ "background" : cssi });
-		});
-	});
-</script>
 <div class="boxy-title">
 	<h3>Administrar Rangos de Usuarios</h3>
 </div>
@@ -32,7 +24,7 @@
 						<td>{$r.num_members}</td>
 						<td>{$r.user_puntos}</td>
 						<td>{$r.max_points}</td>
-						<td><img src="{$tsConfig.images}/icons/ran/{$r.imagen}" /></td>
+						<td><img src="{$tsConfig.images}/icons/ran/{$r.imagen}.png" /></td>
 						<td class="admin_actions">
 							<a href="{$tsConfig.url}/admin/rangos/?act=editar&rid={$r.id}&t=s"><img src="{$tsConfig.images}/icons/editar.png" title="Editar Rango"/></a>
 							{if $r.id > 3}
@@ -77,7 +69,7 @@
 						<td>{$r.cant}</td>
 						<td>{$r.user_puntos}</td>
 						<td>{$r.max_points}</td>
-						<td><img src="{$tsConfig.images}/icons/ran/{$r.imagen}" /></td>
+						<td><img src="{$tsConfig.images}/icons/ran/{$r.imagen}.png" /></td>
 						<td class="admin_actions">
 							<a href="{$tsConfig.url}/admin/rangos/?act=editar&rid={$r.id}&t=p"><img src="{$tsConfig.images}/icons/editar.png" title="Editar Rango"/></a>
 							{if $r.id > 3}
@@ -125,9 +117,6 @@
 			</table>
 		{/if}
 	{elseif $tsAct == 'nuevo' || $tsAct == 'editar'}
-		<script src="{$tsConfig.js}/jquery.simplecolorpicker.js?{$smarty.now}"></script>
-		<link rel="stylesheet" href="{$tsConfig.css}/jquery.simplecolorpicker.css?{$smarty.now}">
-
 		<form action="" method="post">
 			<fieldset>
 		 		<legend>Nuevo Rango</legend>
@@ -172,9 +161,9 @@
 						</dd>
 					</dl>
 					<dl>
-						<dt><label for="cat_img">Icono del rango:</label></dt>
+						<dt><label for="cat_img">Icono del rango:{$tsRango.r_image}</label></dt>
 						<dd>
-							<img src="{$tsConfig.images}/space.gif" style="background:url({$tsConfig.images}/icons/ran/{if $tsRango.r_image}{$tsRango.r_image}{else}{$tsIcons.0}{/if}) no-repeat left center;" width="16" height="16" id="c_icon"/>
+							<img src="{$tsConfig.images}/icons/ran/{if $tsRango.r_image}{$tsRango.r_image}{else}{$tsIcons.0}{/if}_16.png" width="16" height="16" id="c_icon"/>
 							<select name="r_img" id="cat_img" style="width:164px">
 								{foreach from=$tsIcons key=i item=img}
 									<option value="{$img}"{if $tsRango.r_image == $img} selected{/if}>{$img}</option>
@@ -288,6 +277,13 @@
 					<p><input type="submit" name="save" value="Guardar Cambios" class="btn_g"/></p>
 				</div>
 				<script>
+					// Cambiamos el icono
+					$('#cat_img').on('change', () => {
+						$('#c_icon').attr({ 
+							src: global_data.img + '/icons/med/' + $("#cat_img option:selected").val() + '_16.png' 
+						});
+					});
+					//
 					function status(tab) {
 						$('#tab' + (tab === 2 ? 2 : 1)).hide();
 						$('#tab' + (tab === 2 ? 1 : 2)).show();
@@ -296,16 +292,6 @@
 					}
 					$('#button1').on('click', () => status(2))
 					$('#button2, #continue').on('click', () => status(1))
-					$('select[name="colorpicker"]').simplecolorpicker({
-						picker: true
-					}).on('change', () => {
-						let valor = $('select[name="colorpicker"]').val();
-						$('input[name=rColor]').css({ 
-							color: valor 
-						}).attr({ 
-							value: valor.replace('#', '') 
-						});
-					});
 				</script>
 			</fieldset>
 		</form>

@@ -221,7 +221,7 @@ class tsCore {
         setMaximos()
         :: MAXIMOS EN LAS PAGINAS
     */
-    function setMaximos($tsLimit, $tsMax){
+   public function setMaximos(int $tsLimit = 0, int $tsMax = 0){
         // MAXIMOS || PARA NO EXEDER EL NUMERO DE PAGINAS
         $ban1 = ($_GET['page'] * $tsLimit);
         if($tsMax < $ban1){
@@ -230,12 +230,13 @@ class tsCore {
         } 
         //
         return false;
-    }
+   }
+
 	/*
 		getPages($tsTotal, $tsLimit)
 		: PAGINACION
 	*/
-	function getPages(int $tsTotal = 0, int $tsLimit = 0){
+	public function getPages(int $tsTotal = 0, int $tsLimit = 0){
 		//
 		$tsPages = ceil($tsTotal / $tsLimit);
 		// PAGINA
@@ -246,31 +247,33 @@ class tsCore {
 		$pages['section'] = $tsPages + 1;
 		$pages['prev'] = $tsPage - 1;
 		$pages['next'] = $tsPage + 1;
-        $pages['max'] = $this->setMaximos($tsLimit, $tsTotal);
+      $pages['max'] = $this->setMaximos($tsLimit, $tsTotal);
 		// RETORNAMOS HTML
 		return $pages;
 	}
-    /*
-        getPagination($total, $per_page)
-    */
-    function getPagination($total, $per_page = 10){
-        // PAGINA ACTUAL
-        $page = empty($_GET['page']) ? 1 : (int) $_GET['page'];
-        // NUMERO DE PAGINAS
-        $num_pages = ceil($total / $per_page);
-        // ANTERIOR
-        $prev = $page - 1;
-        $pages['prev'] = ($page > 0) ? $prev : 0;
-        // SIGUIENTE 
-        $next = $page + 1;
-        $pages['next'] = ($next <= $num_pages) ? $next : 0;
-        // LIMITE DB
-        $pages['limit'] = (($page - 1) * $per_page).','.$per_page; 
-        // TOTAL
-        $pages['total'] = $total;
-        //
-        return $pages;
-    }
+
+   /*
+      getPagination($total, $per_page)
+   */
+   public function getPagination($total, $per_page = 10){
+      // PAGINA ACTUAL
+      $page = empty($_GET['page']) ? 1 : (int) $_GET['page'];
+      // NUMERO DE PAGINAS
+      $num_pages = ceil($total / $per_page);
+      // ANTERIOR
+      $prev = $page - 1;
+      $pages['prev'] = ($page > 0) ? $prev : 0;
+      // SIGUIENTE 
+      $next = $page + 1;
+      $pages['next'] = ($next <= $num_pages) ? $next : 0;
+      // LIMITE DB
+      $pages['limit'] = (($page - 1) * $per_page).','.$per_page; 
+      // TOTAL
+      $pages['total'] = $total;
+      //
+      return $pages;
+   }
+
    /**/
 	public function pageIndex($base_url, &$start, $max_value, $num_per_page, $flexible_start = false) {
 	   // Remove the 's' parameter from the base URL
@@ -313,6 +316,7 @@ class tsCore {
 	   }
 	   return $pageindex;
 	}
+
 	/**
 	 * Sistema de paginación automática [2023]
     * @author Miguel92	 - https://www.phpost.net/foro/perfil/521013-miguel92/
@@ -365,6 +369,7 @@ class tsCore {
     	$pagination .= '</ul>';
     	return $pagination;
 	}
+
 	/**
 	 * Realizó una comprobación de versión de PHP ya que magic_quotes_gpc 
 	 * es obsoleta desde 7.4.0 y removida de PHP 8
@@ -421,6 +426,7 @@ class tsCore {
 		//
 		return $string;
 	}
+
 	/*
 		parseBBCode($bbcode)
 	*/
@@ -460,46 +466,48 @@ class tsCore {
       // Retornar resultado HTML
       return $parser->getAsHtml();
    }
-    /**
-     * @name setMenciones
-     * @access public
-     * @param string
-     * @return string
-     * @info PONE LOS LINKS A LOS MENCIONADOS
-     * @note Esta función se ha reemplazado por $parser->parseMentions(). Se reomienda exclusivamente para compatibilidad en versiones anteriores.
-     */
-    public function setMenciones($html){
-        # GLOBALES
-        global $tsUser;
-        # HACK
-        $html = $html.' ';
-        # BUSCAMOS A USUARIOS
-        preg_match_all('/\B@([a-zA-Z0-9_-]{4,16}+)\b/',$html, $users);
-        $menciones = $users[1];
-        # VEMOS CUALES EXISTEN
-        foreach($menciones as $key => $user){
-            $uid = $tsUser->getUserID($user);
-            if(!empty($uid)) {
-                $find = '@'.$user.' ';
-                $replace = '@<a href="'.$this->settings['url'].'/perfil/'.$user.'" class="hovercard" uid="'.$uid.'">'.$user.'</a> ';
-                $html = str_replace($find, $replace, $html);
-            }
-        }
-        # RETORNAMOS
-        return $html;
-    }
-    /*
-        parseSmiles($st)
+
+   /**
+    * @name setMenciones
+    * @access public
+    * @param string
+    * @return string
+    * @info PONE LOS LINKS A LOS MENCIONADOS
+    * @note Esta función se ha reemplazado por $parser->parseMentions(). Se reomienda exclusivamente para compatibilidad en versiones anteriores.
     */
-    public function parseSmiles($bbcode){
-        return $this->parseBBCode($bbcode, 'smiles');
-    }
+   public function setMenciones($html){
+      # GLOBALES
+      global $tsUser;
+      # HACK
+      $html = $html.' ';
+      # BUSCAMOS A USUARIOS
+      preg_match_all('/\B@([a-zA-Z0-9_-]{4,16}+)\b/',$html, $users);
+      $menciones = $users[1];
+      # VEMOS CUALES EXISTEN
+      foreach($menciones as $key => $user){
+         $uid = $tsUser->getUserID($user);
+         if(!empty($uid)) {
+            $html = str_replace("@$user ", "@<a href=\"{$this->settings['url']}/perfil/$user\">$user</a> ", $html);
+         }
+      }
+      # RETORNAMOS
+      return $html;
+   }
+
+   /*
+      parseSmiles($st)
+   */
+   public function parseSmiles($bbcode){
+      return $this->parseBBCode($bbcode, 'smiles');
+   }
+
 	/*
 		parseBBCodeFirma($bbcode)
 	*/
-	function parseBBCodeFirma($bbcode){
+	public function parseBBCodeFirma($bbcode){
 	   return $this->parseBBCode($bbcode, 'firma');
 	}
+
 	/*
 		setHace()
 	*/
@@ -530,7 +538,8 @@ class tsCore {
       }
       // Si se ha establecido la opción $show, se agrega 'Hace' al resultado
       return ($show ? "Hace " : "") . $hace;
-   } 
+   }
+
 	/*
 		getUrlContent($tsUrl) :: Mejorado
 	*/
@@ -559,6 +568,7 @@ class tsCore {
 	private function isValidIP(string $ip): bool {
     	return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) !== false;
 	}
+
 	/**
 	 * Función para obtener la IP del usuario
 	*/
@@ -574,6 +584,7 @@ class tsCore {
     	}
     	return $this->setSecure($ip);
 	}
+
 	/**
 	 * Función para validar y obtener la dirección IP del cliente que realiza la petición.
 	 *
@@ -583,10 +594,11 @@ class tsCore {
 		$_SERVER['REMOTE_ADDR'] = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
 		return $_SERVER['REMOTE_ADDR'];
 	}
+
 	/**
 	 * Función para ayudar armar la sentencia en UPDATE
-	 * @param $array ['name' => 'john', 'password' => '123abc']
-	 * @param $prefix 'user_'
+	 * @param array ['name' => 'john', 'password' => '123abc']
+	 * @param string 'user_'
 	 * @return string|null EJ: user_name = 'john', user_password = '123abc'...
 	*/
 	public function getIUP(array $array = [], string $prefix = ''): string {
@@ -597,6 +609,10 @@ class tsCore {
 
 	/**
 	 * Función para generar la contraseña
+	 * y/o verificar la contraseña del usuario
+	 * @param string 
+	 * @param string 
+	 * @return string
 	*/
 	public function createPassword(string $username = '', string $password = '') {
 		if((int)$this->settings['c_upperkey'] === 0) $username = strtolower($username);

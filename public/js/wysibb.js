@@ -75,10 +75,10 @@ CURLANG = {
 	downloads: "Descargas",
 };
 
-$(function() {
-	$('button, input, .btn_g, .answerCitar').on('hover', function() {
-		if($('.wysibb-texarea').length) { $('.wysibb-texarea').sync(); }
-		else { return false; }
+$(() => {
+	$('button, input, .btn_g, .answerCitar').on('hover', () => {
+		if($('.wysibb-texarea').length) $('.wysibb-texarea').sync();
+		else return false;
 	});
 });
 
@@ -88,7 +88,7 @@ var toFullScreen = function() {
 		$('body').css('overflow', 'hidden');
 		$('.wysibb').addClass('fullscreen').attr('fullscreen', true);
 		$('.wysibb-body, .wysibb-texarea').css({'max-height': maxHeight, 'height': maxHeight});
-	}else {
+	} else {
 		$('body, .wysibb').removeAttr('style');
 		$('.wysibb').removeAttr('fullscreen').removeClass('fullscreen');
 		$('.wysibb-body, .wysibb-texarea').css({'max-height': 500, 'height': ''});
@@ -112,23 +112,21 @@ wbbdebug = false;
 			onlyBBmode:			false,
 			themeName:			"default", 
 			bodyClass:			"",
-			lang:				"es",
+			lang:					"es",
 			tabInsert:			true,
-			toolbar:			true,
+			toolbar:				true,
 			//img upload config 
 			imgupload:			true,
 			img_uploadurl:		global_data.url + "/inc/ext/wysibbupload.php",
 			img_maxwidth:		800,
 			img_maxheight:		640,
-			hotkeys:			true,
+			hotkeys:				true,
 			showHotkeys:		true,
 			autoresize:			true,
 			resize_maxheight:	500,
-			loadPageStyles:		true,
+			loadPageStyles:	true,
 			traceTextarea:		true,
-//			direction:			"ltr",
 			smileConversion:	true,
-
 			//END img upload config 
 			buttons: "bold,italic,underline,strike,sup,sub,|,img,video,link,|,fontcolor,fontsize,fontfamily,|,smileBox,bullist,numlist,|,spoiler,messages,table,|,justifyleft,justifycenter,justifyright,justify,|,hr,quote,code,goear,swf,|,removeFormat,fullscreen",
 			allButtons: {

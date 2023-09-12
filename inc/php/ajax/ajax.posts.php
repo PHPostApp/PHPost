@@ -13,7 +13,7 @@
 
 	// NIVELES DE ACCESO Y PLANTILLAS DE CADA ACCIÓN
 	$files = array(
-        'posts-genbus' => array('n' => 2, 'p' => 'genbus'),
+      'posts-genbus' => array('n' => 2, 'p' => 'genbus'),
 		'posts-preview' => array('n' => 2, 'p' => 'preview'),
 		'posts-borrar' =>  array('n' => 2, 'p' => ''),
 		'posts-admin-borrar' =>  array('n' => 2, 'p' => ''),

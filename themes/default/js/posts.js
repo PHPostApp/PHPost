@@ -1,27 +1,26 @@
 /* Eliminar Comentario */
-function borrar_com(comid, autor, postid, gew){
+borrar_com = (comid, autor, postid, gew) => {
 	mydialog.close();
 	if(!postid) var postid = gget('postid');
-	if(!gew){
-		mydialog.show();
-		mydialog.title('Borrar Comentarios');
-		mydialog.body('&#191;Quiere eliminar este comentario?');
-		mydialog.buttons(true, true, 'S&iacute;', 'borrar_com(' + comid + ', ' + autor + ', ' + postid + ', 1)', true, false, true, 'No', 'close', true, true);
-		mydialog.center();
+	if(!gew) {
+		mydialog.faster({
+			title: 'Borrar Comentarios',
+			body: '&#191;Quiere eliminar este comentario?',
+			buttons: {
+				ok: { text: 'S&iacute;', action: `borrar_com(${comid}, ${autor}, ${postid}, 1)` },
+				fail: { text: 'No', action: 'close' }
+			}
+		})
 	} else {
 		$('#loading').fadeIn(250);
 		$.post(global_data.url +'/comentario-borrar.php', { comid, autor, postid }, h => {
-			switch(h.charAt(0)){
-				case '0': //Error
-					mydialog.alert('Error', h.substring(3));
-				break;
-				case '1':
-					// RESTAMOS
-					$('#ncomments').text(parseInt($('#ncomments').text()) - 1);
-					$('#div_cmnt_'+comid).slideUp( 1500, 'easeInOutElastic');
-					$('#div_cmnt_'+comid).slideUp('normal', () => $(this).remove());
-					$('#loading').fadeOut(350);
-				break;
+			if(parseInt(h.charAt(0)) === 0) mydialog.alert('Error', h.substring(3));
+			else {
+				// RESTAMOS
+				$('#ncomments').text(parseInt($('#ncomments').text()) - 1);
+				$('#div_cmnt_'+comid).slideUp( 1500, 'easeInOutElastic');
+				$('#div_cmnt_'+comid).slideUp('normal', () => $(this).remove());
+				$('#loading').fadeOut(350);
 			}
 		}).fail(() => {
 			mydialog.error_500("borrar_com('"+comid+"')");
@@ -30,10 +29,11 @@ function borrar_com(comid, autor, postid, gew){
 	}
 }
 /* Ocultar Comentario */
-function ocultar_com(comid, autor, postid){
+ocultar_com = (comid, autor, post_id) =>{
+	// Estuve analizando y el único parámetro que sirve es el "comid"
 	mydialog.close();
 	$('#loading').fadeIn(250);
-	var param = 'comid=' + comid + '&autor=' + autor + '&post_id=' + postid + gget('postid');
+	var param = 'comid=' + comid + '&autor=' + autor + gget('postid');
 	$.post(global_data.url +'/comentario-ocultar.php', param, h => {
 		var num = h.charAt(0);
 		if(num === '0') mydialog.alert('Error', h.substring(3));
@@ -42,6 +42,7 @@ function ocultar_com(comid, autor, postid){
 		$('#loading').fadeOut(350);
 	}).fail(() => mydialog.error_500("borrar_com('"+comid+"')"))
 }
+
 /* Borrar Post */
 function borrar_post(aceptar){
 	if(!aceptar){

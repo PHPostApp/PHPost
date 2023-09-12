@@ -47,15 +47,20 @@ RewriteRule ^perfil/([A-Za-z0-9_-]+)$ inc/php/perfil.php?user=$1 [QSA,L]
 RewriteRule ^perfil/([A-Za-z0-9_-]+)/$ inc/php/perfil.php?user=$1 [QSA,L]
 RewriteRule ^perfil/([A-Za-z0-9_-]+)/([0-9]+)$ inc/php/perfil.php?user=$1&pid=$2 [QSA,L]
 
+# PORTAL
+RewriteRule ^mi/$ index.php?do=portal [QSA,L]
+
 # POSTS
 RewriteRule ^posts/$ index.php?do=posts [QSA,L]
-RewriteRule ^mi/$ index.php?do=portal [QSA,L]
 RewriteRule ^posts/([a-z]+)$ index.php?do=posts&action=$1 [QSA,L]
 RewriteRule ^posts/pagina([0-9]+)$ index.php?do=posts&page=$1 [QSA,L]
 RewriteRule ^posts/([A-Za-z0-9_-]+)/$ index.php?do=posts&cat=$1 [QSA,L]
 RewriteRule ^posts/([A-Za-z0-9_-]+)/pagina([0-9]+)$ index.php?do=posts&cat=$1&page=$2 [QSA,L]
 RewriteRule ^posts/([A-Za-z0-9_-]+)/([0-9]+)/(.*).html$ index.php?do=posts&cat=$1&post_id=$2&title=$3 [QSA,L]
 RewriteRule ^posts/editar/([0-9]+)$ inc/php/agregar.php?action=editar&pid=$1 [QSA,L]
+
+# POSTS SHORTEN
+RewriteRule ^p/([0-9]+)$ index.php?do=posts&p=$1 [QSA,L]
 
 # RECUPERAR PASS Y VALIDAR CUENTA
 RewriteRule ^password/(.+)/([0-9]+)/(.+)/?$ inc/php/password.php?hash=$1&type=$2&email=$3

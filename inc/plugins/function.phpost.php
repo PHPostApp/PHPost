@@ -22,7 +22,7 @@
 require_once realpath(__DIR__) . DIRECTORY_SEPARATOR . "functionsOfPHPost.php";
 
 function smarty_function_phpost($params, &$smarty) {
-	global $tsCore, $tsPage;
+	global $tsCore, $tsPage, $action, $act;
 	//
 	$HTML = '';
 	$funcs = new fnPHPost;
@@ -41,6 +41,10 @@ function smarty_function_phpost($params, &$smarty) {
 			$HTML .= "<!-- Añadidos col el plugin: {phpost css=[\"...\"]} -->\n";
 			// Para las notificaciones de usuario
 			if($funcs->getLive()) array_push($params['css'], 'live.css');
+			// Ahora se añaden en páginas especificas
+			if($tsPage === 'admin') {
+				if($action === 'rangos') array_push($params['css'], 'colorpicker.css');
+			}
 			//
 			foreach($params['css'] as $css) $HTML .= $funcs->getStyle($css);
 		} else {
@@ -61,7 +65,10 @@ function smarty_function_phpost($params, &$smarty) {
 			
 			// Ahora se añaden en páginas especificas
 			if($tsPage === 'posts') array_push($params['js'], 'highlight.min.js');
-			if($tsPage === 'admin') array_push($params['js'], 'timeago.min.js', 'timeago.es.js');
+			if($tsPage === 'admin') {
+				if(empty($action)) array_push($params['js'], 'timeago.min.js', 'timeago.es.js');
+				elseif($action === 'rangos') array_push($params['js'], 'colorpicker.js');
+			}
 
 			// Si es administrador, moderador o tiene permisos
 			if($funcs->getPerms()) array_push($params['js'], 'moderacion.js');

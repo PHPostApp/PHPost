@@ -15,7 +15,7 @@
 	$files = array(
 		'comentario-preview' => array('n' => 2, 'p' => 'preview'),
 		'comentario-agregar' => array('n' => 2, 'p' => 'preview'),
-        'comentario-editar' => array('n' => 2, 'p' => ''),
+      'comentario-editar' => array('n' => 2, 'p' => ''),
 		'comentario-borrar' => array('n' => 2, 'p' => ''),
 		'comentario-ocultar' => array('n' => 2, 'p' => ''),
 		'comentario-votar' => array('n' => 2, 'p' => ''),

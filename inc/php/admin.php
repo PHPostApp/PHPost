@@ -204,7 +204,7 @@
          	if($act === 'editar') $smarty->assign("tsMed", $tsMedal->adGetMedal());
          }
 			//ICONOS PARA LAS MEDALLAS
-			$smarty->assign("tsIcons",$tsAdmin->getExtraIcons('med', 16));
+			$smarty->assign("tsIcons", $tsAdmin->getExtraIcons('med', 16));
 			//RANGOS DISPONIBLES
 			$smarty->assign("tsRangos",$tsAdmin->getAllRangos());
       } elseif($act === 'showassign') {
