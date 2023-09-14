@@ -185,6 +185,7 @@ class fnPHPost {
 		//
 		if(isset($tsUser->uid) OR $tsUser->uid != 0) $data['user_key'] = (int)$tsUser->uid;
 		$data['public'] = $tsCore->settings['public'];
+		$data['pimg'] = $tsCore->settings['public'] . '/images';
 		$data['img'] = $tsCore->settings['images'];
 		$data['url'] = $tsCore->settings['url'];
 		$data['domain'] = $tsCore->settings['domain'];
