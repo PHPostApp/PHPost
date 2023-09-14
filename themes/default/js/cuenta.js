@@ -111,7 +111,7 @@ var avatar = {
          avatar.key = rsp.key;
          avatar.ext = rsp.ext;
          avatar.cortar(rsp.msg);
-		} else cuenta.enviar_alerta(rsp.error, 0);
+		} else cuenta.alerta(rsp.error, 0);
 		$(".avatar-loading").hide();
 	},
 	cortar: img => {
@@ -145,7 +145,7 @@ var avatar = {
 	},
 	recargar: () => $("#avatar-img, #avatar-menu").attr("src", avatar.current + '?t=' + getCache()),
 	guardar: async () => {
-		if (empty(avatar.informacion)) cuenta.enviar_alerta('Debes seleccionar una parte de la foto', 0);
+		if (empty(avatar.informacion)) cuenta.alerta('Debes seleccionar una parte de la foto', 0);
 		else {
 			const allcoord = {
 				key: avatar.key,

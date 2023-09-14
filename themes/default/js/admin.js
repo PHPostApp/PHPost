@@ -24,6 +24,23 @@ sameFn = (page, params, element) => {
    });
 }
 var admin = {
+	//
+	updated: (gew) => {
+		if(!gew)
+         sameModal('Actualizar', '&#191;Quieres Actualizar los archivos?', `admin.updated(true)`)
+      else {
+		   mydialog.procesando_inicio();
+		   mydialog.title('Este proceso puede llevar varios minutos');
+		   const update_now = true;
+			$.post(`${global_data.url}/admin-updated.php`, { update_now }, response => {
+				mydialog.title('Actualizaci&oacute;n:');
+		   	mydialog.body(response);
+		   	mydialog.buttons(true, true, 'Aceptar', 'close', true, true, false);
+		   	mydialog.center();
+		   	mydialog.procesando_fin();
+		   });
+      }
+	},
 	// AFILIADOS
 	afs: {
 	   borrar: (afid, gew) => {

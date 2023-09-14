@@ -85,25 +85,25 @@
 #admin_menu li a{
     display: block;
 }
-li#a_main {background-image: url(../images/icons/robot.png);}
-li#a_creditos {background-image: url(../images/icons/information-shield.png);}
-li#a_configs {background-image: url(../images/icons/gear.png);}
-li#a_configs, li#a_registro {background-image: url(../images/icons/gear.png);}
-li#a_temas {background-image: url(../images/icons/color.png);}
-li#a_news {background-image: url(../images/icons/newspaper.png);}
-li#a_ads {background-image: url(../images/icons/currency.png);}
-li#a_medals {background-image: url(../images/icons/medal.png);}
-li#a_afs {background-image: url(../images/icons/block-share.png);}
-li#a_fotos {background-image: url(../images/icons/photo.png);}
-li#a_posts {background-image: url(../images/icons/posts.png);}
-li#a_cats {background-image: url(../images/icons/category.png);}
-li#a_users {background-image: url(../images/icons/users.png);}
-li#a_rangos {background-image: url(../images/icons/crown.png);}
-li#a_stats {background-image: url(../images/icons/chart.png);}
-li#a_sesiones {background-image: url(../images/icons/find.png);}
-li#a_nicks {background-image: url(../images/icons/key.png);}
-li#a_blacklist {background-image: url(../images/icons/flag_black.png);}
-li#a_badwords {background-image: url(../images/icons/stop.png);}
+li#a_main {background-image: url(../../../public/images/icons/robot.png);}
+li#a_creditos {background-image: url(../../../public/images/icons/information-shield.png);}
+li#a_configs {background-image: url(../../../public/images/icons/gear.png);}
+li#a_configs, li#a_registro {background-image: url(../../../public/images/icons/gear.png);}
+li#a_temas {background-image: url(../../../public/images/icons/color.png);}
+li#a_news {background-image: url(../../../public/images/icons/newspaper.png);}
+li#a_ads {background-image: url(../../../public/images/icons/currency.png);}
+li#a_medals {background-image: url(../../../public/images/icons/medal.png);}
+li#a_afs {background-image: url(../../../public/images/icons/block-share.png);}
+li#a_fotos {background-image: url(../../../public/images/icons/photo.png);}
+li#a_posts {background-image: url(../../../public/images/icons/posts.png);}
+li#a_cats {background-image: url(../../../public/images/icons/category.png);}
+li#a_users {background-image: url(../../../public/images/icons/users.png);}
+li#a_rangos {background-image: url(../../../public/images/icons/crown.png);}
+li#a_stats {background-image: url(../../../public/images/icons/chart.png);}
+li#a_sesiones {background-image: url(../../../public/images/icons/find.png);}
+li#a_nicks {background-image: url(../../../public/images/icons/key.png);}
+li#a_blacklist {background-image: url(../../../public/images/icons/flag_black.png);}
+li#a_badwords {background-image: url(../../../public/images/icons/stop.png);}
 
 .arrastrar {
     cursor: pointer;

@@ -10,7 +10,7 @@ define('DS', DIRECTORY_SEPARATOR);
 define('SCRIPT_ROOT', realpath('../') . DS);
 define('INSTALL_ROOT', realpath('./') . DS);
 define('CONFIGINC', SCRIPT_ROOT . 'config.inc.php');
-define('CONFIGINC2', INSTALL_ROOT . 'config.inc.php');
+define('CONFIGINC2', INSTALL_ROOT . 'config.copy.php');
 define('LICENSE', SCRIPT_ROOT . 'license.txt');
 define('BLOCKED', SCRIPT_ROOT . '.lock');
 

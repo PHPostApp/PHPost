@@ -446,8 +446,8 @@ class tsCuenta {
 			if($save === '') array_splice($perfilData, 0, 1);
 		}
 		if($perfilData !== NULL) {
-			$updates = $tsCore->getIUP($perfilData, ($thisAccount ? 'user_' : 'p_'));
-			if(!db_exec([/**/__FILE__, __LINE__], "query", "UPDATE u_perfil SET {$updates} WHERE user_id = {$tsUser->uid}")) return ['error' => show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'Base de datos')];
+			$updates = $tsCore->getIUP($perfilData, (in_array($save, ['', 'privacidad']) ? 'user_' : 'p_'));
+			if(!db_exec([__FILE__, __LINE__], "query", "UPDATE u_perfil SET {$updates} WHERE user_id = {$tsUser->uid}")) return ['error' => show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'Base de datos')];
 		}
 		return ['error' => 'Los cambios fueron aplicados.'];
 	}

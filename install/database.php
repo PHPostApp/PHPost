@@ -468,6 +468,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_configuracion` (
   `email` varchar(60) NOT NULL DEFAULT '',
   `banner` varchar(100) NOT NULL DEFAULT '',
   `tema_id` int(11) NOT NULL DEFAULT 1,
+  `updated` int(1) NOT NULL DEFAULT 1,
   `ads_300` text NULL,
   `ads_468` text NULL,
   `ads_160` text NULL,

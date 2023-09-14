@@ -119,7 +119,7 @@
 
 	// Smarty
 	require_once TS_EXTRA . 'smarty.php';
-
+	
 /*
  * -------------------------------------------------------------------
  *  Asignación de variables

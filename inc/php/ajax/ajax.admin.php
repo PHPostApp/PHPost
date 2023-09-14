@@ -27,6 +27,8 @@
       'admin-blacklist-delete' => array('n' => 4, 'p' => ''),
       'admin-badwords-delete' => array('n' => 4, 'p' => ''),
 		'admin-ordenar-categorias' => array('n' => 4, 'p' => ''),
+		'admin-updated' => array('n' => 4, 'p' => ''),
+		'admin-update' => array('n' => 4, 'p' => ''),
 	);
 
 /**********************************\
@@ -126,6 +128,23 @@
 			//<---
 		      echo $tsAdmin->saveOrden();
 			//--->
+		break;
+		case 'admin-updated':
+			if((int)$tsCore->settings['updated'] === 0 AND isset($_POST['update_now'])) {
+				require_once TS_CLASS . "c.lastCommit.php";
+				$gh = new UpdateGithub;
+				$gh->ruta = TS_ROOT;
+				echo $gh->update();
+				if($gh->status) {
+					echo '<br><h3>Actualizando tabla...</h3>';
+					echo $gh->updateTable();
+				}
+			} else echo 'Ya tienes todos los archivos actualizados.';
+		break;
+		case 'admin-update':
+			require_once TS_CLASS . "c.lastCommit.php";
+			$gh = new UpdateGithub;
+			echo $gh->updateTable(false);
 		break;
       default:
          die('0: Este archivo no existe.');

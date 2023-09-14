@@ -15,11 +15,24 @@
 		</ul>
 	</div>
 	<div class="phpost version">
+		<h4>Estado</h4>
+		<ul id="status_pp" class="pp_list">
+			<li>
+				<div class="title">Todos los archivos</div>
+				<div class="body">
+					<strong>Est&aacute;n {if $tsConfig.updated === '0'}des{/if}actualizado</strong>
+					{if $tsConfig.updated === '0'}
+					<br>
+					<a href="javascript:admin.updated()">Actualizar ahora con Github</a>
+					{/if}
+				</div>
+			</li>
+		</ul>
 		<h4>PHPost Risus</h4>
 		<ul id="version_pp" class="pp_list">
 			<li>
-				 <div class="title">Versi&oacute;n instalada</div>
-				 <div class="body"><strong>{$tsConfig.version}</strong></div>
+				<div class="title">Versi&oacute;n instalada</div>
+				<div class="body"><strong>{$tsConfig.version}</strong></div>
 			</li>
 		</ul>
 		<h4>Administradores</h4>
@@ -69,14 +82,27 @@ $(() => {
       	$('#last_gh').html('');
       	content = data.commit.message.replace(/\n/g, '<br>');
       	code = (window.width < 1120) ? data.sha.substring(0, 7) : data.sha;
-      	tiempo = $.timeago(data.commit.author.date)
+    		
+    		if($.cookie("LastCommitSha") === null) {
+    			// Cookie válida por 7 días
+    			$.cookie("LastCommitSha", code, { expires: 7 });
+    		} else {
+    			var valor = $.cookie("LastCommitSha");
+    			if(valor !== code) {
+    				const update_now = false;
+    				$.post(global_data.url + '/admin-update.php', { update_now }, r => {
+    					$.cookie("LastCommitSha", valor, { expires: 7 });
+    				})
+    			}
+    		}
+
       	var html = `<li class="data-github">
 				<div class="title">
 					<a href="${data.html_url}" rel="noreferrer" target="_blank">Actualizado por ${data.commit.author.name}</a>
-					<time>${tiempo}</time>
+					<time>${$.timeago(data.commit.author.date)}</time>
 					<small>sha: ${code}</small>
 				</div>
-				<div class="body">${content}<hr><small>Agregados/Modificados: ${data.stats.additions} | Eliminados: ${data.stats.deletions}</small></div>
+				<div class="body">${content}</div>
 			</li>`;
 			$('#last_gh').append(html);
       })
