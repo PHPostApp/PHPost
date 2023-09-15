@@ -29,6 +29,7 @@ var admin = {
 		if(!gew)
          sameModal('Actualizar', '&#191;Quieres Actualizar los archivos?', `admin.updated(true)`)
       else {
+      	mydialog.size = 'big';
 		   mydialog.procesando_inicio();
 		   mydialog.title('Este proceso puede llevar varios minutos');
 		   const update_now = true;

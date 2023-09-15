@@ -54,7 +54,7 @@
 	$act = htmlspecialchars($_GET['act']);
 	// CLASE POSTS
 	$tsAdmin = new tsAdmin();
-
+	
 	// Bienvenida
 	if($action === '') {
 		$tsTitle = 'Centro de Administración';
