@@ -147,37 +147,6 @@ class UpdateGithub {
 		} else return 'Ya esta actualizado';
 	}
 
-	/*public function establecerPermisos(string $ruta = '', int $permisos = 0777) {
-		// Ruta de la carpeta principal
-		$directorio = $this->ruta; 
-
-		if (is_dir($directorio)) {
-		   // Cambiar permisos de la carpeta
-		   chmod($directorio, $permisos);
-		   // Recorrer archivos y carpetas dentro de esta carpeta
-		   $archivos = scandir($directorio);
-		   foreach ($archivos as $archivo) {
-		   	$no = ['.', '..', '.git', '.gitignore', '.gitattributes', '.lock', 'README.md', 'cache'];
-		      if (in_array($archivo, $no)) continue;
-		      $filename = $directorio . $archivo;
-		      $permiso = is_dir($filename) ? 0777 : 0666;
-		      self::establecerPermisos($filename, $permiso);
-		      echo (is_dir($filename) ? 'Carpeta: ' : 'Archivo: ') . $filename . '<br>';
-		      
-		      
-		      /*  // Si es una carpeta, llamada recursiva para establecer permisos
-		        if (is_dir($filename)) 
-		        // Si es un archivo, cambia los permisos del archivo
-		        elseif (is_file($filename)) {
-		        	chmod($filename, 0666);
-		        }*
-		      
-		   }
-		}
-		// Establecer permisos recursivos
-		echo "Permisos establecidos correctamente en $directorio.";
-	}*/
-
 	public function establecerPermisos(bool $act = true, string $ruta = '', int $permisos = 0777) {
 	   // Ruta de la carpeta principal
 	   $directorio = empty($ruta) ? $this->ruta : $ruta;

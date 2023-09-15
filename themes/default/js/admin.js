@@ -27,8 +27,10 @@ var admin = {
 	//
 	updated: (gew) => {
 		if(!gew)
-         sameModal('Actualizar', '&#191;Quieres Actualizar los archivos?', `admin.updated(true)`)
-      else {
+         sameModal('Actualizar', '&#191;Quieres Actualizar los archivos?', `admin.updated(2)`)
+		else if(gew === 2)
+         sameModal('¿Estas seguro?', '<strong>ATENCIÓN</strong>: Antes de continuar create una copia de seguridad de tu sitio. Por si llega a tener un error durante el proceso de actualización de los archivos', `admin.updated(3)`)
+      else if(gew === 3) {
       	mydialog.size = 'big';
 		   mydialog.procesando_inicio();
 		   mydialog.title('Este proceso puede llevar varios minutos');

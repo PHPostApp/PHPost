@@ -3,6 +3,12 @@
 </div>
 <div id="res" class="boxy-content">
 	<p><strong>Bienvenido(a), {$tsUser->nick}!</strong><br />Este es tu &quot;Centro de Administraci&oacute;n de PHPost&quot;. Aqu&iacute; puedes modificar la configuraci&oacute;n de tu web, modificar usuarios, modificar posts, y muchas otras cosas.<br />Si tienes algun problema, por favor revisa la p&aacute;gina de &quot;Soporte y Cr&eacute;ditos&quot;.  Si esa informaci&oacute;n no te sirve, puedes <a href="https://phpost.net/foro/" target="_blank">visitarnos para solicitar ayuda</a> acerca de tu problema.</p>
+	<hr>
+	<p><h3>También pudes sumarte a nuestros grupos:</h3>
+		<span style="display: block;">Discord <a href="https://discord.gg/mx25MxAwRe" target="_blank">PHPost '23</a></span>
+		<span style="display: block;">Telegram <a href="https://t.me/PHPost23" target="_blank">PHPost '23</a></span>
+	</p>
+	 
 	<hr class="separator" />
 	<div class="phpost">
 		<h4>Último commit en Github</h4>
@@ -75,38 +81,7 @@ $(() => {
          </li>
       `);
 	});
-	// Último commit en github
-   if ($('#last_gh').length) {
-      const apiGithub = 'https://api.github.com/repos/joelmiguelvalente/PHPost/commits/master';
-      $.getJSON(apiGithub, data => {
-      	$('#last_gh').html('');
-      	content = data.commit.message.replace(/\n/g, '<br>');
-      	code = (window.width < 1120) ? data.sha.substring(0, 7) : data.sha;
-    		
-    		if($.cookie("LastCommitSha") === null) {
-    			// Cookie válida por 7 días
-    			$.cookie("LastCommitSha", code, { expires: 7 });
-    		} else {
-    			var valor = $.cookie("LastCommitSha");
-    			if(valor !== code) {
-    				const update_now = false;
-    				$.post(global_data.url + '/admin-update.php', { update_now }, r => {
-    					$.cookie("LastCommitSha", valor, { expires: 7 });
-    				})
-    			}
-    		}
-
-      	var html = `<li class="data-github">
-				<div class="title">
-					<a href="${data.html_url}" rel="noreferrer" target="_blank">Actualizado por ${data.commit.author.name}</a>
-					<time>${$.timeago(data.commit.author.date)}</time>
-					<small>sha: ${code}</small>
-				</div>
-				<div class="body">${content}</div>
-			</li>`;
-			$('#last_gh').append(html);
-      })
-   }
 });
 </script>
 {/literal}
+{phpost js="last-commit.js"}
