@@ -14,17 +14,13 @@ function close_login_box(){
 	$('#login_box').slideUp('fast');
 }
 function ir_a_categoria(cat){
-	if(cat!='root' && cat!='linea')
-		if(cat==-1)
-			document.location.href= global_data.url + '/';
-        else if(cat==-2)
-            document.location.href= global_data.url + '/' + 'posts/';
-		else
-			document.location.href= global_data.url + '/' + 'posts' + '/' + cat + '/';
+	if(cat!='root' && cat!='linea') {
+		href = (cat==-2) ? 'posts/' : `posts/${cat}`;
+		location.href = `${global_data.url}/${href}`;
+	}
 }
 //Imprimir editores
 function print_editor(){
-   
    //Editor de respuesta de mensajes
    if($('#respuesta').length && !$('.wysibb-texarea').length){
       var wbbOpt = { buttons: "smilebox,|,bold,italic,underline,strike,sup,sub,|,img,video,link,|,removeFormat" }
@@ -80,7 +76,7 @@ function registro_load_form(){
 			}
          $('#loading').fadeOut(350);
 		},
-		error: function(){
+		error: () => {
 			mydialog.error_500("registro.load_form("+data+")");
          $('#loading').fadeOut(350);
 		}
@@ -155,11 +151,11 @@ function bloquear(user, bloqueado, lugar, aceptar){
             }
             $('#loading').fadeOut(350);
 		},
-		error: function(){
+		error: () => {
 			mydialog.error_500("bloquear('"+user+"', '"+bloqueado+"', '"+lugar+"', true)");
             $('#loading').fadeOut(350);
 		},
-		complete: function(){
+		complete: () => {
 			mydialog.procesando_fin();
             $('#loading').fadeOut(350);
 		}
@@ -196,15 +192,15 @@ var notifica = {
 			$(list).children('li.follow').slideDown();
 		}
 	},
-    userInMencionHandle: function(r){
+   userInMencionHandle: function(r){
 		var x = r.split('-');
 		if (x.length == 3 && x[0] == 0) {
-         var fid = x[1];
+        var fid = x[1];
 			$('a.mf_' + fid +', a.mf_' + fid).each(() => $(this).toggle());
 			$('.mft_' + fid).html(number_format(parseInt(x[2])));
-         vcard_cache['mf' + fid] = '';
+        vcard_cache['mf' + fid] = '';
 		} else if (x.length == 4) mydialog.alert('Notificaciones', x[3]);  
-    },
+   },
 	userMenuHandle: function (r) {
 		var x = r.split('-');
 		if (x.length == 3 && x[0] == 0) {
@@ -223,7 +219,7 @@ var notifica = {
 	},
 	userInMonitorHandle: function (r, obj) {
 		var x = r.split('-');
-		if (x.length == 3 && x[0] == 0) $(obj).fadeOut(function(){ $(obj).remove(); });
+		if (x.length == 3 && x[0] == 0) $(obj).fadeOut(() => { $(obj).remove(); });
 		else if (x.length == 4) mydialog.alert('Notificaciones', x[3]);	
 	},
 	inPostHandle: function (r) {
@@ -283,11 +279,11 @@ var notifica = {
 			success: function (r) {
 				$(obj).removeClass('spinner');
 				cb(r, obj);
-                $('#loading').fadeOut(350);
+            $('#loading').fadeOut(350);
 			},
 			error: function () {
 				if (error) mydialog.error_500('notifica.ajax(notifica.retry[0], notifica.retry[1])');
-                $('#loading').fadeOut(350);                
+            $('#loading').fadeOut(350);                
 			}
 		});
 	},
@@ -346,7 +342,7 @@ var notifica = {
 			if (r != 1) var not_total = ' notificaciones'; else var not_total = ' notificaci&oacute;n';
 			if (!$('#alerta_mon').length) $('div.userInfoLogin > ul > li.monitor').append('<div class="alertas" id="alerta_mon"><a title="' + r + not_total + '"><span></span></a></div>');
 			$('#alerta_mon > a > span').html(r);
-			$('#alerta_mon').animate({ top: '-=5px' }, 100, null, function(){ $('#alerta_mon').animate({ top: '+=5px' }, 100) });
+			$('#alerta_mon').animate({ top: '-=5px' }, 100, null, () => { $('#alerta_mon').animate({ top: '+=5px' }, 100) });
 		}
 		else if (r == 0) $('#alerta_mon').remove();
 	},
@@ -359,14 +355,21 @@ var notifica = {
 			$('#mon_list > ul > li > a[title]').tipsy({ gravity: 's' });
 		}
 	},
-	filter: function (x, obj) {
-		$.ajax({url: global_data.url + '/notificaciones-filtro.php', type: 'post', data: 'fid=' + x});
-        var v = $(obj).attr('checked') ? 1 : 0; 	   
+	filter: function () {
+		// Creamos un arreglo vacío
+		var fid = []
+		// Obtenemos todos los input del primer UL
+		let inputs = $('#post-izquierda .categoriaList ul:first li input');
+		inputs.map( (pos, input) => {
+			// Añadimos solo las que estan activas
+			if($(input).prop('checked')) fid.push(input.id)
+		})
+		$.post(global_data.url + '/notificaciones-filtro.php', { fid });
 	},
-    close: function(){
+   close: () => {
 		$('#mon_list').hide();
 		$('a[name=Monitor]').parent('li').removeClass('monitor-notificaciones');   
-    }
+   }
 	
 }
 /* Mensajes */
@@ -416,7 +419,7 @@ var mensaje = {
     select: function(act){
         //
         var inputs = $('#mensajes .GBThreadRow :input');
-        inputs.each(function(){
+        inputs.each(() => {
            if(act == 'all'){
             $(this).attr({checked: 'checked'});
            } else if(act == 'read'){
@@ -437,7 +440,7 @@ var mensaje = {
         var ids = new Array();
         var i = 0;
         //
-        inputs.each(function(){
+        inputs.each(() => {
             var este = $(this).attr('checked');
             //
             if(este != false){
@@ -601,7 +604,7 @@ var mensaje = {
             if (mps != 1) var mps_total = ' mensajes'; else var mps_total = ' mensaje';
 			if (!$('#alerta_mps').length) $('div.userInfoLogin > ul > li.mensajes').append('<div class="alertas" id="alerta_mps"><a title="' + mps + mps_total + '"><span></span></a></div>');
 			$('#alerta_mps > a > span').html(mps);
-			$('#alerta_mps').animate({ top: '-=5px' }, 100, null, function(){ $('#alerta_mps').animate({ top: '+=5px' }, 100) });
+			$('#alerta_mps').animate({ top: '-=5px' }, 100, null, () => { $('#alerta_mps').animate({ top: '+=5px' }, 100) });
 		}
 		else if (mps == 0) $('#alerta_mps').remove();
 	},
@@ -614,7 +617,7 @@ var mensaje = {
 			$('#mp_list > ul > li > a[title]').tipsy({ gravity: 's' });
 		}
 	},
-    close: function(){
+    close: () => {
         $('#mp_list').slideUp();
         $('a[name=Mensajes]').parent('li').removeClass('monitor-notificaciones');
     }
@@ -677,7 +680,7 @@ var denuncia = {
 /* AFILIACION */
 var afiliado = {
     vars: Array(),
-    nuevo: function(){
+    nuevo: () => {
         // CARGAMOS Y BORRAMOS
         var form = '';
         form += '<div class="emptyData" style="margin-bottom:10px" id="AFStatus"><span>Ingresa los datos de tu web para afiliarte.</span></div>'
@@ -716,12 +719,12 @@ var afiliado = {
 		mydialog.center();
     },
 
-    enviar: function(){
+    enviar: () => {
         var inputs = $('#AFormInputs :input');
         var status = true;
         var params = '';
         //
-        inputs.each(function(){
+        inputs.each(() => {
             var val = $(this).val();
             // EL CAMPO AID NO ES NECESARIO
             if($(this).attr('name') == 'aID') val = '0'; 
@@ -791,34 +794,24 @@ var afiliado = {
 
 /* IMAGENES */
 var imagenes = {
-    total: 0,
-    move: '-250px',
-    presentacion: function(){
-        $('#imContent').animate({top: '0px'}, 1000, 'easeOutQuad', 
-        function(){
-            // MOSTRAMOS
-            // MOVEMOS
-            $('#imContent').css({top: imagenes.move})
-            // ULTIMO
-            var slm = $('#img_' + imagenes.total).html();
-            //
-            for(var i = imagenes.total; i >= 0; i--){
-                $('#img_' + i).html($('#img_' + (i - 1)).html());
-            }
-            //
-            $('#img_0').html(slm);
-            // INFINITO :D
-            setTimeout("imagenes.presentacion()",5000);
-        });
-
-    }
+   total: 0,
+   move: '-250px',
+   presentacion: () => {
+      $('#imContent').animate({top: '0px'}, 1000, 'easeOutQuad', () => {
+         $('#imContent').css({top: imagenes.move})
+         var slm = $('#img_' + imagenes.total).html();
+         for(var i = imagenes.total; i >= 0; i--) $('#img_' + i).html($('#img_' + (i - 1)).html());
+         $('#img_0').html(slm);
+         setTimeout("imagenes.presentacion()",5000);
+      });
+   }
 }
 
 // NEWS
 var news = {
     total: 0,
     count: 1,
-    slider: function(){
+    slider: () => {
         if(news.total > 1){
             if(news.count < news.total) news.count++;
             else news.count = 1;
@@ -832,19 +825,18 @@ var news = {
 }
 
 // READY
-$(document).ready(function(){
+$(document).ready(() => {
    /* NOTICIAS */
    news.total = $('#top_news > li').length;
    news.slider();
    /* IMAGENES */
    imagenes.presentacion();
 
-	$('body').on('click', function(e){ 
-	   if ($('#mon_list').css('display') != 'none' && $(e.target).closest('#mon_list').length == 0 && $(e.target).closest('a[name=Monitor]').length == 0) notifica.last();
-      if ($('#mp_list').css('display') != 'none' && $(e.target).closest('#mp_list').length == 0 && $(e.target).closest('a[name=Mensajes]').length == 0) mensaje.last(); 
+	$('body').on('click', e => { 
+		if ($('#mon_list').css('display') != 'none' && $(e.target).closest('#mon_list').length == 0 && $(e.target).closest('a[name=Monitor]').length == 0) notifica.last();
+   	if ($('#mp_list').css('display') != 'none' && $(e.target).closest('#mp_list').length == 0 && $(e.target).closest('a[name=Mensajes]').length == 0) mensaje.last(); 
    });
 	print_editor();
-	
 	
 	$('div.new-search > div.search-body > form > input[name=q]').on('focus', () => {
 		if ($(this).val() == 'Buscar') $(this).val(''); 
@@ -879,5 +871,4 @@ $(document).ready(function(){
       }
       new LazyLoad(NewOptions)
    });
-
 });

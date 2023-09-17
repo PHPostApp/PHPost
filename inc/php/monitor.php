@@ -12,76 +12,49 @@
 
 \*********************************/
 
-	$tsPage = "monitor";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
+$tsPage = "monitor";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
 
-	$tsLevel = 2;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
+$tsLevel = 2;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
 
-	$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
+$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
+
+$tsContinue = true;	// CONTINUAR EL SCRIPT
 	
-	$tsContinue = true;	// CONTINUAR EL SCRIPT
-	
-/*++++++++ = ++++++++*/
+// INCLUIR EL HEADER
+include_once realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  
 
-	include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";  // INCLUIR EL HEADER
+// TITULO DE LA PAGINA ACTUAL
+$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	
 
-	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
 
-/*++++++++ = ++++++++*/
-
-	// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
-	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-	if($tsLevelMsg != 1){	
-		$tsPage = 'aviso';
-		$tsAjax = 0;
-		$smarty->assign("tsAviso",$tsLevelMsg);
-		//
-		$tsContinue = false;
-	}
+// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
+$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
+if($tsLevelMsg != 1){	
+	$tsPage = 'aviso';
+	$tsAjax = 0;
+	$smarty->assign("tsAviso", $tsLevelMsg);
 	//
-	if($tsContinue){
-
-/**********************************\
-
-* (VARIABLES LOCALES ESTE ARCHIVO)	*
-
-\*********************************/
+	$tsContinue = false;
+}
+//
+if($tsContinue) {
 
 	$action = htmlspecialchars($_GET['action']);
-	
 
-/**********************************\
-
-*	(INSTRUCCIONES DE CODIGO)		*
-
-\*********************************/
-        
-
-		if(empty($action)){
-            $tsMonitor->show_type = 2;
-			$notificaciones = $tsMonitor->getNotificaciones();
-			$smarty->assign("tsData",$notificaciones);
-            // LIVE SOUND
-            $smarty->assign("tsStatus",$_COOKIE);
-            //
-		} else {
-			$smarty->assign("tsData",$tsMonitor->getFollows($action));
-		}
-
-/**********************************\
-
-* (AGREGAR DATOS GENERADOS | SMARTY) *
-
-\*********************************/
+	if(empty($action)){
+      $tsMonitor->show_type = 2;
+		$notificaciones = $tsMonitor->getNotificaciones();
+		$smarty->assign("tsData", $notificaciones);
+      // LIVE SOUND
+      $smarty->assign("tsStatus", $_COOKIE);
+   } else $smarty->assign("tsData", $tsMonitor->getFollows($action));
 	//
 	$smarty->assign("tsAction",$action);
-	
-	}
+}
 
-if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO MOSTRAR PLANTILLA, SI NO ENTONCES MOSTRARLA.
+if(empty($tsAjax)) {
 
-	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
+	$smarty->assign("tsTitle",$tsTitle);
 
-	/*++++++++ = ++++++++*/
-	include("../../footer.php");
-	/*++++++++ = ++++++++*/
+	include_once TS_ROOT . "footer.php";
 }

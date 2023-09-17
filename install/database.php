@@ -12,7 +12,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `f_comentarios` (
   `c_user` int(11) NOT NULL DEFAULT 0,
   `c_date` int(10) NOT NULL DEFAULT 0,
   `c_body` text NULL,
-  `c_ip` varchar(38) NOT NULL DEFAULT '',
+  `c_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`cid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
@@ -39,7 +39,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `f_fotos` (
   `f_status` int(1) NOT NULL DEFAULT 0,
   `f_last` int(1) NOT NULL DEFAULT 0,
   `f_hits` int(11) NOT NULL DEFAULT 0,
-  `f_ip` varchar(38) NOT NULL DEFAULT '',
+  `f_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`foto_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
@@ -135,7 +135,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_comentarios` (
   `c_body` text NULL,
   `c_votos` int(3) NOT NULL DEFAULT 0,
   `c_status` int(1) NOT NULL DEFAULT 0,
-  `c_ip` varchar(38) NOT NULL DEFAULT '',
+  `c_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`cid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
@@ -163,7 +163,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_posts` (
   `post_favoritos` int(11) NOT NULL DEFAULT 0,
   `post_cache` int(10) NOT NULL DEFAULT 0,
   `post_hits` int(11) NOT NULL DEFAULT 0,
-  `post_ip` varchar(38) NOT NULL DEFAULT '',
+  `post_ip` varchar(50) NOT NULL DEFAULT '',
   `post_private` int(1) NOT NULL DEFAULT 0,
   `post_block_comments` int(1) NOT NULL DEFAULT 0,
   `post_sponsored` int(1) NOT NULL DEFAULT 0,
@@ -171,6 +171,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_posts` (
   `post_smileys` int(1) NOT NULL DEFAULT 0,
   `post_visitantes` int(1) NOT NULL DEFAULT 0,
   `post_status` int(1) NOT NULL DEFAULT 0,
+  FULLTEXT (post_title, post_tags, post_body),
   PRIMARY KEY (`post_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
@@ -263,6 +264,8 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_miembros` (
   `user_name_changes` int(11) NOT NULL DEFAULT 3,
   `user_activo` int(1) NOT NULL DEFAULT 0,
   `user_baneado` int(1) NOT NULL DEFAULT 0,
+  `user_github` int(1) NOT NULL DEFAULT 0,
+  `user_discord` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
@@ -274,7 +277,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_nicks` (
   `name_2` varchar(15) NOT NULL DEFAULT '',
   `hash` varchar(66) NOT NULL DEFAULT '',
   `time` int(11) NOT NULL DEFAULT 0,
-  `ip` varchar(38) NOT NULL DEFAULT '',
+  `ip` varchar(50) NOT NULL DEFAULT '',
   `estado` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
@@ -303,7 +306,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_muro` (
   `p_body` text NULL,
   `p_likes` int(4) NOT NULL DEFAULT 0,
   `p_type` int(1) NOT NULL DEFAULT 0,
-  `p_ip` varchar(38) NOT NULL DEFAULT '',
+  `p_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`pub_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
@@ -324,7 +327,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_muro_comentarios` (
   `c_date` int(10) NOT NULL DEFAULT 0,
   `c_body` text NULL,
   `c_likes` int(4) NOT NULL DEFAULT 0,
-  `c_ip` varchar(38) NOT NULL DEFAULT '',
+  `c_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`cid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
@@ -390,7 +393,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_portal` (
   `last_posts_visited` text NULL,
   `last_posts_shared` text NULL,
   `last_posts_cats` text NULL,
-  `c_monitor` text NULL,
+  `c_monitor` text NOT NULL DEFAULT 'f1,f2,f3,f8,f9,f4,f5,f10,f6,f7,f11,f12,f13,f14',
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;";
 
@@ -419,7 +422,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_respuestas` (
   `mp_id` int(11) NOT NULL DEFAULT 0,
   `mr_from` int(11) NOT NULL DEFAULT 0,
   `mr_body` text NULL,
-  `mr_ip` varchar(38) NOT NULL DEFAULT '',
+  `mr_ip` varchar(50) NOT NULL DEFAULT '',
   `mr_date` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`mr_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
@@ -427,7 +430,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_respuestas` (
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_sessions` (
   `session_id` varchar(32) NOT NULL DEFAULT '',
   `session_user_id` int(11) unsigned NOT NULL DEFAULT '0',
-  `session_ip` varchar(38) NOT NULL DEFAULT '',
+  `session_ip` varchar(50) NOT NULL DEFAULT '',
   `session_time` int(10) unsigned NOT NULL DEFAULT '0',
   `session_autologin` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`session_id`),
@@ -442,7 +445,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_suspension` (
   `susp_date` int(10) NOT NULL DEFAULT 0,
   `susp_termina` int(10) NOT NULL DEFAULT 0,
   `susp_mod` int(11) NOT NULL DEFAULT 0,
-  `susp_ip` varchar(38) NOT NULL DEFAULT '',
+  `susp_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`susp_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
@@ -469,6 +472,10 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_configuracion` (
   `banner` varchar(100) NOT NULL DEFAULT '',
   `tema_id` int(11) NOT NULL DEFAULT 1,
   `updated` int(1) NOT NULL DEFAULT 1,
+  `gh_client_id` varchar(24) NOT NULL DEFAULT '',
+  `gh_client_secret` varchar(44) NOT NULL DEFAULT '',
+  `discord_client_id` varchar(24) NOT NULL DEFAULT '',
+  `discord_client_secret` varchar(44) NOT NULL DEFAULT '',
   `ads_300` text NULL,
   `ads_468` text NULL,
   `ads_160` text NULL,
@@ -556,7 +563,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_medallas_assign` (
   `medal_id` int(11) NOT NULL DEFAULT 0,
   `medal_for` int(11) NOT NULL DEFAULT 0,
   `medal_date` int(11) NOT NULL DEFAULT 0,
-  `medal_ip` varchar(38) NOT NULL DEFAULT '',
+  `medal_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
 
@@ -568,7 +575,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_historial` (
   `mod` int(11) NOT NULL DEFAULT 0,
   `reason` text NULL,
   `date` int(11) NOT NULL DEFAULT 0,
-  `mod_ip` varchar(38) NOT NULL DEFAULT '',
+  `mod_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
@@ -636,7 +643,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_visitas` (
   `for` int(11) NOT NULL DEFAULT 0,
   `type` int(1) NOT NULL DEFAULT 0,
   `date` int(11) NOT NULL DEFAULT 0,
-  `ip` varchar(38) NOT NULL DEFAULT '',
+  `ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   INDEX (`for`, `type`, `user`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";

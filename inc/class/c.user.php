@@ -153,6 +153,25 @@ class tsUser extends reCaptcha {
       // Borrar variable session
       unset($this->session);
 	}
+
+	/**
+	 * Se repiten en 3 funciones diferentes
+	*/
+	public function sessionUpdate(int $id = 0, bool $rem = true) {
+      // Actualizamos la session
+      $this->session->update($id, $rem, TRUE);
+      // Cargamos la información del usuario
+      $this->loadUser(true);
+      // COMPROBAMOS SI TENEMOS QUE ASIGNAR MEDALLAS
+      $this->DarMedalla();
+	}
+	/**
+	 * Se repiten en 3 funciones diferentes
+	*/
+	public function sameQuery(string $where = '', string $social = '') {
+		$col = empty($social) ? 'user_github, user_discord' : 'user_' . $social;
+		return db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, user_name, user_password, user_activo, user_baneado, $col FROM u_miembros WHERE $where LIMIT 1"));
+	}
 	/*
 		HACEMOS LOGIN
 		loginUser($username, $password, $remember = false, $redirectTo = NULL);
@@ -169,7 +188,7 @@ class tsUser extends reCaptcha {
 		}
 		$where .= " = '$username'";
 		/* CONSULTA */  
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, user_name, user_password, user_activo, user_baneado FROM u_miembros WHERE $where LIMIT 1"));
+		$data = self::sameQuery($where);
       // Existe el usuario
       if(empty($data)) return '0: El usuario no existe.';
       $password = $tsCore->createPassword($data['user_name'], $password);
@@ -183,18 +202,14 @@ class tsUser extends reCaptcha {
 			return '0: Tu contrase&ntilde;a es incorrecta.';
 		} else {
          if((int)$data['user_activo'] === 1) {
-            // Actualizamos la session
-            $this->session->update($data['user_id'], $remember, TRUE);
-            // Cargamos la información del usuario
-            $this->loadUser(true);
-            // COMPROBAMOS SI TENEMOS QUE ASIGNAR MEDALLAS
-            $this->DarMedalla();                
+         	self::sessionUpdate($data['user_id'], $remember);
 				/* REDERIGIR */
 				if($redirectTo != NULL) $tsCore->redirectTo($redirectTo);	// REDIRIGIR
 				else return TRUE;
 			} else return '0: Debes activar tu cuenta';
 		}
 	}
+
 	/*
 		CERRAR SESSION
 		logoutUser($redirectTo)
@@ -285,14 +300,13 @@ class tsUser extends reCaptcha {
      * @param int
      * @return void
      */
-    public function iFollow($user_id){
-        # SIGO A ESTE USUARIO
-        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT follow_id FROM u_follows WHERE f_id = \''.(int)$user_id.'\' AND f_user = \''.$this->uid.'\' AND f_type = \'1\' LIMIT 1');
-		$data = db_exec('num_rows', $query);
-		
-        //
-        return ($data > 0) ? true : false;
-    }
+    public function iFollow(int $user_id = 0){
+       # SIGO A ESTE USUARIO
+      $data = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT follow_id FROM u_follows WHERE f_id = $user_id AND f_user = {$this->uid} AND f_type = 1 LIMIT 1"));
+      //
+      return ($data > 0) ? true : false;
+   }
+   
     /**
      * @name getVCard
      * @access public

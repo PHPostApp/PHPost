@@ -10,6 +10,12 @@
 	js=["acciones.js", "wysibb.js", "$tsPage.js"] 
 	deny=["moderacion.js", "cuenta.js"]
 }
+<script>
+$(document).ready(() => {
+{if $tsNots > 0}notifica.popup({$tsNots});{/if}
+{if $tsMPs > 0 && $tsAction != 'leer'}mensaje.popup({$tsMPs});{/if}
+});
+</script>
 </head>
 <body>
 {if $tsUser->is_admod == 1}{$tsConfig.install}{/if}

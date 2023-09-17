@@ -1,7 +1,8 @@
-## Manejo de errores de Apache. Cuando se produzca uno de estos errores, redirigimos a una pagina especial desarrollada por nosotros.
-ErrorDocument 401 /error401.html
-ErrorDocument 403 /error403.html
-ErrorDocument 404 /error404.html
+## Manejo de errores de Apache. 
+ErrorDocument 401 /public/error/401.html
+ErrorDocument 403 /public/error/403.html
+ErrorDocument 404 /public/error/404.html
+ErrorDocument 500 /public/error/404.html
   
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -41,6 +42,10 @@ RewriteRule ^index.php$ index.php?do=home [QSA,L]
 RewriteRule ^cuenta.php$ inc/php/cuenta.php [QSA,L]
 RewriteRule ^cuenta/([A-Za-z0-9_-]+)$ inc/php/cuenta.php?accion=$1 [QSA,L]
 RewriteRule ^agregar.php$ inc/php/agregar.php [QSA,L]
+
+# CALLBACK PARA REDES SOCIALES
+RewriteRule ^github.php$ inc/callback/github.php [QSA,L]
+RewriteRule ^discord.php$ inc/callback/discord.php [QSA,L]
 
 #PERFIL
 RewriteRule ^perfil/([A-Za-z0-9_-]+)$ inc/php/perfil.php?user=$1 [QSA,L]

@@ -40,6 +40,7 @@
   	</div>
   	<br>
 {/if}
+
 						<div class="widget w-medallas clearfix">
 								<div class="title-w clearfix">
 									<h3>Medallas</h3>

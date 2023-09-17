@@ -128,7 +128,7 @@
 	 
 	 // Configuraciones
 	 $smarty->assign('tsConfig', $tsCore->settings);
-	 
+
 	 // Obtejo usuario
 	 $smarty->assign('tsUser',$tsUser);
 	 
@@ -136,7 +136,7 @@
 	 $smarty->assign('tsAvisos', $tsMonitor->avisos);
 	 
 	 // Nofiticaciones
-	 $smarty->assign('tsNots',$tsMonitor->notificaciones);
+	 $smarty->assign('tsNots', $tsMonitor->notificaciones);
 	 
 	 // Mensajes
 	 $smarty->assign('tsMPs',$tsMP->mensajes);

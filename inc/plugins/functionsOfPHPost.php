@@ -199,24 +199,12 @@ class fnPHPost {
 		//
 		ksort($global);
 		$global = join(",\n", $global);
-		// En el caso que exista notificaciones y/o mensajes
-		$globalNMA = '';
-		if($tsNots > 0 OR $tsMPs > 0 AND $tsAction != 'leer') {
-			$notifica = ($tsNots > 0) ? "notifica.popup($tsNots);" : "// notifica";
-			$mensaje = ($tsNots > 0) ? "mensaje.popup($tsMPs);" : "// mensaje";
-			$globalNMA = <<< NMA
-			$(document).ready(() => {
-				$notifica
-				$mensaje
-			});
-			NMA;
-		}
+
 		return <<< LINEA
 		<script type="text/javascript">
 		var global_data = {
 		$global
 		}
-		$globalNMA
 		</script>
 		LINEA;
 	}

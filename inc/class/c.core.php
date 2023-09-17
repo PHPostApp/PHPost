@@ -36,12 +36,36 @@ class tsCore {
 		$this->settings['avatar'] = $this->settings['url'].'/files/avatar';
 		$this->settings['uploads'] = $this->settings['url'].'/files/uploads';
 		$this->settings['public'] = $this->settings['url'].'/public';
+		$this->settings['oauthGithub'] = $this->githubOAuth();
+		$this->settings['oauthDiscord'] = $this->discordOAuth();
       //
      	if($_GET['do'] == 'portal' || $_GET['do'] == 'posts') 
      		$this->settings['news'] = $this->getNews();
 		# Mensaje del instalador y pendientes de moderación #
 		// $this->settings['install'] = $this->existinstall();
 		$this->settings['novemods'] = $this->getNovemods();
+	}
+
+	public function githubOAuth() {
+		$parametros = http_build_query([
+			'client_id' => $this->settings['gh_client_id'],
+			'scope' => 'repo user',
+			'state' => $this->setSEO(strtolower($this->settings['titulo'])) . date('y'),
+			'redirect_uri' => $this->settings['url'] . '/github.php'
+		]);
+		$ruta = "https://github.com/login/oauth/authorize?$parametros";
+		return $ruta;
+	}
+	public function discordOAuth() {
+		$parametros = http_build_query([
+			'client_id' => $this->settings['discord_client_id'],
+			'scope' => 'identify email',
+			'state' => $this->setSEO(strtolower($this->settings['titulo'])) . date('y'),
+			'response_type' => 'code',
+			'redirect_uri' => $this->settings['url'] . '/discord.php'
+		]);
+		$ruta = "https://discord.com/api/oauth2/authorize?$parametros";
+		return $ruta;
 	}
 
 	/*

@@ -5,13 +5,38 @@
 	{if $tsSave}<div class="mensajes  ok">Configuraciones guardadas</div>{/if}
 	<form action="" method="post" autocomplete="off">
 	 	<fieldset>
+		  	<legend>Configuraci&oacute;n de Registro/Logueo con GitHub</legend>
+		  	<p style="text-align: center; display: block;">Como obtener Client-id y Client-secret <a targe="_blank" href="https://docs.github.com/es/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app">crear y registrar una OAuth</a></p>
+		  	<dl>
+            <dt><label for="client_id">Client ID</label><br /><span>Client ID de <a targe="_blank" href="https://github.com/settings/developers">Github Developers</a>.</span></dt>
+            <dd><input type="text" id="client_id" name="gh_client_id" value="{$tsConfig.gh_client_id}" /></dd>
+         </dl>
+         <dl>
+            <dt><label for="client_secret">Client Secret</label><br /><span>Client Secret de <a targe="_blank" href="https://github.com/settings/developers">Github Developers</a>.</span></dt>
+            <dd><input type="text" id="client_secret" name="gh_client_secret" value="{$tsConfig.gh_client_secret}" /></dd>
+         </dl>
+      </fieldset>
+
+	 	<fieldset>
+		  	<legend>Configuraci&oacute;n de Registro/Logueo con Discord</legend>
+		  	<p style="text-align: center; display: block;">Como obtener Client-id y Client-secret <a targe="_blank" href="https://discord.com/developers/applications">crear y registrar una OAuth2</a></p>
+		  	<dl>
+            <dt><label for="dclient_id">Client ID</label><br /><span>Client ID de <a targe="_blank" href="https://discord.com/developers/docs/topics/oauth2">Discord Developers</a>.</span></dt>
+            <dd><input type="text" id="dclient_id" name="discord_client_id" value="{$tsConfig.discord_client_id}" /></dd>
+         </dl>
+         <dl>
+            <dt><label for="dclient_secret">Client Secret</label><br /><span>Client Secret de <a targe="_blank" href="https://discord.com/developers/docs/topics/oauth2">Discord Developers</a>.</span></dt>
+            <dd><input type="text" id="dclient_secret" name="discord_client_secret" value="{$tsConfig.discord_client_secret}" /></dd>
+         </dl>
+      </fieldset>
+      <fieldset>
 		  	<legend>Configuraci&oacute;n del Registro</legend>
 		  	<dl>
-            <dt><label for="pkey">reCaptcha p&uacute;blica</label><br /><span>Clave p&uacute;blica de <a href="https://www.google.com/recaptcha/admin">reCatpcha</a>.</span></dt>
+            <dt><label for="pkey">reCaptcha p&uacute;blica</label><br /><span>Clave p&uacute;blica de <a targe="_blank" href="https://www.google.com/recaptcha/admin">reCatpcha</a>.</span></dt>
             <dd><input type="text" id="pkey" name="pkey" value="{$tsConfig.pkey}" /></dd>
          </dl>
          <dl>
-            <dt><label for="skey">reCaptcha secreta</label><br /><span>Clave privada de <a href="https://www.google.com/recaptcha/admin">reCatpcha</a>.</span></dt>
+            <dt><label for="skey">reCaptcha secreta</label><br /><span>Clave privada de <a targe="_blank" href="https://www.google.com/recaptcha/admin">reCatpcha</a>.</span></dt>
             <dd><input type="text" id="skey" name="skey" value="{$tsConfig.skey}" /></dd>
          </dl>
          <hr />

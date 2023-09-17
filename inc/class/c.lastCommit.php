@@ -70,19 +70,20 @@ class UpdateGithub {
 	private function delete(array $files = [], $directorioLocal) {
 	   foreach($files as $k => $file) {
 			$filename = $file['filename'];
+			$fileroot = $this->ruta . $filename;
 	   	if($file['status'] === 'removed') {
 	   		if($k === 0) echo "<hr>Eliminados:<br><br>";
-	   		if (is_file($this->ruta . $file['filename'])) {
-	   			unlink($this->ruta . $file['filename']); // Elimina archivos individuales
+	   		if (is_file($fileroot)) {
+	   			unlink($fileroot); // Elimina archivos individuales
 					echo " * ./".dirname($filename)."/<strong>".basename($filename)."</strong><br>";
-	   		} elseif (is_dir($this->ruta . $file['filename'])) {
+	   		} elseif (is_dir($fileroot)) {
 	   			// Llama a la función para eliminar directorios
-            	self::deleteDirRecursive($this->ruta . $file['filename']); 
+            	self::deleteDirRecursive($fileroot);
+            	// rmdir($fileroot);
 					echo " * ./".dirname($filename)."/<strong>".basename($filename)."</strong><br>";
 	   		}
 	   	}
 	   }
-	   
 	}
 
 	private function downloads(array $files = []) {
@@ -90,24 +91,26 @@ class UpdateGithub {
 	 	foreach ($files as $k => $archivo) {
 	 		if($k === 0) echo "Actualizados:<br><br>";
 			$filename = $archivo['filename'];
+			$ruta_archivo = $this->ruta . $filename;
 			// Evita que descargue los archivos eliminados
 			if($archivo['status'] === 'removed') continue;
 			$contenido = file_get_contents($archivo['raw_url']);
 			//
 			if ($contenido !== false) {
 				// Crea la carpeta si no existe
-				$directorio = dirname($this->ruta . $filename);
+				$directorio = dirname($ruta_archivo);
 				if (!is_dir($directorio)) mkdir($directorio, 0777, true);
 
 				// Asignamos los permisos antes
 				$permisos_originales = is_dir($directorio) ? 0777 : 0666;
 				$permisosd = is_dir($directorio) ? 0755 : 0644;
+
 				// Guarda los permisos originales antes de cambiarlos
 				$permisos_actuales = fileperms($directorio);
 				chmod($directorio, $permisos_originales);
 
 				// Guarda el archivo en la carpeta
-				file_put_contents($this->ruta . $filename, $contenido);
+				copy($archivo['raw_url'], $ruta_archivo);
 				echo " * ./".dirname($filename)."/<strong>".basename($filename)."</strong><br>";
 				$this->status = true;
 

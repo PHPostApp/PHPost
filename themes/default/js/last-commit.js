@@ -15,6 +15,13 @@ $.getJSON(apiGithub, data => {
 	SHA = (window.width < 1120) ? data.sha.substring(0, 7) : data.sha;
 	// Si la Cookie no existe la crearemos por 7 días
 	if($.cookie(cookiename) === null) $.cookie(cookiename, SHA, expires);
+	// Obtenemos el valor de la cookie
+	var getSHA = $.cookie(cookiename);
+	// Comparamos
+	if(SHA !== getSHA) {
+		url = global_data.url + '/admin-update.php';
+		$.post(url, 'update_now=false', r => $.cookie(cookiename, getSHA, expires))
+	}
 	// Creamos la plantilla para mostrar la infomación del mismo
 	var html = `<li class="data-github">
 		<div class="title">
@@ -28,14 +35,3 @@ $.getJSON(apiGithub, data => {
 	// La añadimos al HTML
 	$('#last_gh').append(html);
 })
-
-function updatedBox() {
-	// Obtenemos el valor de la cookie
-	var getSHA = $.cookie(cookiename);
-	// Comparamos
-	const update_now = false;
-	$.post(global_data.url + '/admin-update.php', { update_now }, r => {
-		console.log(r)
-		$.cookie(cookiename, getSHA, expires)
-	})
-}

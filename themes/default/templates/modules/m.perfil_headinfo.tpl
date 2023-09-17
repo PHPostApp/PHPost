@@ -31,7 +31,7 @@
 			<ul>
 				<li style="color:#{$tsInfo.stats.r_color}; background-color:#FFF">
 					<strong style="color:#{$tsInfo.stats.r_color}">{$tsInfo.stats.r_name}</strong>
-					<span>Rango</span>
+					<span>Rango {$tsInfo.follow}</span>
 					<span title="{$tsInfo.status.t}" class="qtip status {$tsInfo.status.css}"></span>
 				</li>
 				<li>

@@ -66,7 +66,7 @@ class tsCuenta {
 		//
 		if(empty($user_id)) $user_id = $tsUser->uid;
 		//
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.*, u.user_registro, u.user_lastactive FROM u_perfil AS p LEFT JOIN u_miembros AS u ON p.user_id = u.user_id WHERE p.user_id = \''.(int)$user_id.'\' LIMIT 1');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.*, u.user_github, u.user_discord, u.user_registro, u.user_lastactive FROM u_perfil AS p LEFT JOIN u_miembros AS u ON p.user_id = u.user_id WHERE p.user_id = \''.(int)$user_id.'\' LIMIT 1');
 		$perfilInfo = db_exec('fetch_assoc', $query);
 		$fecha = "{$perfilInfo['user_dia']}-{$perfilInfo['user_mes']}-{$perfilInfo['user_ano']}";
 		$perfilInfo['nacimiento'] = date("Y-m-d", strtotime($fecha));
@@ -97,7 +97,7 @@ class tsCuenta {
 	public function loadHeadInfo(int $user_id = 0){
 		global $tsUser, $tsCore;
 		// INFORMACION GENERAL
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, p.user_sexo, p.user_pais, p.p_nombre, p.p_avatar, p.p_mensaje, p.p_socials, p.p_empresa, p.p_configs FROM u_miembros AS u, u_perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_github, u.user_discord, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, p.user_sexo, p.user_pais, p.p_nombre, p.p_avatar, p.p_mensaje, p.p_socials, p.p_empresa, p.p_configs FROM u_miembros AS u, u_perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
       //
       $data['p_nombre'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_nombre']), true);
       $data['p_mensaje'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_mensaje']), true);
@@ -197,10 +197,12 @@ class tsCuenta {
 	*/
 	public function iyfollow(int $user_id = 0, string $type = 'iFollow') {
       global $tsUser;
-      $iuid = ($type === 'iFollow') ? $user_id : $tsUser->uid;
-      $yuid = ($type === 'yFollow') ? $tsUser->uid : $user_id;
+
+      $id = ($type === 'iFollow') ? $user_id : $tsUser->uid;
+      $user = ($type === 'iFollow') ? $tsUser->uid : $user_id;
+     
       // SEGUIR
-      $data = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT follow_id FROM u_follows WHERE f_id = $iuid AND f_user = $yuid AND f_type = 1 LIMIT 1"));
+      $data = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT follow_id FROM u_follows WHERE f_id = $id AND f_user = $user AND f_type = 1 LIMIT 1"));
       return ($data > 0) ? true : false;
    }
    /*
