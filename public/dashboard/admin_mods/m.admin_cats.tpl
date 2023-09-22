@@ -29,9 +29,9 @@ $(() => {
 	 <h3>Administrar Categor&iacute;as</h3>
 </div>
 <div id="res" class="boxy-content">
-	{if $tsSave}<div class="mensajes ok">Tus cambios han sido guardados.</div>{/if}
+	{if $tsSave}<div class="alert alert-success">Tus cambios han sido guardados.</div>{/if}
 	{if $tsAct == ''}
-		{if !$tsSave}<div class="mensajes error">Puedes cambiar el orden de las categor&iacute;as tan s&oacute;lo con arrastrarlas con el puntero.</div>{/if}
+		{if !$tsSave}<div class="alert alert-danger">Puedes cambiar el orden de las categor&iacute;as tan s&oacute;lo con arrastrarlas con el puntero.</div>{/if}
 		<table class="admin_table">
 	      <h4>Categor&iacute;as</h4>
 	      <thead>
@@ -86,7 +86,7 @@ $(() => {
 		  </fieldset>
 		  </form>
 	 {elseif $tsAct == 'nueva'}
-		  <div class="mensajes error">Si deseas m&aacute;s iconos para las categor&iacute;as debes subirlos al directorio: {$tsConfig.images}/icons/cat/</div>
+		  <div class="alert alert-danger">Si deseas m&aacute;s iconos para las categor&iacute;as debes subirlos al directorio: {$tsConfig.images}/icons/cat/</div>
 		  <form action="" method="post" autocomplete="off">
 		  <fieldset>
 				<legend>Nueva</legend>
@@ -109,7 +109,7 @@ $(() => {
 		  </fieldset> 
 		</form>
 	{elseif $tsAct == 'borrar'}
-		{if $tsError}<div class="mensajes error">{$tsError}</div>{/if}
+		{if $tsError}<div class="alert alert-danger">{$tsError}</div>{/if}
 		{if $tsType == 'cat'}
 		  	<form action="" method="post" id="admin_form">
 				<label for="h_mov" style="width:500px;">Borrar categor&iacute;a y mover las subcategor&iacute;as y demas datos a otra categor&iacute;a diferente. Mover datos a:</label>
@@ -126,7 +126,7 @@ $(() => {
 		  </form>	                                        
 		  {/if}
 	{elseif $tsAct == 'change'}
-		{if $tsError}<div class="mensajes error">{$tsError}</div>{/if}
+		{if $tsError}<div class="alert alert-danger">{$tsError}</div>{/if}
 		<form action="" method="post" id="admin_form">
 			<label style="width:500px;">Mover todos los posts de la categor&iacute;a </label>
 			<select name="oldcid">

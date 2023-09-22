@@ -165,13 +165,6 @@ class tsUser extends reCaptcha {
       // COMPROBAMOS SI TENEMOS QUE ASIGNAR MEDALLAS
       $this->DarMedalla();
 	}
-	/**
-	 * Se repiten en 3 funciones diferentes
-	*/
-	public function sameQuery(string $where = '', string $social = '') {
-		$col = empty($social) ? 'user_github, user_discord' : 'user_' . $social;
-		return db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, user_name, user_password, user_activo, user_baneado, $col FROM u_miembros WHERE $where LIMIT 1"));
-	}
 	/*
 		HACEMOS LOGIN
 		loginUser($username, $password, $remember = false, $redirectTo = NULL);
@@ -188,7 +181,7 @@ class tsUser extends reCaptcha {
 		}
 		$where .= " = '$username'";
 		/* CONSULTA */  
-		$data = self::sameQuery($where);
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, user_name, user_password, user_activo, user_baneado FROM u_miembros WHERE $where LIMIT 1"));
       // Existe el usuario
       if(empty($data)) return '0: El usuario no existe.';
       $password = $tsCore->createPassword($data['user_name'], $password);

@@ -2,8 +2,8 @@
 	<h3>Administrar Rangos de Usuarios</h3>
 </div>
 <div id="res" class="boxy-content" style="position:relative">
-	{if $tsSave}<div class="mensajes ok">Tus cambios han sido guardados.</div>{/if}
-	{if $tsError}<div class="mensajes error">{$tsError}</div>{/if}
+	{if $tsSave}<div class="alert alert-success">Tus cambios han sido guardados.</div>{/if}
+	{if $tsError}<div class="alert alert-danger">{$tsError}</div>{/if}
 	{if $tsAct == ''}
 		<div style="margin:.3rem auto">
 			<h3 style="margin:0">Rangos Especiales</h3>
@@ -88,7 +88,7 @@
 		</div>
 	{elseif $tsAct == 'list'}
 		{if !$tsMembers.data}
-			<div class="mensajes error">Aun no hay usuarios en este rango.</div>
+			<div class="alert alert-danger">Aun no hay usuarios en este rango.</div>
 		{else}
 			<table class="admin_table">
 				<thead>
@@ -297,7 +297,7 @@
 		</form>
 	{elseif $tsAct == 'borrar'}
 		<form action="" method="post" id="admin_form">
-			<div class="mensajes error">Si borras este rango todos los usuarios que est&eacute;n en &eacute;l, ser&aacute;n asignados al rango 
+			<div class="alert alert-danger">Si borras este rango todos los usuarios que est&eacute;n en &eacute;l, ser&aacute;n asignados al rango 
 				<select name="new_rango">
 					{foreach from=$tsRangos item=r}
 						<option value="{$r.rango_id}"{if $r.rango_id == 3} selected{/if}>{$r.r_name}</option>

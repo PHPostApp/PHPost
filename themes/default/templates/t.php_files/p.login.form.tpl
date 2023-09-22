@@ -7,12 +7,11 @@
 		<div class="mensajeAviso">
 			<span>Obteniendo código de reCAPTCHA...</span>
 		</div>
-		{if !empty({$tsConfig.gh_client_id})}
 		<div class="form-line" style="text-align: center;">
-			<a style="background: #000;display: inline-block;padding: .3rem 1rem;color: #FFF;border-radius: .3rem;margin-bottom: .7rem;" href="{$tsConfig.oauthGithub}">Inicio de sesión con GitHub</a>
-			<a style="background: #000;display: inline-block;padding: .3rem 1rem;color: #FFF;border-radius: .3rem;margin-bottom: .7rem;" href="{$tsConfig.oauthDiscord}">Iniciar sesión con Discord</a>
+			{foreach $tsConfig.oauth key=i item=social}
+				<a style="background: #000;display: inline-block;padding: .3rem 1rem;color: #FFF;border-radius: .3rem;margin-bottom: .7rem;" href="{$social}">Inicio de sesión con {$i}</a>
+			{/foreach}
 		</div>
-		{/if}
 		<div class="form-line">
 			<label>Usuario o Email</label>
 			<input type="text" id="nickname" autocomplete="OFF" placeholder="JohnDoe o johndoe@servermail.com" name="nick" maxlength="64">

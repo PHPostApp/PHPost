@@ -16,8 +16,11 @@ define('TS_TEMA_ACT', TS_THEMES . TS_TEMA . TS_PATH);
 define('TS_TEMPLATES', TS_TEMA_ACT . "templates" . TS_PATH);
 define('TS_SECTIONS', TS_TEMPLATES . "sections" . TS_PATH);
 define('TS_MODULES', TS_TEMPLATES . "modules" . TS_PATH);
-define('TS_ADMOD', TS_TEMPLATES . "admin_mods" . TS_PATH);
 
+define('TS_PUBLIC', TS_ROOT . 'public' . TS_PATH);
+define('TS_DASHBOARD', TS_PUBLIC . 'dashboard' . TS_PATH);
+define('TS_ACCESS', TS_PUBLIC . 'access' . TS_PATH);
+define('TS_ADMOD', TS_DASHBOARD . "admin_mods" . TS_PATH);
 //
 $smarty->setCompileCheck(CACHE_CHECKED);
 
@@ -42,9 +45,12 @@ $addDir['images'] 	= TS_TEMA_ACT . "images";
 $addDir['templates'] = TS_TEMPLATES;
 $addDir['sections'] 	= TS_SECTIONS;
 $addDir['modules'] 	= TS_MODULES;
-$addDir['admod'] 		= TS_ADMOD;
+//
 $addDir['plugins'] 	= TS_PLUGINS;
 $addDir['public'] 	= TS_PUBLIC;
+$addDir['dashboard'] = TS_DASHBOARD;
+$addDir['admod'] 		= TS_ADMOD;
+$addDir['access'] 	= TS_ACCESS;
 //
 $smarty->setTemplateDir($addDir);
 

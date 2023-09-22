@@ -44,8 +44,7 @@ RewriteRule ^cuenta/([A-Za-z0-9_-]+)$ inc/php/cuenta.php?accion=$1 [QSA,L]
 RewriteRule ^agregar.php$ inc/php/agregar.php [QSA,L]
 
 # CALLBACK PARA REDES SOCIALES
-RewriteRule ^github.php$ inc/callback/github.php [QSA,L]
-RewriteRule ^discord.php$ inc/callback/discord.php [QSA,L]
+RewriteRule ^(github.php|discord.php|gmail.php|facebook.php)$ inc/callback/$1 [QSA,L]
 
 #PERFIL
 RewriteRule ^perfil/([A-Za-z0-9_-]+)$ inc/php/perfil.php?user=$1 [QSA,L]
@@ -91,6 +90,21 @@ RewriteRule ^mod-history/([A-Za-z0-9_-]+)/ inc/php/mod-history.php?ver=$1 [QSA,L
 # SITEMAP & RSS
 RewriteRule ^rss/([A-Za-z0-9_-]+)/$ inc/php/rss.php?type=$1 [L,NC,QSA]
 RewriteRule ^rss/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)$ inc/php/rss.php?type=$1&user=$2 [L,NC,QSA]
+
+# COMUNIDADES
+RewriteRule ^comunidades/pagina.([0-9]+)$ inc/php/comunidades.php?action=home&page=$1 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/agregar/([0-9]+)$ inc/php/comunidades.php?action=$1&act=agregar&bid=$2 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/editar-tema/([0-9]+)/$ inc/php/comunidades.php?action=$1&act=editar-tema&temaid=$2 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/miembros.([0-9]+)/$ inc/php/comunidades.php?action=$1&act=miembros&page=$2 [QSA,L]
+RewriteRule ^comunidades/mis-comunidades/([A-Za-z0-9_-]+)$ inc/php/comunidades.php?action=mis-comunidades&orden=$1 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/pagina.([0-9]+)$ inc/php/comunidades.php?action=$1&page=$2 [QSA,L]
+RewriteRule ^comunidades/dir/([A-Za-z0-9_-]+)/$ inc/php/comunidades.php?action=dir&pais=$1 [QSA,L]
+RewriteRule ^comunidades/dir/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)$ inc/php/comunidades.php?action=dir&pais=$1&c_seo=$2 [QSA,L]
+RewriteRule ^comunidades/dir/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)$ inc/php/comunidades.php?action=dir&pais=$1&c_seo=$2&s_seo=$3 [QSA,L]
+RewriteRule ^comunidades/dir/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/([0-9]+)$ inc/php/comunidades.php?action=dir&pais=$1&c_seo=$2&s_seo=$3&page=$4 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/$ inc/php/comunidades.php?action=$1&act=$2 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/pagina.([0-9]+)$ inc/php/comunidades.php?action=$1&act=$2&page=$3 [QSA,L]
+RewriteRule ^comunidades/([A-Za-z0-9_-]+)/([0-9]+)/([A-Za-z0-9_-]+).html$ inc/php/comunidades.php?action=$1&temaid=$2&act=tema [QSA,L]
 
 #EXTRAS
 RewriteRule ^([A-Za-z0-9_-]+).php$ inc/php/ajax_files.php?action=$1 [QSA,L]

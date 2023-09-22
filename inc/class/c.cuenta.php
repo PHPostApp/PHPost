@@ -66,10 +66,13 @@ class tsCuenta {
 		//
 		if(empty($user_id)) $user_id = $tsUser->uid;
 		//
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.*, u.user_github, u.user_discord, u.user_registro, u.user_lastactive FROM u_perfil AS p LEFT JOIN u_miembros AS u ON p.user_id = u.user_id WHERE p.user_id = \''.(int)$user_id.'\' LIMIT 1');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.*, u.user_socials, u.user_registro, u.user_lastactive FROM u_perfil AS p LEFT JOIN u_miembros AS u ON p.user_id = u.user_id WHERE p.user_id = \''.(int)$user_id.'\' LIMIT 1');
 		$perfilInfo = db_exec('fetch_assoc', $query);
+		// Nacimiento
 		$fecha = "{$perfilInfo['user_dia']}-{$perfilInfo['user_mes']}-{$perfilInfo['user_ano']}";
 		$perfilInfo['nacimiento'] = date("Y-m-d", strtotime($fecha));
+		// Redes viculadas
+		$perfilInfo['socials'] = json_decode($perfilInfo['user_socials'], true);
 		// CAMBIOS
       $perfilInfo = $this->unData($perfilInfo);
 		// PORCENTAJE
@@ -97,7 +100,7 @@ class tsCuenta {
 	public function loadHeadInfo(int $user_id = 0){
 		global $tsUser, $tsCore;
 		// INFORMACION GENERAL
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_github, u.user_discord, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, p.user_sexo, p.user_pais, p.p_nombre, p.p_avatar, p.p_mensaje, p.p_socials, p.p_empresa, p.p_configs FROM u_miembros AS u, u_perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, p.user_sexo, p.user_pais, p.p_nombre, p.p_avatar, p.p_mensaje, p.p_socials, p.p_empresa, p.p_configs FROM u_miembros AS u, u_perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
       //
       $data['p_nombre'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_nombre']), true);
       $data['p_mensaje'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_mensaje']), true);
@@ -385,64 +388,17 @@ class tsCuenta {
 				// EXTERNAS, Redes sociales
 				$red__social = [];
 				foreach ($_POST["red"] as $llave => $id) $red__social[$llave] = $tsCore->setSecure($tsCore->parseBadWords($id), true);
-				for($i = 0; $i < 5; $i++) $gustos[$i] = $tsCore->setSecure($tsCore->parseBadWords($_POST['g_'.$i]), true);
 				$perfilData = array(
 					'nombre' => $tsCore->setSecure($tsCore->parseBadWords($_POST['nombre']), true),
 					'mensaje' => $tsCore->setSecure($tsCore->parseBadWords($_POST['mensaje']), true),
 					'sitio' => $tsCore->setSecure($tsCore->parseBadWords($sitio), true),
 					'socials' => json_encode($red__social),
-					'gustos' => serialize($gustos),
-					'estado' => $tsCore->setSecure($_POST['estado']),
-					'hijos' => $tsCore->setSecure($_POST['hijos']),
-					'vivo' => $tsCore->setSecure($_POST['vivo']),
 				);
 				// COMPROBACIONES
             if(!empty($perfilData['sitio']) && !filter_var($perfilData['sitio'], FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED)) return ['error' => 'El sitio web introducido no es correcto.'];
 			break;
-			case 'fisico':
-				// EXTRAS
-				$tengo = array($tsCore->setSecure($_POST['t_0']),$tsCore->setSecure($_POST['t_1']));
-				$perfilData = array(
-					'altura' => $tsCore->setSecure($_POST['altura']),
-					'peso' => $tsCore->setSecure($_POST['peso']),
-					'pelo' => $tsCore->setSecure($_POST['pelo_color']),
-					'ojos' => $tsCore->setSecure($_POST['ojos_color']),
-					'fisico' => $tsCore->setSecure($_POST['fisico']),
-					'dieta' => $tsCore->setSecure($_POST['dieta']),
-					'tengo' => serialize($tengo),
-					'fumo' => $tsCore->setSecure($_POST['fumo']),
-					'tomo' => $tsCore->setSecure($_POST['tomo_alcohol']),
-				);
-			break;
-			case 'job':
-				// EXTRAS
-				for($i = 0; $i<7;$i++) $idiomas[$i] = $tsCore->setSecure($_POST['idioma_'.$i]);
-				$perfilData = array(
-					'estudios' => $tsCore->setSecure($_POST['estudios']),
-					'idiomas' => serialize($idiomas),
-					'profesion' => $tsCore->setSecure($tsCore->parseBadWords($_POST['profesion'], true)),
-					'empresa' => $tsCore->setSecure($tsCore->parseBadWords($_POST['empresa'],true)),
-					'sector' => $tsCore->setSecure($_POST['sector']),
-					'ingresos' => $tsCore->setSecure($_POST['ingresos']),
-					'int_prof' => $tsCore->setSecure(substr($_POST['intereses_profesionales'],0,$maxsize), true),
-					'hab_prof' => $tsCore->setSecure(substr($_POST['habilidades_profesionales'],0,$maxsize), true),
-				);
-			break;
-			case 'pref':
-				$perfilData = array(
-					'intereses' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['intereses'],0,$maxsize)), true),
-					'hobbies' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['hobbies'],0,$maxsize)), true),
-					'tv' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['tv'],0,$maxsize)), true),
-					'musica' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['musica'],0,$maxsize)), true),
-					'deportes' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['deportes'],0,$maxsize)), true),
-					'libros' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['libros'],0,$maxsize)), true),
-					'peliculas' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['peliculas'],0,$maxsize)), true),
-					'comida' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['comida'],0,$maxsize)), true),
-					'heroes' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['heroes'],0,$maxsize)), true),
-				);
-			break;
 		}
-		$thisAccount = (in_array($save, ['', 'privacidad']) or in_array($tab, ['me', 'fisico', 'job', 'pref']));
+		$thisAccount = (in_array($save, ['', 'privacidad']) or in_array($tab, ['me']));
 		if($thisAccount) {
 			db_exec([__FILE__, __LINE__], "query", "UPDATE u_miembros SET user_email = '{$perfilData['email']}' WHERE user_id = {$tsUser->uid}");
 			if($save === '') array_splice($perfilData, 0, 1);

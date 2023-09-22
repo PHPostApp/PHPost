@@ -665,3 +665,30 @@ lite-youtube.lyt-activated > .lty-playbtn {
    white-space: nowrap;
    width: 1px;
 }
+
+.ad-content {
+	overflow: hidden;
+	border-radius: .3rem;
+	box-shadow: 0 0 .6rem #0004;
+	margin: 0 auto;
+	background-color: #ccc;
+}
+.ad-content > * {
+	text-align: center;
+}
+.ad-content.ad160 {
+	width: 160px;
+	height: 600px;
+}
+.ad-content.ad300 {
+	width: 300px;
+	height: 250px;
+}
+.ad-content.ad468 {
+	width: 468px;
+	height: 60px;
+}
+.ad-content.ad728 {
+	width: 728px;
+	height: 90px;
+}

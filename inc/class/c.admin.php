@@ -134,6 +134,24 @@ class tsAdmin {
 		else exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
 	}
 	# ===================================================
+	# SEO
+	# * getSEO() :: Obtenemos toda la informacion
+	# * getNoticia() :: Obtenemos la noticia por ID
+	# * delNoticia() :: Eliminamos la noticia por ID
+	# * newNoticia() :: Creamos una nueva notica
+	# * editNoticia() :: Editamos la noticia
+	# ===================================================
+	public function getSEO() {
+		global $tsCore;
+		$sql = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT seo_id, seo_titulo, seo_descripcion, seo_favicon, seo_keywords, seo_images, seo_robots, seo_sitemap FROM w_site_seo WHERE seo_id = 1'));
+		$sql['seo_favicon'] = $sql['seo_favicon'];
+		$robots = json_decode($sql['seo_robots'], true);
+		$sql['robots_name'] = $robots['name'];
+		$sql['robots_content'] = $robots['content'];
+		$sql['seo_images'] = json_decode($sql['seo_images'], true);
+		return $sql;
+	}
+	# ===================================================
 	# NOTICIAS
 	# * getNoticias() :: Obtenemos todas las noticias
 	# * getNoticia() :: Obtenemos la noticia por ID

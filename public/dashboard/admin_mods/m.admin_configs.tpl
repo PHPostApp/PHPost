@@ -2,15 +2,13 @@
     <h3>Caracter&iacute;sticas y Opciones</h3>
 </div>
 <div id="res" class="boxy-content">
-   {if $tsSave}<div class="mensajes ok">Configuraciones guardadas</div>{/if}
+   {if $tsSave}<div class="alert alert-success">Configuraciones guardadas</div>{/if}
    <form action="" method="post" autocomplete="off">
       <fieldset>
          <legend>Configuraci&oacute;n del Sitio</legend>
          <dl>
             <dt><label for="ai_titulo">Nombre del Sitio:</label></dt>
-            <dd>
-               <input type="text" id="ai_titulo" name="titulo" maxlength="24" value="{$tsConfig.titulo}" />
-            </dd>
+            <dd><input class="form-control" type="text" id="ai_titulo" name="titulo" maxlength="24" value="{$tsConfig.titulo}" /></dd>
          </dl>
          <dl>
             <dt><label for="ai_slogan">Descripci&oacute;n del Sitio:</label></dt>

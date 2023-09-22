@@ -202,7 +202,9 @@ switch ($step) {
 				$linkad = "https://joelmiguelvalente.github.io/grupos/";
 				$sizesad = ['160x600','300x250','468x60','728x90'];
 				foreach ($sizesad as $key => $ad) {
-					$html = "<a href=\"$linkad\" target=\"_blank\"><img src=\"{$web['url']}/public/images/ad$ad.png\"></a>";
+					$width = explode('x', $ad)[0];
+					$height = explode('x', $ad)[1];
+					$html = "<a href=\"$linkad\" target=\"_blank\"><img alt=\"ads $ad\" title=\"Publicidad $ad\" width=\"$width\" height=\"$height\" src=\"{$web['url']}/public/images/ad$ad.png\"></a>";
 					$set[] = "ads_" . explode('x', $ad)[0] . " = '" . html_entity_decode($html) . "'";
 				}
 				$ads = join(', ', $set);
@@ -491,10 +493,10 @@ switch ($step) {
 				<?php } elseif ($step == 6) {?>
 					<h2 class="s16">Bienvenido a PHPost <?=$version_title?></h2>
 					<!-- ESTADISTICAS -->
-					<form action="<?=$data['url']?>" method="post">
+					<form action="https://phpost.es/feed/index.php?type=install" method="post">
 					  	<div class="error">Ingresa a tu FTP y borra la carpeta <strong><?php echo basename(getcwd()); ?></strong> antes de usar el script.</div>
 					  	<fieldset>
-							<p>Gracias por instalar <strong>PHPost <?= $version_title ?></strong>, ya est&aacute; lista tu nueva comunidad <strong>Link Sharing System</strong>. S&oacute;lo inicia sesi&oacute;n con tus datos y comienza a disfrutar. Ahora no dejes de <a href="https://www.phpost.es" target="_blank"><u>visitarnos</u></a> para estar pendiente de futuras actualizaciones. Recuerda reportar cualquier bug que encuentres, de esta manera todos ganamos.</p><br>
+							<p>Gracias por instalar <strong>PHPost <?= $version_title ?></strong>, ya est&aacute; lista tu nueva comunidad <strong>Link Sharing System</strong>. S&oacute;lo inicia sesi&oacute;n con tus datos y comienza a disfrutar. Ahora no dejes de <a href="https://phpost.es" target="_blank"><u>visitarnos</u></a> para estar pendiente de futuras actualizaciones. Recuerda reportar cualquier bug que encuentres, de esta manera todos ganamos.</p><br>
 					  	</fieldset>
 					  	<center>
 							<input type="hidden" name="key" value="<?=$key?>" />
@@ -505,7 +507,7 @@ switch ($step) {
 			</section>
 		</section>
 		<footer>
-			<p>Powered by <a href="https://www.phpost.es" target="_blank">PHPost</a> - Creado <a href="https://t.me/JvalenteM92" alt="perfil telegram" title="Mi perfil en telegram" target="_blank">Miguel92</a></p>
+			<p>Powered by <a href="https://phpost.es" target="_blank">PHPost</a> - Creado <a href="https://t.me/JvalenteM92" alt="perfil telegram" title="Mi perfil en telegram" target="_blank">Miguel92</a></p>
 			<div class="bottom">
 				<p>Sumate a nuestros grupos:
 					<a href="https://discord.gg/mx25MxAwRe" target="_blank">Discord</a> - 

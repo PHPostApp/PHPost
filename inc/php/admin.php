@@ -71,6 +71,30 @@
 		if(!empty($_POST['titulo']) OR (!empty($_POST['pkey']) AND !empty($_POST['skey']))) {
 			if($tsAdmin->saveConfig()) $tsCore->redireccionar('admin', $action, 'save=true');
 		}
+	} elseif($action === 'seo') {
+    	//
+		$tsTitle = 'Configurar SEO';
+		if(empty($act)) $smarty->assign('tsSeo', $tsAdmin->getSEO());
+
+	// Redes sociales
+	} elseif($action === 'socials') {
+    	// CLASE MEDAL
+    	require_once TS_CLASS . "c.socials.php";
+    	$tsSocials = new tsSocials();
+    	//
+		$tsTitle = 'Configurar redes sociales';
+		if(empty($act)) $smarty->assign('tsSocials', $tsSocials->getSocials());
+		// Editar o Nuevo tema
+		elseif(in_array($act, ['editar', 'nueva'])) {
+			$tsTitle = ucfirst($act) . ' red social';
+			if(!empty($_POST['save']) OR !empty($_POST['edit'])) {
+				$social = ($act === 'editar') ? $tsSocials->saveSocial() : $tsSocials->newSocial();
+				if($social) $tsCore->redireccionar('admin', $action, 'save=true');
+			} else {
+				if($act === 'editar') $smarty->assign("tsSocial", $tsSocial->getSocial());
+				if($act === 'nuevo') $smarty->assign("tsError", $tsSocials->newSocial());
+			} 
+		}
 	// Temas
 	} elseif($action === 'temas') {
 		$tsTitle = 'Diseños / Temas';

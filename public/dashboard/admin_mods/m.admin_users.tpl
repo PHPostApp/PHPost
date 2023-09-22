@@ -55,8 +55,8 @@
 </div>
 <div class="clearBoth"></div>
 </div>
-{if $tsSave}<div class="mensajes ok">Tus cambios han sido guardados.</div>{/if}
-{if $tsError}<div class="mensajes error">{$tsError}</div>{/if}
+{if $tsSave}<div class="alert alert-success">Tus cambios han sido guardados.</div>{/if}
+{if $tsError}<div class="alert alert-danger">{$tsError}</div>{/if}
 <form action="" method="post">
 	<fieldset>
 	{if !$tsType || $tsType == 1}

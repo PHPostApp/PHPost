@@ -2,7 +2,7 @@
 	<h3>Administrar Afiliados</h3>
 </div>
 <div id="res" class="boxy-content">
-	{if $tsSave}<div class="mensajes ok">Tus cambios han sido guardados.</div>{/if}
+	{if $tsSave}<div class="alert alert-success">Tus cambios han sido guardados.</div>{/if}
 	{if !$tsAct}
 		{if !$tsAfiliados}
 			<div class="phpostAlfa">No hay afiliados.</div>

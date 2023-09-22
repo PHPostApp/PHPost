@@ -3,7 +3,7 @@
                                 </div>
                                 <div id="res" class="boxy-content">
                                 {if $tsSave}<div class="mensajes  ok">Tus cambios han sido guardados.</div>{/if}
-                                {if $tsError}<div class="mensajes error">{$tsError}</div>{/if}
+                                {if $tsError}<div class="alert alert-danger">{$tsError}</div>{/if}
                                 {if !$tsAct}
                                 {if !$tsBadWords.data}
                                 <div class="phpostAlfa">No hay filtros de palabras</div>

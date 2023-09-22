@@ -2,8 +2,8 @@
 	<h3>Medallas</h3>
 </div>
 <div id="res" class="boxy-content">
-	{if $tsSave}<div class="mensajes ok">Tus cambios han sido guardados.</div>{/if}
-	{if $tsError}<div class="mensajes error">{$tsError}</div>{/if}
+	{if $tsSave}<div class="alert alert-success">Tus cambios han sido guardados.</div>{/if}
+	{if $tsError}<div class="alert alert-danger">{$tsError}</div>{/if}
 	{if !$tsAct}
 		{if !$tsMedals.medallas}
 			<div class="phpostAlfa">No hay medallas.</div>

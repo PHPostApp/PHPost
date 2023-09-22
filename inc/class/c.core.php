@@ -36,35 +36,66 @@ class tsCore {
 		$this->settings['avatar'] = $this->settings['url'].'/files/avatar';
 		$this->settings['uploads'] = $this->settings['url'].'/files/uploads';
 		$this->settings['public'] = $this->settings['url'].'/public';
-		$this->settings['oauthGithub'] = $this->githubOAuth();
-		$this->settings['oauthDiscord'] = $this->discordOAuth();
+		$this->settings['oauth'] = $this->OAuth();
       //
      	if($_GET['do'] == 'portal' || $_GET['do'] == 'posts') 
      		$this->settings['news'] = $this->getNews();
-		# Mensaje del instalador y pendientes de moderación #
+		# Mensaje del instalador y pendientes de moderaciÃ³n #
 		// $this->settings['install'] = $this->existinstall();
 		$this->settings['novemods'] = $this->getNovemods();
 	}
 
-	public function githubOAuth() {
-		$parametros = http_build_query([
-			'client_id' => $this->settings['gh_client_id'],
-			'scope' => 'repo user',
-			'state' => $this->setSEO(strtolower($this->settings['titulo'])) . date('y'),
-			'redirect_uri' => $this->settings['url'] . '/github.php'
-		]);
-		$ruta = "https://github.com/login/oauth/authorize?$parametros";
-		return $ruta;
+	public function getEndPoints(string $social = '', string $type = '') {
+		$url = [
+			'github' => [
+				'authorize_url' => 'https://github.com/login/oauth/authorize',
+				'token' => "https://github.com/login/oauth/access_token",
+				'user' => "https://api.github.com/user",
+				'scope' => "user"
+			],
+			'discord' => [
+				'authorize_url' => 'https://discord.com/oauth2/authorize',
+				'token' => "https://discord.com/api/oauth2/token",
+				'user' => "https://discord.com/api/v10/users/@me",
+				'scope' => "email identify"
+			],
+			'gmail' => [
+				'authorize_url' => 'https://accounts.google.com/o/oauth2/auth',
+				'token' => "https://accounts.google.com/o/oauth2/token",
+				'user' => "https://www.googleapis.com/oauth2/v2/userinfo",
+				'scope' => "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+			],
+			'facebook' => [
+				'authorize_url' => 'https://www.facebook.com/v18.0/dialog/oauth',
+				'token' => "https://graph.facebook.com/oauth/access_token",
+				'user' => "https://graph.facebook.com/v18.0/me?fields=id,name,email,picture,short_name",
+				'scope' => "email,public_profile"
+			],
+			'twitter' => [
+				'authorize_url' => 'https://api.twitter.com/oauth/authenticate',
+				'token' => "https://api.twitter.com/oauth/access_token",
+				'user' => "https://graph.facebook.com/v18.0/me?fields=id,name,email,picture,short_name",
+				'scope' => "email,public_profile"
+			]
+		];
+		return $url[$social][$type];
 	}
-	public function discordOAuth() {
-		$parametros = http_build_query([
-			'client_id' => $this->settings['discord_client_id'],
-			'scope' => 'identify email',
-			'state' => $this->setSEO(strtolower($this->settings['titulo'])) . date('y'),
-			'response_type' => 'code',
-			'redirect_uri' => $this->settings['url'] . '/discord.php'
-		]);
-		$ruta = "https://discord.com/api/oauth2/authorize?$parametros";
+
+	public function OAuth() {
+		$OAuths = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT social_id, social_name, social_client_id, social_client_secret, social_redirect_uri FROM w_social'));
+		foreach($OAuths as $k => $auth) {
+			$parametros = [
+				'client_id' => $auth['social_client_id'],
+				'scope' => $this->getEndPoints($auth['social_name'], 'scope'),
+				'state' => strtolower($this->settings['titulo']).date('y'),
+				'response_type' => 'code',
+				'redirect_uri' => $auth['social_redirect_uri']
+			];
+			if($auth['social_name'] === 'github') unset($parametros['response_type']);
+			$parametros = http_build_query($parametros);
+			$authorize = $this->getEndPoints($auth['social_name'], 'authorize_url');
+			$ruta[$auth['social_name']] = "$authorize?$parametros";
+		}
 		return $ruta;
 	}
 
@@ -135,7 +166,7 @@ class tsCore {
 		if(is_dir($upgrade_dir)) return '<div id="msg_install">Por favor, elimine la carpeta <b>upgrade</b></div>';
 	}
     
-    // FUNCIÓN CONCRETA PARA CENSURAR
+    // FUNCIÃ“N CONCRETA PARA CENSURAR
 	
 	function parseBadWords($c, $s = FALSE) 
     {
@@ -342,7 +373,7 @@ class tsCore {
 	}
 
 	/**
-	 * Sistema de paginación automática [2023]
+	 * Sistema de paginaciÃ³n automÃ¡tica [2023]
     * @author Miguel92	 - https://www.phpost.net/foro/perfil/521013-miguel92/
 	 * basados completamente en estos mods de ellos
     * @author mdulises 	 - https://www.phpost.net/foro/perfil/2460-mdulises/
@@ -352,27 +383,27 @@ class tsCore {
 	public function system_pagination(int $totalItems = 0, int $itemsPerPage = 0) {
     	// Obtenemos la pagina actual
    	$currentPage = empty($_GET['page']) ? 1 : (int)$_GET['page'];
-   	// Si no existe devolvemos algo vacío
+   	// Si no existe devolvemos algo vacÃ­o
     	if ($totalItems <= 0) return '';
     	$page = "?page=";
-    	// Empezamos con la estructura de la paginación
+    	// Empezamos con la estructura de la paginaciÃ³n
     	$pagination = '<ul class="pagination pagination-sm justify-content-center">';
-    	// Calculamos el total de páginas necesarias.
+    	// Calculamos el total de pÃ¡ginas necesarias.
     	$totalPages = ceil($totalItems / $itemsPerPage);
     	// Limitamos el valor de $currentPage para asegurarnos de que no se exceda el rango.
     	$currentPage = max(1, min($currentPage, $totalPages));
-    	// Enlace a página anterior.
+    	// Enlace a pÃ¡gina anterior.
     	if ($currentPage > 1) {
-      	$pagination .= "<li class=\"page-item\"><a class=\"navPages\" href=\"{$this->settings['url']}/$page" . ($currentPage - 1) . "\" title=\"Página anterior\">&laquo;</a></li>";
+      	$pagination .= "<li class=\"page-item\"><a class=\"navPages\" href=\"{$this->settings['url']}/$page" . ($currentPage - 1) . "\" title=\"PÃ¡gina anterior\">&laquo;</a></li>";
     	}
-    	// Enlaces de primera y última página.
+    	// Enlaces de primera y Ãºltima pÃ¡gina.
     	if ($currentPage > 3) {
       	$pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"{$this->settings['url']}/$page1\">1</a></li>";
         	if ($currentPage > 6) {
             $pagination .= "<li class=\"page-item\"><span class=\"page-link\">...</span></li>";
         	}
     	}
-	   // Mostramos los enlaces de la paginación.
+	   // Mostramos los enlaces de la paginaciÃ³n.
 	   $startPage = max(1, $currentPage - 2);
 	   $endPage = min($totalPages, $currentPage + 2);
 	   //
@@ -380,34 +411,34 @@ class tsCore {
         	$activeClass = ($currentPage === $i) ? ' active' : '';
         	$pagination .= "<li class=\"page-item{$activeClass}\"><a class=\"page-link\" href=\"{$this->settings['url']}/$page{$i}\">{$i}</a></li>";
     	}
-    	// Enlaces después del número 6.
+    	// Enlaces despuÃ©s del nÃºmero 6.
     	if ($currentPage < $totalPages - 4) {
         	$pagination .= "<li class=\"page-item\"><span class=\"page-link\">...</span></li>";
         	$pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"{$this->settings['url']}/$page{$totalPages}\">{$totalPages}</a></li>";
     	}
-    	// Enlace a página siguiente.
+    	// Enlace a pÃ¡gina siguiente.
     	if ($currentPage < $totalPages) {
-      	$pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"{$this->settings['url']}/$page" . ($currentPage + 1) . "\" title=\"Página siguiente\">&raquo;</a></li>";
+      	$pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"{$this->settings['url']}/$page" . ($currentPage + 1) . "\" title=\"PÃ¡gina siguiente\">&raquo;</a></li>";
     	}
-    	// Finalizamos la paginación
+    	// Finalizamos la paginaciÃ³n
     	$pagination .= '</ul>';
     	return $pagination;
 	}
 
 	/**
-	 * Realizó una comprobación de versión de PHP ya que magic_quotes_gpc 
+	 * RealizÃ³ una comprobaciÃ³n de versiÃ³n de PHP ya que magic_quotes_gpc 
 	 * es obsoleta desde 7.4.0 y removida de PHP 8
 	 * @link https://www.php.net/manual/en/function.get-magic-quotes-gpc.php
 	*/
    # Seguridad
 	public function setSecure($string, $xss = false) {
-    	// Verificar si magic_quotes_gpc está activado
+    	// Verificar si magic_quotes_gpc estÃ¡ activado
     	if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) $string = stripslashes($string);
     	// Escapar el valor
     	$string = db_exec('real_escape_string', $string);
     	// Aplicar filtrado XSS si es necesario
     	if ($xss) $string = htmlspecialchars($string, ENT_COMPAT | ENT_QUOTES, 'UTF-8');
-    	// Retornamos la información
+    	// Retornamos la informaciÃ³n
     	return $string;
 	}
 	
@@ -440,7 +471,7 @@ class tsCore {
 		: URL AMIGABLES
 	*/
 	public function setSEO($string, $max = false) {
-		// ESPAÑOL
+		// ESPAÃ‘OL
 		$string = htmlentities($string, ENT_QUOTES, 'UTF-8');
 		$string = preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i', '$1', $string);
 		$string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
@@ -497,7 +528,7 @@ class tsCore {
     * @param string
     * @return string
     * @info PONE LOS LINKS A LOS MENCIONADOS
-    * @note Esta función se ha reemplazado por $parser->parseMentions(). Se reomienda exclusivamente para compatibilidad en versiones anteriores.
+    * @note Esta funciÃ³n se ha reemplazado por $parser->parseMentions(). Se reomienda exclusivamente para compatibilidad en versiones anteriores.
     */
    public function setMenciones($html){
       # GLOBALES
@@ -539,8 +570,8 @@ class tsCore {
       # Creamos
       $tiempo = time() - $fecha;
       if($fecha <= 0) return "Nunca";
-      // Declaración de unidades de tiempo, aunque es un aproximado
-      // Ya que existe años bisiestos 366 días
+      // DeclaraciÃ³n de unidades de tiempo, aunque es un aproximado
+      // Ya que existe aÃ±os bisiestos 366 dÃ­as
       $unidades = [
         31536000 => ["a&ntilde;o", "a&ntilde;os"],
         2678400 => ["mes", "meses"],
@@ -560,7 +591,7 @@ class tsCore {
             }
          }
       }
-      // Si se ha establecido la opción $show, se agrega 'Hace' al resultado
+      // Si se ha establecido la opciÃ³n $show, se agrega 'Hace' al resultado
       return ($show ? "Hace " : "") . $hace;
    }
 
@@ -573,7 +604,7 @@ class tsCore {
         	// Obtener el user agent del cliente
     		//'Mozilla/5.0 (Windows; U; Windows NT 5.1; es-ES; rv:1.9) Gecko/2008052906 Firefox/3.0'
         	$useragent = $_SERVER['HTTP_USER_AGENT'] ?? '';
-        	// Abrir conexión  
+        	// Abrir conexiÃ³n  
         	$ch = curl_init();
         	curl_setopt_array($ch, [
             CURLOPT_URL => $tsUrl,
@@ -587,14 +618,14 @@ class tsCore {
     	return $result ?: null;
 	}
 	/**
-	 * Función privada para validar la IP del usuario
+	 * FunciÃ³n privada para validar la IP del usuario
 	*/
 	private function isValidIP(string $ip): bool {
     	return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) !== false;
 	}
 
 	/**
-	 * Función para obtener la IP del usuario
+	 * FunciÃ³n para obtener la IP del usuario
 	*/
 	public function getIP(): string {
    	$ip = 'unknown';
@@ -610,9 +641,9 @@ class tsCore {
 	}
 
 	/**
-	 * Función para validar y obtener la dirección IP del cliente que realiza la petición.
+	 * FunciÃ³n para validar y obtener la direcciÃ³n IP del cliente que realiza la peticiÃ³n.
 	 *
-	 * @return string|null La dirección IP válida del cliente o NULL si no se puede validar.
+	 * @return string|null La direcciÃ³n IP vÃ¡lida del cliente o NULL si no se puede validar.
 	*/
 	public function validarIP() {
 		$_SERVER['REMOTE_ADDR'] = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
@@ -620,7 +651,7 @@ class tsCore {
 	}
 
 	/**
-	 * Función para ayudar armar la sentencia en UPDATE
+	 * FunciÃ³n para ayudar armar la sentencia en UPDATE
 	 * @param array ['name' => 'john', 'password' => '123abc']
 	 * @param string 'user_'
 	 * @return string|null EJ: user_name = 'john', user_password = '123abc'...
@@ -632,8 +663,8 @@ class tsCore {
 	}
 
 	/**
-	 * Función para generar la contraseña
-	 * y/o verificar la contraseña del usuario
+	 * FunciÃ³n para generar la contraseÃ±a
+	 * y/o verificar la contraseÃ±a del usuario
 	 * @param string 
 	 * @param string 
 	 * @return string
