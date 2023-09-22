@@ -89,6 +89,26 @@
 									 <div class="emptyData">No sigue usuarios</div>
 									 {/if}
 							</div>
+							<div class="widget w-comunidades clearfix">
+                            <div class="title-w clearfix">
+                              <h3>Comunidades</h3>
+                              <span>{$tsGeneral.comus_total}</span>
+                            </div>
+                            {if $tsGeneral.comus}
+            				<ul class="clearfix">
+                                {foreach from=$tsGeneral.comus item=c}
+            					<li style="width: 100%;margin-bottom: 5px;">
+                                <a href="{$tsConfig.url}/comunidades/{$c.c_nombre_corto}/" class="floatL" style="margin-right: 3px;"><img src="{$tsConfig.url}/files/uploads/c_{$c.c_id}.jpg" width="32" height="32"/></a>
+                                <a href="{$tsConfig.url}/comunidades/{$c.c_nombre_corto}/" style="color:#006595;font-weight:bold;font-size:12px;">{$c.c_nombre}</a>
+                                <span style="display: block;font-size: 11px;color: #999;">{$c.c_miembros} Miembros</span>
+                                </li>
+                                {/foreach}
+            				</ul>
+                            <a href="#comunidades" onclick="perfil.load_tab('comunidades', $('#comunidades'));" class="see-more">Ver todas &raquo;</a>
+                            {else}
+                            <div class="emptyData">No participa en ninguna comunidad</div>
+                            {/if}
+            			</div>
 						{if $tsInfo.can_hits}
 						<div class="widget w-visitas clearfix">
 									 <div class="title-w clearfix">

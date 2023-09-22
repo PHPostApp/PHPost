@@ -46,6 +46,16 @@ class tsMod {
                 $data = result_array($query);
                 
                 break;
+            case 'comunidades':
+                $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT r.*, SUM(d_total) AS total, c.c_id, c.c_nombre, c.c_nombre_corto, c.c_estado, u.user_id, u.user_name FROM w_denuncias AS r LEFT JOIN c_comunidades AS c ON r.obj_id = c.c_id LEFT JOIN u_miembros AS u ON c.c_autor = u.user_id  WHERE d_type = \'5\' && c.c_estado < 2 GROUP BY r.obj_id ORDER BY total DESC, r.d_date DESC');
+                $data = result_array($query);
+                
+                break;
+            case 'temas':
+                $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT r.*, SUM(d_total) AS total, t.t_id, t.t_titulo, t.t_estado, c.c_nombre_corto, u.user_id, u.user_name FROM w_denuncias AS r LEFT JOIN c_temas AS t ON r.obj_id = t.t_id LEFT JOIN c_comunidades AS c ON c.c_id = t.t_comunidad LEFT JOIN u_miembros AS u ON t.t_autor = u.user_id  WHERE d_type = \'6\' && t.t_estado < 2 GROUP BY r.obj_id ORDER BY total DESC, r.d_date DESC');
+                $data = result_array($query);
+                
+                break;
             case 'mps':
                 $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT r.*, m.mp_id, m.mp_to, m.mp_from, m.mp_subject, m.mp_preview, m.mp_date FROM w_denuncias AS r LEFT JOIN u_mensajes AS m ON r.obj_id = m.mp_id WHERE d_type = 2 GROUP BY r.obj_id ORDER BY r.d_date DESC');
                 $data = result_array($query);
@@ -82,11 +92,22 @@ class tsMod {
                 $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT user_id, user_name FROM u_miembros WHERE user_id = ' .
                     $obj . ' LIMIT 1');
                 break;
+            case 'comunidades':
+                $d_type = 5;
+                $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT c.c_id, c.c_nombre, c.c_nombre_corto, c.c_estado, u.user_name FROM c_comunidades AS c LEFT JOIN u_miembros AS u ON c.c_autor = u.user_id WHERE c.c_id = ' .
+                    $obj . ' LIMIT 1');
+                break;
+            case 'temas':
+                $d_type = 6;
+                $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT t.t_id, t.t_titulo, t.t_estado, u.user_name FROM c_temas AS t LEFT JOIN u_miembros AS u ON t.t_autor = u.user_id WHERE t.t_id = ' .
+                    $obj . ' LIMIT 1');
+                break;
             case 'mps':
                 $d_type = 2;
                 // AQUÍ LA CONSULTA	PARA MOSTRAR LOS DENUNCIANTES Y OTROS DATOS (?
                 $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT user_id, user_name FROM u_miembros WHERE user_id = ' .
                     $obj . ' LIMIT 1');
+                break;
 
         }
         // CARGAMOS AL ARRAY...
@@ -133,6 +154,25 @@ class tsMod {
             ' OR p.post_body ' . $met));
         $data['posts'] = result_array($query);
         $data['p_total'] = count($data['posts']);
+
+        //
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT c.c_id, c.c_autor, c.c_nombre, c.c_nombre_corto, c.c_fecha, c.c_ip, u.user_name FROM c_comunidades AS c LEFT JOIN u_miembros AS u ON c.c_autor = u.user_id WHERE ' .
+            ($tipo == 1 ? 'c.c_ip ' . $met . '' : 'c.c_nombre ' . $met));
+        $data['comunidades'] = result_array($query);
+        $data['c_total'] = count($data['comunidades']);
+        
+        //
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT t.t_id, t.t_autor, t.t_titulo, c.c_nombre_corto, t.t_fecha, t.t_ip, u.user_name FROM c_temas AS t LEFT JOIN c_comunidades AS c ON c.c_id = t.t_comunidad LEFT JOIN u_miembros AS u ON t.t_autor = u.user_id WHERE ' .
+            ($tipo == 1 ? 't.t_ip ' . $met . '' : 't.t_titulo ' . $met .
+            ' OR t.t_cuerpo ' . $met));
+        $data['temas'] = result_array($query);
+        $data['t_total'] = count($data['temas']);
+        
+        //
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT r.r_id, r.r_autor, r.r_body, r.r_fecha, r.r_ip, t.t_id, t.t_titulo, c.c_nombre_corto, u.user_name FROM c_respuestas AS r LEFT JOIN c_temas AS t ON t.t_id = r.r_tema LEFT JOIN c_comunidades AS c ON c.c_id = t.t_comunidad LEFT JOIN u_miembros AS u ON r.r_autor = u.user_id WHERE ' .
+            ($tipo == 1 ? 'r.r_ip ' . $met . '' : 'r.r_body ' . $met));
+        $data['respuestas'] = result_array($query);
+        $data['c_t_total'] = count($data['respuestas']);
         
         //
         $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT f.foto_id, f.f_title, f.f_user, f.f_date, f.f_ip, u.user_name FROM f_fotos AS f LEFT JOIN u_miembros AS u ON f.f_user = u.user_id WHERE ' .
@@ -282,6 +322,115 @@ class tsMod {
                 return '0: No se pudo eliminar la denuncia';
         } else
             return '0: No contin&uacute;e por aqu&iacute;.';
+    }
+    function rebootComunidad($comid) {
+        global $tsUser;
+        if ($tsUser->is_admod) {
+            if (db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM `w_denuncias` WHERE `obj_id` = \''.(int)$comid.'\' AND `d_type` = \'5\'')) {
+                db_exec([__FILE__, __LINE__], 'query', 'UPDATE c_comunidades SET c_estado = \'0\' WHERE c_id = \''.(int)$comid.'\'');
+                return '1: Denuncia eliminada';
+            } else return '0: No se pudo eliminar la denuncia';
+        } else return '0: No contin&uacute;e por aqu&iacute;.';
+    }
+    function rebootTema($temaid) {
+        global $tsUser;
+        if ($tsUser->is_admod) {
+            if (db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM `w_denuncias` WHERE `obj_id` = \''.(int)$temaid.'\' AND `d_type` = \'6\'')) {
+                db_exec([__FILE__, __LINE__], 'query', 'UPDATE c_temas SET t_estado = \'0\' WHERE t_id = \''.(int)$temaid.'\'');
+                return '1: Denuncia eliminada';
+            } else return '0: No se pudo eliminar la denuncia';
+        } else return '0: No contin&uacute;e por aqu&iacute;.';
+    }
+    
+    public function deleteComunidad($comid){
+        global $tsCore, $tsMonitor, $tsUser;
+        if ($tsUser->is_admod == 1) {
+            // RAZON
+            $razon = $tsCore->setSecure($_POST['razon']);
+            $razon_desc = $tsCore->setSecure($_POST['razon_desc']);
+            $razon_db = ($razon != 7) ? $razon : $razon_desc;
+            //
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE c_comunidades SET c_estado = \'1\' WHERE c_id = \''.$comid.'\'')) {
+                // ENVIAR AVISO
+                $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT c.c_autor, c.c_nombre, u.user_name FROM c_comunidades AS c LEFT JOIN u_miembros AS u ON c.c_autor = u.user_id WHERE c.c_id = \''.(int)$comid .'\' LIMIT 1');
+                $data = db_exec('fetch_assoc', $query);
+                if ($data['c_autor'] != $tsUser->uid){                    
+                    // RAZON
+                    if (is_numeric($razon_db)){
+                        include (TS_EXTRA . 'datos.php');
+                        $razon_db = $tsDenuncias['comunidades'][$razon_db];
+                    }
+                    // AVISO
+                    $aviso = 'Hola <b>' . $data['user_name'] . "</b>\n\n Lamento contarte que tu comunidad titulada <b>" .
+                    $data['c_nombre'] . "</b> ha sido eliminada.\n\n Causa: <b>" . $razon_db . "</b>\n\n Te recomendamos leer el <a href=\"" .
+                    $tsCore->settings['url'] . "/pages/protocolo/\">Protocolo</a> para evitar futuras sanciones.\n\n Muchas gracias por entender!";
+                    $status = $tsMonitor->setAviso($data['c_autor'], 'Comunidad eliminada', $aviso, 1);
+                }
+                // ELIMINAR DENUNCIAS
+                db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM `w_denuncias` WHERE `obj_id` = \''.$comid.'\' AND `d_type` = \'5\'');
+                $this->setHistory('borrar', 'comunidad', $comid);
+                return '1: La comunidad ha sido eliminada.';
+            } else return '0: La comunidad NO pudo ser eliminada.';
+        } else return '0: Solo los administradores pueden borrar una comunidad';
+    }
+    
+    public function deleteTema($temaid) {
+        global $tsCore, $tsMonitor, $tsUser;
+        if ($tsUser->is_admod) {
+            // RAZON
+            $razon = $tsCore->setSecure($_POST['razon']);
+            $razon_desc = $tsCore->setSecure($_POST['razon_desc']);
+            $razon_db = ($razon != 9) ? $razon : $razon_desc;
+            //
+            if (db_exec([__FILE__, __LINE__], 'query', 'UPDATE c_temas SET t_estado = \'1\' WHERE t_id = \''.$temaid.'\'')) {
+                // ENVIAR AVISO
+                $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT t.t_autor, t.t_titulo, u.user_name FROM c_temas AS t LEFT JOIN u_miembros AS u ON t.t_autor = u.user_id WHERE t.t_id = \''.(int)$temaid.'\' LIMIT 1');
+                $data = db_exec('fetch_assoc', $query);
+                if ($data['t_autor'] != $tsUser->uid) {                    
+                    // RAZON
+                    if (is_numeric($razon_db)) {
+                        include (TS_EXTRA . 'datos.php');
+                        $razon_db = $tsDenuncias['temas'][$razon_db];
+                    }
+                    // AVISO
+                    $aviso = 'Hola <b>' . $data['user_name'] . "</b>\n\n Lamento contarte que tu tema titulado <b>" .
+                    $data['t_titulo'] . "</b> ha sido eliminado.\n\n Causa: <b>" . $razon_db . "</b>\n\n Te recomendamos leer el <a href=\"" .
+                    $tsCore->settings['url'] . "/pages/protocolo/\">Protocolo</a> para evitar futuras sanciones.\n\n Muchas gracias por entender!";
+                    $status = $tsMonitor->setAviso($data['t_autor'], 'Tema eliminado', $aviso, 1);
+                }
+                // ELIMINAR DENUNCIAS
+                db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM `w_denuncias` WHERE `obj_id` = \''.$temaid.'\' AND `d_type` = \'6\'');
+                return '1: El tema ha sido eliminado.';
+            } else return '0: El tema NO pudo ser eliminado.';
+        } else return '0: No contin&uacute;e por aqu&iacute;.';
+    }
+
+    public function getTempelera() {
+        global $tsUser, $tsCore;
+        //
+        $max = 20; // MAXIMO A MOSTRAR
+        $limit = $tsCore->setPageLimit($max, true);
+
+        // PAGINAS
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM c_temas AS t LEFT JOIN u_miembros AS u ON u.user_id = t.t_autor LEFT JOIN c_historial AS h ON h.h_for = t.t_id WHERE h.h_type = \'2\' AND t.t_estado = \'1\'');
+
+        list($total) = db_exec('fetch_row', $query);
+        
+        $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] .
+            "/moderacion/tempelera?", $_GET['s'], $total, $max);
+        //
+
+        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT h.*, t.t_id, t.t_autor, t.t_titulo, c.c_nombre_corto, t.t_fecha, t.t_ip, u.user_name FROM c_temas AS t LEFT JOIN c_comunidades AS c ON c.c_id = t.t_comunidad LEFT JOIN u_miembros AS u ON t.t_autor = u.user_id LEFT JOIN c_historial AS h ON h.h_for = t.t_id WHERE h.h_type = \'2\' AND t.t_estado = \'1\' LIMIT ' .
+            $limit);
+        //
+        while ($row = db_exec('fetch_assoc', $query))
+        {
+            $row['mod_name'] = $tsUser->getUserName($row['h_mod']);
+            //
+            $data['datos'][] = $row;
+        }
+        //
+        return $data;
     }
     /**
      * @name deletePost($pid)

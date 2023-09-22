@@ -29,6 +29,12 @@
                                 {include "m.mod_report_mps.tpl"}
                                 {elseif $tsAction == 'users'}
                             	{include "m.mod_report_users.tpl"}
+                                {elseif $tsAction == 'comunidades'}
+                                {include file='admin_mods/m.mod_report_comunidades.tpl'}
+                                {elseif $tsAction == 'temas'}
+                                {include file='admin_mods/m.mod_report_temas.tpl'}
+                                {elseif $tsAction == 'tempelera'}
+                                {include file='admin_mods/m.mod_papelera_temas.tpl'}
                                 {elseif $tsAction == 'banusers'}
                                 {if $tsUser->is_admod || $tsUser->permisos.movub}{include "m.mod_ban_users.tpl"}{/if}
 								{elseif $tsAction == 'pospelera'}

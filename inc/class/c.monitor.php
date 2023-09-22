@@ -77,6 +77,16 @@ class tsMonitor {
 			15 => ['text' => 'Recibiste una medalla', 'css' => 'medal'],
 			16 => ['text' => 'Tu post recibi&oacute; una medalla', 'css' => 'medal'],
 			17 => ['text' => 'Tu foto recibi&oacute; una medalla', 'css' => 'medal'],
+			// COMUNIDADES
+			50 => ['text' => ['cre&oacute; un nuevo'], 'ln_text' => 'tema', 'css' => 'post'],
+			51 => ['text' => ['coment&oacute; tu','_REP_ nuevos comentarios en tu'], 'ln_text' => 'tema', 'css' => 'comment_post'],
+			52 => ['text' => ['coment&oacute; en un', '_REP_ nuevos comentarios en el'], 'ln_text' => 'tema', 'extra' => ' que sigues', 'css' => 'blue_ball'],
+			53 => ['text' => ['respondi&oacute; tu', '_REP_ nuevas respuestas a tu'], 'ln_text' => 'comentario', 'css' => 'comment_resp'],
+			54 => ['text' => ['agreg&oacute; a favoritos tu','_REP_ nuevos favoritos a tu'], 'ln_text' => 'tema', 'css' => 'star'],
+			55 => ['text' => ['te recomienda un', '_REP_ usuarios te recomiendan un'], 'ln_text' => 'tema', 'css' => 'share'],
+			56 => ['text' => ['vot&oacute; _REP_ tu', '_REP_ nuevos votos a tu'], 'ln_text' => 'tema', 'css' => 'voto_'],
+			57 => ['text' => ['vot&oacute; _REP_ tu', '_REP_ nuevos votos a tu'], 'ln_text' => 'comentario', 'css' => 'voto_'],
+			58 => ['text' => ['est&aacute; siguiendo tu','_REP_ nuevos seguidores a tu'], 'ln_text' => 'tema', 'css' => 'follow'],
 		];
 	}
 
@@ -384,6 +394,17 @@ class tsMonitor {
 			case 17:
 				return "SELECT f.foto_id, f.f_title, f.f_user, m.medal_id, m.m_title, m.m_image, a.medal_for, u.user_id, u.user_name FROM w_medallas_assign AS a LEFT JOIN f_fotos AS f ON f.foto_id = a.medal_for LEFT JOIN u_miembros AS u ON u.user_id = f.f_user LEFT JOIN w_medallas AS m ON m.medal_id = a.medal_id WHERE m.medal_id = {$data['obj_uno']} AND f.foto_id = {$data['obj_dos']} LIMIT 1";
 			break;
+			case 50:
+			case 51:
+			case 52:
+			case 53:
+			case 54:
+			case 55:
+			case 56:
+			case 57:
+			case 58:
+            return 'SELECT c.c_nombre, c.c_nombre_corto, t.t_id, t.t_titulo, t.t_autor, u.user_name FROM c_temas AS t LEFT JOIN c_comunidades AS c ON c.c_id = t.t_comunidad LEFT JOIN u_miembros AS u ON user_id = t_autor WHERE t.t_id = \''.(int)$data['obj_uno'].'\' LIMIT 1';
+			break;
 		}
 	}
 
@@ -512,6 +533,38 @@ class tsMonitor {
 				$f_title = $tsCore->setSEO($data['f_title']);
 				$oracion['text'] = "Tu <a href=\"$site_url/fotos/{$data['user_name']}/{$data['foto_id']}/$f_title.html\" title=\"$f_title\"><strong>foto</strong></a> tiene una nueva <span title=\"{$data['m_title']}\"><strong>medalla</strong> <img src=\"$site_url/public/images/icons/med/{$data['m_image']}_16.png\"/></span>";
 			break;
+			case 50:
+			case 51:
+			case 52:
+			case 53:
+			case 54:
+			case 55:
+			case 56:
+			case 57:
+			case 58:
+				// CUANTOS
+            $no_total = $data['not_total'];
+				$id_comment = '';
+				if($no_type == 52) $extra = $this->monitor[$no_type]['extra'];
+            // MAS DE UNA ACCION
+            if($no_total > 1) {
+               $text = $this->monitor[$no_type]['text'][1].$txt_extra;
+               $oracion['text'] = str_replace('_REP_', "<b>{$no_total}</b>", $text);
+            } else $oracion['text'] = ($this->show_type == 1 && $no_type == 52) ? $this->monitor[$no_type]['text'][0].$txt_extra : $this->monitor[$no_type]['text'][0].$txt_extra.$extra;
+            // ID COMMENT
+            if($no_type == 53 || $no_type == 57){
+               $id_comment = '#coment_id_'.$data['obj_tres'];
+            }
+				if($no_type == 56 || $no_type == 57){
+					$voto_type = ($data['obj_dos'] == 0) ? 'negativo' : 'positivo';
+					$oracion['text'] = str_replace('_REP_', '<b>'.$voto_type.'</b>', $oracion['text']);
+					$oracion['style'] = 'voto_'.$voto_type;
+				}
+            //
+            $oracion['link'] = $site_url.'/comunidades/'.$data['c_nombre_corto'].'/'.$data['t_id'].'/'.$tsCore->setSEO($data['t_titulo']).'.html'.$id_comment;
+            $oracion['ltext'] = ($this->show_type == 1) ? $ln_text : $data['t_titulo'];
+            $oracion['ltit'] = ($this->show_type == 1) ? $data['t_titulo'] : '';
+         break;
 		}
 		# RETORNAMOS
 		return $oracion;

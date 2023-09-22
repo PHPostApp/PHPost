@@ -141,6 +141,8 @@ class tsUser extends reCaptcha {
 		$this->uid = $this->info['user_id'];
 		$this->email = $this->info['user_email'];
       $this->is_banned = $this->info['user_baneado'];
+      // ESTADO DE BAN EN COMUNIDADES
+		$this->com_banned();
 		// ULTIMA ACCION
 		db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_lastactive = $time WHERE user_id = {$this->uid}");
       // Si ha iniciado sesión cargamos estos datos.
@@ -261,6 +263,28 @@ class tsUser extends reCaptcha {
 			db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_suspension WHERE user_id = \''.$this->uid.'\'');
             return false;
         } else return $data;
+    }
+    /*
+        com_banned()
+    */
+    function com_banned(){
+		global $tsCore, $tsMonitor;
+        //
+		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT *, c_nombre, c_nombre_corto FROM c_baneados LEFT JOIN c_comunidades ON c_id = ban_comunidad WHERE ban_user = \''.$this->uid.'\' LIMIT 1');
+        $data = db_exec('fetch_assoc', $query);        
+        //
+        $now = time();
+        //
+        if($data['ban_termina'] > 1 && $data['ban_termina'] < $now){
+		    db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE c_miembros SET m_permisos = \'3\' WHERE m_user = \''.$this->uid.'\' AND m_comunidad = \''.$data['ban_comunidad'].'\'');
+			db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM c_baneados WHERE ban_id = \''.$data['ban_id'].'\'');
+			// MANDAR AVISO AL USUARIO
+			$tsMonitor = new tsMonitor;
+			$aviso = 'El tiempo de suspension ha acabado, has sido reactivado de la comunidad <b><a href="'.$tsCore->settings['url'].'/comunidades/'.$data['c_nombre_corto'].'/"><b>'.
+			$data['c_nombre'].'</b></a> y puedes seguir disfrutando de ella.<br /><br />Disculpe las molestias.';
+			$tsMonitor->setAviso($this->uid, 'Usuario reactivado', $aviso, 2);
+        }
+		return true;
     }
 	/*
 		getUserID($tsUsername)

@@ -593,6 +593,9 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_stats` (
   `stats_fotos` int(11) NOT NULL DEFAULT 0,
   `stats_comments` int(11) NOT NULL DEFAULT 0,
   `stats_foto_comments` int(11) NOT NULL DEFAULT 0,
+  `stats_comunidades` int(11) NOT NULL DEFAULT 0,
+  `stats_temas` int(11) NOT NULL DEFAULT 0,
+  `stats_respuestas` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`stats_no`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;";
 
@@ -637,4 +640,277 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_site_seo` (
   `seo_robots` int(1) NULL DEFAULT 0,
   `seo_sitemap` int(1) NULL DEFAULT 0,
   PRIMARY KEY (`seo_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_baneados` (
+  `ban_id` int(11) NOT NULL AUTO_INCREMENT,
+  `ban_user` int(11) NOT NULL DEFAULT 0,
+  `ban_comunidad` int(11) NOT NULL DEFAULT 0,
+  `ban_causa` varchar(100) NOT NULL DEFAULT '',
+  `ban_fecha` int(11) NOT NULL DEFAULT 0,
+  `ban_termina` int(11) NOT NULL DEFAULT 0,
+  `ban_mod` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`ban_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_borradores` (
+  `b_id` int(11) NOT NULL AUTO_INCREMENT,
+  `b_comunidad` int(11) NOT NULL DEFAULT 0,
+  `b_autor` int(11) NOT NULL DEFAULT 0,
+  `b_titulo` varchar(60) NOT NULL DEFAULT '',
+  `b_cuerpo` text NOT NULL,
+  `b_cerrado` int(11) NOT NULL DEFAULT 0,
+  `b_sticky` int(11) NOT NULL DEFAULT 0,
+  `b_fecha` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`b_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_categorias` (
+  `cid` int(11) NOT NULL AUTO_INCREMENT,
+  `c_nombre` varchar(32) NOT NULL DEFAULT '',
+  `c_seo` varchar(32) NOT NULL DEFAULT '',
+  `c_img` varchar(32) NOT NULL DEFAULT 'comments.png',
+  PRIMARY KEY (`cid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "INSERT INTO `c_categorias` (`cid`, `c_nombre`, `c_seo`, `c_img`) VALUES
+(1, 'Arte y Literatura', 'arte-literatura', 'c_arte-literatura.png'),
+(2, 'Deportes', 'deportes', 'c_deportes.png'),
+(3, 'Diversi&oacute;n y Esparcimiento', 'diversion-esparcimiento', 'c_diversion-esparcimiento.png'),
+(4, 'Econom&iacute;a y Negocios', 'economia-negocios', 'c_economia-negocios.png'),
+(5, 'Entretenimiento y Medios', 'entretenimiento-medios', 'c_entretenimiento-medios.png'),
+(6, 'Grupos y Organizaciones', 'grupos-organizaciones', 'c_grupos-organizaciones.png'),
+(7, 'Inter&eacute;s General', 'interes-general', 'c_interes-general.png'),
+(8, 'Internet y Tecnolog&iacute;a', 'internet-tecnologia', 'c_internet-tecnologia.png'),
+(9, 'M&uacute;sica y Bandas', 'musica-bandas', 'c_musica-bandas.png'),
+(10, 'Regiones', 'regiones', 'c_regiones.png');";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_comunidades` (
+  `c_id` int(11) NOT NULL AUTO_INCREMENT,
+  `c_autor` int(11) NOT NULL DEFAULT 0,
+  `c_nombre` varchar(60) NOT NULL DEFAULT '',
+  `c_nombre_corto` varchar(250) NOT NULL DEFAULT '',
+  `c_categoria` int(11) NOT NULL DEFAULT 0,
+  `c_sub_categoria` int(11) NOT NULL DEFAULT 0,
+  `c_pais` varchar(3) NOT NULL DEFAULT '',
+  `c_descripcion` text NOT NULL,
+  `c_acceso` int(11) NOT NULL DEFAULT 0,
+  `c_permisos` int(11) NOT NULL DEFAULT 0,
+  `c_back_color` varchar(6) NOT NULL DEFAULT '',
+  `c_back_repeat` int(1) NOT NULL DEFAULT 0,
+  `c_estado` int(11) NOT NULL DEFAULT 0,
+  `c_miembros` int(11) NOT NULL DEFAULT 0,
+  `c_temas` int(11) NOT NULL DEFAULT 0,
+  `c_seguidores` int(11) NOT NULL DEFAULT 0,
+  `c_fecha` int(11) NOT NULL DEFAULT 0,
+  `c_ip` varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`c_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_favoritos` (
+  `fav_id` int(11) NOT NULL AUTO_INCREMENT,
+  `f_user` int(11) NOT NULL DEFAULT 0,
+  `f_tema` int(11) NOT NULL DEFAULT 0,
+  `f_date` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`fav_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_historial` (
+  `h_id` int(11) NOT NULL AUTO_INCREMENT,
+  `h_for` int(11) NOT NULL DEFAULT 0,
+  `h_mod` int(11) NOT NULL DEFAULT 0,
+  `h_type` int(11) NOT NULL DEFAULT 0,
+  `h_comid` int(11) NOT NULL DEFAULT 0,
+  `h_razon` varchar(80) NOT NULL DEFAULT '',
+  `h_date` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`h_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_miembros` (
+  `m_id` int(11) NOT NULL AUTO_INCREMENT,
+  `m_user` int(11) NOT NULL DEFAULT 0,
+  `m_permisos` int(11) NOT NULL DEFAULT 0,
+  `m_comunidad` int(11) NOT NULL DEFAULT 0,
+  `m_fecha` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`m_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_respuestas` (
+  `r_id` int(11) NOT NULL AUTO_INCREMENT,
+  `r_autor` int(11) NOT NULL DEFAULT 0,
+  `r_body` text NOT NULL,
+  `r_tema` int(11) NOT NULL DEFAULT 0,
+  `r_votos_pos` int(11) NOT NULL DEFAULT 0,
+  `r_votos_neg` int(11) NOT NULL DEFAULT 0,
+  `r_fecha` int(11) NOT NULL DEFAULT 0,
+  `r_estado` int(11) NOT NULL DEFAULT 0,
+  `r_ip` varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`r_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_subcategorias` (
+  `sid` int(11) NOT NULL AUTO_INCREMENT,
+  `s_type` int(11) NOT NULL DEFAULT 0,
+  `s_nombre` varchar(32) NOT NULL DEFAULT '',
+  `s_seo` varchar(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`sid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "INSERT INTO `c_subcategorias` (`sid`, `s_type`, `s_nombre`, `s_seo`) VALUES
+(1, 1, 'Fotograf&iacute;as', 'fotografias'),
+(2, 1, 'Artes Plasticas', 'artes-plasticas'),
+(3, 1, 'Artes Visuales', 'artes-visuales'),
+(4, 1, 'Poes&iacute;a y Narraci&oacute;n', 'poesia-narracion'),
+(5, 1, 'Escritores', 'escritores'),
+(6, 1, 'Pensamientos', 'internet-tecnologia'),
+(7, 1, 'General y Otros', 'musica-bandas'),
+(8, 1, 'Fotograf&iacute;s', 'fotografias'),
+(9, 1, 'Artes Pl&aacute;sticas', 'artes-plasticas'),
+(10, 2, 'Automovilismo y Carreras', 'autos-carreras'),
+(11, 2, 'Ajedrez', 'ajedrez'),
+(12, 2, 'Artes Marciales', 'artes-marciales'),
+(13, 2, 'Futb&oacute;l', 'futbol'),
+(14, 2, 'Basquet', 'basquet'),
+(15, 2, 'Deportes Extremos', 'deportes-extremos'),
+(16, 2, 'Deportes de Invierno', 'deportes-invierno'),
+(17, 2, 'Deportes Ol&iacute;mpicos', 'deportes-olimpicos'),
+(18, 2, 'Deportes Acu&aacute;ticos', 'deportes-acuaticos'),
+(19, 2, 'Deportes al aire Libre', 'deporte-aire-libre'),
+(20, 2, 'Golf', 'golf'),
+(21, 2, 'Rugby', 'rugby'),
+(22, 2, 'Boxeo', 'boxeo'),
+(23, 2, 'Tenis', 'tenis'),
+(24, 2, 'Atletismo y Aerobic', 'atletismo-aerobic'),
+(25, 2, 'Instituciones y Clubes', 'instituciones-club'),
+(26, 2, 'Ciclismo', 'ciclismo'),
+(27, 3, 'Vida Nocturna', 'vida-nocturna'),
+(28, 3, 'Bares y Caf&eacute;s', 'bar-cafe'),
+(29, 3, 'Baile', 'baile'),
+(30, 3, 'Humor', 'humor'),
+(31, 3, 'Paseos', 'paseos'),
+(32, 3, 'Parques', 'parques'),
+(33, 3, 'Salidas', 'salidas'),
+(34, 3, 'General y Otros', 'general-otros'),
+(35, 4, 'Empresas y Negocios', 'empresa-negocio'),
+(36, 4, 'Empleo y Trabajo', 'empleo-trabajo'),
+(37, 4, 'Investigaciones Econ&oacute;nomi', 'investigacion-economica'),
+(39, 4, 'Inversiones y Finanzas', 'inversion-finanza'),
+(40, 4, 'Marketing y Publicidad', 'marketing-pubicidad'),
+(41, 4, 'Emprendimientos', 'emprendimientos'),
+(42, 4, 'Management y Administraci&oacute', 'management-admin'),
+(43, 4, 'Defensa del Consumidor', 'defensa-consumidor'),
+(44, 4, 'Contabilidad e Impuestos', 'contabilidad-impuestos'),
+(45, 4, 'General y Otros', 'general-otros'),
+(46, 5, 'Series de TV', 'series-tv'),
+(47, 5, 'Televisi&oacute;n', 'television'),
+(48, 5, 'Cine y Pel&iacute;culas', 'cine-peliculas'),
+(49, 5, 'Espect&aacute;culos', 'espectaculos'),
+(50, 5, 'Teatros', 'teatros'),
+(51, 5, 'Celebridades y Famosos', 'celebridad-famosos'),
+(52, 5, 'Diarios y Revistas', 'diarios-revistas'),
+(53, 5, 'General y Otros', 'general-otros'),
+(54, 6, 'Organizaciones sin fines de Lucr', 'organizaciones-sin-fines-de-lucr'),
+(55, 6, 'Organizaciones de Profecionales', 'organizaciones-profecionales'),
+(56, 6, 'Organizaciones de Voluntarios', 'organizaciones-voluntarios'),
+(57, 6, 'Organizaciones de Defensas', 'organizaciones-defensas'),
+(58, 6, 'Organizaciones Religiosas', 'organizaciones-religiosas'),
+(59, 6, 'Organizaciones Pol&iacute;ticas', 'organizaciones-politicas'),
+(60, 6, 'Grupos de Estudios', 'grupos-estudios'),
+(61, 6, 'Dormitorios y Residencias', 'dormitorios-residencias'),
+(62, 6, 'Estudiantes Secundarios', 'estudiantes-secundarios'),
+(63, 6, 'Estudiantes de Univercidades', 'estudiantes-univercidades'),
+(64, 6, 'Postgrados', 'postgrados'),
+(65, 6, 'Ex-alumnos', 'ex-alumnos'),
+(66, 6, 'Clubes y Sociedades', 'clubes-sociedades'),
+(67, 6, 'General y Otros', 'general-otros'),
+(68, 7, 'Actividades, Encuentros y Juntad', 'actividades-encuentros-juntadas'),
+(69, 7, 'Actualidad', 'actualidad'),
+(70, 7, 'Amantes de los Motores', 'amantes-motores'),
+(71, 7, 'Cultura Retro', 'cultura-retro'),
+(72, 7, 'Edades y Vivencias', 'edades-vivencias'),
+(73, 7, 'Coleccionistas', 'coleccionistas'),
+(74, 7, 'Manga y Anime', 'manga-anime'),
+(75, 7, 'Comics e Historietas', 'comics-historietas'),
+(76, 7, 'Belleza y Est&eacute;tica', 'belleza-estetica'),
+(77, 7, 'Modas y Tendencias', 'modas-tendencias'),
+(78, 7, 'Citas, Relaciones y Amor', 'citas-relaciones-amor'),
+(79, 7, 'Familias', 'familias'),
+(80, 7, 'Comidas, Recetas y Cocina', 'comidas-recetas-cocina'),
+(81, 7, 'Bebidas y Vinos', 'bebidas-vino'),
+(82, 7, 'Amigos', 'amigos'),
+(83, 7, 'Jardiner&iacute;a', 'jardineria'),
+(84, 7, 'Salud y Bienestar', 'salud-bienestar'),
+(85, 7, 'Historia', 'historia'),
+(86, 7, 'Pasatiempos y Manualidades', 'pasatiempos-manualidades'),
+(87, 8, 'Computadoras y Hadware', 'computadoras-hadware'),
+(88, 8, 'Celulares', 'celulares'),
+(89, 8, 'Gadgets', 'gadgets'),
+(90, 8, 'Software y Aplicaciones', 'software-aplicaciones'),
+(91, 8, 'Linux y GNU', 'linux-gnu'),
+(92, 8, 'Windows', 'windows'),
+(93, 8, 'Mac', 'mac'),
+(94, 8, 'Juegos', 'juegos'),
+(95, 8, 'Multimedia', 'multimedia'),
+(96, 8, 'Programaci&oacute;n y Lenguajes', 'programacion-lenguajes'),
+(97, 8, 'Comunidades 2.0 y Cultura online', 'comunidades-cultura-online'),
+(98, 8, 'Sitios webs y Blogs', 'sitios-webs-blogs'),
+(99, 8, 'Aparatos Electr&oacute;nicos', 'aparatos-electronicos'),
+(100, 8, 'Noticias y Novedades', 'noticias-novedades'),
+(101, 8, 'General y Otros', 'general-otros'),
+(102, 9, 'Blues', 'blues'),
+(103, 9, 'Cl&aacute;sica', 'clasica'),
+(104, 9, 'Compositores', 'compositores'),
+(105, 9, 'Country', 'country'),
+(106, 9, 'Cumbia', 'cumbia'),
+(107, 9, 'Dance', 'dance'),
+(108, 9, 'Electr&oacute;nica', 'electronica'),
+(109, 9, 'Folklore', 'folklore'),
+(110, 9, 'Indie', 'indie'),
+(111, 9, 'Instrumental', 'Instrumental'),
+(112, 9, 'Jazz', 'jazz'),
+(113, 9, 'Latina', 'latina'),
+(114, 9, 'Metal', 'metal'),
+(115, 9, 'Pop', 'pop'),
+(116, 9, 'R&B/Solud', 'rb-sould'),
+(117, 9, 'Rap y Hip Hop', 'rap-hip-hop'),
+(118, 9, 'Reggae', 'reggae'),
+(119, 9, 'Reggeaton', 'reggeaton'),
+(120, 9, 'Religiosa', 'religiosa'),
+(121, 9, 'Rock', 'rock'),
+(122, 9, 'General y Otros', 'general-otros'),
+(123, 10, 'Pa&iacute;ses', 'paises'),
+(124, 10, 'Provincias y Estados', 'provincias-estados'),
+(125, 10, 'Barrios', 'barrios'),
+(126, 10, 'Lugares', 'lugares'),
+(127, 10, 'General y Otros', 'general-otros');";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_temas` (
+  `t_id` int(11) NOT NULL AUTO_INCREMENT,
+  `t_titulo` varchar(60) NOT NULL DEFAULT '',
+  `t_cuerpo` text NOT NULL,
+  `t_comunidad` int(11) NOT NULL DEFAULT 0,
+  `t_autor` int(11) NOT NULL DEFAULT 0,
+  `t_fecha` int(11) NOT NULL DEFAULT 0,
+  `t_votos_pos` int(11) NOT NULL DEFAULT 0,
+  `t_votos_neg` int(11) NOT NULL DEFAULT 0,
+  `t_visitas` int(11) NOT NULL DEFAULT 0,
+  `t_favoritos` int(11) NOT NULL DEFAULT 0,
+  `t_respuestas` int(11) NOT NULL DEFAULT 0,
+  `t_seguidores` int(11) NOT NULL DEFAULT 0,
+  `t_share` int(11) NOT NULL DEFAULT 0,
+  `t_sticky` int(1) NOT NULL DEFAULT 0,
+  `t_cerrado` int(1) NOT NULL DEFAULT 0,
+  `t_estado` int(1) NOT NULL DEFAULT 0,
+  `t_ip` varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`t_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_votos` (
+  `vid` int(11) NOT NULL AUTO_INCREMENT,
+  `v_user` int(11) NOT NULL DEFAULT 0,
+  `v_type` int(11) NOT NULL DEFAULT 0,
+  `v_obj` int(11) NOT NULL DEFAULT 0,
+  `v_for` int(11) NOT NULL DEFAULT 0,
+  `v_date` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`vid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";

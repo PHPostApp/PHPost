@@ -112,6 +112,49 @@ class tsSwat{
                     return '1: Este usuario ha sido denunciado.';
                 } else return '0: Error! Int&eacute;ntalo m&aacute;s tarde.';
             break;
+            // COMUNIDADES
+            case 'comunidad':
+                // ¿ES MI COMUNIDAD O ESTÁ OCULTA?
+                $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT c_id, c_autor, c_estado FROM c_comunidades WHERE c_id = \''.(int)$obj_id.'\' LIMIT 1') or exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
+                $my_comu = db_exec('fetch_assoc', $query);
+                
+                if(empty($my_comu['c_id'])) return '0: Esta comunidad no existe';   
+                if($my_comu['c_autor'] == $tsUser->uid) return '0: No puedes denunciar tus propias comunidades.';           
+                if($my_comu['c_estado'] == '1') return '0: No puedes denunciar comunidades ocultas.';
+                // YA HA REPORTADO?
+                $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT `did` FROM `w_denuncias` WHERE `obj_id` = \''.(int)$obj_id.'\' AND `d_user` = '.$tsUser->uid.' AND `d_type` = \'5\'');
+                $denuncio = db_exec('num_rows', $query);
+                
+                if(!empty($denuncio)) return '0: Ya hab&iacute;as denunciado esta comunidad.';
+                // INSERTAR NUEVA DENUNCIA
+                if(db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO `w_denuncias` (`obj_id`, `d_user`, `d_razon`, `d_extra`, `d_type`, `d_date`) VALUES (\''.(int)$obj_id.'\', \''.$tsUser->uid.'\', \''.$razon.'\', \''.$extras.'\', \'5\', \''.$date.'\')')){
+                return '1: La denuncia fue enviada.';
+                } else return '0: Error, int&eacute;ntalo m&aacute;s tarde.';
+            break;
+            // TEMAS
+            case 'tema':
+                // ¿ES MI TEMA O ESTÁ OCULTO?
+                $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT t_id, t_autor, t_estado FROM c_temas WHERE t_id = \''.(int)$obj_id.'\' LIMIT 1') or exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
+                $my_tema = db_exec('fetch_assoc', $query);
+                
+                if(empty($my_tema['t_id'])) return '0: Este tema no existe';    
+                if($my_tema['t_autor'] == $tsUser->uid) return '0: No puedes denunciar tus propios temas.';         
+                if($my_tema['t_estado'] == '1') return '0: No puedes denunciar temas ocultos.';
+                // YA HA REPORTADO?
+                $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT `did` FROM `w_denuncias` WHERE `obj_id` = \''.(int)$obj_id.'\' AND `d_user` = '.$tsUser->uid.' AND `d_type` = \'6\'');
+                $denuncio = db_exec('num_rows', $query);            
+                if(!empty($denuncio)) return '0: Ya hab&iacute;as denunciado este tema.';
+                // CUANTAS DENUNCIAS LLEVA?
+                $denuncias = db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT `did` FROM `w_denuncias` WHERE `obj_id` = \''.(int)$obj_id.'\' AND `d_type` = \'6\''));
+                // OCULTAMOS EL COMENTARIO SI YA LLEVA MÁS DE 3 DENUNCIAS
+                if($denuncias >= 2){
+                    db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE c_temas SET t_estado = \'2\' WHERE t_id = \''.(int)$obj_id.'\'') or exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
+                }
+                // INSERTAR NUEVA DENUNCIA
+                if(db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO `w_denuncias` (`obj_id`, `d_user`, `d_razon`, `d_extra`, `d_type`, `d_date`) VALUES (\''.(int)$obj_id.'\', \''.$tsUser->uid.'\', \''.$razon.'\', \''.$extras.'\', \'6\', \''.$date.'\')')){
+                return '1: La denuncia fue enviada.';
+                } else return '0: Error, int&eacute;ntalo m&aacute;s tarde.';
+            break;
         }
     }
 }

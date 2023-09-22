@@ -71,6 +71,12 @@
             case 'usuarios':
                 $smarty->assign("tsTops",$tsTops->getTopUsers($fecha, $cat));
             break;
+            case 'comunidades':
+                $smarty->assign("tsTops",$tsTops->getTopComus($fecha));
+            break;
+			case 'temas':
+                $smarty->assign("tsTops",$tsTops->getTopTemas($fecha));
+            break;
 		}
 
 /**********************************\

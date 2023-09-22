@@ -499,6 +499,28 @@ $tsPaises = array(
     		'No cumple con el protocolo',
     		'Otra raz&oacute;n (especificar)'
       ),
+        'comunidades' => array(
+            '',
+            'Se hace Spam',
+            'Es racista o irrespetuosa',
+            'Contiene informaci&oacute;n personal',
+            'Contiene pedofilia',
+            'Es gore o asquerosa',
+            'No cumple con el protocolo',
+            'Otra raz&oacute;n (especificar)'
+      ),
+      'temas' => array(
+            '',
+            'Re-post',
+            'Se hace Spam',
+            'Es racista o irrespetuoso',
+            'Contiene informaci&oacute;n personal',
+            'El t&iacute;tulo esta en may&uacute;scula',
+            'Contiene pedofilia',
+            'Es gore o asqueroso',
+            'No cumple con el protocolo',
+            'Otra raz&oacute;n (especificar)'
+      ),
 	   'fotos' => array(
             '',
     		'Ya est&aacute; publicada',

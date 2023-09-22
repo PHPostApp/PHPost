@@ -1095,6 +1095,47 @@ class tsAdmin {
 
 	 }
 	# ===================================================
+	# COMUNIDADES
+	# * GetAdminComus() :: Obtenemos todas las comunidades
+	# * GetAdminTemas() :: Obtenemos todos los temas
+	# ===================================================
+	public function GetAdminComus() {
+      global $tsCore;
+      //
+      $max = 20; // MAXIMO A MOSTRAR
+      $limit = $tsCore->setPageLimit($max, true);
+      //
+      $data['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_name, c.* FROM c_comunidades AS c LEFT JOIN u_miembros AS u ON c.c_autor = u.user_id ORDER BY c.c_fecha DESC LIMIT '.$limit));
+
+      // PAGINAS
+      $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM c_comunidades WHERE c_id > \'0\'');
+      list($total) = db_exec('fetch_row', $query);
+
+      $data['pages'] = $tsCore->pageIndex($tsCore->settings['url']."/admin/comunidades?", $_GET['s'], $total, $max);
+      //
+      return $data;
+   }
+	// ADMINISTRAR TEMAS POR COMUNIDAD
+	public function GetAdminTemas() {
+      global $tsCore;
+      //
+		$comid = (int)$_GET['comid'];
+      $max = 20; // MAXIMO A MOSTRAR
+      $limit = $tsCore->setPageLimit($max, true);
+        //
+      $data['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_name, c.c_nombre_corto, t.* FROM c_temas AS t LEFT JOIN c_comunidades AS c ON c.c_id = t.t_comunidad LEFT JOIN u_miembros AS u ON t.t_autor = u.user_id WHERE t.t_comunidad = $comid ORDER BY t.t_fecha DESC LIMIT $limit"));
+		// NOMBRE DE LA COMUNIDAD
+		$com = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT c_nombre FROM c_comunidades WHERE c_id = $comid LIMIT 1"));
+		$data['c_nombre'] = $com['c_nombre'];
+      // PAGINAS
+      $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM c_temas WHERE t_comunidad = ' . $comid);
+      list($total) = db_exec('fetch_row', $query);
+
+      $data['pages'] = $tsCore->pageIndex($tsCore->settings['url']."/admin/comunidades?act=temas&comid=".$_GET['comid'], $_GET['s'], $total, $max);
+      //
+      return $data;
+   }
+	# ===================================================
 	# ESTADÍSTICASA
 	# * GetAdminStats() :: Obtenemos todas las estadisticas
 	# ===================================================
@@ -1131,7 +1172,19 @@ class tsAdmin {
 			(SELECT count(aid) FROM w_afiliados WHERE a_active = 1) AS afiliados_activos, 
 			(SELECT count(aid) FROM w_afiliados WHERE a_active = 0) AS afiliados_inactivos,
 			(SELECT count(pub_id) FROM u_muro) AS muro_estados, 
-			(SELECT count(cid) FROM u_muro_comentarios) AS muro_comentarios
+			(SELECT count(cid) FROM u_muro_comentarios) AS muro_comentarios, 
+      	(SELECT count(c_id) FROM c_comunidades WHERE c_estado = 0) AS comunidades_visibles, 
+      	(SELECT count(c_id) FROM c_comunidades WHERE c_estado = 1) AS comunidades_ocultas, 
+      	(SELECT count(t_id) FROM c_temas WHERE t_estado = 0) AS temas_visibles, 
+      	(SELECT count(t_id) FROM c_temas WHERE t_estado = 1) AS temas_ocultos,
+      	(SELECT count(fav_id) FROM c_favoritos) AS temas_favoritos,
+			(SELECT count(m_id) FROM c_miembros WHERE m_permisos = 0) AS miembros_comunidades,
+			(SELECT count(m_id) FROM c_miembros WHERE m_permisos = 1) AS miembros_comunidades_baneados,
+			(SELECT count(r_id) FROM c_respuestas WHERE r_estado = 0) AS respuestas_visibles,
+			(SELECT count(r_id) FROM c_respuestas WHERE r_estado = 1) AS respuestas_ocultas,
+			(SELECT count(follow_id) FROM u_follows WHERE f_type = 4) AS comunidades_follows,
+			(SELECT count(follow_id) FROM u_follows WHERE f_type = 5) AS temas_follows,
+			(SELECT count(follow_id) FROM u_follows WHERE f_type = 6) AS temas_compartidos
 		'));
 		$num['usuarios_total'] = $num['usuarios_activos'] + $num['usuarios_inactivos'] + $num['usuarios_baneados'];
 		$num['seguidos_total'] = $num['posts_follows'] + $num['usuarios_follows'];
@@ -1141,6 +1194,8 @@ class tsAdmin {
 		$num['comentarios_posts_total'] = $num['comentarios_posts_visibles'] + $num['comentarios_posts_ocultos'];
 		$num['medallas_total'] = $num['medallas_usuarios'] + $num['medallas_posts'] + $num['medallas_fotos'];
 		$num['fotos_total'] = $num['fotos_visibles'] + $num['fotos_ocultas'] + $num['fotos_eliminadas'];
+		$num['comunidades_total'] = $num['comunidades_visibles'] + $num['comunidades_ocultas'];
+		$num['temas_total'] = $num['temas_visibles'] + $num['temas_ocultas'] + $num['temas_favoritos'];
 		return $num;
 	}
 

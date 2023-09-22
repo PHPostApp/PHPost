@@ -17,6 +17,9 @@
 		<li class="tabbed {if $tsPage == 'tops'}here{/if}">
 			<a title="Ir a TOPs" href="{$tsConfig.url}/top/">TOPs <img alt="Drop Down" src="{$tsConfig.images}/arrowdown.png"></a>
 		</li>
+		<li class="tabbed {if $tsPage == 'comunidades'}here{/if}">
+        	<a title="Ir a Comunidades" href="{$tsConfig.url}/comunidades/">Comunidades <img alt="Drop Down" src="{$tsConfig.tema.t_url}/images/arrowdown.png"></a>
+      </li>
 		{if $tsUser->is_member}
 			{if $tsUser->is_admod == 1}
 				<li class="tabbed {if $tsPage == 'admin'}here{/if}">

@@ -28,6 +28,36 @@
     <textarea tabindex="6" rows="5" cols="40" name="extras"></textarea><br />
     <span class="size9">Para atender tu caso r&aacute;pidamente, adjunta pruevas de tu denuncia.<br /> (capturas de pantalla)</span>
 </div>
+{elseif $tsAction == 'denuncia-comunidad'}
+<div align="center" style="padding:10px 10px 0">
+    <b>Denunciar comunidad:</b><br />
+    {$tsData.obj_title}<br /><br />
+    <b>Raz&oacute;n de la denuncia:</b><br />
+    <select name="razon">
+    {foreach from=$tsDenuncias key=i item=denuncia}
+        {if $denuncia}<option value="{$i}">{$denuncia}</option>{/if}
+    {/foreach}
+    </select><br />
+    <b>Aclaraci&oacute;n y comentarios:</b><br />
+    <textarea tabindex="6" rows="5" cols="40" name="extras"></textarea><br />
+    <span class="size9">Para atender tu caso r&aacute;pidamente, adjunta pruevas de tu denuncia.<br /> (capturas de pantalla)</span>
+</div>
+{elseif $tsAction == 'denuncia-tema'}
+<div align="center" style="padding:10px 10px 0">
+    <b>Denunciar tema:</b><br />
+    {$tsData.obj_title}<br /><br />
+    <b>Autor:</b><br />
+    {$tsData.obj_user}<br /><br />
+    <b>Raz&oacute;n de la denuncia:</b><br />
+    <select name="razon">
+    {foreach from=$tsDenuncias key=i item=denuncia}
+        {if $denuncia}<option value="{$i}">{$denuncia}</option>{/if}
+    {/foreach}
+    </select><br />
+    <b>Aclaraci&oacute;n y comentarios:</b><br />
+    <textarea tabindex="6" rows="5" cols="40" name="extras"></textarea><br />
+    <span class="size9">Para atender tu caso r&aacute;pidamente, adjunta pruevas de tu denuncia.<br /> (capturas de pantalla)</span>
+</div>
 {elseif $tsAction == 'denuncia-mensaje'}
 <div class="emptyData">Si reportas este mensaje ser&aacute; eliminado de tu bandeja. <br />&iquest;Realmente quieres denunciar este mensaje como correo no deseado?</div>
 <input type="hidden" name="razon" value="spam" />

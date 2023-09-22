@@ -17,6 +17,8 @@
 		'denuncia-foto' => array('n' => 2, 'p' => 'form'),
         'denuncia-mensaje' => array('n' => 2, 'p' => 'form'),
         'denuncia-usuario' => array('n' => 2, 'p' => 'form'),
+        'denuncia-comunidad' => array('n' => 2, 'p' => 'form'),
+        'denuncia-tema' => array('n' => 2, 'p' => 'form'),
 	);
 
 /**********************************\
@@ -99,6 +101,44 @@
             include("../ext/datos.php");
             $smarty->assign("tsData",array('nick' => $_POST['obj_user']));
     		$smarty->assign("tsDenuncias",$tsDenuncias['users']);
+        break;
+        case 'denuncia-comunidad':   
+            // CREAR DENUNCIA
+            if($_POST['razon']){
+                $tsAjax = 1;
+                echo $tsSwat->setDenuncia($obj_id, 'comunidad');
+            // FORMULARIO DE DENUNCIA
+            } else {
+                // VARS
+                $tsData = array(
+                    'obj_id' => $obj_id,
+                    'obj_title' => $tsCore->setSecure($_POST['obj_title']),
+                    'obj_user' => $tsCore->setSecure($_POST['obj_user']), 
+                );
+                // DATOS
+                include("../ext/datos.php");
+                $smarty->assign("tsData",$tsData);
+                $smarty->assign("tsDenuncias",$tsDenuncias['comunidades']);
+            }
+        break;
+        case 'denuncia-tema':   
+            // CREAR DENUNCIA
+            if($_POST['razon']){
+                $tsAjax = 1;
+                echo $tsSwat->setDenuncia($obj_id, 'tema');
+            // FORMULARIO DE DENUNCIA
+            } else {
+                // VARS
+                $tsData = array(
+                    'obj_id' => $obj_id,
+                    'obj_title' => $tsCore->setSecure($_POST['obj_title']),
+                    'obj_user' => $tsCore->setSecure($_POST['obj_user']), 
+                );
+                // DATOS
+                include("../ext/datos.php");
+                $smarty->assign("tsData",$tsData);
+                $smarty->assign("tsDenuncias",$tsDenuncias['temas']);
+            }
         break;
 	}
     // ACCION

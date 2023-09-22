@@ -28,6 +28,22 @@
                 <ul class="floatL tabsMenu">
                     <li{if $tsAction == 'posts'} class="here"{/if}><a href="{$tsConfig.url}/top/posts/">Posts</a></li>
                     <li{if $tsAction == 'usuarios'} class="here"{/if}><a href="{$tsConfig.url}/top/usuarios/">Usuarios</a></li>
+                    <li{if $tsAction == 'comunidades'} class="here"{/if}><a href="{$tsConfig.url}/top/comunidades/">Comunidades</a></li>
+                    <li{if $tsAction == 'temas'} class="here"{/if}><a href="{$tsConfig.url}/top/temas/">Temas</a></li>
+                </ul>
+                <div class="clearBoth"></div>
+            </div>
+            <div id="subMenuComunidades" class="subMenu {if $tsPage == 'comunidades'}here{/if}">
+                <ul class="floatL tabsMenu">
+                    <li{if $tsAction == '' || $tsAction == 'home' && $tsAction != 'mis-comunidades' && $tsAction != 'dir' && $tsAction != 'mod-history' && $tsAction != 'buscar' && $tsAction != 'favoritos' && $tsAction != 'borradores'} class="here"{/if}><a href="{$tsConfig.url}/comunidades/">Inicio</a></li>
+                    {if $tsUser->is_member}<li {if $tsAction == 'mis-comunidades'}class="here"{/if}><a href="{$tsConfig.url}/comunidades/mis-comunidades/">Mis Comunidades</a></li>{/if}
+                    <li{if $tsAction == 'dir'} class="here"{/if}><a href="{$tsConfig.url}/comunidades/dir/">Directorio</a></li>
+                    <li{if $tsAction == 'buscar'} class="here"{/if}><a href="{$tsConfig.url}/comunidades/buscar/">Buscar</a></li>
+                    {if $tsUser->is_member}
+                    <li{if $tsAction == 'favoritos'} class="here"{/if}><a href="{$tsConfig.url}/comunidades/favoritos/">Favoritos</a></li>
+                    <li{if $tsAction == 'borradores'} class="here"{/if}><a href="{$tsConfig.url}/comunidades/borradores/">Borradores</a></li>
+                    {/if}
+                    <li{if $tsAction == 'mod-history'} class="here"{/if}><a href="{$tsConfig.url}/comunidades/mod-history/">Historial</a></li>
                 </ul>
                 <div class="clearBoth"></div>
             </div>

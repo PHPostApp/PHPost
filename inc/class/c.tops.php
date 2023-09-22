@@ -64,6 +64,48 @@ class tsTops {
         //
         return $array;
     }
+   /*
+        getTopComus()
+    */
+    function getTopComus($fecha){
+        //
+        $data = $this->setTime($fecha);
+		// MIEMBROS
+        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(m.m_id) AS total, c.c_id, c.c_nombre, c.c_nombre_corto FROM c_miembros AS m LEFT JOIN c_comunidades AS c ON m.m_comunidad = c.c_id WHERE m.m_permisos > \'0\' AND c.c_estado = \'0\' AND m.m_fecha BETWEEN '.$data['start'].' AND '.$data['end'].' GROUP BY m.m_comunidad ORDER BY total DESC LIMIT 10');
+        $array['miembros'] = result_array($query);
+        
+        // TEMAS
+        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(t.t_id) AS total, c.c_id, c.c_nombre, c.c_nombre_corto FROM c_comunidades AS c LEFT JOIN c_temas AS t ON t.t_comunidad = c.c_id WHERE t.t_estado = \'0\' AND c.c_estado = \'0\' AND c.c_fecha BETWEEN '.$data['start'].' AND '.$data['end'].' GROUP BY t.t_comunidad ORDER BY total DESC LIMIT 10');
+        $array['temas'] = result_array($query);
+        
+		// SEGUIDORES
+        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(f.follow_id) AS total, c.c_id, c.c_nombre, c.c_nombre_corto FROM u_follows AS f LEFT JOIN c_comunidades AS c ON f.f_id = c.c_id WHERE f.f_type = 5 AND f.f_date BETWEEN '.$data['start'].' AND '.$data['end'].' GROUP BY f.f_id ORDER BY total DESC LIMIT 10');
+        $array['seguidores'] = result_array($query);
+        
+        //
+        return $array;
+    }
+	/*
+        getTopTemas()
+    */
+    function getTopTemas($fecha){
+        //
+        $data = $this->setTime($fecha);
+		// VOTOS
+        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT t.t_votos_pos AS total, t.t_id, t.t_titulo, c.c_id, c.c_nombre, c.c_nombre_corto FROM c_temas AS t LEFT JOIN c_comunidades AS c ON t.t_comunidad = c.c_id WHERE t.t_estado = \'0\' AND c.c_estado = \'0\' AND t.t_fecha BETWEEN '.$data['start'].' AND '.$data['end'].' ORDER BY total DESC LIMIT 10');
+        $array['votos'] = result_array($query);
+        
+        // RESPUESTAS
+        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(r.r_id) AS total, t.t_id, t.t_titulo, c.c_id, c.c_nombre, c.c_nombre_corto FROM c_respuestas AS r LEFT JOIN c_temas AS t ON t.t_id = r.r_tema LEFT JOIN c_comunidades AS c ON c.c_id = t.t_comunidad WHERE t.t_estado = \'0\' AND c.c_estado = \'0\' AND r.r_estado = \'0\' AND c.c_fecha BETWEEN '.$data['start'].' AND '.$data['end'].' GROUP BY r.r_tema ORDER BY total DESC LIMIT 10');
+        $array['respuestas'] = result_array($query);
+        
+		// SEGUIDORES
+        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(f.follow_id) AS total, t.t_id, t.t_titulo, c.c_id, c.c_nombre, c.c_nombre_corto FROM u_follows AS f LEFT JOIN c_temas AS t ON t.t_id = f.f_id LEFT JOIN c_comunidades AS c ON t.t_comunidad = c.c_id WHERE f.f_type = 6 AND f.f_date BETWEEN '.$data['start'].' AND '.$data['end'].' GROUP BY f.f_id ORDER BY total DESC LIMIT 10');
+        $array['seguidores'] = result_array($query);
+        
+        //
+        return $array;
+    }
 	/*
 		getTopPosts()
 	*/

@@ -109,17 +109,20 @@ class tsCore {
 	
 	public function getNovemods() {
       $datos = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT 
-        	(SELECT count(post_id) FROM p_posts WHERE post_status = \'3\') as revposts, 
-        	(SELECT count(cid) FROM p_comentarios WHERE c_status = \'1\' ) as revcomentarios, 
-        	(SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = \'1\') as repposts, 
-        	(SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = \'2\') as repmps, 
-        	(SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = \'3\') as repusers, 
-        	(SELECT count(DISTINCT obj_id) FROM w_denuncias  WHERE d_type = \'4\') as repfotos, 
+        	(SELECT count(post_id) FROM p_posts WHERE post_status = 3) as revposts, 
+        	(SELECT count(cid) FROM p_comentarios WHERE c_status = 1) as revcomentarios, 
+        	(SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = 1) as repposts, 
+        	(SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = 2) as repmps, 
+        	(SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = 3) as repusers, 
+        	(SELECT count(DISTINCT obj_id) FROM w_denuncias  WHERE d_type = 4) as repfotos, 
+        	(SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = 5) as repcomunidades, 
+        	(SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = 6) as reptemas,  
+        	(SELECT count(t_id) FROM c_temas WHERE t_estado = 1) as tempelera, 
         	(SELECT count(susp_id) FROM u_suspension) as suspusers, 
-        	(SELECT count(post_id) FROM p_posts WHERE post_status = \'2\') as pospelera, 
-        	(SELECT count(foto_id) FROM f_fotos WHERE f_status = \'2\') as fospelera')
+        	(SELECT count(post_id) FROM p_posts WHERE post_status = 2) as pospelera, 
+        	(SELECT count(foto_id) FROM f_fotos WHERE f_status = 2) as fospelera')
    	);
-		$datos['total'] = $datos['repposts'] + $datos['repfotos'] + $datos['repmps'] + $datos['repusers'] + $datos['revposts'] + $datos['revcomentarios'];
+		$datos['total'] = $datos['repposts'] + $datos['repfotos'] + $datos['repmps'] + $datos['repusers'] + $datos['revposts'] + $datos['revcomentarios'] + $datos['repcomunidades'] + $datos['reptemas'];
 		return $datos;  
 	}
 	/*

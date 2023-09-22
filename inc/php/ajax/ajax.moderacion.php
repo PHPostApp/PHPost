@@ -17,6 +17,8 @@
 		'moderacion-fotos' => array('n' => 3, 'p' => 'main'),
         'moderacion-users' => array('n' => 3, 'p' => 'main'),
 		'moderacion-mps' => array('n' => 3, 'p' => 'main'),
+        'moderacion-comunidades' => array('n' => 3, 'p' => 'comunidad'),
+        'moderacion-temas' => array('n' => 3, 'p' => 'tema'),
 	);
 
 /**********************************\
@@ -169,6 +171,46 @@
                 }
 			//-->
 		break;
+        case 'moderacion-comunidades':
+            //<--
+                $comid = (int)$_POST['comid'];
+                // ACCIONES SECUNDARIAS
+                switch($do){
+                    case 'reboot':
+                            $tsAjax = 1;
+                            echo $tsMod->rebootComunidad($_POST['id']);
+                    break;
+                    case 'borrar':
+                        if($_POST['razon']){
+                            $tsAjax = 1;
+                            echo $tsMod->deleteComunidad($comid);
+                        }else {
+                            include('../ext/datos.php');
+                            $smarty->assign("tsDenuncias",$tsDenuncias['comunidades']);   
+                        }
+                    break;
+                }
+            //-->
+        break;
+        case 'moderacion-temas':
+            //<--
+                switch($do){
+                    case 'reboot':
+                            $tsAjax = 1;
+                            echo $tsMod->rebootTema($_POST['id']);
+                    break;
+                    case 'borrar':
+                        if($_POST['razon']){
+                            $tsAjax = 1;
+                            echo $tsMod->deleteTema($_POST['temaid']);
+                        }else {
+                            include('../ext/datos.php');
+                            $smarty->assign("tsDenuncias",$tsDenuncias['temas']);   
+                        }
+                    break;
+                }
+            //-->
+        break;
 
 	}
 ?>

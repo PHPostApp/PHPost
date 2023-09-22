@@ -143,10 +143,19 @@
 	} elseif($action === 'posts'){
 		$tsTitle = 'Todos los posts';
 		if(!$act) $smarty->assign("tsAdminPosts", $tsAdmin->GetAdminPosts());
-	//FOTOS
+	// FOTOS
 	} elseif($action === 'fotos') {
 		$tsTitle = 'Todas las fotos';
 		if(!$act) $smarty->assign("tsAdminFotos", $tsAdmin->GetAdminFotos());
+	// COMUNIDADES
+	} elseif($action == 'comunidades') {
+		if(!$act) {
+			$tsTitle = 'Todas las fotos';
+		 	$smarty->assign("tsAdminComus", $tsAdmin->GetAdminComus());
+		} elseif($act == 'temas') {
+		 	$tsTitle = 'Todos los temas';
+		 	$smarty->assign("tsAdminTemas", $tsAdmin->GetAdminTemas());
+		}
 	// ESTADÍSTICAS
 	} elseif($action === 'stats'){
 		$tsTitle = 'Estad&iacute;sticas';

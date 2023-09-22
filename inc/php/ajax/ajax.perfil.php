@@ -20,6 +20,7 @@
         'perfil-seguidores' => array('n' => 0, 'p' => 'follows'),
         'perfil-siguiendo' => array('n' => 0, 'p' => 'follows'),
         'perfil-medallas' => array('n' => 0, 'p' => 'medallas'),
+        'perfil-comunidades' => array('n' => 0, 'p' => 'comunidades'),
 	);
 
 /**********************************\
@@ -126,6 +127,11 @@
         case 'perfil-medallas':
             //<---
             $smarty->assign("tsMedallas",$tsCuenta->loadMedallas($user_id));
+            //--->
+        break;
+        case 'perfil-comunidades':
+            //<---
+            $smarty->assign("tsComunidades",$tsCuenta->loadComunidades($user_id));
             //--->
         break;
         default:

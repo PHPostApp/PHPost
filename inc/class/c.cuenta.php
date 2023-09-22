@@ -186,6 +186,10 @@ class tsCuenta {
 		// SIGUIENDO
       $data['sigd']['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT f.follow_id, u.user_id, u.user_name FROM u_follows AS f LEFT JOIN u_miembros AS u ON f.f_id = u.user_id WHERE f.f_user = $user_id AND f.f_type = 1 && u.user_activo = 1 && u.user_baneado = 0 ORDER BY f.f_date DESC LIMIT 21"));
       $data['sigd']['total'] = safe_count($data['sigd']['data']);
+      // COMUNIDADES
+		$data['comus'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT c.c_id, c.c_nombre, c.c_nombre_corto, c.c_miembros FROM c_comunidades AS c LEFT JOIN c_miembros AS m ON m.m_comunidad = c.c_id WHERE m.m_user = $user_id AND c.c_estado = 0 ORDER BY m.m_fecha DESC LIMIT 21"));
+		$total = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(c.c_id) AS total FROM c_comunidades AS c LEFT JOIN c_miembros AS m ON m.m_comunidad = c.c_id WHERE m.m_user = $user_id AND c.c_estado = 0"));
+		$data['comus_total'] = $total[0];
       // ULTIMAS FOTOS
       if(empty($_GET['pid'])){
 		  	$data['fotos'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT foto_id, f_title, f_url FROM f_fotos WHERE f_user = $user_id ORDER BY foto_id DESC LIMIT 6"));
@@ -218,6 +222,14 @@ class tsCuenta {
       // USUARIO
       $data['username'] = $tsUser->getUserName($user_id);
       //
+      return $data;
+   }
+   /*
+      loadComunidades($user_id)
+   */
+   public function loadComunidades(int $user_id = 0){
+      $data['comunidades'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT c.c_id, c.c_nombre, c.c_descripcion, c.c_nombre_corto, cat.c_nombre AS categoria FROM c_miembros AS m LEFT JOIN c_comunidades AS c ON c.c_id = m.m_comunidad LEFT JOIN c_categorias AS cat ON cat.cid = c.c_categoria WHERE m.m_user = $user_id AND c.c_estado = 0 ORDER BY m.m_fecha DESC"));
+      $data['total'] = safe_count($data['comunidades']);
       return $data;
    }
 	/*

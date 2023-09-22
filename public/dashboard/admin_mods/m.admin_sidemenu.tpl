@@ -22,6 +22,7 @@
 <li><hr class="sidebar-divider"></li>
 <li class="nav-item"><a class="nav-link page-posts" href="{$tsConfig.url}/admin/posts">Todos los Posts</a></li>
 <li class="nav-item"><a class="nav-link page-fotos" href="{$tsConfig.url}/admin/fotos">Todas las Fotos</a></li>
+<li class="nav-item"><a class="nav-link page-comunidades" href="{$tsConfig.url}/admin/comunidades">Todas las Comunidades</a></li>
 <li class="nav-item"><a class="nav-link page-cats" href="{$tsConfig.url}/admin/cats">Categor&iacute;as</a></li>
 <li><h5 class="fw-bolder mt-4 sidebar-header">Control de Usuarios</h5></li>
 <fw-bolder mt-4 li><hr class="sidebar-divider"></li>
