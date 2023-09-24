@@ -23,9 +23,9 @@
                             <span class="title">{$tsAutor.rango.r_name}</span>
                             <br />
                             <img src="{$tsConfig.images}/space.gif" class="status {$tsAutor.status.css}" title="{$tsAutor.status.t}"/>
-                            <img src="{$tsConfig.images}/icons/ran/{$tsAutor.rango.r_image}" title="{$tsAutor.rango.r_name}" />
-                            <img src="{$tsConfig.images}/icons/{if $tsAutor.user_sexo == 0}female{else}male{/if}.png" title="{if $tsAutor.user_sexo == 0}Mujer{else}Hombre{/if}" />
-                            <img src="{$tsConfig.images}/flags/{$tsAutor.pais.icon}.png" style="padding:2px" title="{$tsAutor.pais.name}" />
+                            <img src="{$tsConfig.public}/images/icons/ran/{$tsAutor.rango.r_image}.png" title="{$tsAutor.rango.r_name}" />
+                            <img src="{$tsConfig.public}/images/icons/{if $tsAutor.user_sexo == 0}female{else}male{/if}.png" title="{if $tsAutor.user_sexo == 0}Mujer{else}Hombre{/if}" />
+                            <img src="{$tsConfig.public}/images/flags/{$tsAutor.pais.icon}.png" style="padding:2px" title="{$tsAutor.pais.name}" />
                             {if $tsAutor.user_id != $tsUser->uid}<a href="#" onclick="{if !$tsUser->is_member}registro_load_form();{else}mensaje.nuevo('{$tsAutor.user_name}','','','');{/if}return false"><img title="Enviar mensaje privado" src="{$tsConfig.images}/icon-mensajes-recibidos.gif"/></a>{/if}
                             {if !$tsUser->is_member}
                             <hr class="divider"/>
