@@ -32,7 +32,7 @@
         </div>
     </div>
 </div>
-{include file='modules/m.global_ads_300.tpl'}
+{include "m.global_ads_300.tpl"}
 <br class="spacer"/>
 {if $tsAutor.user_id == $tsUser->uid || $tsCom.mi_rango >= 4 || $tsUser->is_admod}
 <div class="com_new_box">

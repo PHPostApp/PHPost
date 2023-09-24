@@ -254,3 +254,9 @@ label.radio input::before {
 label.radio input:checked::before {
 	background-color: #4D90FE;
 }
+
+.error {
+	padding: 1rem 0;
+	text-align: center;
+	background-color: #FDBBBB;
+}

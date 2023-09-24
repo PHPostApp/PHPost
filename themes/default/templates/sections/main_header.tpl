@@ -50,3 +50,4 @@ $(document).ready(() => {
 		  {include "head_submenu.tpl"}
 		  {include "head_noticias.tpl"}
 		  <div id="cuerpocontainer">
+

@@ -36,8 +36,8 @@
 		'i' => $tsUser->uid
 	];
 	$key = base64_encode(serialize($code));
-	//$conexion = "http://www.phpost.es/feed/";
-	$conexion = dirname($tsCore->settings['url']) . '/feed/';
+	$conexion = "http://www.phpost.es/feed/";
+	//$conexion = dirname($tsCore->settings['url']) . '/feed/';
 	// CODIGO
 	switch($action){
 		case 'feed-support':

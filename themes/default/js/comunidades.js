@@ -5,22 +5,7 @@ function showError(obj) {
 function hideError(obj) {
 	$(obj).removeClass('error');
 }
-function cgget(data, sin_amp){
-	var r = data+'=';
-	if(!sin_amp)
-		r = '&'+r;
-	switch(data){
-		case 'comid':
-			if(global_com.comid!='')
-				return r+parseInt(global_com.comid);
-			break;
-		case 'temaid':
-			if(global_com.temaid!='')
-				return r+parseInt(global_com.temaid);
-			break;
-	}
-	return '';
-}
+
 var com = {
 	required: function() {
 		var error = false;
@@ -173,7 +158,7 @@ var com = {
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/comunidades-responder.php',
-			data: 'body=' + encodeURIComponent(text) + cgget('temaid'),
+			data: 'body=' + encodeURIComponent(text) + gget('temaid'),
 			success: function(h){
 				if(h.charAt(0) == '0'){
 					$('.com_bigmsj_red').html(h.substring(3)).show('fast');
@@ -200,7 +185,7 @@ var com = {
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/comunidades-unirme.php',
-			data: cgget('comid', true),
+			data: gget('comid', true),
 			success: function(h){
 				if(h.charAt(0) == 1) {
 					$('.action_comunidad').toggle();
@@ -224,7 +209,7 @@ var com = {
 			$.ajax({
 				type: 'POST',
 				url: global_data.url + '/comunidades-abandonar.php',
-				data: cgget('comid', true),
+				data: gget('comid', true),
 				success: function(h){
 					if(h.charAt(0) == 1) {
 						$('.action_comunidad').toggle();
@@ -243,7 +228,7 @@ var com = {
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/comunidades-seguir_com.php',
-			data: cgget('comid', true),
+			data: gget('comid', true),
 			success: function(h){
 				$('#loading').fadeOut(250);
 				if(h.charAt(0) == '1') {
@@ -268,7 +253,7 @@ var com = {
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/comunidades-seguir_tema.php',
-			data: cgget('temaid', true),
+			data: gget('temaid', true),
 			success: function(h){
 				$('#loading').fadeOut(250);
 				if(h.charAt(0) == '1') {
@@ -299,7 +284,7 @@ var com = {
 			if(isImageFile($('#cei_input').val())){
 				$('#cei_cambio').css({'opacity' : 0.5});
 				$.ajaxFileUpload({
-					url: global_data.url + '/comunidades-edit_imagen.php?' + cgget('comid', true),
+					url: global_data.url + '/comunidades-edit_imagen.php?' + gget('comid', true),
 					fileElementId: 'cei_input',
 					dataType: 'json',
 					success: function(h){
@@ -321,7 +306,7 @@ var com = {
 			if(isImageFile($('#cef_input').val())){
 				$('#cef_cambio').css({'opacity' : 0.5});
 				$.ajaxFileUpload({
-					url: global_data.url + '/comunidades-edit_fondo.php?' + cgget('comid', true),
+					url: global_data.url + '/comunidades-edit_fondo.php?' + gget('comid', true),
 					fileElementId: 'cef_input',
 					dataType: 'json',
 					success: function(h){
@@ -346,7 +331,7 @@ var com = {
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/comunidades-votar_tema.php',
-			data: 'voto=' + voto + cgget('temaid'),
+			data: 'voto=' + voto + gget('temaid'),
 			success: function(h){
 				if(h.charAt(0) == 1) {
 					result = (voto == 'pos') ? parseInt(total_votos+1) : parseInt(total_votos-1);
@@ -398,7 +383,7 @@ var com = {
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/comunidades-add_favorito.php',
-			data: cgget('temaid'),
+			data: gget('temaid'),
 			success: function(h){
 				if(h.charAt(0) == 1) {
 					$('.add_favorito').toggle();
@@ -422,7 +407,7 @@ var com = {
 			$.ajax({
 				type: 'POST',
 				url: global_data.url + '/comunidades-reco_tema.php',
-				data: cgget('temaid'),
+				data: gget('temaid'),
 				success: function(h){
 					mydialog.procesando_fin();
 					if(h.charAt(0) == 1) {
@@ -447,7 +432,7 @@ var com = {
 			$.ajax({
 				type: 'POST',
 				url: global_data.url + '/comunidades-del_tema.php',
-				data: cgget('temaid', true),
+				data: gget('temaid', true),
 				success: function(h){
 					mydialog.procesando_fin();
 					if(h.charAt(0) == 1) {
@@ -472,7 +457,7 @@ var com = {
 			$.ajax({
 				type: 'POST',
 				url: global_data.url + '/comunidades-del_tema.php',
-				data:  'razon=' + razon + cgget('temaid'),
+				data:  'razon=' + razon + gget('temaid'),
 				success: function(h){
 					mydialog.procesando_fin();
 					if(h.charAt(0) == 1) {
@@ -496,7 +481,7 @@ var com = {
 			$.ajax({
 				type: 'POST',
 				url: global_data.url + '/comunidades-reactivar_tema.php',
-				data:  cgget('temaid', true),
+				data:  gget('temaid', true),
 				success: function(h){
 					mydialog.procesando_fin();
 					if(h.charAt(0) == 1) {
@@ -532,7 +517,7 @@ var com = {
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/comunidades-pages_temas.php',
-			data: cgget('comid') + '&page=' + page,
+			data: gget('comid') + '&page=' + page,
 			success: function(h){
 				$('#result_temas').html(h);
 				$('#result_temas').css({'opacity' : 1});
@@ -546,7 +531,7 @@ var com = {
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/comunidades-pages_respuestas.php',
-			data: cgget('temaid') + '&page=' + page,
+			data: gget('temaid') + '&page=' + page,
 			success: function(h){
 				$('#result_answers').html(h);
 				$('#result_answers').css({'opacity' : 1});
@@ -559,7 +544,7 @@ var com = {
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/comunidades-member_admin.php',
-			data: cgget('comid') + '&userid=' + userid,
+			data: gget('comid') + '&userid=' + userid,
 			success: function(h){
 				if(h.charAt(0) == 0) {
 					mydialog.alert('Error', h.substring(3));
@@ -589,7 +574,7 @@ var com = {
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/comunidades-member_admin_submit.php',
-			data: cgget('comid', true) + '&userid=' + userid + '&type=' + type + '&rango=' + rango + '&tiempo=' + tiempo + '&causa=' + causa + '&dias=' + dias,
+			data: gget('comid', true) + '&userid=' + userid + '&type=' + type + '&rango=' + rango + '&tiempo=' + tiempo + '&causa=' + causa + '&dias=' + dias,
 			success: function(h){
 				mydialog.procesando_fin();
 				if(h.charAt(0) == 1) {
@@ -612,7 +597,7 @@ var com = {
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/comunidades-load_members.php',
-			data: cgget('comid', true) + '&type=' + type,
+			data: gget('comid', true) + '&type=' + type,
 			success: function(h){
 				$('#com_members_result').html(h);
 			}
@@ -632,7 +617,7 @@ var com = {
 			$.ajax({
 				type: 'POST',
 				url: global_data.url + '/comunidades-member_reactivar.php',
-				data:  'userid=' + userid + '&razon=' + razon + cgget('comid'),
+				data:  'userid=' + userid + '&razon=' + razon + gget('comid'),
 				success: function(h){
 					mydialog.procesando_fin();
 					if(h.charAt(0) == 1) {
@@ -650,7 +635,7 @@ var com = {
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/comunidades-load_members.php',
-			data: cgget('comid', true) + '&search=' + like,
+			data: gget('comid', true) + '&search=' + like,
 			success: function(h){
 				$('#com_members_result').html(h);
 			}
@@ -666,7 +651,7 @@ var com = {
 			$.ajax({
 				type: 'POST',
 				url: global_data.url + '/comunidades-save_borrador.php',
-				data: cgget('comid', true) + '&bid=' + parseInt(bid) + '&titulo=' + encodeURIComponent($('input[name=titulo]').val()) + '&cuerpo=' + encodeURIComponent($('textarea[name=cuerpo]').val()) + cerrado + sticky,
+				data: gget('comid', true) + '&bid=' + parseInt(bid) + '&titulo=' + encodeURIComponent($('input[name=titulo]').val()) + '&cuerpo=' + encodeURIComponent($('textarea[name=cuerpo]').val()) + cerrado + sticky,
 				success: function(h){
 					if(h.charAt(0) == 1) {
 						var currentTime = new Date();
@@ -737,19 +722,7 @@ var com = {
 		$('#loading').fadeOut(250);
 	},
 }
-mySettings_resp = {
-	nameSpace: 'markitcomment',
-	resizeHandle: false,
-	markupSet: [
-		{name:lang['Negrita'], key:'B', openWith:'[b]', closeWith:'[/b]'},
-		{name:lang['Cursiva'], key:'I', openWith:'[i]', closeWith:'[/i]'},
-		{name:lang['Subrayado'], key:'U', openWith:'[u]', closeWith:'[/u]'},
-		{name:lang['Insertar video de YouTube'], beforeInsert:function(h){ markit_yt(h); }},
-		{name:lang['Insertar Imagen'], beforeInsert:function(h){ markit_img(h); }},
-		{name:lang['Insertar Link'], beforeInsert:function(h){ markit_url(h); }},
-		{name:"Insertar Emoticon", beforeInsert:function(h){ markit_emoticon(); }}
-	]
-};
+
 function markit_emoticon() {
 	$('#markit_emoticon').toggle('fast');
 }
@@ -785,11 +758,10 @@ $(document).ready(function(){
 		$('#com_change_list').hide();
 	});
 	// Si hay fondo en la comunidad lo actualizamos
-	if(global_com.comid!='') {
-		$('body').css({'background-image' : 'url("' + global_data.url + '/files/uploads/cf_' + global_com.comid + '.jpg")'});
+	if(!empty(global_data.comid)) {
+		$('body').css({
+			backgroundImage: `url('${global_data.url}/files/comunidades/combg_${global_data.comid}.jpg')`
+		});
 	}
-	//Editor de respuestas comunidades
-	if($('#markit_resp') && !$('#markItUpbody_resp').length){
-		$('#markit_resp').markItUp(mySettings_resp);
-	}	
-  });
+
+});

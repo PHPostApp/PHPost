@@ -2,12 +2,15 @@ html, body {
 	scroll-behavior: smooth;
 }
 body {
+	--bg-color: #FAFAFA;
+	--bg-repeat: no-repeat;
 	padding:0;
 	margin: 10px 0 0 0;
 	line-height:1.3em;
 	font-family: 'Lucida Grande',Tahoma,Arial,Verdana,Sans-Serif; 
 	font-size:11px;	
-	background: #FAFAFA;
+	background-color: var(--bg-color);
+	background-repeat: var(--bg-repeat);
 	/*color:#222222;*/
     overflow-x: hidden;
 }
@@ -2689,20 +2692,8 @@ ul.menuTabs .tabbed.here a:hover {
 	  margin:2px 0 0 0;
 	  width:200px;
 	}
-	#subMenuComunidades.subMenu {
-		background: url('images/shadowSubMenu.png') #009B45 repeat-x scroll left top;
-    border: none;
-    border-left: 1px solid #0a6f04;
-    border-right: 1px solid #0a6f04;
-}
 
-#subMenuComunidades.subMenu ul.tabsMenu li {
-	background: #48b167;
-}
 
-#subMenuComunidades.subMenu ul.tabsMenu li:hover {
-	background: #62ca81;
-}
 
 
 .subMenu ul.tabsMenu {

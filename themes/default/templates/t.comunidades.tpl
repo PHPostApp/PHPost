@@ -1,54 +1,46 @@
-{include file='sections/main_header.tpl'}
+{include "main_header.tpl"}
 
-	<script type="text/javascript">
-    // {literal}
-    var global_com = {
-    // {/literal}
-        comid:'{$tsCom.c_id}',
-        temaid:'{$tsTema.t_id}',
-    // {literal}
-    };
-    // {/literal}
-    </script>	
-    	
-	<script type="text/javascript" src="{$tsConfig.js}/comunidades.js"></script>  
-    
-    {if $tsCom.c_id}
-		<body style="background-color: #{$tsCom.c_back_color};background-repeat: {if $tsCom.c_back_repeat}repeat{else}no-repeat{/if};">
+   {if $tsCom.c_id}
+      <style>
+         body {
+            --bg-color: #fff;
+            --bg-repeat: {if $tsCom.c_back_repeat}repeat{else}no-repeat{/if};
+         }
+      </style>
 	{/if}
-    {if $tsTema.t_estado == 1}
-    <div class="com_bigmsj_red">Este tema est&aacute; eliminado</div>
-    {/if}
+   {if $tsTema.t_estado == 1}
+      <div class="com_bigmsj_red">Este tema est&aacute; eliminado</div>
+   {/if}
     
-    {if $tsAction == '' || $tsAction == 'home'}
+   {if $tsAction == '' || $tsAction == 'home'}
     	<div class="com_left">
-    		{include file='comunidades/c.inicio_left.tpl'}
-            {include file='comunidades/c.inicio_center.tpl'}
+    		{include "c.inicio_left.tpl"}
+         {include "c.inicio_center.tpl"}
         </div>
         <div class="com_right">
-        	{include file='comunidades/c.inicio_right.tpl'}
+        	{include "c.inicio_right.tpl"}
             <br class="spacer"/>
-            {include file='modules/m.global_ads_160.tpl'}
+            {include "m.global_ads_160.tpl"}
         </div>
     {elseif $tsAction == 'crear' || $tsAction == 'editar'}    
 		<form action="" method="post" id="add_new_com" enctype="multipart/form-data">
             <div class="com_left">
-            	{include file='comunidades/c.crear_left.tpl'}
+            	{include "c.crear_left.tpl"}
             </div>
             <div class="com_right">
-            	{include file='comunidades/c.crear_right.tpl'}
+            	{include "c.crear_right.tpl"}
             </div>
         </form>
     {elseif $tsAction == 'agregar' || $tsAction == 'editar-tema'}
-    	{include file='comunidades/c.agregar_tema.tpl'}
+    	{include "c.agregar_tema.tpl"}
     {elseif $tsAction == 'tema'}
     	<div class="com_left">
-            {include file='comunidades/c.com_info.tpl'}
-            {include file='comunidades/c.tema_cuerpo.tpl'}
-            {include file='comunidades/c.tema_comentarios.tpl'}
+            {include "c.com_info.tpl"}
+            {include "c.tema_cuerpo.tpl"}
+            {include "c.tema_comentarios.tpl"}
         </div>
         <div class="com_right">
-        	{include file='comunidades/c.tema_autor.tpl'}
+        	{include "c.tema_autor.tpl"}
         </div>
     {elseif $tsAction == 'mis-comunidades'}
     	<div class="com_left">
@@ -58,36 +50,36 @@
         </div>
     {elseif $tsAction == 'miembros'}
     	<div class="com_left">
-            {include file='comunidades/c.miembros_left.tpl'}
+            {include "c.miembros_left.tpl"}
         </div>
         <div class="com_right">
-        	{include file='comunidades/c.miembros_right.tpl'}
+        	{include "c.miembros_right.tpl"}
         </div>
     {elseif $tsAction == 'dir'}
     	<div class="com_left">
-	    	{include file='comunidades/c.directorio_left.tpl'}
+	    	{include "c.directorio_left.tpl"}
         </div>
         <div class="com_right">
-	    	{include file='comunidades/c.directorio_right.tpl'}
+	    	{include "c.directorio_right.tpl"}
         </div>
     {elseif $tsAction == 'mod-history'}
-	    {include file='comunidades/c.historial.tpl'}
+	    {include "c.historial.tpl"}
     {elseif $tsAction == 'com-mod-history'}
-	    {include file='comunidades/c.com_historial.tpl'}
+	    {include "c.com_historial.tpl"}
     {elseif $tsAction == 'buscar'}
         <div class="com_left">
-            {include file='comunidades/c.buscar_left.tpl'}
+            {include "c.buscar_left.tpl"}
         </div>
         <div class="com_right">
-            {include file='comunidades/c.buscar_right.tpl'}
+            {include "c.buscar_right.tpl"}
         </div>
 	{elseif $tsAction == 'favoritos'}
     	{if $tsFavoritos.data}
         <div class="com_left">
-            {include file='comunidades/c.favoritos_left.tpl'}
+            {include "c.favoritos_left.tpl"}
         </div>
         <div class="com_right">
-            {include file='comunidades/c.favoritos_right.tpl'}
+            {include "c.favoritos_right.tpl"}
         </div>
         {else}
         <div class="com_bigmsj_blue">No has agregado temas a tus favoritos a&uacute;n</div>
@@ -96,10 +88,10 @@
     {elseif $tsAction == 'borradores'}
     	{if $tsBorradores.data}
         <div class="com_left">
-            {include file='comunidades/c.borradores_left.tpl'}
+            {include "c.borradores_left.tpl"}
         </div>
         <div class="com_right">
-            {include file='comunidades/c.borradores_right.tpl'}
+            {include "c.borradores_right.tpl"}
         </div>
         {else}
         <div class="com_bigmsj_blue">No tienes ning&uacute;n borrador a&uacute;n</div>
@@ -107,12 +99,12 @@
         {/if}
     {else}
         <div class="com_left">
-            {include file='comunidades/c.com_info.tpl'}
-            {include file='comunidades/c.com_temas.tpl'}
+            {include "c.com_info.tpl"}
+            {include "c.com_temas.tpl"}
         </div>
         <div class="com_right">
-        	{include file='comunidades/c.com_right.tpl'}
+        	{include "c.com_right.tpl"}
         </div>
     {/if}
 	<div align="center" style="opacity: 0.3;clear: both;font-size: 11px;">Secci&oacute;n comunidades creada por <a href="http://www.phpost.net/user/6266-kmario19/">Kmario19</a> para <a href="http://www.phpost.net/">PHPost</a></div>
-{include file='sections/main_footer.tpl'}
+{include "main_footer.tpl"}

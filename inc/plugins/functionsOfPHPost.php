@@ -181,7 +181,7 @@ class fnPHPost {
 	}
 
 	public function getGlobalData() {
-		global $tsCore, $tsUser, $tsPost, $tsFoto, $tsNots, $tsMPs, $tsAction;
+		global $tsCore, $tsUser, $tsPost, $tsFoto, $tsNots, $tsMPs, $tsAction, $tsCom, $tsTema;
 		//
 		if(isset($tsUser->uid) OR $tsUser->uid != 0) $data['user_key'] = (int)$tsUser->uid;
 		$data['public'] = $tsCore->settings['public'];
@@ -193,6 +193,8 @@ class fnPHPost {
 		$data['s_slogan'] = $tsCore->settings['slogan'];
 		if(isset($tsPost['post_id'])) $data['postid'] = (int)$tsPost['post_id'];
 		if(isset($tsPost['foto_id'])) $data['fotoid'] = (int)$tsFoto['foto_id'];
+		if(isset($tsPost['c_id'])) $data['comid'] = (int)$tsFoto['c_id'];
+		if(isset($tsPost['t_id'])) $data['temaid'] = (int)$tsFoto['t_id'];
 		// Modificamos el array
 		foreach ($data as $key => $value) 
 			$global[$key] = "\t$key: " . (is_numeric($value) ? $value : "'$value'");

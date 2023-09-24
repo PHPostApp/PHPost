@@ -18,7 +18,16 @@
 			</div>
 			<!-- INFOMACIÓN DEL ÚLTIMO COMMIT -->
 			<div class="panel-info last-commit card">
-				<h5 class="card-header">Último commit en Github</h5>
+				<h5 class="card-header d-flex justify-content-between align-items-center"><span>Último commit en Github</span>
+					<div class="text-end">
+						<!-- Radio buttons as toggle buttons -->
+						<input type="radio" name="branch" class="btn-check" id="master" checked>
+						<label class="btn btn-outline-primary" for="master">Master</label>
+						 
+						<input type="radio" name="branch" class="btn-check" id="dev">
+						<label class="btn btn-outline-primary" for="dev">Dev</label>
+					</div>
+				</h5>
 				<div id="lastCommit" class="card-body">
 					<div class="phpostAlfa">Cargando...</div>
 				</div>

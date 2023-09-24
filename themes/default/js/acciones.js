@@ -22,9 +22,9 @@ function ir_a_categoria(cat){
 //Imprimir editores
 function print_editor(){
    //Editor de respuesta de mensajes
-   if($('#respuesta').length && !$('.wysibb-texarea').length){
+   if($('#respuesta, #markit_resp').length && !$('.wysibb-texarea').length){
       var wbbOpt = { buttons: "smilebox,|,bold,italic,underline,strike,sup,sub,|,img,video,link,|,removeFormat" }
-      $('#respuesta').removeAttr('onblur onfocus class style title').css('height', '80').html('').wysibb(wbbOpt);
+      $('#respuesta, #markit_resp').removeAttr('onblur onfocus class style title').css('height', '80').html('').wysibb(wbbOpt);
    }
 }
 /* FIN - Editor */

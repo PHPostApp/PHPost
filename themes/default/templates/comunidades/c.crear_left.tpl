@@ -1,6 +1,6 @@
 {if $tsDato.c_estado == 1}<div class="com_bigmsj_red">La comunidad est&aacute; suspendida, para eliminarla permanentemente ve a la administraci&oacute;n</div>{/if}
 <div class="add_com">
-    <h2>{if $tsAction == 'editar'}Edtar{else}Nueva{/if} comunidad</h2>
+    <h2>{if $tsAction == 'editar'}Editar{else}Nueva{/if} comunidad</h2>
     <div class="item_form clearfix">
         <label>Nombre</label>
         <input type="text" name="nombre" class="required input_text" onKeyPress="hideError(this);" tabindex="1" value="{$tsDato.c_nombre}" />

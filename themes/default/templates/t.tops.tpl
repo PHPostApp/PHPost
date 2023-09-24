@@ -6,9 +6,9 @@
 	{elseif $tsAction == 'usuarios'}
 		{include "m.top_users.tpl"}
 	{elseif $tsAction == 'comunidades'}
-		{include file='modules/m.top_comunidades.tpl'}
+		{include "m.top_comunidades.tpl"}
 	{elseif $tsAction == 'temas'}
-		{include file='modules/m.top_temas.tpl'}
+		{include "m.top_temas.tpl"}
 	{/if}
 	<div style="clear: both;"></div>
                 

@@ -13,7 +13,7 @@
         <div class="ctcf_add_coment floatL clearfix">
         	<textarea id="markit_resp" class="input_text" style="width: 535px;border-radius: 0 0 4px 4px;border-top: 0;resize: vertical;"></textarea>
             <input type="button" class="input_button floatL" id="btn_newcom" value="Comentar" onclick="com.add_respuesta({$tsTema.t_id});" />
-            <div id="markit_emoticon" class="floatL" style="display:none;margin-left: 5px;margin-top: 8px;">{include file='modules/m.global_emoticons.tpl'}</div>
+            <div id="markit_emoticon" class="floatL" style="display:none;margin-left: 5px;margin-top: 8px;">{include "m.global_emoticons.tpl"}</div>
         </div>
     </div>
     {elseif !$tsCom.es_miembro || !$tsUser->is_member}

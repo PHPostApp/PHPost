@@ -40,7 +40,7 @@ function smarty_function_phpost($params, &$smarty) {
 			// Añadimos todos los estilos
 			$HTML .= "<!-- Añadidos col el plugin: {phpost css=[\"...\"]} -->\n";
 			// Para las notificaciones de usuario
-			if($funcs->getLive()) array_push($params['css'], 'live.css');
+			if($funcs->getLive() AND !in_array($tsPage, ['login', 'registro'])) array_push($params['css'], 'live.css');
 			// Ahora se añaden en páginas especificas
 			if($tsPage === 'admin') {
 				if($action === 'rangos') array_push($params['css'], 'colorpicker.css');
@@ -74,7 +74,7 @@ function smarty_function_phpost($params, &$smarty) {
 			if($funcs->getPerms()) array_push($params['js'], 'moderacion.js');
 
 			// Para las notificaciones de usuario
-			if($funcs->getLive()) array_push($params['js'], 'live.js');
+			if($funcs->getLive() AND !in_array($tsPage, ['login', 'registro'])) array_push($params['js'], 'live.js');
 			//
 			foreach($params['js'] as $js) $HTML .= $funcs->getScript($js, $params['deny']);
 			// Variable global

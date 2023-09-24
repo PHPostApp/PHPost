@@ -7,13 +7,12 @@
 {phpost 
 	favicon="favicon.ico" 
 	css=["halfmoon.css", "$tsPage.css"] 
-	js=["acciones.js", "$tsPage.js"] 
+	js=["acciones.js", "mode.js", "$tsPage.js"] 
 	deny=["moderacion.js", "cuenta.js"]
 }
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <script>
 $(document).ready(() => {
 {if $tsNots > 0}notifica.popup({$tsNots});{/if}

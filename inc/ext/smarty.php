@@ -16,6 +16,7 @@ define('TS_TEMA_ACT', TS_THEMES . TS_TEMA . TS_PATH);
 define('TS_TEMPLATES', TS_TEMA_ACT . "templates" . TS_PATH);
 define('TS_SECTIONS', TS_TEMPLATES . "sections" . TS_PATH);
 define('TS_MODULES', TS_TEMPLATES . "modules" . TS_PATH);
+define('TS_COMUNIDADES', TS_TEMPLATES . "comunidades" . TS_PATH);
 
 define('TS_PUBLIC', TS_ROOT . 'public' . TS_PATH);
 define('TS_DASHBOARD', TS_PUBLIC . 'dashboard' . TS_PATH);
@@ -45,6 +46,7 @@ $addDir['images'] 	= TS_TEMA_ACT . "images";
 $addDir['templates'] = TS_TEMPLATES;
 $addDir['sections'] 	= TS_SECTIONS;
 $addDir['modules'] 	= TS_MODULES;
+$addDir['comunidades'] 	= TS_COMUNIDADES;
 //
 $addDir['plugins'] 	= TS_PLUGINS;
 $addDir['public'] 	= TS_PUBLIC;

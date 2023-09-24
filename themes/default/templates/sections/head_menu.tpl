@@ -28,7 +28,7 @@
 			{/if}
 		{else}
 			<li class="tabbed registrate">
-				<a title="Registrate!" href="javascript:registro_load_form()"><strong>Registrate</strong></a>
+				<a title="Registrate!" href="{$tsConfig.url}/registro"><strong>Registrate</strong></a>
 			</li>
 		{/if}
 		<li class="clearBoth"></li>
