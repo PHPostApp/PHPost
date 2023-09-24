@@ -18,7 +18,7 @@ class DataBase {
    	} catch (Exception $e) {
 			switch ($e->getCode()) {
 				case 1045:
-					$_SERVER['message'] = "Acceso denegado para el usuario <strong>'{$this->db['username']}'</strong>@'localhost'";
+					$_SERVER['message'] = "Acceso denegado para el usuario <strong>'{$this->db['username']}'</strong>@'{$this->db['hostname']}'";
 				break;
 				case 1049:
 					$_SERVER['message'] = "La base de datos <strong>{$this->db['database']}</strong> es desconocida o no existe.";

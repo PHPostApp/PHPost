@@ -131,21 +131,6 @@ switch ($step) {
          // Con esto evitamos escribir todos los campos
          foreach ($_POST['db'] as $key => $val) 
          	$db[$key] = empty($val) ? '' : htmlspecialchars($val);
-         // Crear una conexión a la base de datos MySQL
-			$conn = new mysqli($db['hostname'], $db['username'], $db['password']);
-			// Consulta SQL para verificar la existencia de la base de datos
-			$sql = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{$db['database']}'";
-			$result = $conn->query($sql);
-			if ($result->num_rows == 0) {
-				$sql = "CREATE DATABASE " . $db['database'];
-				if ($conn->query($sql) === TRUE) {
-					// Ahora asignamos todos los privilegios a un usuario en la nueva base de datos
-		   		$sql = "GRANT ALL PRIVILEGES ON {$db['database']}.* TO '{$db['username']}'@'{$db['hostname']}'";
-				}
-				$conn->close();
-			}
-			// CONECTAMOS
-			$db_link = mysqli_connect($db['hostname'], $db['username'], $db['password'], $db['database']);
 			// NO SE PUDO CONECTAR?
          $database->db = $db;
          $database->db_link = $database->conn();
