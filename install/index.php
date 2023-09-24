@@ -17,7 +17,7 @@ define('BLOCKED', SCRIPT_ROOT . '.lock');
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 session_start();
 //
-$version_id = "1.3.006";
+$version_id = "1.3.0.007";
 $version_title = "Risus $version_id";
 $wversion_code = str_replace([' ', '.'], '_', strtolower($version_title));
 

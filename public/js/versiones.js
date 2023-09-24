@@ -36,21 +36,16 @@ $.getJSON(global_data.url + "/feed-version.php?v=risus", response => {
   	$('#ultima_version').append(clonar);
 });
 
-changeBranch = (ghbranch = 'master') => {
-	// ÚLTIMO COMMIT DE GITHUB
-	const ghuser = 'joelmiguelvalente';
-	const ghrepo = 'PHPost';
-	const apiGithub = `https://api.github.com/repos/${ghuser}/${ghrepo}/commits/${ghbranch}`;
-
-	var cookiename = "LastCommitSha";
-	var expires = { expires: 7 }
-	$.getJSON(apiGithub, data => {
-		// Limpiamos
+changeBranch = (branch = 'master') => {
+	$.post(global_data.url + '/github-api.php', { branch }, response => {
+		var cookiename = "LastCommitSha";
+		var expires = { expires: 7 }
+		//
 		$('#lastCommit').html('');
 		// Reemplazamos \n por saltos de línea con <br>
-		content = data.commit.message.replace(/\n/g, '<br>');
+		content = response.commit.message.replace(/\n/g, '<br>');
 		// Si la pantalla es menor a 1120px solo tendrá 7 caracteres
-		SHA = (window.width < 1120) ? data.sha.substring(0, 7) : data.sha;
+		SHA = (window.width < 1120) ? response.sha.substring(0, 7) : response.sha;
 		// Si la Cookie no existe la crearemos por 7 días
 		if($.cookie(cookiename) === null) $.cookie(cookiename, SHA, expires);
 		// Obtenemos el valor de la cookie
@@ -60,12 +55,12 @@ changeBranch = (ghbranch = 'master') => {
 			url = global_data.url + '/admin-update.php';
 			$.post(url, 'update_now=false', r => $.cookie(cookiename, getSHA, expires))
 		}
-		let hace = $.timeago(data.commit.author.date)
+		let hace = $.timeago(response.commit.author.date)
 		//
 		var added = 0;
 		var modified = 0;
 		var deleted = 0;
-		data.files.map( file => {
+		response.files.map( file => {
 			if(file.status === 'added') added += 1;
 			if(file.status === 'modified') modified += 1;
 			if(file.status === 'deleted') deleted += 1;
@@ -77,11 +72,11 @@ changeBranch = (ghbranch = 'master') => {
 			<small>Eliminados <strong>${deleted}</strong></small>
 		</div></div>`;
 
-		$('.panel-info.last-commit .card-footer').html(`<span>Sha: <a href="${data.html_url}" class="text-decoration-none text-primary" rel="noreferrer" target="_blank">${SHA}</a></span><span>${hace}</span>`);
+		$('.panel-info.last-commit .card-footer').html(`<span>Sha: <a href="${response.html_url}" class="text-decoration-none text-primary" rel="noreferrer" target="_blank">${SHA}</a></span><span>${hace}</span>`);
 
 		// La añadimos al HTML
 		$('#lastCommit').append(html);
-	})
+	}, 'json')
 }
 // Autoejecutamos
 changeBranch();

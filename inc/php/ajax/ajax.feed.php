@@ -36,8 +36,8 @@
 		'i' => $tsUser->uid
 	];
 	$key = base64_encode(serialize($code));
-	$conexion = "http://www.phpost.es/feed/";
-	//$conexion = dirname($tsCore->settings['url']) . '/feed/';
+	//$conexion = "http://www.phpost.es/feed/";
+	$conexion = dirname($tsCore->settings['url']) . '/feed/';
 	// CODIGO
 	switch($action){
 		case 'feed-support':
@@ -48,8 +48,8 @@
 		break;
 		case 'feed-version':
 			/**
-			 * Versión a 03 de septiembre de 2023 *
-			 * PHPost Risus 1.3.0.005 *
+			 * Versión a 24 de septiembre de 2023 *
+			 * PHPost Risus 1.3.0.006 *
 			*/
 			$time = time();
 			$version_now = 'Risus 1.3.0.006';
