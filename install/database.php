@@ -627,6 +627,8 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_social` (
   `social_client_id` tinytext NULL,
   `social_client_secret` tinytext NULL,
   `social_redirect_uri` tinytext NULL,
+  `social_scope` tinytext NULL,
+  `social_state` tinytext NULL,
   PRIMARY KEY (`social_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 

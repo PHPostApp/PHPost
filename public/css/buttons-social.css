@@ -31,6 +31,12 @@
 .btn-bitbucket:active,.btn-bitbucket.active,.open>.dropdown-toggle.btn-bitbucket{background-image:none}
 .btn-bitbucket.disabled:hover,.btn-bitbucket[disabled]:hover,fieldset[disabled] .btn-bitbucket:hover,.btn-bitbucket.disabled:focus,.btn-bitbucket[disabled]:focus,fieldset[disabled] .btn-bitbucket:focus,.btn-bitbucket.disabled.focus,.btn-bitbucket[disabled].focus,fieldset[disabled] .btn-bitbucket.focus{background-color:#205081;border-color:rgba(0,0,0,0.2)}
 .btn-bitbucket .badge{color:#205081;background-color:#fff}
+.btn-discord{color:#fff;background-color:#7289da;border-color:rgba(0,0,0,0.2)}.btn-discord:focus,.btn-discord.focus{color:#fff;background-color:#7289da;border-color:rgba(0,0,0,0.2)}
+.btn-discord:hover{color:#fff;background-color:#7289da;border-color:rgba(0,0,0,0.2)}
+.btn-discord:active,.btn-discord.active,.open>.dropdown-toggle.btn-discord{color:#fff;background-color:#7289da;border-color:rgba(0,0,0,0.2)}.btn-discord:active:hover,.btn-discord.active:hover,.open>.dropdown-toggle.btn-discord:hover,.btn-discord:active:focus,.btn-discord.active:focus,.open>.dropdown-toggle.btn-discord:focus,.btn-discord:active.focus,.btn-discord.active.focus,.open>.dropdown-toggle.btn-discord.focus{color:#fff;background-color:#425BB5;border-color:rgba(0,0,0,0.2)}
+.btn-discord:active,.btn-discord.active,.open>.dropdown-toggle.btn-discord{background-image:none}
+.btn-discord.disabled:hover,.btn-discord[disabled]:hover,fieldset[disabled] .btn-discord:hover,.btn-discord.disabled:focus,.btn-discord[disabled]:focus,fieldset[disabled] .btn-discord:focus,.btn-discord.disabled.focus,.btn-discord[disabled].focus,fieldset[disabled] .btn-discord.focus{background-color:#7289da;border-color:rgba(0,0,0,0.2)}
+.btn-discord .badge{color:#7289da;background-color:#fff}
 .btn-dropbox{color:#fff;background-color:#1087dd;border-color:rgba(0,0,0,0.2)}.btn-dropbox:focus,.btn-dropbox.focus{color:#fff;background-color:#0d6aad;border-color:rgba(0,0,0,0.2)}
 .btn-dropbox:hover{color:#fff;background-color:#0d6aad;border-color:rgba(0,0,0,0.2)}
 .btn-dropbox:active,.btn-dropbox.active,.open>.dropdown-toggle.btn-dropbox{color:#fff;background-color:#0d6aad;border-color:rgba(0,0,0,0.2)}.btn-dropbox:active:hover,.btn-dropbox.active:hover,.open>.dropdown-toggle.btn-dropbox:hover,.btn-dropbox:active:focus,.btn-dropbox.active:focus,.open>.dropdown-toggle.btn-dropbox:focus,.btn-dropbox:active.focus,.btn-dropbox.active.focus,.open>.dropdown-toggle.btn-dropbox.focus{color:#fff;background-color:#0a568c;border-color:rgba(0,0,0,0.2)}

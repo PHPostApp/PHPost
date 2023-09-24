@@ -32,21 +32,21 @@
 	         	<dl>
             		<dt><label for="social_name">Sitio:</label></dt>
             		<dd>
-            			{html_options name='social_name' id='social_name' options=['github' => 'GitHub', 'discord' => 'Discord', 'gmail' => 'Gmail / Google', 'facebook' => 'Facebook'] selected=$tsSocial.social_name class="select"}
+            			{html_options name='social_name' id='social_name' options=['github' => 'GitHub', 'discord' => 'Discord', 'gmail' => 'Gmail / Google', 'facebook' => 'Facebook'] selected=$tsSocial.social_name class="form-select"}
             		</dd>
          		</dl>
 	         {/if}
 	         <dl>
             	<dt><label for="clientid">Client-ID:</label></dt>
-            	<dd><input type="text" id="clientid" name="social_client_id" value="{$tsSocial.social_client_id}" /></dd>
+            	<dd><input class="form-control" type="text" id="clientid" name="social_client_id" value="{$tsSocial.social_client_id}" /></dd>
          	</dl>
 	         <dl>
             	<dt><label for="clientsecret">Client-Secret:</label></dt>
-            	<dd><input type="text" id="clientsecret" name="social_client_secret" value="{$tsSocial.social_client_secret}" /></dd>
+            	<dd><input class="form-control" type="text" id="clientsecret" name="social_client_secret" value="{$tsSocial.social_client_secret}" /></dd>
          	</dl>
 	         <dl>
             	<dt><label for="redirecturi">Redirect URL:</label></dt>
-            	<dd><input type="text" id="redirecturi" disabled value="{$tsConfig.url}{$tsSocial.social_redirect_uri}" /></dd>
+            	<dd><input class="form-control" type="text" id="redirecturi" disabled value="{$tsConfig.url}{$tsSocial.social_redirect_uri}" /></dd>
          	</dl>
 	         <p><input type="submit" name="save" value="Guardar Cambios" class="btn_g" /></p>
 	      </fieldset>

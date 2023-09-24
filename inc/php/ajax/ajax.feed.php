@@ -52,7 +52,7 @@
 			 * PHPost Risus 1.3.0.005 *
 			*/
 			$time = time();
-			$version_now = 'Risus 1.3.0.005';
+			$version_now = 'Risus 1.3.0.006';
 			$version_code = str_replace([' ', '.'], '_', strtolower($version_now));
 			# ACTUALIZAR VERSIÓN
 			if($tsCore->settings['version'] != $version_now) {

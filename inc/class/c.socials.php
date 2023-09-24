@@ -12,7 +12,7 @@ class tsSocials {
 
 	public function getSocials() {
 		global $tsCore;
-		$data = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT social_id, social_name, social_client_id, social_client_secret, social_scope, social_state, social_redirect_uri FROM w_social'));
+		$data = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT social_id, social_name, social_client_id, social_client_secret, social_redirect_uri FROM w_social'));
 		foreach($data as $key => $social) {
 			$data[$key]['social_redirect_uri'] = $tsCore->settings['url'] . '/' . $social['social_name'] . '.php';
 		}
@@ -28,8 +28,6 @@ class tsSocials {
 			'name' => $name,
 			'client_id' => $tsCore->setSecure($_POST["social_client_id"]),
 			'client_secret' => $tsCore->setSecure($_POST["social_client_secret"]),
-			'scope' => $tsCore->setSecure($_POST["social_scope"]),
-			'state' => strtolower($tsCore->settings['titulo']).date('y'),
 			'redirect_uri' => "{$tsCore->settings['url']}/" . strtolower($name) . ".php"
 		], 'social_')) return true;
 	}

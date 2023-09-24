@@ -104,7 +104,7 @@ class Callback extends tsCore {
 			# Lo almacenamos en una variable
 			$email = parent::setSecure($UserData['email']);
 			# Generamos la consulta 
-			$usuario = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_password, u.user_email, u.user_activo, u.user_baneado, u.user_socials, w.social_id FROM u_miembros AS u LEFT JOIN w_social AS w ON w.social_name = '{$this->social}' WHERE LOWER(user_email) = '$email' LIMIT 1"));
+			$usuario = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_password, u.user_email, u.user_activo, u.user_baneado, u.user_socials, w.social_id FROM u_miembros AS u LEFT JOIN w_social AS w ON w.social_name = '{$this->social}' WHERE LOWER(user_email) = '$email' OR user_id = {$tsUser->uid} LIMIT 1"));
 
 			# Si no existe el usuario => CREAREMOS
 			if(empty($usuario)) self::createNewAccount($UserData);

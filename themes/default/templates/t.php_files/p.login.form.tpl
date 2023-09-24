@@ -52,7 +52,7 @@ $(() => {
          });
      });
    })
-   .then(() => loadScript('{$tsConfig.js}/login.js'))
+   .then(() => loadScript('{$tsConfig.public}/js/login.js'))
    .catch(error => console.error('Error cargando scripts:', error));
 })
 </script>
