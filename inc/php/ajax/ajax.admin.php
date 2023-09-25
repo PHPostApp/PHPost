@@ -29,6 +29,7 @@
 		'admin-ordenar-categorias' => array('n' => 4, 'p' => ''),
 		'admin-updated' => array('n' => 4, 'p' => ''),
 		'admin-update' => array('n' => 4, 'p' => ''),
+		'admin-backup' => array('n' => 4, 'p' => '')
 	);
 
 /**********************************\
@@ -145,6 +146,11 @@
 			require_once TS_CLASS . "c.lastCommit.php";
 			$gh = new UpdateGithub;
 			echo $gh->updateTable(false);
+		break;
+		case 'admin-backup':	
+			if(file_exists(TS_EXTRA.'backup.php'))
+				include TS_EXTRA.'backup.php';
+			} else die('Herramienta premium proximamente...');
 		break;
       default:
          die('0: Este archivo no existe.');

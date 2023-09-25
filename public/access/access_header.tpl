@@ -17,4 +17,3 @@
 			<div style="z-index:999" class="button-mode position-fixed d-flex justify-content-center align-items-center rounded">
 				<span id="mode_change"></span>
 			</div>
-			

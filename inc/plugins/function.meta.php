@@ -34,7 +34,7 @@ function smarty_function_meta($params, &$smarty) {
 	$meta .= "<meta name=\"description\" content=\"{$data['seo_descripcion']}\" />\n";
 	$meta .= "<meta name=\"theme-color\" media=\"(prefers-color-scheme: light)\" content=\"#5599DE\">\n";
 	$meta .= "<meta name=\"theme-color\" media=\"(prefers-color-scheme: dark)\"  content=\"#343232\">\n";
-	$meta .= "<meta rel=\"manifest\" href=\"./manifest.json\" />\n";
+	$meta .= "<meta rel=\"manifest\" href=\"{$tsCore->settings['url']}/manifest.json\" />\n";
 	$meta .= "<link rel=\"sitemap\" type=\"application/xml\" title=\"Mapa del sitio\" href=\"{$tsCore->settings['url']}/sitemap.xml\">\n";
 	// FACEBOOK
 	if(isset($params['facebook']) AND $params['facebook'] === true) {

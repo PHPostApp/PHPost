@@ -222,14 +222,14 @@ var mydialog = {
 			// Si tiene accion definido
 			if(dataObject.ok.action === 'close' || !dataObject.ok.action) dataObject.ok.action = 'mydialog.close()';
 			let classdisabled = dataObject.ok.active ? '' : ' disabled';
-			is_html += `<input type="button" class="mBtn btnOk${classdisabled}" style="display:inline-block!important;" onclick="${dataObject.ok.action}" value="${dataObject.ok.text}"${classdisabled} />`;
+			is_html += `<input type="button" class="btn btn-success mBtn btnOk${classdisabled}" style="display:inline-block!important;" onclick="${dataObject.ok.action}" value="${dataObject.ok.text}"${classdisabled} />`;
 		}
 		// Si existe "fail"
 		if(dataObject.fail) {
 			// Si tiene accion definido
 			if(dataObject.fail.action === 'close' || !dataObject.fail.action) dataObject.ok.action = 'mydialog.close()';
 			let classdisabled = dataObject.fail.active ? '' : ' disabled';
-			is_html += `<input type="button" class="mBtn btnCancel${classdisabled}" style="display:inline-block!important;" onclick="${dataObject.ok.action}" value="${dataObject.fail.text}"${classdisabled} />`;
+			is_html += `<input type="button" class="btn btn-danger mBtn btnCancel${classdisabled}" style="display:inline-block!important;" onclick="${dataObject.ok.action}" value="${dataObject.fail.text}"${classdisabled} />`;
 		}
 		// Por que si se ejecuta 2 veces y el 1ro tiene mydialog.buttons(false)
 		// El 2do ya no se visualizará ya que no existe en el DOM #buttons

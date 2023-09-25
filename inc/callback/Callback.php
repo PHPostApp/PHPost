@@ -166,9 +166,9 @@ class Callback extends tsCore {
       if((int)$user['user_baneado'] === 1) die('Tu has sido baneado.');
 		# Esta vinculado?
 		$status = json_decode($user['user_socials'], true);
-		if($status[$this->social]) {
+		if($status[$this->social]) {   
 			// Actualizamos la session
-         $tsUser->sessionUpdate((int)$user['user_id']);           
+         $tsUser->sessionUpdate((int)$user['user_id']); 
 			/* REDERIGIR */
 			parent::redirectTo('./');
 		} else die('Tu cuenta no esta vinculada a ' . $this->social);

@@ -40,8 +40,8 @@ if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' || !empty($_SERVER['H
 }
 $local = dirname(dirname($_SERVER["REQUEST_URI"]));
 // Creando las url base e install
-$url = "$ssl://" . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost') . $local;
-$base_install = $url . "/install";
+$url = "$ssl://" . ($_SERVER['HTTP_HOST'] === 'localhost' ? "localhost$local" : $_SERVER['HTTP_HOST']);
+$base_install = "$url/install";
 
 require_once INSTALL_ROOT . "functions.php";
 
