@@ -155,7 +155,7 @@
 					</dd>
 				</dl>	
 				<hr />
-				<p><input type="submit" name="{if $tsAct == 'nueva'}save{else}edit{/if}" value="{if $tsAct == 'nueva'}Crear medalla{else}Guardar{/if}" class="btn_g"/></p>
+				<p><input type="submit" name="{if $tsAct == 'nueva'}save{else}edit{/if}" value="{if $tsAct == 'nueva'}Crear medalla{else}Guardar{/if}" class="btn btn-primary"/></p>
 			</fieldset>
 		</form>
 	{/if}

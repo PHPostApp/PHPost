@@ -348,7 +348,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_perfil` (
   `user_estado` int(2) NOT NULL DEFAULT 1,
   `user_sexo` int(1) NOT NULL DEFAULT 1,
   `user_firma` text NULL,
-  `p_nombre` varchar(32) NOT NULL DEFAULT '',
+  `p_nombre` varchar(50) NOT NULL DEFAULT '',
   `p_avatar` int(1) NOT NULL DEFAULT 0,
   `p_mensaje` varchar(60) NOT NULL DEFAULT '',
   `p_sitio` varchar(60) NOT NULL DEFAULT '',
@@ -639,10 +639,14 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_site_seo` (
   `seo_favicon` tinytext NULL DEFAULT 'public/images/logo-64.png',
   `seo_keywords` text NULL,
   `seo_images` text NULL DEFAULT '{\"16x16\":\"public\/images\/logo-16.png\",\"32x32\":\"public\/images\/logo-32.png\",\"64x64\":\"public\/images\/logo-64.png\"}',
+  `seo_robots_data` text NULL DEFAULT '',
   `seo_robots` int(1) NULL DEFAULT 0,
   `seo_sitemap` int(1) NULL DEFAULT 0,
   PRIMARY KEY (`seo_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "INSERT INTO `w_site_seo` (`seo_id`, `seo_titulo`, `c_seo`, `c_img`) VALUES
+(1, 'PHPost - Renovación inteligente en línea', 'arte-literatura', 'c_arte-literatura.png');";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_baneados` (
   `ban_id` int(11) NOT NULL AUTO_INCREMENT,

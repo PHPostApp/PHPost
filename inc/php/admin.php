@@ -75,7 +75,9 @@
     	//
 		$tsTitle = 'Configurar SEO';
 		if(empty($act)) $smarty->assign('tsSeo', $tsAdmin->getSEO());
-
+		if(!empty($_POST['titulo'])) {
+			if($tsAdmin->saveSEO()) $tsCore->redireccionar('admin', $action, 'save=true');
+		}	
 	// Redes sociales
 	} elseif($action === 'socials') {
     	// CLASE MEDAL

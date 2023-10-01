@@ -1,11 +1,10 @@
 <?php 
 
-if ( ! defined('TS_HEADER')) 
-	 exit('No se permite el acceso directo al script');
+if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
 
 if(file_exists(TS_ROOT . 'config.inc.php')) {
-	 require_once TS_ROOT . 'config.inc.php';
-	 if($db['hostname'] == 'dbhost') header("Location: ./install/index.php");
+	require_once TS_ROOT . 'config.inc.php';
+	if($db['hostname'] == 'dbhost') header("Location: ./install/index.php");
 } else header("Location: ./install/index.php");
 
 /**

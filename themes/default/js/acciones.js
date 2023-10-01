@@ -871,4 +871,5 @@ $(document).ready(() => {
       }
       new LazyLoad(NewOptions)
    });
+
 });

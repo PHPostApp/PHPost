@@ -61,7 +61,7 @@
 					<dd><textarea name="af_desc" id="af_desc" rows="3" cols="40">{$tsAf.a_descripcion}</textarea></dd>
 				</dl>
 				<hr />
-		 		<p><input type="submit" name="edit" value="Guardar" class="btn_g"/>
+		 		<p><input type="submit" name="edit" value="Guardar" class="btn btn-primary"/>
 			</fieldset>
 		</form>
 	{/if}

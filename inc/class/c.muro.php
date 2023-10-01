@@ -138,7 +138,7 @@ class tsMuro {
 						$description = str_replace('<br>','',html_entity_decode($data['description']));
 						// RETORNAMOS HTML/VALORES
 						if($return == false)
-						return '1: <div class="vContent"><lite-youtube videoid="'.$video_id.'" style="background-image: url(\'https://i.ytimg.com/vi/'.$video_id.'/maxresdefault.jpg\');"></lite-youtube><div class="vDesc"><strong><a href="http://www.youtube.com/watch?v='.$video_id.'" target="_blank" class="a_blue">'.$data['title'].'</a></strong><div style="margin-top:5px">'.$description.'</div></div><div class="clearBoth"></div></div>';
+						return '1: <div class="vContent"><lite-youtube videoid="'.$video_id.'" style="background-image: url(\'https://i.ytimg.com/vi/'.$video_id.'/maxresdefault.jpg\');" params="controls=0&start=10&end=30&modestbranding=2&rel=0&enablejsapi=1"></lite-youtube><div class="vDesc"><strong><a href="http://www.youtube.com/watch?v='.$video_id.'" target="_blank" class="a_blue">'.$data['title'].'</a></strong><div style="margin-top:5px">'.$description.'</div></div><div class="clearBoth"></div></div>';
 						else return array('ID' => $video_id, 'title' => $tsCore->setSecure($data['title'], true), 'desc' => $tsCore->setSecure(substr($description,0,160)), true);
 					}
 				break;

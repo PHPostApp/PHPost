@@ -191,6 +191,20 @@ switch ($step) {
 				$database->query("UPDATE `p_categorias` SET c_nombre = '$name', c_seo = '$seo' WHERE cid = 30 LIMIT 1");
             // Insertamos en w_temas
             $database->query("INSERT INTO w_temas (tid, t_name, t_url, t_path, t_copy) VALUES({$theme['tid']}, '{$theme['t_name']}', '{$web['url']}{$theme['t_url']}', '{$theme['t_path']}', '{$theme['t_copy']}')");
+            // Insertamos en w_site_seo
+            // SEO TITLE
+            $seoTitle = "{$web['name']} - {$web['slogan']}";
+            // SEO DESCRIPTION
+            $seoDecription = "Únete a nuestra comunidad para compartir experiencias y conocer gente nueva. ¡Conéctate hoy mismo!";
+            // SEO KEYWORDS
+            $seoKeys = "comunidad, conocer, red, ampliar, interaccion, compartir, amigos, conectar, relaciones, intereses, encuentros, virtual";
+            // SEO IMAGES
+            $seoImages = json_encode([
+            	'16' => 'public/images/logo-16.png',
+            	'32' => 'public/images/logo-32.png',
+            	'64' => 'public/images/logo-64.png'
+            ], JSON_FORCE_OBJECT);
+            $database->query("INSERT INTO w_site_seo (seo_id, seo_titulo, seo_descripcion, seo_favicon, seo_keywords, seo_images, seo_robots, seo_sitemap) VALUES(1, '$seoTitle', '$seoDecription', 'public/images/logo-64.png', '$seoKeys', '$seoImages', 0, 0)");
 				// GUARDAR LOS DATOS DE CONEXION
 				$config = file_get_contents(CONFIGINC);
 				$config = str_replace(['dbpkey', 'dbskey'], [$web['pkey'], $web['skey']], $config);

@@ -144,9 +144,8 @@ class Callback extends tsCore {
 	      db_exec([__FILE__, __LINE__], 'query', "INSERT INTO `u_portal` (`user_id`) VALUES ($id)");
 	      $data = [
 	      	'user_id' => $id, 
-	      	'user_baneado' => 0, 
-	      	...$info
-	      ];
+	      	'user_baneado' => 0,
+	      ] + $info;
 	      self::accessAccount($data);
 		}
 	}

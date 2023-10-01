@@ -223,7 +223,7 @@
 	{else}
 	<div class="phpostAlfa">Pendiente</div>
 	{/if}
-	<p><input type="submit" name="save" value="Enviar Cambios" class="btn_g"/></p>
+	<p><input type="submit" name="save" value="Enviar Cambios" class="btn btn-primary"/></p>
 	</fieldset>
 </form>
 {/if}

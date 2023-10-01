@@ -48,7 +48,7 @@
             	<dt><label for="redirecturi">Redirect URL:</label></dt>
             	<dd><input class="form-control" type="text" id="redirecturi" disabled value="{$tsConfig.url}{$tsSocial.social_redirect_uri}" /></dd>
          	</dl>
-	         <p><input type="submit" name="save" value="Guardar Cambios" class="btn_g" /></p>
+	         <p><input type="submit" name="save" value="Guardar Cambios" class="btn btn-primary" /></p>
 	      </fieldset>
 	   </form>
 	   <script>

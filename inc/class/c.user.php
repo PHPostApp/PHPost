@@ -416,7 +416,7 @@ class tsUser extends reCaptcha {
         
         // ACTUALES
         $total = explode(',',$pages['limit']);
-        $total = ($total[0]) + count($data);
+        $total = ($total[0]) + safe_count($data);
         //
         return array('data' => $data, 'pages' => $pages, 'total' => $total);
     }

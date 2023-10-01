@@ -27,13 +27,6 @@ function smarty_function_phpost($params, &$smarty) {
 	$HTML = '';
 	$funcs = new fnPHPost;
 
-	// Añadimos este isset ya que si no exite $params['favicon'] generará un error
-	if(isset($params['favicon'])) {
-		$HTML .= "<!-- Añadidos col el plugin: {phpost favicon=\"...\"} -->\n";
-		// Obtenemos el icono o generamos uno automaticamente
-		$HTML .= $funcs->getFavicon((isset($params['favicon']) ? $params['favicon'] : 'not'));
-	}
-
 	// Añadimos este isset ya que si no exite $params['css'] generará un error
 	if(isset($params['css'])) {
 		if(is_array($params['css'])) {
@@ -54,14 +47,14 @@ function smarty_function_phpost($params, &$smarty) {
 	}
 
 	// Añadimos este isset ya que si no exite $params['js'] generará un error
-	if(isset($params['js']) OR isset($params['deny'])) {
+	if(isset($params['js']) OR isset($params['deny']) OR isset($params['from'])) {
 		// Ahora usamos 'deny' para evitar que agregue 2 veces el mismo archivo
 		if(is_array($params['js'])) {
 			// Añadimos todos los scripts
 			$HTML .= "<!-- Añadidos col el plugin: {phpost js=[\"...\"]} -->\n";
 			
 			// Básicamente siempre serán necesarios
-			array_unshift($params['js'], "jquery.min.js", "jquery.plugins.js");
+			if(!isset($params['from'])) array_unshift($params['js'], "jquery.min.js", "jquery.plugins.js");
 			
 			// Ahora se añaden en páginas especificas
 			if($tsPage === 'posts') array_push($params['js'], 'highlight.min.js');
@@ -69,17 +62,21 @@ function smarty_function_phpost($params, &$smarty) {
 				if(empty($action)) array_push($params['js'], 'timeago.min.js', 'timeago.es.js');
 				elseif($action === 'rangos') array_push($params['js'], 'colorpicker.js');
 			}
+			if(!isset($params['from'])) {
+				// Si es administrador, moderador o tiene permisos
+				if($funcs->getPerms()) array_push($params['js'], 'moderacion.js');
 
-			// Si es administrador, moderador o tiene permisos
-			if($funcs->getPerms()) array_push($params['js'], 'moderacion.js');
-
-			// Para las notificaciones de usuario
-			if($funcs->getLive() AND !in_array($tsPage, ['login', 'registro'])) array_push($params['js'], 'live.js');
+				// Para las notificaciones de usuario
+				if($funcs->getLive() AND !in_array($tsPage, ['login', 'registro'])) array_push($params['js'], 'live.js');
+			}
 			//
-			foreach($params['js'] as $js) $HTML .= $funcs->getScript($js, $params['deny']);
-			// Variable global
-			$HTML .= "<!-- Añadidos col el plugin: {phpost *sin parametros*} -->\n";
-			$HTML .= $funcs->getGlobalData();
+			$deny = isset($params['from']) ? [] : $params['deny'];
+			foreach($params['js'] as $js) $HTML .= $funcs->getScript($js, $deny);
+			if(!isset($params['from'])) {
+				// Variable global
+				$HTML .= "<!-- Añadidos col el plugin: {phpost *sin parametros*} -->\n";
+				$HTML .= $funcs->getGlobalData();
+			}
 		} else {
 			$HTML .= "<!-- Añadidos col el plugin: {phpost js=[\"...\"]} -->\n";
 			$HTML .= $funcs->getScript($params['js']);

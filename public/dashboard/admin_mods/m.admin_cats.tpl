@@ -62,7 +62,7 @@ $(() => {
 			</tfoot>
 		</table><hr />
 		<a href="{$tsConfig.url}/admin/cats?act=nueva&t=cat" class="mBtn btnOk">Agregar Nueva Categor&iacute;a</a>
-		<a href="{$tsConfig.url}/admin/cats?act=change" class="btn_g">Mover Posts</a>							
+		<a href="{$tsConfig.url}/admin/cats?act=change" class="btn btn-primary">Mover Posts</a>							
 	{elseif $tsAct == 'editar'}
 		<form action="" method="post" autocomplete="off">
 		  	<fieldset>
@@ -82,7 +82,7 @@ $(() => {
 					  	</select>
 					</dd>
 				</dl>
-				<p><input type="submit" name="save" value="Guardar cambios" class="btn_g"/  ></p>
+				<p><input type="submit" name="save" value="Guardar cambios" class="btn btn-primary"/  ></p>
 		  </fieldset>
 		  </form>
 	 {elseif $tsAct == 'nueva'}
@@ -105,7 +105,7 @@ $(() => {
 						</select>
 					</dd>
 				</dl>
-				<p><input type="submit" name="save" value="Crear Categor&iacute;a" class="btn_g"/></p>
+				<p><input type="submit" name="save" value="Crear Categor&iacute;a" class="btn btn-primary"/></p>
 		  </fieldset> 
 		</form>
 	{elseif $tsAct == 'borrar'}

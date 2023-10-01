@@ -26,7 +26,7 @@
 				<dt><label for="ai_ban_5">Search ID:</label><br /><span>ID de tu buscador de GOOGLE</span></dt>
 				<dd><input type="text" name="ads_search" id="ai_ban_5" value="{$tsConfig.ads_search}" style="width:280px" /></dd>
 		  	</dl>
-			<p><input type="submit" value="Guardar cambios" name="save" class="btn_g"/></p>
+			<p><input type="submit" value="Guardar cambios" name="save" class="btn btn-primary"/></p>
 		</fieldset>
 	 </form>
 </div>

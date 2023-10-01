@@ -143,13 +143,22 @@ class tsAdmin {
 	# ===================================================
 	public function getSEO() {
 		global $tsCore;
-		$sql = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT seo_id, seo_titulo, seo_descripcion, seo_favicon, seo_keywords, seo_images, seo_robots, seo_sitemap FROM w_site_seo WHERE seo_id = 1'));
+		$sql = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT seo_id, seo_titulo, seo_descripcion, seo_favicon, seo_keywords, seo_images, seo_robots_data, seo_robots, seo_sitemap FROM w_site_seo WHERE seo_id = 1'));
 		$sql['seo_favicon'] = $sql['seo_favicon'];
-		$robots = json_decode($sql['seo_robots'], true);
+		$robots = json_decode($sql['seo_robots_data'], true);
 		$sql['robots_name'] = $robots['name'];
 		$sql['robots_content'] = $robots['content'];
 		$sql['seo_images'] = json_decode($sql['seo_images'], true);
+		$sql['seo_images_total'] = [16, 32, 64];
 		return $sql;
+	}
+	public function saveSEO() {
+		global $tsCore, $tsUser;
+		//
+		$_POST = isset($_POST['save']) ? array_slice($_POST, 0, -1) : $_POST;
+		foreach($_POST as $key => $val) $_POST[$key] = is_numeric($val) ? (int)$val : (is_array($val) ? json_encode($val, JSON_FORCE_OBJECT) : $tsCore->setSecure($val));
+		$set = $tsCore->getIUP($_POST, 'seo_');
+		if (db_exec([__FILE__, __LINE__], 'query', "UPDATE w_site_seo SET $set WHERE seo_id = 1")) return true;
 	}
 	# ===================================================
 	# NOTICIAS

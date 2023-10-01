@@ -69,7 +69,7 @@
 					</dl>
 				{/if}
 				<hr />
-			 	<p><input type="submit" name="{if $tsAct == 'editar'}edit{else}new{/if}" value="{if $tsAct == 'editar'}Guardar{else}Agregar{/if}" class="btn_g"/>
+			 	<p><input type="submit" name="{if $tsAct == 'editar'}edit{else}new{/if}" value="{if $tsAct == 'editar'}Guardar{else}Agregar{/if}" class="btn btn-primary"/>
 			</fieldset>
 		</form>
 	{/if}

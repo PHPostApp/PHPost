@@ -73,8 +73,19 @@ main footer {
 form fieldset dl {
     display: grid;
     grid-template-columns: 340px 1fr;
-    margin-bottom: 1rem;
+    gap: 1rem;
+    padding: 0.5rem;
 }
 form fieldset dl:nth-child(2n+1) {
-
+    background-color: #0002;
+}
+form fieldset dl dt span {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 300;
+    font-style: italic;
+}
+form fieldset dl dd.small .input-group {
+    width: 120px!important;
 }

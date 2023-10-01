@@ -51,13 +51,13 @@
 												<label><input name="not_active" type="radio" id="ai_not_active" value="0" {if $tsNew.not_active != 1}checked="checked"{/if} class="radio"/>No</label>
 											</dd>
 										</dl>
-										<p><input type="submit" name="save" value="{if $tsAct == 'new'}Agregar noticia{else}Guardar Cambios{/if}" class="btn_g"/></p>
+										<p><input type="submit" name="save" value="{if $tsAct == 'new'}Agregar noticia{else}Guardar Cambios{/if}" class="btn btn-primary"/></p>
 									</fieldset>
 									</form>
 									{elseif $tsAct == 'borrar'}                                   
 									<form action="" method="post" id="admin_form" autocomplete="off">									                                    
 									<center><font color="red">Noticia eliminada</font>																		
 									<hr />									                                    
-									<input type="button" name="confirm" style="cursor:pointer;" onclick="location.href = '/admin/news?borrar=true'" value="Volver &#187;" class="btn_g">									
+									<input type="button" name="confirm" style="cursor:pointer;" onclick="location.href = '/admin/news?borrar=true'" value="Volver &#187;" class="btn btn-primary">									
 									{/if}									
 								</div>

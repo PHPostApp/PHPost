@@ -25,6 +25,7 @@ class tsCore {
 	public function __construct() {
 		// CARGANDO CONFIGURACIONES
 		$this->settings = $this->getSettings();
+		$this->settings['seo'] = $this->getSEO();
 		$this->settings['domain'] = str_replace($this->https_on(),'',$this->settings['url']);
 		$this->settings['categorias'] = $this->getCategorias();
       $this->settings['default'] = $this->settings['url'].'/themes/default';
@@ -104,6 +105,10 @@ class tsCore {
 	*/
 	public function getSettings() {
 		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM w_configuracion');
+		return db_exec('fetch_assoc', $query);
+	}
+	public function getSEO() {
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT seo_titulo, seo_descripcion FROM w_site_seo');
 		return db_exec('fetch_assoc', $query);
 	}
 	

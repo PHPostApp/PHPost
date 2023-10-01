@@ -75,7 +75,7 @@
 			</div>
 		{else}
 			<div class="identificarme">
-				<a title="Identificarme" href="javascript:login_load_form()" class="iniciar_sesion">Identificarme</a>
+				<a title="Identificarme" href="{$tsConfig.url}/login" class="iniciar_sesion">Identificarme</a>
 			</div>
 		{/if}
 	</div>

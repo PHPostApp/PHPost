@@ -6,6 +6,10 @@
  * @author  PHPost Team
  */
 
+/**
+ * Optimizador de imagenes
+ * include TS_EXTRA.'optimizer.php';
+*/
 class tsPosts {
 
 	/** 
@@ -281,10 +285,38 @@ class tsPosts {
 		  //
 		  return $data;
 	 }
+
+	private function generateURL(array $dato = []):string {
+		global $tsCore;
+		$seoTitle = $tsCore->setSEO($dato['post_title']);
+		return "{$tsCore->settings['url']}/posts/{$dato['c_seo']}/{$dato['post_id']}/$seoTitle.html";
+	}
+	private function getPortada(string $portada = '', array $data = []) {
+		global $tsCore;
+		if(empty($portada)) {
+			$portada = "{$tsCore->settings['public']}/images/sin_portada.png";
+		} elseif(!filter_var($portada, FILTER_VALIDATE_URL)) {
+			$portada = "{$tsCore->settings['public']}/images/error404.gif";
+		} 
+		/* PROXIMAMENTE
+		else {
+			$portada = optimizer($portada, [
+				'w' => 416,
+				'h' => 244,
+				'q' => 80,
+				't' => 'jpg',
+				'd' => [
+					'id' => $data['post_id'], 
+					'date' => $data['post_date']
+				]
+			], $tsCore->settings['url']);
+		}*/
+		return $portada;
+	}
 	/*
 		getLastPosts($category, $sticky)
 	*/
-	 function getLastPosts($category = NULL, $subcateg = NULL, $sticky = false)
+	 function getLastPosts($category = NULL, $sticky = false)
 	 {
 		global $tsCore, $tsUser;
 		/**********/
@@ -313,12 +345,38 @@ class tsPosts {
 		 $lastPosts['pages'] = $tsCore->getPages($posts['total'], $tsCore->settings['c_max_posts']);
 		}
 		/*********/
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_user, p.post_category, p.post_title, p.post_hits, p.post_date, p.post_comments, p.post_puntos, p.post_private, p.post_sponsored, p.post_status, p.post_sticky, u.user_id, u.user_name, u.user_activo, u.user_baneado, c.c_nombre, c.c_seo, c.c_img FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id  '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : ' && u.user_activo = \'1\' && u.user_baneado = \'0\'').' LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? 'p.post_id > 0' : 'p.post_status = \'0\' && u.user_activo = \'1\' && u.user_baneado = \'0\'').'  '.$c_where.' '.$s_where.' GROUP BY p.post_id ORDER BY '.$s_order.' DESC LIMIT '.$start);
-		$lastPosts['data'] = result_array($query);
-		
+		$lastPosts['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_user, p.post_category, p.post_title, p.post_portada, p.post_body, p.post_hits, p.post_date, p.post_comments, p.post_puntos, p.post_private, p.post_sponsored, p.post_status, p.post_sticky, u.user_id, u.user_name, u.user_activo, u.user_baneado, c.c_nombre, c.c_seo, c.c_img FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id  '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : ' && u.user_activo = \'1\' && u.user_baneado = \'0\'').' LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? 'p.post_id > 0' : 'p.post_status = \'0\' && u.user_activo = \'1\' && u.user_baneado = \'0\'').'  '.$c_where.' '.$s_where.' GROUP BY p.post_id ORDER BY '.$s_order.' DESC LIMIT '.$start));
+
+		foreach($lastPosts['data'] as $i => $dato) {
+			$lastPosts['data'][$i]['post_url'] = self::generateURL($dato);
+			$lastPosts['data'][$i]['post_descripcion'] = preg_replace('/\[([^\]]*)\]/', '', $dato['post_body']);
+			$lastPosts['data'][$i]['post_portada'] = self::getPortada($dato['post_portada']);
+		}
 		//
 		return $lastPosts;
 	 }
+	/**
+	 * Posts más populares | Más visitados
+	*/
+	public function mostpopular() {
+		global $tsCore, $tsUser;
+		// Es administrador o moderador?...
+		$isAdmod = self::isAdmod();
+		$admod = ($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1) ? 'p.post_id > 0' : 'p.post_status = 0 && u.user_activo = 1 && u.user_baneado = 0';
+		$lastPosts['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT p.post_id, p.post_user, p.post_category, p.post_title, p.post_portada, p.post_body, p.post_hits, p.post_date, p.post_private, p.post_sponsored, p.post_status, p.post_sticky, u.user_id, u.user_name, u.user_activo, u.user_baneado, c.c_nombre, c.c_seo, c.c_img FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id $isAdmod LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE $admod GROUP BY p.post_id ORDER BY p.post_hits DESC LIMIT 3"));
+
+		foreach($lastPosts['data'] as $i => $dato) {
+			$lastPosts['data'][$i]['post_url'] = self::generateURL($dato);
+			$lastPosts['data'][$i]['post_descripcion'] = preg_replace('/\[([^\]]*)\]/', '', $dato['post_body']);
+			if(empty($dato['post_portada'])) {
+				$lastPosts['data'][$i]['post_portada'] = "{$tsCore->settings['public']}/images/sin_portada.png";
+			} elseif(!filter_var($dato['post_portada'], FILTER_VALIDATE_URL)) {
+				$lastPosts['data'][$i]['post_portada'] = "{$tsCore->settings['avatar']}/{$dato['post_user']}_120.jpg";
+			}
+		}
+		//
+		return $lastPosts;
+	}
 	/*
 		getPost()
 	*/
@@ -330,7 +388,7 @@ class tsPosts {
 		// DAR MEDALLA
 		$this->DarMedalla($post_id);
 		// DATOS DEL POST
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT c.* ,m.*, u.user_id FROM `p_posts` AS c LEFT JOIN `u_miembros` AS u ON c.post_user = u.user_id LEFT JOIN `u_perfil` AS m ON c.post_user = m.user_id  WHERE `post_id` = \''.(int)$post_id.'\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' LIMIT 1');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT c.* ,m.*, u.user_id, u.user_rango FROM `p_posts` AS c LEFT JOIN `u_miembros` AS u ON c.post_user = u.user_id LEFT JOIN `u_perfil` AS m ON c.post_user = m.user_id  WHERE `post_id` = \''.(int)$post_id.'\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' LIMIT 1');
 		//		
 		$postData = db_exec('fetch_assoc', $query);
 		
@@ -386,8 +444,21 @@ class tsPosts {
 		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT c.c_nombre, c.c_seo FROM p_categorias AS c  WHERE c.cid = \''.$postData['post_category'].'\'');
 		$postData['categoria'] = db_exec('fetch_assoc', $query);
 		
+		$postData['post_body_descripcion'] = preg_replace('/\[([^\]]*)\]/', '', substr($postData['post_body'], 0, 245)) . "...";
+		
 		// BBCode
 		$postData['post_body'] = $tsCore->parseBadWords($postData['post_smileys'] == 0  ? $tsCore->parseBBCode($postData['post_body']) : $tsCore->parseBBCode($postData['post_body'], 'firma'), true);
+        
+// Verificar si hay enlaces en el texto
+if (preg_match('/<a\s+[^>]*href="([^"]*)"[^>]*>/i', $postData['post_body'])) {
+  	// Rango del usuario es igual a "Novato" -> ID 3
+ 	if((int)$postData['user_rango'] === 3 OR !$tsUser->is_member) {
+  		// Si se encuentran enlaces, realizar el reemplazo
+  		$message = (!$tsUser->is_member) ? 'Debes tener una cuenta para ver el enlace' : 'Tu rango no tiene permitido ver el enlace';
+      $postData['post_body'] = preg_replace('/<a\s+[^>]*href="([^"]*)"[^>]*>/i', '<a href="javascript:alert(\''.$message.'\')">', $postData['post_body']);
+  	}
+} 
+		
 		$postData['user_firma'] = $tsCore->parseBadWords($tsCore->parseBBCodeFirma($postData['user_firma']),true);
 		// MEDALLAS
 		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT m.*, a.* FROM w_medallas AS m LEFT JOIN w_medallas_assign AS a ON a.medal_id = m.medal_id WHERE a.medal_for = \''.(int)$postData['post_id'].'\' AND m.m_type = \'2\' ORDER BY a.medal_date');

@@ -126,6 +126,7 @@
 	 
 	 // Configuraciones
 	 $smarty->assign('tsConfig', $tsCore->settings);
+	 $smarty->assign('tsSeoData', $tsCore->settings['seo']);
 
 	 // Obtejo usuario
 	 $smarty->assign('tsUser',$tsUser);

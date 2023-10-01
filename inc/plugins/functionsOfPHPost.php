@@ -4,6 +4,7 @@
  * Generamos las funciones necesarias para el
  * funcionamiento del plugin
 */
+
 class fnPHPost {
 
 	// EXTENSIONES PARA IMAGENES SOLAMENTE
@@ -84,36 +85,6 @@ class fnPHPost {
 		//
 		foreach ($parametros as $nombre => $valor) $unir[$nombre] = "$nombre=$valor";
 		return $unir;
-	}
-
-	/**
-	 * Funcion para generar la etiqueta html
-	 * @param string $favicon
-	 * @return html
-	*/
-	public function getFavicon(string $favicon = '') {
-		global $tsCore, $smarty;
-		$extension = self::getExtension($favicon);
-		if(in_array($extension, $this->extension)) {
-			// Comprobamos si existe el favicon!
-			if(self::searchFile('images', $favicon)) {
-				$href = "{$tsCore->settings['images']}/$favicon?" . self::getCache();
-				$type = $this->types[$extension];
-			} else {
-				$link = "<!-- No existe $favicon -->\n";
-				// URL COMPLETO
-				$href = 'https://ui-avatars.com/api/?' . join('&', self::uiAvatars());
-				$type = $this->types['png'];
-			}
-		}
-		if($favicon === 'not') {
-			$link = "<!-- No existe el parametro 'favicon' -->\n";
-			// URL COMPLETO
-			$href = 'https://ui-avatars.com/api/?' . join('&', self::uiAvatars());
-			$type = $this->types['png'];
-		}
-		$link .= "<link href=\"$href\" rel=\"shortcut icon\" type=\"image/$type\" />\n";
-		return $link;
 	}
 
 	/**

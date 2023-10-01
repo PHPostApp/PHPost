@@ -172,7 +172,7 @@
 						</dd>
 					</dl>
 					<hr />
-					<input type="button" id="continue" value="Continuar" class="btn_g"/> 
+					<input type="button" id="continue" value="Continuar" class="btn btn-primary"/> 
 				</div>
 				<!-- TAB 2 -->
 				<div id="tab2" style="display:none;">
@@ -274,7 +274,7 @@
 						<input type="checkbox" id="moecm" name="mod-eliminarcommuro"{if $tsRango.permisos.moecm} checked{/if} /><label style="font-weight:bold;" for="moecm">Eliminar Comentarios de Muros</label><label for="moecm"> &nbsp; Podr&aacute;n eliminar comentarios en muros de otros usuarios.</label>
 					</fieldset>
 					<input type="hidden" name="sp" value="{if $tsType == 's'}1{else}0{/if}" />
-					<p><input type="submit" name="save" value="Guardar Cambios" class="btn_g"/></p>
+					<p><input type="submit" name="save" value="Guardar Cambios" class="btn btn-primary"/></p>
 				</div>
 				<script>
 					// Cambiamos el icono
