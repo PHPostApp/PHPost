@@ -306,7 +306,7 @@ class tsPosts {
 		return "{$tsCore->settings['url']}/posts/{$dato['c_seo']}/{$dato['post_id']}/$seoTitle.html";
 	}
 
-	private function getPortada(string $portada = '', array $data = []) {
+	private function getPortada(string $portada = NULL, array $data = []) {
 		global $tsCore;
 		if(empty($portada)) {
 			$portada = "{$tsCore->settings['public']}/images/sin_portada.png";

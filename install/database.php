@@ -645,9 +645,6 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_site_seo` (
   PRIMARY KEY (`seo_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
-$phpost_sql[] = "INSERT INTO `w_site_seo` (`seo_id`, `seo_titulo`, `c_seo`, `c_img`) VALUES
-(1, 'PHPost - Renovación inteligente en línea', 'arte-literatura', 'c_arte-literatura.png');";
-
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_baneados` (
   `ban_id` int(11) NOT NULL AUTO_INCREMENT,
   `ban_user` int(11) NOT NULL DEFAULT 0,
