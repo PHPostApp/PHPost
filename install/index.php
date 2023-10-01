@@ -11,7 +11,7 @@ define('SCRIPT_ROOT', realpath('../') . DS);
 define('INSTALL_ROOT', realpath('./') . DS);
 define('CONFIGINC', SCRIPT_ROOT . 'config.inc.php');
 define('CONFIGINC2', INSTALL_ROOT . 'config.copy.php');
-define('LICENSE', SCRIPT_ROOT . 'license.txt');
+define('LICENSE', SCRIPT_ROOT . 'LICENSE');
 define('BLOCKED', SCRIPT_ROOT . '.lock');
 
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
@@ -200,11 +200,11 @@ switch ($step) {
             $seoKeys = "comunidad, conocer, red, ampliar, interaccion, compartir, amigos, conectar, relaciones, intereses, encuentros, virtual";
             // SEO IMAGES
             $seoImages = json_encode([
-            	'16' => 'public/images/logo-16.png',
-            	'32' => 'public/images/logo-32.png',
-            	'64' => 'public/images/logo-64.png'
+            	'16' => $web['url'] . '/public/images/logo-16.png',
+            	'32' => $web['url'] . '/public/images/logo-32.png',
+            	'64' => $web['url'] . '/public/images/logo-64.png'
             ], JSON_FORCE_OBJECT);
-            $database->query("INSERT INTO w_site_seo (seo_id, seo_titulo, seo_descripcion, seo_favicon, seo_keywords, seo_images, seo_robots, seo_sitemap) VALUES(1, '$seoTitle', '$seoDecription', 'public/images/logo-64.png', '$seoKeys', '$seoImages', 0, 0)");
+            $database->query("INSERT INTO w_site_seo (seo_id, seo_titulo, seo_descripcion, seo_favicon, seo_keywords, seo_images, seo_robots, seo_sitemap) VALUES(1, '$seoTitle', '$seoDecription', '{$web['url']}/public/images/logo-64.png', '$seoKeys', '$seoImages', 0, 0)");
 				// GUARDAR LOS DATOS DE CONEXION
 				$config = file_get_contents(CONFIGINC);
 				$config = str_replace(['dbpkey', 'dbskey'], [$web['pkey'], $web['skey']], $config);

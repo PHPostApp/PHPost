@@ -63,7 +63,7 @@ function smarty_function_meta($params, &$smarty) {
 		$meta .= "<meta name=\"{$nameRobots[$robots_data['name']]}\" content=\"{$contentRobots[$robots_data['content']]}\" />\n";
 	}
 	
-	$meta .= "<meta rel=\"manifest\" href=\"/manifest.json\" />\n";
+	# $meta .= "<meta rel=\"manifest\" href=\"/manifest.json\" />\n";
 
 	if((int)$data['seo_sitemap']) {
 		$meta .= "<link rel=\"sitemap\" type=\"application/xml\" title=\"Mapa del sitio\" href=\"{$tsCore->settings['url']}/sitemap.xml\">\n";

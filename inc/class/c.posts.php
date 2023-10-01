@@ -26,6 +26,20 @@ class tsPosts {
       //
       return $isAdmod;
 	}
+	/** 
+	 * isAdmodPost($fix, $add)
+	 * @access public
+	 * @param string
+	 * @param string
+	 * @return string
+	*/
+	private function isAdmodPost(string $fixu = 'u.', string $fixp = 'p.', string $add = '') {
+      global $tsCore, $tsUser;
+      //
+      $isAdmodPost = ($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1) ? " {$fixp}post_id > 0 " : " {$fixu}user_activo = 1 && {$fixu}user_baneado = 0 && {$fixp}post_status = 0";
+      //
+      return $isAdmodPost;
+	}
 
 	/**
     * Acortador de post automático 
@@ -41,7 +55,7 @@ class tsPosts {
       # Adicionamos si es administrador o no! 
       $admod = self::isAdmod();
       # Buscamos el post en la base
-      $q = db_exec('fetch_assoc', $search = db_exec([__FILE__, __LINE__], 'query', "SELECT p.post_id, p.post_title, p.post_category, p.post_user, u.user_name, c.* FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id LEFT JOIN p_categorias AS c ON p.post_category = c.cid WHERE p.post_id = $post AND p.post_status = 0 {$admod}"));
+      $q = db_exec('fetch_assoc', $search = db_exec([__FILE__, __LINE__], 'query', "SELECT p.post_id, p.post_title, p.post_user, c.c_seo FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id LEFT JOIN p_categorias AS c ON p.post_category = c.cid WHERE p.post_id = $post AND p.post_status = 0 {$admod}"));
       # Si no existe redirecciomos a la página posts
       if(!db_exec('num_rows', $search)){
          $tsCore->redirectTo($tsCore->settings['url'].'/posts/');
@@ -291,6 +305,7 @@ class tsPosts {
 		$seoTitle = $tsCore->setSEO($dato['post_title']);
 		return "{$tsCore->settings['url']}/posts/{$dato['c_seo']}/{$dato['post_id']}/$seoTitle.html";
 	}
+
 	private function getPortada(string $portada = '', array $data = []) {
 		global $tsCore;
 		if(empty($portada)) {
@@ -316,36 +331,31 @@ class tsPosts {
 	/*
 		getLastPosts($category, $sticky)
 	*/
-	 function getLastPosts($category = NULL, $sticky = false)
-	 {
+	public function getLastPosts(string $category = NULL, bool $sticky = false) {
 		global $tsCore, $tsUser;
-		/**********/
 		// TIPO DE POSTS A MOSTRAR
-		if(!empty($category)){
-		 // EXISTE LA CATEGORIA?
-		 $cat = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT cid FROM p_categorias WHERE c_seo = \''.$tsCore->setSecure($category).'\' LIMIT 1'));
-		 if($cat['cid'] > 0) {
-		 $c_where = 'AND p.post_category = \''.(int)$cat['cid'].'\''; // SUBCATEGORIA EN ESPECIAL
-		 $p_where = ' && post_category = \''.(int)$cat['cid'].'\'';
-		 }
+		if(!empty($category)) {
+			$category = $tsCore->setSecure($category);
+			// EXISTE LA CATEGORIA?
+		 	$cat = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT cid FROM p_categorias WHERE c_seo = '$category' LIMIT 1"));
+		 	$cid = (int)$cat['cid'];
+		 	if($cid > 0) {
+		 		$c_where = 'AND p.post_category = ' . $cid;
+		 		$p_where = ' && post_category = ' . $cid;
+		 	}
 		}
-		// Stickys
-		if($sticky) {
-		 $s_where = 'AND p.post_sticky = \'1\'';
-		 $s_order = 'p.post_sponsored';
-		 $start = '0, 10';
-		} else {
-		 $s_where = 'AND p.post_sticky = \'0\'';
-		 $s_order = 'p.post_id';
-		 // TOTAL DE POSTS
-		 $q1 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(p.post_id) AS total FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id WHERE '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? ' p.post_id > \'0\' ' : ' u.user_activo = \'1\' && u.user_baneado = \'0\' && p.post_status = \'0\'').' '.$p_where.' '.$s_where));
-		 $posts['total'] = $q1[0];
-									 //
-		 $start = $tsCore->setPageLimit($tsCore->settings['c_max_posts'],false,$posts['total']);
-		 $lastPosts['pages'] = $tsCore->getPages($posts['total'], $tsCore->settings['c_max_posts']);
-		}
-		/*********/
-		$lastPosts['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_user, p.post_category, p.post_title, p.post_portada, p.post_body, p.post_hits, p.post_date, p.post_comments, p.post_puntos, p.post_private, p.post_sponsored, p.post_status, p.post_sticky, u.user_id, u.user_name, u.user_activo, u.user_baneado, c.c_nombre, c.c_seo, c.c_img FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id  '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : ' && u.user_activo = \'1\' && u.user_baneado = \'0\'').' LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? 'p.post_id > 0' : 'p.post_status = \'0\' && u.user_activo = \'1\' && u.user_baneado = \'0\'').'  '.$c_where.' '.$s_where.' GROUP BY p.post_id ORDER BY '.$s_order.' DESC LIMIT '.$start));
+		$s_where = 'AND p.post_sticky = ' . ($sticky ? 1 : 0);
+		$s_order = 'p.post_' . ($sticky ? 'sponsored' : 'id');
+		// TOTAL DE POSTS
+		$isAdmodPost = self::isAdmodPost();
+		$posts['total'] = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(p.post_id) AS total FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id WHERE $isAdmodPost $p_where $s_where"))[0];
+		//
+		$start = $sticky ? '0, 10' : $tsCore->setPageLimit($tsCore->settings['c_max_posts'],false,$posts['total']);
+		$lastPosts['pages'] = $tsCore->system_pagination($posts['total'], $tsCore->settings['c_max_posts']);
+		
+		// Es administrador o moderador?...
+		$isAdmod = self::isAdmod();
+		$lastPosts['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT p.post_id, p.post_user, p.post_category, p.post_title, p.post_portada, p.post_body, p.post_hits, p.post_date, p.post_comments, p.post_puntos, p.post_private, p.post_sponsored, p.post_status, p.post_sticky, u.user_id, u.user_name, u.user_activo, u.user_baneado, c.c_nombre, c.c_seo, c.c_img FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id $isAdmod LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE $isAdmodPost $c_where $s_where GROUP BY p.post_id ORDER BY $s_order DESC LIMIT $start"));
 
 		foreach($lastPosts['data'] as $i => $dato) {
 			$lastPosts['data'][$i]['post_url'] = self::generateURL($dato);
@@ -388,10 +398,10 @@ class tsPosts {
 		// DAR MEDALLA
 		$this->DarMedalla($post_id);
 		// DATOS DEL POST
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT c.* ,m.*, u.user_id, u.user_rango FROM `p_posts` AS c LEFT JOIN `u_miembros` AS u ON c.post_user = u.user_id LEFT JOIN `u_perfil` AS m ON c.post_user = m.user_id  WHERE `post_id` = \''.(int)$post_id.'\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' LIMIT 1');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT c.* ,m.*, u.user_id, u.user_rango, r.r_name FROM `p_posts` AS c LEFT JOIN `u_miembros` AS u ON c.post_user = u.user_id LEFT JOIN `u_perfil` AS m ON c.post_user = m.user_id LEFT JOIN u_rangos AS r ON r.rango_id = u.user_rango WHERE `post_id` = \''.(int)$post_id.'\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' LIMIT 1');
 		//		
 		$postData = db_exec('fetch_assoc', $query);
-		
+
 		//
 		if(empty($postData['post_id'])) {
 			$tsDraft = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT b_title FROM p_borradores WHERE b_post_id = \''.(int)$post_id.'\' LIMIT 1'));
@@ -448,16 +458,6 @@ class tsPosts {
 		
 		// BBCode
 		$postData['post_body'] = $tsCore->parseBadWords($postData['post_smileys'] == 0  ? $tsCore->parseBBCode($postData['post_body']) : $tsCore->parseBBCode($postData['post_body'], 'firma'), true);
-        
-// Verificar si hay enlaces en el texto
-if (preg_match('/<a\s+[^>]*href="([^"]*)"[^>]*>/i', $postData['post_body'])) {
-  	// Rango del usuario es igual a "Novato" -> ID 3
- 	if((int)$postData['user_rango'] === 3 OR !$tsUser->is_member) {
-  		// Si se encuentran enlaces, realizar el reemplazo
-  		$message = (!$tsUser->is_member) ? 'Debes tener una cuenta para ver el enlace' : 'Tu rango no tiene permitido ver el enlace';
-      $postData['post_body'] = preg_replace('/<a\s+[^>]*href="([^"]*)"[^>]*>/i', '<a href="javascript:alert(\''.$message.'\')">', $postData['post_body']);
-  	}
-} 
 		
 		$postData['user_firma'] = $tsCore->parseBadWords($tsCore->parseBBCodeFirma($postData['user_firma']),true);
 		// MEDALLAS

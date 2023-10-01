@@ -62,6 +62,8 @@ if($tsContinue) {
 	// Post anterior/siguiente
 	if(in_array($_GET['action'], ['next', 'prev', 'fortuitae'])) $tsPosts->setNP();
 
+	if(isset($_GET['p'])) $tsPosts->short_url_post();
+
 /*
  * -------------------------------------------------------------------
  *  Tareas principales
@@ -123,7 +125,7 @@ if($tsContinue) {
 		$smarty->assign("tsPosts", $tsLastPosts['data']);
 		$smarty->assign("tsPages", $tsLastPosts['pages']);
 		// ULTIMOS POSTS FIJOS
-		if($tsLastPosts['pages']['current'] == 1){
+		if($tsLastPosts['pages']['current'] === 1 OR $tsCore->settings['tema']['t_name'] === 'beatrix'){
 			$tsLastStickys = $tsPosts->getLastPosts('', true);
 			$smarty->assign("tsPostsStickys", $tsLastStickys['data']);
 		}

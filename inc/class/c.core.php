@@ -47,39 +47,8 @@ class tsCore {
 	}
 
 	public function getEndPoints(string $social = '', string $type = '') {
-		$url = [
-			'github' => [
-				'authorize_url' => 'https://github.com/login/oauth/authorize',
-				'token' => "https://github.com/login/oauth/access_token",
-				'user' => "https://api.github.com/user",
-				'scope' => "user"
-			],
-			'discord' => [
-				'authorize_url' => 'https://discord.com/oauth2/authorize',
-				'token' => "https://discord.com/api/oauth2/token",
-				'user' => "https://discord.com/api/v10/users/@me",
-				'scope' => "email identify"
-			],
-			'gmail' => [
-				'authorize_url' => 'https://accounts.google.com/o/oauth2/auth',
-				'token' => "https://accounts.google.com/o/oauth2/token",
-				'user' => "https://www.googleapis.com/oauth2/v2/userinfo",
-				'scope' => "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
-			],
-			'facebook' => [
-				'authorize_url' => 'https://www.facebook.com/v18.0/dialog/oauth',
-				'token' => "https://graph.facebook.com/oauth/access_token",
-				'user' => "https://graph.facebook.com/v18.0/me?fields=id,name,email,picture,short_name",
-				'scope' => "email,public_profile"
-			],
-			'twitter' => [
-				'authorize_url' => 'https://api.twitter.com/oauth/authenticate',
-				'token' => "https://api.twitter.com/oauth/access_token",
-				'user' => "https://graph.facebook.com/v18.0/me?fields=id,name,email,picture,short_name",
-				'scope' => "email,public_profile"
-			]
-		];
-		return $url[$social][$type];
+		require_once TS_EXTRA . "endpoints.config.php";
+		return $getEndPoints[$social][$type];
 	}
 
 	public function OAuth() {
@@ -394,21 +363,22 @@ class tsCore {
    	// Si no existe devolvemos algo vacío
     	if ($totalItems <= 0) return '';
     	$page = "?page=";
+    	$pagination['current'] = $currentPage;
     	// Empezamos con la estructura de la paginación
-    	$pagination = '<ul class="pagination pagination-sm justify-content-center">';
+    	$pagination['item'] = '<ul class="page-numbers">';
     	// Calculamos el total de páginas necesarias.
     	$totalPages = ceil($totalItems / $itemsPerPage);
     	// Limitamos el valor de $currentPage para asegurarnos de que no se exceda el rango.
     	$currentPage = max(1, min($currentPage, $totalPages));
     	// Enlace a página anterior.
     	if ($currentPage > 1) {
-      	$pagination .= "<li class=\"page-item\"><a class=\"navPages\" href=\"{$this->settings['url']}/$page" . ($currentPage - 1) . "\" title=\"Página anterior\">&laquo;</a></li>";
+      	$pagination['item'] .= "<li><a class=\"prev page-numbers\" href=\"{$this->settings['url']}/$page" . ($currentPage - 1) . "\" title=\"Página anterior\"><iconify-icon icon=\"bx:left-arrow-alt\"></iconify-icon></a></li>";
     	}
     	// Enlaces de primera y última página.
     	if ($currentPage > 3) {
-      	$pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"{$this->settings['url']}/$page1\">1</a></li>";
+      	$pagination['item'] .= "<li><a class=\"page-numbers\" href=\"{$this->settings['url']}/$page1\">1</a></li>";
         	if ($currentPage > 6) {
-            $pagination .= "<li class=\"page-item\"><span class=\"page-link\">...</span></li>";
+            $pagination['item'] .= "<li><span class=\"page-numbers\">...</span></li>";
         	}
     	}
 	   // Mostramos los enlaces de la paginación.
@@ -416,20 +386,23 @@ class tsCore {
 	   $endPage = min($totalPages, $currentPage + 2);
 	   //
     	for ($i = $startPage; $i <= $endPage; $i++) {
-        	$activeClass = ($currentPage === $i) ? ' active' : '';
-        	$pagination .= "<li class=\"page-item{$activeClass}\"><a class=\"page-link\" href=\"{$this->settings['url']}/$page{$i}\">{$i}</a></li>";
-    	}
+        	if($currentPage === $i) {
+				$pagination['item'] .= "<li><span aria-current=\"page\" class=\"page-numbers current\">{$i}</span></li>";
+        	} else {
+        		$pagination['item'] .= "<li><a class=\"page-numbers\" href=\"{$this->settings['url']}/$page{$i}\">{$i}</a></li>";
+        	}
+      }
     	// Enlaces después del número 6.
     	if ($currentPage < $totalPages - 4) {
-        	$pagination .= "<li class=\"page-item\"><span class=\"page-link\">...</span></li>";
-        	$pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"{$this->settings['url']}/$page{$totalPages}\">{$totalPages}</a></li>";
+        	$pagination['item'] .= "<li><span class=\"page-numbers\">...</span></li>";
+        	$pagination['item'] .= "<li><a class=\"page-numbers\" href=\"{$this->settings['url']}/$page{$totalPages}\">{$totalPages}</a></li>";
     	}
     	// Enlace a página siguiente.
     	if ($currentPage < $totalPages) {
-      	$pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"{$this->settings['url']}/$page" . ($currentPage + 1) . "\" title=\"Página siguiente\">&raquo;</a></li>";
+      	$pagination['item'] .= "<li><a class=\"next page-numbers\" href=\"{$this->settings['url']}/$page" . ($currentPage + 1) . "\" title=\"Página siguiente\"><iconify-icon icon=\"bx:right-arrow-alt\"></iconify-icon></a></li>";
     	}
     	// Finalizamos la paginación
-    	$pagination .= '</ul>';
+    	$pagination['item'] .= '</ul>';
     	return $pagination;
 	}
 

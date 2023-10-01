@@ -18,6 +18,9 @@ if (!defined('TS_HEADER')) exit('No se permite el acceso directo al script');
 // Página solicitada
 $smarty->assign("tsPage", $tsPage);
 
+// Añadimos modules/{_pagina_}/
+$smarty->addTemplateDir(["TS_PAGES" => TS_MODULES . $tsPage . TS_PATH]);
+
 $mytemplate = "t.$tsPage.tpl";
 $myerr = "t.error.tpl";
 

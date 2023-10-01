@@ -29,7 +29,7 @@
 \*********************************/
 
 	// REDEFINIR VARIABLES
-	$tsPage = 'comus_ajax/c.'.$files[$action]['p'];
+	$tsPage = 'php_files/c.'.$files[$action]['p'];
 	$tsLevel = isset($files[$action]['n']) ? $files[$action]['n'] : 2;
 	$tsAjax = empty($files[$action]['p']) ? 1 : 0;
 
