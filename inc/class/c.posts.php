@@ -10,6 +10,7 @@
  * Optimizador de imagenes
  * include TS_EXTRA.'optimizer.php';
 */
+
 class tsPosts {
 
 	/** 
@@ -312,17 +313,17 @@ class tsPosts {
 			$portada = "{$tsCore->settings['public']}/images/sin_portada.png";
 		} elseif(!filter_var($portada, FILTER_VALIDATE_URL)) {
 			$portada = "{$tsCore->settings['public']}/images/error404.gif";
-		} 
+		}
 		/* PROXIMAMENTE
 		else {
 			$portada = optimizer($portada, [
-				'w' => 416,
+				'w' => 356,
 				'h' => 244,
-				'q' => 80,
-				't' => 'jpg',
+				'q' => 75,
+				't' => 'webp',
 				'd' => [
-					'id' => $data['post_id'], 
-					'date' => $data['post_date']
+					'id' => $data[0],
+					'date' => $data[1]
 				]
 			], $tsCore->settings['url']);
 		}*/
@@ -360,7 +361,7 @@ class tsPosts {
 		foreach($lastPosts['data'] as $i => $dato) {
 			$lastPosts['data'][$i]['post_url'] = self::generateURL($dato);
 			$lastPosts['data'][$i]['post_descripcion'] = preg_replace('/\[([^\]]*)\]/', '', $dato['post_body']);
-			$lastPosts['data'][$i]['post_portada'] = self::getPortada($dato['post_portada']);
+			$lastPosts['data'][$i]['post_portada'] = self::getPortada($dato['post_portada'], [$dato['post_id'], $dato['post_date']]);
 		}
 		//
 		return $lastPosts;
@@ -468,8 +469,6 @@ class tsPosts {
 		// TAGS
 		$postData['post_tags'] = explode(",",$postData['post_tags']);
 		$postData['n_tags'] = count($postData['post_tags']) - 1;
-		// FECHA
-		$postData['post_date'] = strftime("%d.%m.%Y a las %H:%M hs",$postData['post_date']);
 		// NUEVA VISITA : FUNCION SIMPLE
 		$visitado = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT id FROM `w_visitas` WHERE `for` = \''.(int)$post_id.'\' && `type` = \'2\' && '.($tsUser->is_member ? '(`user` = \''.$tsUser->uid.'\' OR `ip` LIKE \''.$_SERVER['REMOTE_ADDR'].'\')' : '`ip` LIKE \''.$_SERVER['REMOTE_ADDR'].'\'').' LIMIT 1'));
 		if($tsUser->is_member && $visitado == 0) {
@@ -628,13 +627,20 @@ class tsPosts {
 	/*
 		getRelated()
 	*/
-	function getRelated($tags){
+	function getRelated($tags, string $type = ''){
 		global $tsCore, $tsUser;
 		// ES UN ARRAT AHORA A UNA CADENA
 		if(is_array($tags)) $tags = implode(", ",$tags);
 		else str_replace('-',', ',$tags);
 		//
-		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT DISTINCT p.post_id, p.post_title, p.post_category, p.post_private, c.c_seo, c.c_img FROM p_posts AS p LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE MATCH (post_tags) AGAINST ('$tags' IN BOOLEAN MODE) AND p.post_status = 0 AND post_sticky = 0 ORDER BY rand() LIMIT 0,10");
+		if($type === 'post') {
+			$where = "MATCH (post_tags) AGAINST ('$tags' IN BOOLEAN MODE) AND p.post_status = 0 AND post_sticky = 0 ORDER BY rand() LIMIT 0,6";
+		} else {
+			$tsPost = self::getPost();
+			$where = "p.post_id != {$tsPost['post_id']} AND p.post_status = 0 AND p.post_user = {$tsPost['post_user']} ORDER BY p.post_id DESC LIMIT 5";
+		}
+		//
+		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT DISTINCT p.post_id, p.post_portada, p.post_title, p.post_category, p.post_date, p.post_private, c.c_seo, u.user_name FROM p_posts AS p LEFT JOIN p_categorias AS c ON c.cid = p.post_category LEFT JOIN u_miembros AS u ON p.post_user = u.user_id WHERE $where");
 		//
 		$data = result_array($query);
 		

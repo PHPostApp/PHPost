@@ -47,7 +47,38 @@ class tsCore {
 	}
 
 	public function getEndPoints(string $social = '', string $type = '') {
-		require_once TS_EXTRA . "endpoints.config.php";
+		$getEndPoints = [
+			'github' => [
+				'authorize_url' => 'https://github.com/login/oauth/authorize',
+				'token' => "https://github.com/login/oauth/access_token",
+				'user' => "https://api.github.com/user",
+				'scope' => "user"
+			],
+			'discord' => [
+				'authorize_url' => 'https://discord.com/oauth2/authorize',
+				'token' => "https://discord.com/api/oauth2/token",
+				'user' => "https://discord.com/api/v10/users/@me",
+				'scope' => "email identify"
+			],
+			'gmail' => [
+				'authorize_url' => 'https://accounts.google.com/o/oauth2/auth',
+				'token' => "https://accounts.google.com/o/oauth2/token",
+				'user' => "https://www.googleapis.com/oauth2/v2/userinfo",
+				'scope' => "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+			],
+			'facebook' => [
+				'authorize_url' => 'https://www.facebook.com/v18.0/dialog/oauth',
+				'token' => "https://graph.facebook.com/oauth/access_token",
+				'user' => "https://graph.facebook.com/v18.0/me?fields=id,name,email,picture,short_name",
+				'scope' => "email,public_profile"
+			],
+			'twitter' => [
+				'authorize_url' => 'https://api.twitter.com/oauth/authenticate',
+				'token' => "https://api.twitter.com/oauth/access_token",
+				'user' => "https://graph.facebook.com/v18.0/me?fields=id,name,email,picture,short_name",
+				'scope' => "email,public_profile"
+			]
+		];
 		return $getEndPoints[$social][$type];
 	}
 
@@ -169,7 +200,7 @@ class tsCore {
 			if($tsUser->is_member == 0) return true;
 			else {
 				if($msg) $mensaje = 'Esta pagina solo es vista por los visitantes.';
-				else $this->redirect('/');
+				else $this->redirectTo('/');
 			}
 		}
 		// SOLO MIEMBROS
@@ -177,7 +208,7 @@ class tsCore {
 			if($tsUser->is_member == 1) return true;
 			else {
 				if($msg) $mensaje = 'Para poder ver esta pagina debes iniciar sesi&oacute;n.';
-				else $this->redirect('/login/?r='.$this->currentUrl());
+				else $this->redirectTo('/login/?r='.$this->currentUrl());
 			}
 		}
 		// SOLO MODERADORES
@@ -185,7 +216,7 @@ class tsCore {
 			if($tsUser->is_admod || $tsUser->permisos['moacp']) return true;
 			else {
 				if($msg) $mensaje = 'Estas en un area restringida solo para moderadores.';
-				else $this->redirect('/login/?r='.$this->currentUrl());
+				else $this->redirectTo('/login/?r='.$this->currentUrl());
 			}
 		}
 		// SOLO ADMIN
@@ -193,7 +224,7 @@ class tsCore {
 			if($tsUser->is_admod == 1) return true;
 			else {
 				if($msg) $mensaje = 'Estas intentando algo no permitido.';
-				else $this->redirect('/login/?r='.$this->currentUrl());
+				else $this->redirectTo('/login/?r='.$this->currentUrl());
 			}
 		}
 		//

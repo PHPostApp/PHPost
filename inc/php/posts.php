@@ -84,8 +84,8 @@ if($tsContinue) {
 			// DATOS DEL RANGO DEL PUTEADOR						
 			$smarty->assign("tsPunteador", $tsPosts->getPunteador());
 			// RELACIONADOS
-			$tsRelated = $tsPosts->getRelated($tsPost['post_tags']);
-			$smarty->assign("tsRelated", $tsRelated);
+			$smarty->assign("tsRelated", $tsPosts->getRelated($tsPost['post_tags'], 'post'));
+			$smarty->assign("tsRelatedUser", $tsPosts->getRelated($tsPost['post_tags'], 'user'));
 			// COMENTARIOS
 			/*$tsComments = $tsPosts->getComentarios($tsPost['post_id']);
 			$tsComments = array('num' => $tsComments['num'], 'data' => $tsComments['data']);

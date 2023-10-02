@@ -22,7 +22,8 @@ function smarty_function_image($params, &$smarty) {
 			"srcset" => "{$params['src']} 320w, {$params['src']} 480w, {$params['src']} 800w", 
 			"sizes" => "(max-width: 320px) 280px, (max-width: 480px) 440px, 800px"
 		],
-		"class" => "image " . $params['class']
+		"class" => "image " . $params['class'],
+		"style" => $params['style']
 	];
 
 	$default['alt'] = isset($params['alt']) ? $params['alt'] : $default['alt'];

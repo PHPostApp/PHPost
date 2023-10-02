@@ -57,7 +57,6 @@ if($tsUser->is_member) header("Location: ./");
  * Si no hay problemas, continuamos
 */
 if ($tsContinue) {
-      
 }
 
 if(empty($tsAjax)) {	
