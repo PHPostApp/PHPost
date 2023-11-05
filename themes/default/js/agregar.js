@@ -26,8 +26,8 @@ var confirm = true;
 var tags = false;
 //
 guardar = () => {
-	let replace_body = 'cuerpo=' + encodeURIComponent($('textarea[name=cuerpo]').bbcode());
-	let params = $("form[name=newpost]").serialize().replace('cuerpo=', replace_body);
+	let replace_body = 'body=' + encodeURIComponent($('textarea[name=body]').bbcode());
+	let params = $("form[name=newpost]").serialize().replace('body=', replace_body);
 	const borrador_id = $('input[name="borrador_id"]').val()
 	$('div#borrador-guardado').html('Guardando...');
 
@@ -71,21 +71,21 @@ function borrador_save_disabled(){
 //
 window.onbeforeunload = confirmleave;
 function confirmleave() {
-	if (confirm && ($('input[name=titulo]').val() || $('textarea[name=cuerpo]').bbcode())) 
+	if (confirm && ($('input[name=title]').val() || $('textarea[name=body]').bbcode())) 
 		return "Este post no fue publicado y se perdera.";
 }
 //
 preliminar = () => {
 	//COMPROBAR TITULO
-   if (countUpperCase($('input[name=titulo]').val()) < 5) {
-		error($('input[name=titulo]'), 'Debes ingresar un titulo para el post', true);
-		$('input[name=titulo]').focus();
+   if (countUpperCase($('input[name=title]').val()) < 5) {
+		error($('input[name=title]'), 'Debes ingresar un titulo para el post', true);
+		$('input[name=title]').focus();
 		return false;
 	}
 	//COMPROBAR CONTENIDO
-	if ($('textarea[name=cuerpo]').bbcode().length < 1) {
+	if ($('textarea[name=body]').bbcode().length < 1) {
 		error($('.wysibb'), 'Ingresa contenido para el post', true);
-		$('textarea[name=cuerpo]').focus();
+		$('textarea[name=body]').focus();
 		window.scrollTo(0, 50)
 		return false;
 	}
@@ -96,7 +96,7 @@ preliminar = () => {
 	mydialog.body('<div class="carf"><p>Cargando vista previa</p></div>');
    mydialog.buttons(false);
 	// PREVIEW
-	const data = 'cuerpo=' + encodeURIComponent($('textarea[name=cuerpo]').bbcode());
+	const data = 'body=' + encodeURIComponent($('textarea[name=body]').bbcode());
 	$.post(global_data.url + '/posts-preview.php?ts=true', data, r => {
 		mydialog.title($('input[name=titulo]').val());
 		mydialog.body(r);
@@ -109,21 +109,21 @@ preliminar = () => {
 // FUNCION PARA PUBLICAR
 publicar = () => {
 	// Comprobamos que tengo contenido
-   if ($('input[name=titulo]').val().length < 5) {
-		error($('input[name=titulo]'), 'Debes ingresar un titulo para el post', true);
-		$('input[name=titulo]').focus();
+   if ($('input[name=title]').val().length < 5) {
+		error($('input[name=title]'), 'Debes ingresar un titulo para el post', true);
+		$('input[name=title]').focus();
 		return false;
 	}
 	//COMPROBAR CONTENIDO
-	if ($('textarea[name=cuerpo]').bbcode().length < 1) {
-		error($('textarea[name=cuerpo]'), 'Ingresa contenido para el post', true);
-		$('textarea[name=cuerpo]').focus();
+	if ($('textarea[name=body]').bbcode().length < 1) {
+		error($('textarea[name=body]'), 'Ingresa contenido para el post', true);
+		$('textarea[name=body]').focus();
 		window.scrollTo(0, 50)
 		return false;
 	}
 	//COMPROBAR CATEGORIA
-	if (!$('select[name=categoria]').val()) {
-		error($('select[name=categoria]'), 'Selecciona una categor&iacute;a', true);
+	if (!$('select[name=category]').val()) {
+		error($('select[name=category]'), 'Selecciona una categor&iacute;a', true);
 		return false;
 	}		
 	//COMPROBAR TAGS

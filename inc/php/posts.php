@@ -124,10 +124,10 @@ if($tsContinue) {
 		$smarty->assign("tsPages", $tsLastPosts['pages']);
 		// ULTIMOS POSTS FIJOS
 		//if(!empty($tsLastPosts['data'])) {
-			if($tsLastPosts['pages']['current'] === 1 OR $tsCore->settings['tema']['t_name'] === 'beatrix'){
+			//if($tsLastPosts['pages']['current'] === 1 OR $tsCore->settings['tema']['t_name'] === 'beatrix'){
 				$tsLastStickys = $tsPosts->getLastPosts('', true);
 				$smarty->assign("tsPostsStickys", $tsLastStickys['data']);
-			}
+			//}
 		//}
 		// CAT
 		$smarty->assign("tsCat", $category);
