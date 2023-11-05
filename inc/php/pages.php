@@ -53,18 +53,14 @@
 
     switch($action){
         case 'ayuda':
-        break;
         case 'chat':
-        break;
         case 'contact':
-        break;
         case 'protocolo':
-        break;
         case 'terminos-y-condiciones':
-        break;
         case 'privacidad':
-        break;
         case 'dmca':
+        //
+        case 'cookies-policy':
         break;
         default:
         $tsCore->redirectTo($tsCore->settings['url']);

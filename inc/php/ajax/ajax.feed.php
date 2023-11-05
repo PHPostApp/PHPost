@@ -47,11 +47,11 @@
 		break;
 		case 'feed-version':
 			/**
-			 * Versión a 24 de septiembre de 2023 *
-			 * PHPost Risus 1.3.0.006 *
+			 * Versión a 24 de octubre de 2023 *
+			 * PHPost Risus 1.3.0.024 *
 			*/
 			$time = time();
-			$version_now = 'Risus 1.3.0.006';
+			$version_now = 'Risus 1.3.0.024';
 			$version_code = str_replace([' ', '.'], '_', strtolower($version_now));
 			# ACTUALIZAR VERSIÓN
 			if($tsCore->settings['version'] != $version_now) {

@@ -83,7 +83,7 @@
 		$smarty->assign('tsCats',$tsCom->getCats());
 		// PAISES
 		include('../ext/datos.php');
-		$smarty->assign("tsPaises",$tsPaises);
+		$smarty->assign("tsPaises", $tsPaises);
 	} elseif($action == 'buscar') {
 		// Nuevo titulo
 		$tsTitle = 'Busqueda en comunidades - '.$tsCore->settings['titulo'];
@@ -144,7 +144,7 @@
 						$smarty->assign('tsSubcats',$sub);
 						// PAISES
 						include('../ext/datos.php');
-						$smarty->assign("tsPaises",$tsPaises);
+						$smarty->assign("tsPaises", $tsPaises);
 						// AHORA LA ACCION ES "EDITAR"			
 						$action = 'editar';
 					} else $tsError = $datos;

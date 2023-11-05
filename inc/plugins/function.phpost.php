@@ -22,7 +22,7 @@
 require_once realpath(__DIR__) . DIRECTORY_SEPARATOR . "functionsOfPHPost.php";
 
 function smarty_function_phpost($params, &$smarty) {
-	global $tsCore, $tsPage, $action, $act;
+	global $tsCore, $tsPage, $action, $action;
 	//
 	$HTML = '';
 	$funcs = new fnPHPost;
@@ -50,6 +50,11 @@ function smarty_function_phpost($params, &$smarty) {
 	if(isset($params['js']) OR isset($params['deny']) OR isset($params['from'])) {
 		// Ahora usamos 'deny' para evitar que agregue 2 veces el mismo archivo
 		if(is_array($params['js'])) {
+			if(!isset($params['from'])) {
+				// Variable global
+				$HTML .= "<!-- Añadidos col el plugin: {phpost *sin parametros*} -->\n";
+				$HTML .= $funcs->getGlobalData();
+			}
 			// Añadimos todos los scripts
 			$HTML .= "<!-- Añadidos col el plugin: {phpost js=[\"...\"]} -->\n";
 			
@@ -62,6 +67,8 @@ function smarty_function_phpost($params, &$smarty) {
 				if(empty($action)) array_push($params['js'], 'timeago.min.js', 'timeago.es.js');
 				elseif($action === 'rangos') array_push($params['js'], 'colorpicker.js');
 			}
+			if($tsPage === 'php_files/p.borradores.home') array_push($params['js'], 'borradores.js');
+			if($tsPage === 'php_files/p.favoritos.home') array_push($params['js'], 'favoritos.js');
 			if(!isset($params['from'])) {
 				// Si es administrador, moderador o tiene permisos
 				if($funcs->getPerms()) array_push($params['js'], 'moderacion.js');
@@ -72,11 +79,6 @@ function smarty_function_phpost($params, &$smarty) {
 			//
 			$deny = isset($params['from']) ? [] : $params['deny'];
 			foreach($params['js'] as $js) $HTML .= $funcs->getScript($js, $deny);
-			if(!isset($params['from'])) {
-				// Variable global
-				$HTML .= "<!-- Añadidos col el plugin: {phpost *sin parametros*} -->\n";
-				$HTML .= $funcs->getGlobalData();
-			}
 		} else {
 			$HTML .= "<!-- Añadidos col el plugin: {phpost js=[\"...\"]} -->\n";
 			$HTML .= $funcs->getScript($params['js']);

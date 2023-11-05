@@ -175,7 +175,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_posts` (
   PRIMARY KEY (`post_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
-$phpost_sql[] = "INSERT INTO `p_posts` (`post_id`, `post_user`, `post_category`, `post_title`, `post_body`, `post_date`, `post_tags`) VALUES (1, 1, 30, 'Bienvenido a $version_title', '[align=center][size=18]Este es el primer post de los miles que tendrá tu web  ;) \r\n\r\nGracias por elegir a [url=https://www.phpost.net/foro/]PHPost[/url] como tu Link Sharing System.[/size][/align]\r\n\r\nCon la versión de [b]{$version_title}[/b] actualizada:
+$phpost_sql[] = "INSERT INTO `p_posts` (`post_id`, `post_user`, `post_category`, `post_title`, `post_body`, `post_date`, `post_tags`) VALUES (1, 1, 30, 'Bienvenido a $version_title', '[align=center][size=18]Este es el primer post de los miles que tendrá tu web  ;) \r\n\r\nGracias por elegir a [url=https://www.phpost.es/]PHPost[/url] como tu Link Sharing System.[/size][/align]\r\n\r\nCon la versión de [b]{$version_title}[/b] actualizada:
 [ol][li]Smarty 4.3.x[/li][li]jQuery 3.7.x[/li][li]Plugins para jQuery actualizado y mejorado[/li][li]Modal modificado y con una nueva función[/li][li]Actualización al crear/editar post[/li][/ol]', 0, 'PHPost, Risus, actualizado, smarty, php');";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `p_votos` (
@@ -446,13 +446,13 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_configuracion` (
   `banner` varchar(100) NOT NULL DEFAULT '',
   `tema_id` int(11) NOT NULL DEFAULT 1,
   `updated` int(1) NOT NULL DEFAULT 1,
+  `c_upperkey` int(1) NOT NULL DEFAULT 1,
   `ads_300` text NULL,
   `ads_468` text NULL,
   `ads_160` text NULL,
   `ads_728` text NULL,
   `ads_search` varchar(50) NOT NULL DEFAULT '',
   `c_last_active` int(2) NOT NULL DEFAULT 15,
-  `c_upperkey` int(1) NOT NULL DEFAULT 1,
   `c_allow_sess_ip` int(1) NOT NULL DEFAULT 1,
   `c_count_guests` int(1) NOT NULL DEFAULT 0,
   `c_reg_active` int(1) NOT NULL DEFAULT 1,
@@ -488,6 +488,20 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_configuracion` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;";
 
 $phpost_sql[] = "INSERT INTO `w_configuracion` (`tscript_id`) VALUES (1);";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_extras` (
+  `extraid` int(11) NOT NULL DEFAULT 0,
+  `optimizar` int(1) NOT NULL DEFAULT 0,
+  `extension` int(1) NOT NULL DEFAULT 0,
+  `tamano` int(4) NOT NULL DEFAULT 350,
+  `calidad` int(3) NOT NULL DEFAULT 80,
+  `smarty_security` int(1) NOT NULL DEFAULT 0,
+  `smarty_compress` int(1) NOT NULL DEFAULT 0,
+  `smarty_lifetime` int(3) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`extraid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;";
+
+$phpost_sql[] = "INSERT INTO `w_extras` (`extraid`) VALUES (1);";
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_denuncias` (
   `did` int(11) NOT NULL AUTO_INCREMENT,
@@ -636,6 +650,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_site_seo` (
   `seo_id` int(11) NOT NULL  DEFAULT 0,
   `seo_titulo` varchar(60) NOT NULL DEFAULT '',
   `seo_descripcion` varchar(160) NOT NULL DEFAULT '',
+  `seo_portada` tinytext NULL DEFAULT 'public/images/portada.png',
   `seo_favicon` tinytext NULL DEFAULT 'public/images/logo-64.png',
   `seo_keywords` text NULL,
   `seo_images` text NULL DEFAULT '{\"16x16\":\"public\/images\/logo-16.png\",\"32x32\":\"public\/images\/logo-32.png\",\"64x64\":\"public\/images\/logo-64.png\"}',

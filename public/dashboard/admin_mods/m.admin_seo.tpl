@@ -41,6 +41,12 @@
 				</dd>
          </dl>
          <dl>
+            <dt><label for="portada">Portada:</label></dt>
+            <dd class="input-group">
+               <input class="form-control" type="text" id="portada" name="portada" value="{$tsSeo.seo_portada}" />
+            </dd>
+         </dl>
+         <dl>
             <dt><label for="favicon">Icono del sitio:</label></dt>
             <dd class="input-group">
  		 			<input class="form-control" type="text" id="favicon" name="favicon" value="{$tsSeo.seo_favicon}" />
@@ -60,6 +66,7 @@
          </dl>
          <div class="search-results">
 	        	<div class="result">
+               <img class="rounded image mb-3" src="{$tsSeo.seo_portada}" alt="{$tsSeo.seo_titulo}">
 	            <span class="title text-primary">{$tsSeo.seo_titulo}</span><br>
 	            <span class="url fst-italic">{$tsConfig.url}</span><br>
 	            <p class="description m-0 p-0">{$tsSeo.seo_descripcion}</p>
@@ -77,10 +84,12 @@
            .title { font-size: 18px; font-weight: bold; }
            .url { color: #006621; }
            .description { color: #545454; }
+           .image { width: 100%;object-fit: cover; }
          </style>
          <script>
             $('#titulo').on('keyup', () => $('.result .title').html($('#titulo').val()))
             $('#descripcion').on('keyup', () => $('.result .description').html($('#descripcion').val()))
+            $('#image').on('keyup', () => $('.result .image').attr({ src: $('#image').val() }))
          </script>
          <p><input type="submit" name="save" value="Guardar Cambios" class="btn btn-primary" /></p>
       </fieldset>

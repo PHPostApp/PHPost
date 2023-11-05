@@ -8,63 +8,14 @@ if (!defined('TS_HEADER'))
  * @name    c.admin.php
  * @author  PHPost Team
  */
+require_once TS_INCLUDES . "extends" . TS_PATH . "c.admin.extends.php";
+
 class tsAdmin {
+
+   use tsAdminExtends;
 
 	# Extensiones para imagenes
 	private $extension = ["jpg", "png", "gif", "bmp", "svg"];
-
-	# Las opciones para los rangos (saveRango() y newRango())
-	private function optionsRange($post) {
-		return serialize([
-			'suad' => $post['superadmin'],
-			'sumo' => $post['supermod'],
-			'moacp' => $post['mod-accesopanel'],
-			'mocdu' => $post['mod-cancelardenunciasusuarios'],
-			'moadf' => $post['mod-aceptardenunciasfotos'],
-			'mocdf' => $post['mod-cancelardenunciasfotos'],
-			'mocdp' => $post['mod-cancelardenunciasposts'],
-			'moadm' => $post['mod-aceptardenunciasmensajes'],
-			'mocdm' => $post['mod-cancelardenunciasmensajes'],
-			'movub' => $post['mod-verusuariosbaneados'],
-			'moub' => $post['mod-usarbuscador'],
-			'morp' => $post['mod-reciclajeposts'],
-			'morf' => $post['mod-reficlajefotos'],
-			'mocp' => $post['mod-contenidoposts'],
-			'mocc' => $post['mod-contenidocomentarios'],
-			'most' => $post['mod-sticky'],
-			'moayca' => $post['mod-abrirycerrarajax'],
-			'movcud' => $post['mod-vercuentasdesactivadas'],
-			'movcus' => $post['mod-vercuentassuspendidas'],
-			'mosu' => $post['mod-suspenderusuarios'],
-			'modu' => $post['mod-desbanearusuarios'],
-			'moep' => $post['mod-eliminarposts'],
-			'moedpo' => $post['mod-editarposts'],
-			'moop' => $post['mod-ocultarposts'],
-			'mocepc' => $post['mod-comentarpostcerrado'],
-			'moedcopo' => $post['mod-editarcomposts'],
-			'moaydcp' => $post['mod-desyaprobarcomposts'],
-			'moecp' => $post['mod-eliminarcomposts'],
-			'moef' => $post['mod-eliminarfotos'],
-			'moedfo' => $post['mod-editarfotos'],
-			'moecf' => $post['mod-eliminarcomfotos'],
-			'moepm' => $post['mod-eliminarpubmuro'],
-			'moecm' => $post['mod-eliminarcommuro'],
-			'godp' => $post['global-darpuntos'],
-			'gopp' => $post['global-publicarposts'],
-			'gopcp' => $post['global-publicarcomposts'],
-			'govpp' => $post['global-votarposipost'],
-			'govpn' => $post['global-votarnegapost'],
-			'goepc' => $post['global-editarpropioscomentarios'],
-			'godpc' => $post['global-eliminarpropioscomentarios'],
-			'gopf' => $post['global-publicarfotos'],
-			'gopcf' => $post['global-publicarcomfotos'],
-			'gorpap' => $post['global-revisarposts'],
-			'govwm' => $post['global-vermantenimiento'],
-			'goaf' => $post['global-antiflood'],
-			'gopfp' => $post['global-pointsforposts'],
-			'gopfd' => $post['global-pointsforday']
-		]);
-	}
 
 	/** 
 	 * Agregamos esta función ya que se repite 2 veces,
@@ -134,33 +85,6 @@ class tsAdmin {
 		else exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
 	}
 	# ===================================================
-	# SEO
-	# * getSEO() :: Obtenemos toda la informacion
-	# * getNoticia() :: Obtenemos la noticia por ID
-	# * delNoticia() :: Eliminamos la noticia por ID
-	# * newNoticia() :: Creamos una nueva notica
-	# * editNoticia() :: Editamos la noticia
-	# ===================================================
-	public function getSEO() {
-		global $tsCore;
-		$sql = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT seo_id, seo_titulo, seo_descripcion, seo_favicon, seo_keywords, seo_images, seo_robots_data, seo_robots, seo_sitemap FROM w_site_seo WHERE seo_id = 1'));
-		$sql['seo_favicon'] = $sql['seo_favicon'];
-		$robots = json_decode($sql['seo_robots_data'], true);
-		$sql['robots_name'] = $robots['name'];
-		$sql['robots_content'] = $robots['content'];
-		$sql['seo_images'] = json_decode($sql['seo_images'], true);
-		$sql['seo_images_total'] = [16, 32, 64];
-		return $sql;
-	}
-	public function saveSEO() {
-		global $tsCore, $tsUser;
-		//
-		$_POST = isset($_POST['save']) ? array_slice($_POST, 0, -1) : $_POST;
-		foreach($_POST as $key => $val) $_POST[$key] = is_numeric($val) ? (int)$val : (is_array($val) ? json_encode($val, JSON_FORCE_OBJECT) : $tsCore->setSecure($val));
-		$set = $tsCore->getIUP($_POST, 'seo_');
-		if (db_exec([__FILE__, __LINE__], 'query', "UPDATE w_site_seo SET $set WHERE seo_id = 1")) return true;
-	}
-	# ===================================================
 	# NOTICIAS
 	# * getNoticias() :: Obtenemos todas las noticias
 	# * getNoticia() :: Obtenemos la noticia por ID
@@ -217,7 +141,6 @@ class tsAdmin {
 	}
 	# ===================================================
 	# TEMAS
-	# * get_t() :: Evitamos repetir
 	# * getTemas() :: Obtenemos todos los temas
 	# * getTema() :: Obtenemos el tema por ID
 	# * saveTema() :: Guardamos nuevo tema
@@ -225,10 +148,6 @@ class tsAdmin {
 	# * deleteTema() :: Eliminamos el tema
 	# * newTema() :: Instalamos nuevo tema
 	# ===================================================
-	private function privateTheme(bool $type = false, int $id = 0) {
-		$sql = db_exec([__FILE__, __LINE__], 'query', "SELECT tid, t_name, t_url, t_path FROM w_temas WHERE tid " . ($type ? '> 0' : "= $id"));
-		return $type ? result_array($sql) : db_exec('fetch_assoc', $sql);
-	}
 	public function getTemas() {
 		return $this->privateTheme(true);
 	}
@@ -360,7 +279,6 @@ class tsAdmin {
 	# * getRangos() :: Obtenemos todos los rangos
 	# * getRango() :: Obtenemos el rango
 	# * getRangoUsers() :: Rangos de los usuarios
-	# * sameArrayRango() :: Evitamos que se repitan
 	# * saveRango() :: Guardamos rango
 	# * newRango() :: Nuevo rango
 	# * delRango() :: Eliminamos el rango 
@@ -429,20 +347,6 @@ class tsAdmin {
 		//
 		return $data;
 	}
-	private function sameArrayRango(array $post = []) {
-		global $tsCore;
-		$retornar = [
-			'name' => $tsCore->setSecure($tsCore->parseBadWords($post['rName'])),
-			'color' => $tsCore->setSecure($post['rColor']),
-			'image' => $tsCore->setSecure($post['r_img']),
-			'cant' => empty($post['global-cantidadrequerida']) ? 0 : (int)$post['global-cantidadrequerida'],
-			'type' => $post['global-type'] > 4 ? 0 : $post['global-type'],
-			'allows' => self::optionsRange($post)
-		];
-		if (empty($retornar['name'])) return 'Debes ingresar el nombre del nuevo rango.';
-		if ($post['global-pointsforposts'] > $post['global-pointsforday']) return 'El rango no puede dar m&aacute;s puntos de los que tiene al d&iacute;a.';
-		return $retornar;
-	}
 	public function saveRango() {
 		global $tsCore;
 		//
@@ -482,11 +386,6 @@ class tsAdmin {
 				if (db_exec([__FILE__, __LINE__], 'query', "UPDATE w_configuracion SET c_reg_rango = $rid WHERE tscript_id = 1")) return true;
 			} else return 'El rango no existe o no es posible utilizarlo';
 		} else return 'Petici&oacute;n inv&aacute;lida';
-	}
-	public function rangoColor() {
-		return [
-			"000000","000033","000066","000099","0000cc","0000ff","330000","330033","330066","330099","3300cc","3300ff","660000","660033","660066","660099","6600cc","6600ff","990000","990033","990066","990099","9900cc","9900ff","cc0000","cc0033","cc0066","cc0099","cc00cc","cc00ff","ff0000","ff0033","ff0066","ff0099","ff00cc","ff00ff","003300","003333","003366","003399","0033cc","0033ff","333300","333333","333366","333399","3333cc","3333ff","663300","663333","663366","663399","6633cc","6633ff","993300","993333","993366","993399","9933cc","9933ff","cc3300","cc3333","cc3366","cc3399","cc33cc","cc33ff","ff3300","ff3333","ff3366","ff3399","ff33cc","ff33ff","006600","006633","006666","006699","0066cc","0066ff","336600","336633","336666","336699","3366cc","3366ff","666600","666633","666666","666699","6666cc","6666ff","996600","996633","996666","996699","9966cc","9966ff","cc6600","cc6633","cc6666","cc6699","cc66cc","cc66ff","ff6600","ff6633","ff6666","ff6699","ff66cc","ff66ff","009900","009933","009966","009999","0099cc","0099ff","339900","339933","339966","339999","3399cc","3399ff","669900","669933","669966","669999","6699cc","6699ff","999900","999933","999966","999999","9999cc","9999ff","cc9900","cc9933","cc9966","cc9999","cc99cc","cc99ff","ff9900","ff9933","ff9966","ff9999","ff99cc","ff99ff","00cc00","00cc33","00cc66","00cc99","00cccc","00ccff","33cc00","33cc33","33cc66","33cc99","33cccc","33ccff","66cc00","66cc33","66cc66","66cc99","66cccc","66ccff","99cc00","99cc33","99cc66","99cc99","99cccc","99ccff","cccc00","cccc33","cccc66","cccc99","cccccc","ccccff","ffcc00","ffcc33","ffcc66","ffcc99","ffcccc","ffccff","00ff00","00ff33","00ff66","00ff99","00ffcc","00ffff","33ff00","33ff33","33ff66","33ff99","33ffcc","33ffff","66ff00","66ff33","66ff66","66ff99","66ffcc","66ffff","99ff00","99ff33","99ff66","99ff99","99ffcc","99ffff","ccff00","ccff33","ccff66","ccff99","ccffcc","ccffff","ffff00","ffff33","ffff66","ffff99","ffffcc","ffffff"
-		];
 	}
 	# ===================================================
 	# USUARIOS
@@ -784,40 +683,26 @@ class tsAdmin {
 	# POSTS
 	# * GetAdminPosts() :: Obtenemos todos los posts
 	# ===================================================
-	public function GetAdminPosts()
-	 {
-		  global $tsCore;
+	public function GetAdminPosts() {
+		global $tsCore;
+		//
+		$max = 20; // MAXIMO A MOSTRAR
+		$limit = $tsCore->setPageLimit($max, true);
+		$order = 'p.post_' . (($_GET['o'] === 'e') ? 'status' : ($_GET['o'] === 'ip' ? 'ip' : 'id'));
+		$descasc = ($_GET['m'] === 'a') ? 'ASC' : 'DESC';
+		//
+		$data['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, c.c_nombre, c.c_seo, c.c_img, p.* FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE p.post_id > 0 ORDER BY $order $descasc LIMIT $limit"));
+		// PAGINAS
+		list($total) = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(*) FROM p_posts WHERE post_id > 0"));
+
+		  $data['pages'] = $tsCore->pageIndex("{$tsCore->settings['url']}/admin/posts?o={$_GET['o']}&m={$_GET['m']}", $_GET['s'], $total, $max);
 		  //
-		  $max = 18; // MAXIMO A MOSTRAR
-		  $limit = $tsCore->setPageLimit($max, true);
-
-		  if ($_GET['o'] == 'e')
-		  {
-				$order = 'p.post_status';
-		  } elseif ($_GET['o'] == 'ip')
-		  {
-				$order = 'p.post_ip';
-		  } else
-		  {
-				$order = 'p.post_id';
-		  }
-
-		  //
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, c.c_nombre, c.c_seo, c.c_img, p.* FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE p.post_id > \'0\' ORDER BY ' .
-				$order . ' ' . ($_GET['m'] == 'a' ? 'ASC' : 'DESC') . ' LIMIT ' . $limit);
-		  //
-		  $data['data'] = result_array($query);
-
-		  // PAGINAS
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM p_posts WHERE post_id > \'0\'');
-		  list($total) = db_exec('fetch_row', $query);
-
-		  $data['pages'] = $tsCore->pageIndex($tsCore->settings['url'] . "/admin/posts?o=" .
-				$_GET['o'] . "&m=" . $_GET['m'] . "", $_GET['s'], $total, $max);
-		  //
-		  return $data;
-	 }
-
+		return $data;
+	}
+	# ===================================================
+	# FOTOS
+	# * GetAdminFotos() :: Obtenemos todas las fotos
+	# ===================================================
 
 	 /****************** ADMINISTRACIÓN DE FOTOS ******************/
 	 function GetAdminFotos()

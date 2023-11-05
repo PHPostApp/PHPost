@@ -5,9 +5,16 @@
  * @name    c.core.php
  * @author  PHPost Team
  */
+
+if(file_exists(TS_EXTRA . 'optimizer.php')) {
+	require_once TS_EXTRA . 'optimizer.php';
+}
+
 class tsCore {
     
-	var $settings;		// CONFIGURACIONES DEL SITIO
+	public $settings;		// CONFIGURACIONES DEL SITIO
+
+	public $extras;
 
 	// No quitar, ni reemplazar
 	private $keygen = 'UmlzdXMyMw==';
@@ -24,6 +31,7 @@ class tsCore {
 
 	public function __construct() {
 		// CARGANDO CONFIGURACIONES
+		$this->extras = $this->getExtras();
 		$this->settings = $this->getSettings();
 		$this->settings['seo'] = $this->getSEO();
 		$this->settings['domain'] = str_replace($this->https_on(),'',$this->settings['url']);
@@ -36,6 +44,7 @@ class tsCore {
 		//
 		$this->settings['avatar'] = $this->settings['url'].'/files/avatar';
 		$this->settings['uploads'] = $this->settings['url'].'/files/uploads';
+		$this->settings['portada'] = $this->settings['url'].'/files/portadas';
 		$this->settings['public'] = $this->settings['url'].'/public';
 		$this->settings['oauth'] = $this->OAuth();
       //
@@ -109,6 +118,10 @@ class tsCore {
 	}
 	public function getSEO() {
 		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT seo_titulo, seo_descripcion FROM w_site_seo');
+		return db_exec('fetch_assoc', $query);
+	}
+	public function getExtras() {
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT optimizar, extension, tamano, calidad, smarty_cache, smarty_security, smarty_compress, smarty_lifetime FROM w_extras');
 		return db_exec('fetch_assoc', $query);
 	}
 	
@@ -392,7 +405,7 @@ class tsCore {
     	// Obtenemos la pagina actual
    	$currentPage = empty($_GET['page']) ? 1 : (int)$_GET['page'];
    	// Si no existe devolvemos algo vacío
-    	if ($totalItems <= 0) return '';
+    	if ($totalItems <= 0) return 0;
     	$page = "?page=";
     	$pagination['current'] = $currentPage;
     	// Empezamos con la estructura de la paginación
@@ -511,7 +524,7 @@ class tsCore {
          case 'normal':
          case 'smiles':
             // BBCodes permitidos
-            $parser->setRestriction(array('url', 'code', 'quote', 'font', 'size', 'color', 'img', 'b', 'i', 'u', 's', 'align', 'spoiler', 'swf', 'video', 'goear', 'hr', 'sub', 'sup', 'table', 'td', 'tr', 'ul', 'li', 'ol', 'notice', 'info', 'warning', 'error', 'success'));
+            $parser->setRestriction(array('url', 'code', 'quote', 'font', 'size', 'color', 'img', 'b', 'i', 'u', 's', 'align', 'spoiler', 'swf', 'video', 'goear', 'hr', 'sub', 'sup', 'table', 'td', 'tr', 'ul', 'li', 'ol', 'notice', 'info', 'warning', 'error', 'success', 'html', 'css', 'javascript', 'php', 'sql'));
             // SMILES
             $parser->parseSmiles();
             // MENCIONES
@@ -685,6 +698,63 @@ class tsCore {
 		if((int)$this->settings['c_upperkey'] === 0) $username = strtolower($username);
 		$password = $this->keygen . md5($password);
 		return $this->setSecure(md5($password . $username));
+	}
+
+	/**
+    * Función privada para generar ID
+    * @param int $total
+    * @return string 
+   */
+   private function filenamex(int $total = 10) {
+      $text = '';
+      # GENERAMOS ID PARA LA LICENCIA
+      for ($i = 65; $i <= 90; $i++) $text .= chr($i); // De A ... Z
+      for ($i = 97; $i <= 122; $i++) $text .= chr($i); // De a ... z
+      # Return
+      return substr(str_shuffle($text), 0, $total);
+   }
+
+   public function cover(string $type = 'post', string $image = '') {
+   	# Portada por defecto
+   	$urlimage = "sin_portada.png";
+   	# Verificamos el campo
+      if(!empty($_FILES["portada"]["name"])) {
+      	# Obtenemos la extension del archivo
+      	$ext = pathinfo($_FILES["portada"]["name"], PATHINFO_EXTENSION);
+         # Carpeta a guardar portadas
+         $archivo = empty($image) ? self::filenamex(12).'.'.$ext : $image;
+			// Crea la cookie
+			if (!isset($_COOKIE['PORTADA'])) {
+				setcookie('PORTADA', $archivo, time() + 3600, "/");
+			}
+         $nuevoarchivo = ($type === 'post' ? TS_PORTADAS : TS_UPLOADS) . $archivo;
+         // Revisamos si se envía realmente una imagen
+         $check = getimagesize($_FILES["portada"]["tmp_name"]);
+         if($check === false) {
+            return 'El archivo que vas a enviar no es una imagen válida, verifica la imagen del post ' . $check["mime"];
+         }
+         // Verificar tamaño de la imagen | 1 MB => 1048576 | 2 MB => 2097152
+         $mb_one = 2097152;
+         if ($_FILES["portada"]["size"] > $mb_one) {
+            return 'La imagen debe pesar por mucho 2MB, el tama&ntilde;o de tu archivo es mayor que el permitido.';
+         }
+        
+         if (!isset($_COOKIE['PORTADA'])) {
+         	move_uploaded_file($_FILES["portada"]["tmp_name"], $nuevoarchivo);
+         } else {
+         	$archivo = $_COOKIE['PORTADA'];
+         	$nuevoarchivo = ($type === 'post' ? TS_PORTADAS : TS_UPLOADS) . $archivo;
+         }
+      }
+
+      return ['url' => $nuevoarchivo, 'filename' => $archivo];
+   }
+
+	public function colores() {
+		$colors = [
+			"000000", "000000", "00008B", "0000CD", "0000FF", "001A57", "00209C", "003153", "003C92", "004225", "00438A", "0048BA", "004F79", "00554E", "0061A9", "006400", "006A4E", "0071BC", "007E8B", "007F5C", "007F66", "008000", "008F4C", "0093AF", "009872", "009975", "0099FF", "009B7D", "00B0F6", "00B564", "00CED1", "00DDF3", "00FF00", "00FF7F", "00FF80", "00FFBF", "00FFBF", "00FFEF", "00FFFF", "010101", "019902", "04A404", "091F92", "091F92", "0A3F7A", "0BDA51", "0CF90C", "0D98BA", "0F0F0F", "122562", "128385", "18A88D", "191919", "1B4125", "1B4125", "1B7677", "1C1C1C", "1DACD6", "2000FF", "202020", "213C6E", "222222", "228B22", "25206F", "293133", "2A3223", "2E8B57", "301934", "318CE7", "330066", "333C87", "34C2A7", "35682D", "36454F", "367793", "37312B", "382212", "382983", "3B2A21", "3B3121", "3B7861", "3D2E2C", "3EAEB1", "4000FF", "404040", "40E0D0", "40E0D0", "417DC1", "436EC0", "43B3AE", "44944A", "4682b4", "478800", "4795CE", "483C32", "48D1CC", "496063", "4A2364", "4B382F", "4B5F56", "4C2882", "4E0041", "50301E", "50404D", "51D1F6", "524B3B", "52B830", "536878", "536878", "536895", "543D3F", "555555", "5564EB", "563970", "572364", "573F25", "591F0B", "5C5342", "5C5343", "5D5342", "5F3F3E", "5F7F7A", "6000FF", "602F6B", "604E97", "612682", "63E457", "65315F", "654321", "6576B4", "663B2A", "669F5F", "673147", "674C47", "694C41", "696969", "6A0DAD", "6B8E23", "6B8E23", "6D071A", "6E433C", "6F2DA8", "707D3D", "71BC78", "722F37", "72A0C1", "738678", "7573A6", "75B313", "77DD77", "79443B", "7B3F00", "7C342B", "7C7C40", "7CB9E8", "7D3F32", "7DF9FF", "7E9F2E", "7F00FF", "7F69A5", "7FFFD4", "7FFFD4", "800000", "800080", "800080", "804000", "808080", "808080", "81878B", "81D8D0", "823A3F", "826C34", "848482", "870074", "874639", "87CEFA", "882D17", "882D17", "8892C6", "891E35", "898AC0", "8A5754", "8A9A5B", "8A9A5B", "8B008B", "8B4513", "8D0036", "8E372E", "8E6E37", "8F9779", "900020", "91A3B0", "91A3B0", "9370DB", "93C572", "93C592", "9400D3", "955F20", "964B00", "967117", "96C8A2", "977F73", "987654", "98FF98", "9955BB", "996515", "996B42", "9A6619", "9C9C00", "9CFE37", "9DFFD0", "9EFD38", "9F2B68", "9F68A6", "A0D6B4", "A10684", "A11480", "A11C55", "A2522B", "A7D3F3", "A9A9A9", "AA0000", "AA1C47", "AB2A3E", "AC5CB5", "ACDCDD", "ACDCDD", "ADD8E6", "ADFF2F", "AE2029", "AF6E37", "AFE4DE", "AFEEEE", "B09DB9", "B0B5BC", "B0BF1A", "B21A27", "B21B1C", "B284BE", "B2FFFF", "B5651D", "B5783A", "B57EDC", "B82928", "B9935A", "BA7C45", "BC8648", "BD002F", "BDB76B", "BEBEBE", "C03E3E", "C04000", "C19A6B", "C19A6B", "C20073", "C30B4E", "C3B091", "C41E3A", "C46210", "C48A3C", "C6CE00", "C81023", "C97E28", "C9AE5D", "C9FFE5", "CB1D11", "CB6D51", "CBA2C8", "CC0000", "CC00CC", "CC99FF", "CCCCFF", "CD7F32", "CD853F", "CDCDCD", "CE4676", "CF71AF", "D10047", "D19538", "D1974D", "D1EBF7", "D1EDF2", "D22C21", "D2B48C", "D3C1DD", "D3D3D3", "D4442F", "D4AF37", "D5303E", "D6D6D6", "D7D0B7", "D891EF", "D8BFD8", "D99058", "D99058", "D99343", "D9E542", "D9E542", "DAA520", "DC2339", "DCD0FF", "DCD0FF", "DEB7D9", "DED700", "DFFF00", "DFFF00", "E0B0FF", "E25F23", "E2893A", "E30032", "E30049", "E3A857", "E3E4E5", "E40078", "E49B0F", "E49B0F", "E4D00A", "E4D00A", "E51A4C", "E51D2E", "E52B50", "E5E4E2", "E60026", "E61D52", "E62E00", "E62E11", "E65F00", "E6B57E", "E82300", "E8C39E", "E95400", "E9D66B", "EAC102", "EB6362", "ECCD6A", "ECE2C6", "ED1C24", "ED872D", "EDAA7C", "EDEAE0", "EEDD62", "EEDFA0", "EEEEEE", "EFD52E", "EFDECD", "F0E68C", "F0F8FF", "F19CBB", "F2003C", "F2F0E6", "F38D3C", "F3E5AB", "F50087", "F50087", "F5DEB3", "F5F35B", "F5F5DC", "F5F5F5", "F5FFF0", "F6AE97", "F6F6F6", "F7BFBE", "F8DE7E", "F8F8FF", "F8F8FF", "F984E5", "F98F1D", "F9BDA1", "FA8072", "FA8072", "FAD6A5", "FAE6FA", "FAEBD7", "FAFBFD", "FBF4E2", "FCC300", "FCD0B4", "FCD1C6", "FCF75E", "FD6C9E", "FDF5E6", "FDF5E6", "FDFD96", "FDFDFD", "FED8B1", "FEFF3F", "FF0000", "FF005A", "FF0080", "FF00FF", "FF2000", "FF3202", "FF3399", "FF4000", "FF4500", "FF5A36", "FF6000", "FF6600", "FF77FF", "FF7802", "FF7E00", "FF8000", "FF80FF", "FF8C00", "FF9966", "FF9CFF", "FFBA00", "FFC94D", "FFCB03", "FFCC0F", "FFD700", "FFD700", "FFD90F", "FFDB58", "FFDDF4", "FFDEAD", "FFDF00", "FFE302", "FFE661", "FFE900", "FFF0F5", "FFF5EE", "FFF5EE", "FFF600", "FFF6AD", "FFF83B", "FFF8E7", "FFFAFA", "FFFDD0", "FFFF00", "FFFFE0", "FFFFF0", "FFFFFF"
+		];
+		return $colors;
 	}
 
 }

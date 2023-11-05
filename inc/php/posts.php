@@ -57,12 +57,10 @@ if($tsContinue) {
 	$tsPosts = new tsPosts();
 	 
 	// Category
-	$category = $_GET['cat'];
+	$category = isset($_GET['cat']) ? htmlentities($_GET['cat']) : '';
 	 
 	// Post anterior/siguiente
 	if(in_array($_GET['action'], ['next', 'prev', 'fortuitae'])) $tsPosts->setNP();
-
-	if(isset($_GET['p'])) $tsPosts->short_url_post();
 
 /*
  * -------------------------------------------------------------------
@@ -125,10 +123,12 @@ if($tsContinue) {
 		$smarty->assign("tsPosts", $tsLastPosts['data']);
 		$smarty->assign("tsPages", $tsLastPosts['pages']);
 		// ULTIMOS POSTS FIJOS
-		if($tsLastPosts['pages']['current'] === 1 OR $tsCore->settings['tema']['t_name'] === 'beatrix'){
-			$tsLastStickys = $tsPosts->getLastPosts('', true);
-			$smarty->assign("tsPostsStickys", $tsLastStickys['data']);
-		}
+		//if(!empty($tsLastPosts['data'])) {
+			if($tsLastPosts['pages']['current'] === 1 OR $tsCore->settings['tema']['t_name'] === 'beatrix'){
+				$tsLastStickys = $tsPosts->getLastPosts('', true);
+				$smarty->assign("tsPostsStickys", $tsLastStickys['data']);
+			}
+		//}
 		// CAT
 		$smarty->assign("tsCat", $category);
 		$smarty->assign("tsStats", $tsTops->getStats());

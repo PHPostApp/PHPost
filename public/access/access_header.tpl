@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 </head>
-<body>
-	<div id="loading" style="display:none;"><img src="{$tsConfig.images}/ajax-loader.gif" alt="Cargando"> Procesando...</div>
+<body class="bg-{$tsPage}">
+	<div id="loading" style="display:none;">Procesando...</div>
 	<div id="mydialog"></div>
 	<main>
 		<section>

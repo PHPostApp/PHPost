@@ -1,5 +1,5 @@
 {include "access_header.tpl"}	
-	<div class="formulario d-flex justify-content-center align-items-start flex-column p-3">
+	<div class="formulario d-flex justify-content-center align-items-start flex-column p-3 px-5">
 
 		<span id="login_cargando"></span>
 
@@ -32,18 +32,20 @@
 		</div>
 
 		<div class="my-3 position-relative text-center">
-			<a class="d-block link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="javascript:login.multiOptions('password');">&#191;Olvidaste tu contrase&#241;a?</a>
-			<a class="my-3 d-block link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="javascript:login.multiOptions('validation');">&#191;No lleg&oacute; el correo de validaci&oacute;n?</a>
-			<a class="d-block link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{$tsConfig.url}/registro">Registrate Ahora!</a>
+			<a class="link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="javascript:login.multiOptions('password');">&#191;Olvidaste tu contrase&#241;a?</a>
+			<a class="link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="javascript:login.multiOptions('validation');">&#191;No lleg&oacute; el correo de validaci&oacute;n?</a>
+			<a class="my-3 d-block link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{$tsConfig.url}/registro">Registrate Ahora!</a>
 		</div>
-		<hr>
+		{if $tsConfig.oauth}
+		<span class="d-block mb-2 text-center fs-4">Continuar con...</span>
 		<div class="form-line" style="text-align: center;">
 			{foreach $tsConfig.oauth key=i item=social}
 				<a class="btn btn-social btn-{if $i == 'gmail'}google{else}{$i}{/if} btn-block mb-3" href="{$social}">
-					<span><iconify-icon icon="fa6-brands:{if $i == 'gmail'}google{else}{$i}{/if}"></iconify-icon></span> Continuar con {$i}
+					<span><iconify-icon icon="fa6-brands:{if $i == 'gmail'}google{else}{$i}{/if}"></iconify-icon></span> {$i|ucfirst}
 				</a>
 			{/foreach}
 		</div>
+		{/if}
 	</div>
 
 <script>

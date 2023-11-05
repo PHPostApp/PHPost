@@ -39,7 +39,7 @@ function smarty_function_meta($params, &$smarty) {
 	if(isset($tsPost['post_portada']) AND empty($tsPost['post_portada'])) {
 		$tsPost['post_portada'] = "{$tsCore->settings['public']}/images/sin_portada.png";
 	} 
-	$image = (is_numeric($tsPost['post_id'])) ? $tsPost['post_portada'] : ($tsFoto['foto_id'] ? $tsFoto['foto_url'] : $data['seo_favicon']);
+	$image = (is_numeric($tsPost['post_id'])) ? $tsPost['post_portada'] : ($tsFoto['foto_id'] ? $tsFoto['foto_url'] : $data['seo_portada']);
 
 	// Tipo
 	$type = is_numeric($tsPost['post_id']) ? 'article' : 'website';
@@ -89,9 +89,13 @@ function smarty_function_meta($params, &$smarty) {
 	}
 	
 	$type = pathinfo($data['seo_favicon'])['extension'];
+	$data['seo_favicon'] .= '?t=' . time();
 	$meta .= "<link href=\"{$data['seo_favicon']}\" rel=\"shortcut icon\" type=\"image/$type\" />\n";
 	foreach($data['seo_images'] as $im => $img) {
-		$meta .= "<link href=\"$img\" rel=\"shortcut icon\" type=\"image/$type\" sizes=\"{$im}x{$im}\" />\n";
+		if(!empty($img)) {
+			$img .= '?t=' . time();
+			$meta .= "<link href=\"$img\" rel=\"shortcut icon\" type=\"image/$type\" sizes=\"{$im}x{$im}\" />\n";
+		}
 	}
 	// Retornamos
 	return trim($meta);

@@ -17,7 +17,7 @@ define('BLOCKED', SCRIPT_ROOT . '.lock');
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 session_start();
 //
-$version_id = "1.3.0.007";
+$version_id = "1.3.0.024";
 $version_title = "Risus $version_id";
 $wversion_code = str_replace([' ', '.'], '_', strtolower($version_title));
 
@@ -64,6 +64,7 @@ switch ($step) {
 		// Forzamos los permisos
 		chmod(SCRIPT_ROOT . 'files' . DS . 'avatar', 0777);
 		chmod(SCRIPT_ROOT . 'files' . DS . 'uploads', 0777);
+		chmod(SCRIPT_ROOT . 'files' . DS . 'portadas', 0777);
 		$_SESSION['license'] = false;
 		$license = file_get_contents(LICENSE);
 	break;
@@ -74,6 +75,7 @@ switch ($step) {
 				"config" => '../config.inc.php',
 				"cache" => '../cache/',
 				"avatar" => '../files/avatar/',
+				"portadas" => '../files/portadas/',
 				"uploads" => '../files/uploads/'
 			];
 			foreach ($all as $key => $val) {
@@ -204,7 +206,7 @@ switch ($step) {
             	'32' => $web['url'] . '/public/images/logo-32.png',
             	'64' => $web['url'] . '/public/images/logo-64.png'
             ], JSON_FORCE_OBJECT);
-            $database->query("INSERT INTO w_site_seo (seo_id, seo_titulo, seo_descripcion, seo_favicon, seo_keywords, seo_images, seo_robots, seo_sitemap) VALUES(1, '$seoTitle', '$seoDecription', '{$web['url']}/public/images/logo-64.png', '$seoKeys', '$seoImages', 0, 0)");
+            $database->query("INSERT INTO w_site_seo (seo_id, seo_titulo, seo_descripcion, seo_portada, seo_favicon, seo_keywords, seo_images, seo_robots, seo_sitemap) VALUES(1, '$seoTitle', '$seoDecription', '{$web['url']}/public/images/portada.png', '{$web['url']}/public/images/logo-64.png', '$seoKeys', '$seoImages', 0, 0)");
 				// GUARDAR LOS DATOS DE CONEXION
 				$config = file_get_contents(CONFIGINC);
 				$config = str_replace(['dbpkey', 'dbskey'], [$web['pkey'], $web['skey']], $config);
@@ -221,7 +223,7 @@ switch ($step) {
 				}
 				$ads = join(', ', $set);
 				// UPDATE
-				if ($database->query("UPDATE w_configuracion SET titulo = '{$web['name']}', slogan = '{$web['slogan']}', url = '{$web['url']}', email = '{$web['mail']}', c_upperkey = {$web['c_upperkey']}, $ads, version = '$version_title', version_code = '$wversion_code', pkey = '{$web['pkey']}', skey = '{$web['skey']}' WHERE tscript_id = 1")) header("Location: index.php?step=5");
+				if ($database->query("UPDATE w_configuracion SET titulo = '{$web['name']}', slogan = '{$web['slogan']}', url = '{$web['url']}', email = '{$web['mail']}', `optimizar` = 0, c_upperkey = {$web['c_upperkey']}, $ads, version = '$version_title', version_code = '$wversion_code', pkey = '{$web['pkey']}', skey = '{$web['skey']}' WHERE tscript_id = 1")) header("Location: index.php?step=5");
 				else $message = $database->error();
 			}
 		}
@@ -378,10 +380,12 @@ switch ($step) {
 					  	<fieldset>
 							<legend>Permisos de escritura</legend>
 							<p>Los siguientes archivos y directorios requieren de permisos especiales, debes cambiarlos desde tu cliente FTP, los archivos deben tener permiso <strong>666</strong> y los direcorios <strong>777</strong></p>
-							<?php foreach ($permisos as $k => $val): ?>
+							<?php foreach ($permisos as $k => $val): 
+								$txt = ($val['css'] === 'OK') ? 'Escribible' : $val['status'];
+							?>
 		                  <dl>
 		                     <dt><label for="<?=$key?>"><?=$all[$k]?></label></dt>
-		                     <dd><span class="status <?=strtolower($val['css']); ?>"><?=$val['css']?></span></dd>
+		                     <dd><span class="status <?=strtolower($val['css']); ?>"><?=$txt?></span></dd>
 		                  </dl>
 	                  <?php endforeach; ?>
 							<p><input type="submit" class="gbqfb" value="<?=($next ? 'Continuar &raquo;' : 'Volver a verificar')?>"/></p>

@@ -161,7 +161,7 @@ class BBCode {
 
         $tagCodes = array(
             array('tag' => 'b', 'replace' => '<strong>{param}</strong>'),
-            array('tag' => 'i', 'replace' => '<i>{param}</i>'),
+            array('tag' => 'i', 'replace' => '<em>{param}</em>'),
             array('tag' => 'u', 'replace' => '<u>{param}</u>'),
             array('tag' => 's', 'replace' => '<s>{param}</s>'),
             array('tag' => 'sub', 'replace' => '<sub>{param}</sub>'),
@@ -179,17 +179,22 @@ class BBCode {
             array('tag' => 'size', 'replace' => '<span style="font-size: {option}pt; line-height: {option}pt">{param}</span>', 'option' => true, 'validOption' => $sizeValidator),
             array('tag' => 'align', 'replace' => '<div style="text-align: {option}">{param}</div>', 'option' => true, 'validOption' => $alignValidator),
             array('tag' => 'font', 'replace' => '<span style="font-family: {option}">{param}</span>', 'option' => true, 'validOption' =>$fontValidator),
-            array('tag' => 'code', 'replace' => '<pre><code>{param}</code></pre>', 'parse' => true, 'limit' => 1),
             array('tag' => 'swf', 'replace' => '<embed src="{param}" quality="high" width="640px" height="390px" type="application/x-shockwave-flash" allowfullscreen="true" allownetworking="internal" autoplay="false" wmode="transparent">', 'parse' => false, 'validParam' => $swfValidator),
-            array('tag' => 'spoiler', 'replace' => '<div class="spoiler"><div class="title"><a href="#" onclick="spoiler($(this)); return false;">Spoiler:</a></div><div class="body">{param}</div></div>'),
-            array('tag' => 'quote', 'replace' => '<blockquote><div class="cita"><strong>Cita:</strong></div><div class="citacuerpo"><p>{param}</p></div></blockquote>'),
-            array('tag' => 'quote', 'replace' => '<blockquote><div class="cita"><strong>{option} dijo:</strong></div><div class="citacuerpo"><p>{param}</p></div></blockquote>', 'option' => true),
-            array('tag' => 'notice', 'replace' => '<div class="bbcmsg notice">{param}</div>'),
-            array('tag' => 'info', 'replace' => '<div class="bbcmsg info">{param}</div>'),
-            array('tag' => 'warning', 'replace' => '<div class="bbcmsg warning">{param}</div>'),
-            array('tag' => 'error', 'replace' => '<div class="bbcmsg error">{param}</div>'),
-            array('tag' => 'success', 'replace' => '<div class="bbcmsg success">{param}</div>')
+            array('tag' => 'spoiler', 'replace' => '<div class="spoiler"><div class="title"><a href="#" onclick="spoiler($(this)); return false;">Spoiler:</a></div><div class="body" style="display:none">{param}</div></div>'),
+            array('tag' => 'quote', 'replace' => '<blockquote class="blockcita"><div class="cita"><strong>Cita:</strong></div><div class="citacuerpo"><p>{param}</p></div></blockquote>'),
+            array('tag' => 'quote', 'replace' => '<blockquote class="blockcita"><div class="cita"><strong>{option} dijo:</strong></div><div class="citacuerpo"><p>{param}</p></div></blockquote>', 'option' => true)
         );
+        // MENSAJES 
+        $messages = ['notice','info','warning','error','success'];
+        foreach ($messages as $k => $msg) $array[] =  ['tag' => $msg, 'replace' => '<div class="bbcmsg '.$msg.'">{param}</div>'];
+        // AÑADIMOS A $tagCodes
+        $tagCodes = array_merge($tagCodes, $array);
+
+        // CODE
+        $codes = ['code','html','css','javascript','php','sql','markdown'];
+        foreach ($codes as $k => $msg) $array[] =  ['tag' => $msg, 'replace' => '<pre><code class="language-'.$msg.'">{param}</code></pre>', 'parse' => false, 'limit' => 1];
+        // AÑADIMOS A $tagCodes
+        $tagCodes = array_merge($tagCodes, $array);
 
         foreach ($tagCodes as $bbcode) {
             if (in_array($bbcode['tag'], $this->restriction) || !$this->restriction) {

@@ -17,6 +17,9 @@ html {
 }
 
 /* RESPONSIBLE */
+.wysibb * {
+	color: #222;
+}
 .wysibb {
 	line-height: normal;
 	border: 1px solid #ddd;
@@ -39,7 +42,10 @@ html {
 	width: 100%!important;
 }
 
-.wysibb button:focus,.wysibb button:active,#wbbmodal button:focus, #wbbmodal button:active {
+.wysibb button:focus,
+.wysibb button:active,
+#wbbmodal button:focus, 
+#wbbmodal button:active {
 	outline: 0;
 }
 
@@ -76,6 +82,7 @@ html {
 
 .wysibb .wysibb-text {
 	margin: 0 0 0 70px;
+	font-size: 1rem;
 }
 
 .wysibb .wysibb-toolbar .modeSwitch {
@@ -481,7 +488,7 @@ html {
 	z-index: 1100;
 }
 
-#wbbmodal  .wbbm {
+#wbbmodal .wbbm {
 	background: #fff;
 	text-align: left;
 	max-width: 90%;
@@ -542,7 +549,8 @@ html {
 	margin: 0 10px 5px 0;
 }
 
-#wbbmodal  .wbbm .wbbm-tablist ul li.on,#wbbmodal  .wbbm .wbbm-tablist ul li.on:hover {
+#wbbmodal  .wbbm .wbbm-tablist ul li.on,
+#wbbmodal  .wbbm .wbbm-tablist ul li.on:hover {
 	background: #428bca;
 	color: #fff;
 	cursor: default;

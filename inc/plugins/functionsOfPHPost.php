@@ -104,10 +104,6 @@ class fnPHPost {
 		} elseif(self::searchFile('css', $css, true)) {
 			$source = self::setURL('css', $css, true) . "?" . self::getCache();
 			$link .= "<link href=\"$source\" rel=\"stylesheet\" type=\"text/css\" />\n";
-		// Solo si esta en la página "posts"
-		} elseif($tsPage === 'posts') {
-			$source = self::setURL('css', 'AtomOneDark.css', true) . "?" . self::getCache();
-			$link .= "<link href=\"$source\" rel=\"stylesheet\" type=\"text/css\" />\n";
 		}
 		return $link;
 	}

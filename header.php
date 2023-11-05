@@ -55,13 +55,12 @@
 	define('TS_AVATAR', TS_FILES . 'avatar' . TS_PATH);
 
 	define('TS_UPLOADS', TS_FILES . 'uploads' . TS_PATH);
+
+	define('TS_PORTADAS', TS_FILES . 'portadas' . TS_PATH);
 	
 	set_include_path(get_include_path() . PATH_SEPARATOR . realpath('./'));
 
 	// PARA LA CONFIGURACION DE SMARTY
-	define('CACHE_CHECKED', TRUE);
-	define('SECURITY', TRUE);
-	define('COMPRESS_HTML', FALSE);
 	define('CACHE_LIFE_TIME', 3600 * 5);
 
 /*
@@ -127,6 +126,7 @@
 	 // Configuraciones
 	 $smarty->assign('tsConfig', $tsCore->settings);
 	 $smarty->assign('tsSeoData', $tsCore->settings['seo']);
+	 $smarty->assign('tsExtras', $tsCore->extras);
 
 	 // Obtejo usuario
 	 $smarty->assign('tsUser',$tsUser);
@@ -140,9 +140,9 @@
 	 // Mensajes
 	 $smarty->assign('tsMPs',$tsMP->mensajes);
 
-if (!extension_loaded('gd') && !function_exists('gd_info')) {
-	$smarty->assign('gd_info', 'La extensión GD no está habilitada en tu servidor.');
-}	 
+	if (!extension_loaded('gd') && !function_exists('gd_info')) {
+		echo '<span style="position:fixed;margin:1rem;z-index:999;background:#F00D;color:#FFF;padding:.4rem 1rem;border-radius: .3rem;">La extensi&oacute;n GD no est&aacute; habilitada en tu servidor.</span>';
+	}	 
 
 /*
  * -------------------------------------------------------------------

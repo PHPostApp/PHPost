@@ -28,7 +28,7 @@ $myerr = "t.error.tpl";
 $template = $smarty->templateExists( $mytemplate ) ? $mytemplate : $myerr;
 
 // Cacheamos la plantilla [5hs]
-$smarty->setCacheLifetime( CACHE_LIFE_TIME );
+$smarty->setCacheLifetime( (int)$tsCore->extras['smarty_lifetime'] * 3600 );
 
 /**
  * Borra la versión compilada del recurso de plantilla especificado

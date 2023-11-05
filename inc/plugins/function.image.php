@@ -14,6 +14,7 @@
 function smarty_function_image($params, &$smarty) {
 	global $tsCore;
 
+	$cover = $tsCore->settings['portada'] . "/c0v3rlvl";
 	$default = [
 		"alt" => "{$tsCore->settings['titulo']} {$tsCore->settings['slogan']}",
 		"attr" => [
@@ -25,6 +26,14 @@ function smarty_function_image($params, &$smarty) {
 		"class" => "image " . $params['class'],
 		"style" => $params['style']
 	];
+	if($params['type'] === 'post' OR $params['type'] === 'portada') {
+		$default = [
+			"attr" => [
+				"data-src" => "{$cover}1_{$params['src']}", 
+				"srcset" => "{$cover}3_{$params['src']} 320w, {$cover}2_{$params['src']} 480w, {$cover}1_{$params['src']} 800w"
+			]
+		];
+	} 
 
 	$default['alt'] = isset($params['alt']) ? $params['alt'] : $default['alt'];
 

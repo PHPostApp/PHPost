@@ -7,6 +7,19 @@
 	border-radius: .3rem;
 	z-index: 99;
 }
+.bg-login {
+	background-image: url('../images/background-login.jpg');
+}
+.bg-registro {
+	background-image: url('../images/background-registro.jpg');
+}
+.bg-login,
+.bg-registro {
+	background-repeat: no-repeat;
+	background-position: center;
+	background-attachment: fixed;
+	background-size: cover;
+}
 main {
 	width: 100%;
 	height: 100vh;
@@ -15,10 +28,12 @@ main {
 }
 main #RegistroForm,
 main .formulario {
-	width: 400px;
+	width: 500px;
 	max-height: 100%;
 	min-height: 100vh;
 	position: relative;
+	background-color: #2227;
+	backdrop-filter: blur(3px);
 }
 main #RegistroForm > *,
 main .formulario > * {
@@ -30,7 +45,8 @@ main .formulario > * {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: hsla(var(--bs-content-bg-hsl));
+	background-color: #2227;
+	backdrop-filter: blur(3px);
 	z-index: 9;
 	display: flex;
 	justify-content: center;

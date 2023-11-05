@@ -42,28 +42,29 @@
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg['mensaje']; die();}
 	// CLASE
-	require('../class/c.posts.php');
+	require_once TS_CLASS . 'c.posts.php';
 	$tsPosts = new tsPosts();
 	// CODIGO
 	switch($action){
 		case 'posts-genbus':
 			//<--
-                $do = htmlspecialchars($_GET['do']);
-                $q = $tsCore->setSecure($_POST['q']);
-                //
-                if($do == 'search'){
-                    $smarty->assign("tsPosts",$tsPosts->simiPosts($q));   
-                }elseif($do == 'generador'){
-                    $tags = $tsPosts->genTags($q);
-                    $smarty->assign("tsTags",$tags);
-                }
-                //
-                $smarty->assign("tsDo",$do);
+         $do = htmlspecialchars($_GET['do']);
+         $q = $tsCore->setSecure($_POST['q']);
+         $iss = isset($_POST['searching']) ? $_POST['searching'] : false;
+         //
+         if($do == 'search'){
+            $smarty->assign("tsPosts", $tsPosts->simiPosts($q, $iss));   
+         } elseif($do == 'generador'){
+            $tags = $tsPosts->genTags($q);
+            $smarty->assign("tsTags", $tags);
+         }
+         //
+         $smarty->assign("tsDo",$do);
 			//-->
 		break;
 		case 'posts-preview':
 			//<--
-				$smarty->assign("tsPreview",$tsPosts->getPreview());
+				$smarty->assign("tsPreview", $tsPosts->getPreview());
 			//-->
 		break;
 		case 'posts-borrar':

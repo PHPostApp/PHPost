@@ -83,10 +83,11 @@ function insertInto(array $array = [], string $tabla = '', array $datos = [], st
    if(empty($tabla) OR empty($datos)) die('No hay datos...');
    // Convertir el array en una cadena para la consulta INSERT INTO
    $prefixedKeys = array_map(function ($key) use ($prefijo) {
-      return $prefijo . $key;
+   	$key = ($key === 'for') ? "`$key`" : $key;
+      return $prefijo.$key;
    }, array_keys($datos));
    // Convertir el array en una cadena para la consulta INSERT INTO
-   $keys = implode(', ', $prefixedKeys);
+   $keys = '(' . implode(', ', $prefixedKeys) . ')';
    //
    $values = array_map(function ($value) {
       // Si el valor es numérico, no agregamos comillas
@@ -94,7 +95,7 @@ function insertInto(array $array = [], string $tabla = '', array $datos = [], st
    }, array_values($datos));
    $insertString = '(' . implode(', ', $values) . ')';
    //
-   return db_exec($array, 'query', "INSERT INTO $tabla ($keys) VALUES $insertString");
+   return db_exec($array, 'query', "INSERT INTO $tabla $keys VALUES $insertString");
 }
 
 function deleteID(array $array = [], string $tabla = '', string $dato = '') {

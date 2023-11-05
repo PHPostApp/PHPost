@@ -444,6 +444,7 @@ class tsCom {
 			// Informacion de la comunidad
 			$q1 = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT *, user_name FROM c_comunidades LEFT JOIN u_miembros ON user_id = c_autor WHERE c_id = \''.(int)$comid.'\' LIMIT 1');
 			$data['com'] = db_exec('fetch_assoc', $q1);
+			
 			// Verificamos el tipo...
 			if($data['com']['c_acceso'] == 2 && !$tsUser->is_member) return 'Esta comunidad es privada, solo usuarios registrados pueden acceder a ella.';
 			// Categoria y subcategoria

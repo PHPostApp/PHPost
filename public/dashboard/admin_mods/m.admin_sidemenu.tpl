@@ -8,6 +8,7 @@
 <li class="nav-item"><a class="nav-link page-configs" href="{$tsConfig.url}/admin/configs">Configurar Sitio web</a></li>
 <li class="nav-item"><a class="nav-link page-registro" href="{$tsConfig.url}/admin/registro">Configurar registro</a></li>
 <li class="nav-item"><a class="nav-link page-socials" href="{$tsConfig.url}/admin/socials">Configurar redes sociales</a></li>
+<li class="nav-item"><a class="nav-link page-extras" href="{$tsConfig.url}/admin/extras">Configuraciones extras</a></li>
 <li class="nav-item"><a class="nav-link page-temas" href="{$tsConfig.url}/admin/temas">Temas y apariencia</a></li>
 <li class="nav-item"><a class="nav-link page-news" href="{$tsConfig.url}/admin/news">Noticias</a></li>
 <li class="nav-item"><a class="nav-link page-ads" href="{$tsConfig.url}/admin/ads">Publicidad</a></li>

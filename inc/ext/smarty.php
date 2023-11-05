@@ -22,8 +22,9 @@ define('TS_PUBLIC', TS_ROOT . 'public' . TS_PATH);
 define('TS_DASHBOARD', TS_PUBLIC . 'dashboard' . TS_PATH);
 define('TS_ACCESS', TS_PUBLIC . 'access' . TS_PATH);
 define('TS_ADMOD', TS_DASHBOARD . "admin_mods" . TS_PATH);
-//
-$smarty->setCompileCheck(CACHE_CHECKED);
+
+// para un rendimiento óptimo
+$smarty->setCompileCheck(TRUE);
 
 /**
  * Compilamos los archivos en la carpeta cache
@@ -74,9 +75,12 @@ $SECURITY_POLICY->$php_functions = [];
  * Con esta función habilitamos el acceso a los directorios agregados
  * en la función de $smarty->setTemplateDir(...) si no estan definidos
  * no podran obtener el contenido de las mismas
- * @link => https://www.smarty.net/docs/en/advanced.features.tpl#advanced.features.security 
+ * @link => https://www.smarty.net/docs/en/advanced.features.tpl#advanced.features.security
+ * @link => https://smarty-php.github.io/smarty/4.x/programmers/advanced-features/advanced-features-security/
 */
-if( SECURITY ) $smarty->enableSecurity( $SECURITY_POLICY );
+if( $tsCore->extras['smarty_security'] ) {
+	$smarty->enableSecurity( $SECURITY_POLICY );
+}
 
 /**
  * Eliminará: Comentarios, Espacios.
@@ -84,6 +88,8 @@ if( SECURITY ) $smarty->enableSecurity( $SECURITY_POLICY );
  * @link => https://www.smarty.net/docs/en/api.load.filter.tpl
  * @link => https://stackoverflow.com/questions/18673684/minify-html-outputs-in-smarty/28556561
 */
-if( COMPRESS_HTML ) $smarty->loadFilter('output', 'trimwhitespace');
+if( $tsCore->extras['smarty_compress'] ) {
+	$smarty->loadFilter('output', 'trimwhitespace');
+}
 
 $smarty->muteUndefinedOrNullWarnings();

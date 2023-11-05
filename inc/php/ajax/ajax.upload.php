@@ -13,9 +13,10 @@
 
 	// NIVELES DE ACCESO Y PLANTILLAS DE CADA ACCIÓN
 	$files = array(
-        'upload-avatar' => array('n' => 2, 'p' => ''),
-        'upload-crop' => array('n' => 2, 'p' => ''),
+      'upload-avatar' => array('n' => 2, 'p' => ''),
+      'upload-crop' => array('n' => 2, 'p' => ''),
 		'upload-images' => array('n' => 2, 'p' => ''),
+		'upload-portada' => array('n' => 2, 'p' => ''),
 	);
 
 /**********************************\
@@ -43,29 +44,35 @@
 	$tsUpload = new tsUpload();
 	// CODIGO
 	switch($action){
-        case 'upload-avatar':
-            // <--
-            $tsUpload->image_scale = true;
-            $tsUpload->image_size['w'] = 640;
-            $tsUpload->image_size['h'] = 480;
-            //
-            $tsUpload->file_url = $_POST['url'];
-            //
-            $result = $tsUpload->newUpload(3);
-            echo $tsCore->setJSON($result);
-            // -->
-        break;
-        case 'upload-crop':
-            // <--
-            echo $tsCore->setJSON($tsUpload->cropAvatar($tsUser->uid));
+      case 'upload-portada':
+         echo json_encode($tsUpload->SubirPortada());
+         // $_POST['key'] = $result['key'];
+         // $_POST['ext'] = $result['ext'];
+         //echo json_encode($tsUpload->cropAvatarPortada());
+      break;
+      case 'upload-avatar':
+         // <--
+         $tsUpload->image_scale = true;
+         $tsUpload->image_size_min['w'] = 640;
+         $tsUpload->image_size_min['h'] = 480;
+         //
+         $tsUpload->file_url = $_POST['url'];
+         //
+         $result = $tsUpload->newUpload(3);
+         echo $tsCore->setJSON($result);
+         // -->
+      break;
+      case 'upload-crop':
+          // <--
+          echo $tsCore->setJSON($tsUpload->cropAvatar($tsUser->uid));
 			// PARA EL PERFIL
 			$total = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT p_total FROM u_perfil WHERE user_id = \''.$tsUser->uid.'\' LIMIT 1'));
 			$total = unserialize($total['p_total']);
 			$total[5] = 1;
 			$total = serialize($total);
 			db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_perfil SET p_avatar = \'1\', p_total = \''.$total.'\' WHERE user_id = \''.$tsUser->uid.'\'');
-            // -->
-        break;
+          // -->
+      break;
 		case 'upload-images':
             echo $tsCore->setJSON($tsUpload->newUpload(1));
 		break;

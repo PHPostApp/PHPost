@@ -47,7 +47,9 @@
 \*********************************/
 	
 	include_once TS_CLASS . "c.admin.php";
-
+	if(file_exists(TS_EXTRA.'optimizer.php') AND extension_loaded('gd')) {
+		$smarty->assign('optimizer', true);
+	} else $smarty->assign('optimizer', false);
 	// ACTION
 	$action = htmlspecialchars($_GET['action']);
 	// ACTION 2
@@ -71,6 +73,13 @@
 		if(!empty($_POST['titulo']) OR (!empty($_POST['pkey']) AND !empty($_POST['skey']))) {
 			if($tsAdmin->saveConfig()) $tsCore->redireccionar('admin', $action, 'save=true');
 		}
+	} elseif($action === 'extras') {
+    	//
+		$tsTitle = 'Configuraci&oacute;n Extras';
+		if(empty($act)) $smarty->assign('tsExtra', $tsAdmin->getExtra());
+		if(!empty($_POST['tamano'])) {
+			if($tsAdmin->saveExtra()) $tsCore->redireccionar('admin', $action, 'save=true');
+		}	
 	} elseif($action === 'seo') {
     	//
 		$tsTitle = 'Configurar SEO';
@@ -315,7 +324,7 @@
             if($act === 'nuevo') $smarty->assign("tsError", $save); 
             $smarty->assign("tsType", $_GET['t']);
 				$smarty->assign("tsIcons", $tsAdmin->getExtraIcons('ran'));
-				$smarty->assign('tsColor', $tsAdmin->rangoColor());
+				$smarty->assign('tsColor', $tsCore->colores());
 			}
 		// NUEVO RANGO
 		} elseif($act === 'borrar'){

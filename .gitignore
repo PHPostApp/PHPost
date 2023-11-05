@@ -1,7 +1,8 @@
+automatizer/
 cache/
 upgrade/
+optimizer/
 PullIn/
-config.inc.php
 
 # Los avatares
 files/avatar/*_120.jpg
@@ -9,6 +10,7 @@ files/avatar/*_50.jpg
 files/uploads/*.*
 
 # Archivos
+config.inc.php
 inc/ext/backup.php
 inc/ext/optimizer.php
 inc/ext/thumb.php
