@@ -80,7 +80,7 @@
 		// DATOS
 		$smarty->assign("tsPaises",$tsPaises);
 		$smarty->assign("tsEstados",$estados[$tsPerfil['user_pais']]);
-		$smarty->assign("tsMeces",$tsMeces);
+		$smarty->assign("tsMeses",$tsMeses);
       // BLOQUEOS
       $smarty->assign("tsBlocks",$tsCuenta->loadBloqueos());
         

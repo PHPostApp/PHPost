@@ -247,6 +247,8 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_miembros` (
   `user_name` varchar(16) NOT NULL DEFAULT '',
   `user_password` varchar(66) NOT NULL DEFAULT '',
   `user_email` varchar(35) NOT NULL DEFAULT '',
+  `user_avatares` tinytext NOT NULL DEFAULT '',
+  `user_socials` tinytext NOT NULL DEFAULT '{\"discord\":false,\"facebook\":false,\"github\":false,\"gmail\":false}',
   `user_rango` int(3) NOT NULL DEFAULT 3,
   `user_puntos` int(6) unsigned NOT NULL DEFAULT '0',
   `user_posts` int(11) NOT NULL DEFAULT 0,
@@ -264,8 +266,6 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_miembros` (
   `user_name_changes` int(11) NOT NULL DEFAULT 3,
   `user_activo` int(1) NOT NULL DEFAULT 0,
   `user_baneado` int(1) NOT NULL DEFAULT 0,
-  `user_github` int(1) NOT NULL DEFAULT 0,
-  `user_discord` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
@@ -348,6 +348,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_perfil` (
   `user_estado` int(2) NOT NULL DEFAULT 1,
   `user_sexo` int(1) NOT NULL DEFAULT 1,
   `user_firma` text NULL,
+  `user_portada` tinytext NULL,
   `p_nombre` varchar(32) NOT NULL DEFAULT '',
   `p_avatar` int(1) NOT NULL DEFAULT 0,
   `p_mensaje` varchar(60) NOT NULL DEFAULT '',
@@ -623,6 +624,9 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_stats` (
   `stats_fotos` int(11) NOT NULL DEFAULT 0,
   `stats_comments` int(11) NOT NULL DEFAULT 0,
   `stats_foto_comments` int(11) NOT NULL DEFAULT 0,
+  `stats_comunidades` int(11) NOT NULL DEFAULT 0,
+  `stats_temas` int(11) NOT NULL DEFAULT 0,
+  `stats_respuestas` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`stats_no`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;";
 
@@ -647,3 +651,28 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_visitas` (
   PRIMARY KEY (`id`),
   INDEX (`for`, `type`, `user`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_social` (
+  `social_id` int(11) NOT NULL AUTO_INCREMENT,
+  `social_name` varchar(22) NOT NULL DEFAULT '',
+  `social_client_id` tinytext NULL,
+  `social_client_secret` tinytext NULL,
+  `social_redirect_uri` tinytext NULL,
+  `social_scope` tinytext NULL,
+  `social_state` tinytext NULL,
+  PRIMARY KEY (`social_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_site_seo` (
+  `seo_id` int(11) NOT NULL  DEFAULT 0,
+  `seo_titulo` varchar(60) NOT NULL DEFAULT '',
+  `seo_descripcion` varchar(160) NOT NULL DEFAULT '',
+  `seo_portada` tinytext NULL DEFAULT 'public/images/portada.png',
+  `seo_favicon` tinytext NULL DEFAULT 'public/images/logo-64.png',
+  `seo_keywords` text NULL,
+  `seo_images` text NULL DEFAULT '{\"16x16\":\"public\/images\/logo-16.png\",\"32x32\":\"public\/images\/logo-32.png\",\"64x64\":\"public\/images\/logo-64.png\"}',
+  `seo_robots_data` text NULL DEFAULT '',
+  `seo_robots` int(1) NULL DEFAULT 0,
+  `seo_sitemap` int(1) NULL DEFAULT 0,
+  PRIMARY KEY (`seo_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";

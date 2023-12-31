@@ -20,22 +20,14 @@
 		</div>
 	</div>
 	<div class="clearfix"></div>
-<div style="padding: 1rem;text-align: center;">
-{if !empty($tsConfig.gh_client_id)}
-	{if $tsPerfil.user_github == 1}
-		<span style="background: #000;display: inline-block;padding: .3rem 1rem;color: #FFF;border-radius: .3rem;margin-bottom: .7rem;">Vinculado con GitHub</span>
-	{else}
-		<a style="background: #000;display: inline-block;padding: .3rem 1rem;color: #FFF;border-radius: .3rem;margin-bottom: .7rem;" href="{$tsConfig.oauthGithub}?update=true">Vincular con GitHub</a>
-	{/if}
-{/if}
-{if !empty($tsConfig.discord_client_id)}
-	<br>
-	{if $tsPerfil.user_discord == 1}
-		<span style="background: #000;display: inline-block;padding: .3rem 1rem;color: #FFF;border-radius: .3rem;margin-bottom: .7rem;">Vinculado con Discord</span>
-	{else}
-		<a style="background: #000;display: inline-block;padding: .3rem 1rem;color: #FFF;border-radius: .3rem;margin-bottom: .7rem;" href="{$tsConfig.oauthDiscord}">Vincular con Discord</a>
-	{/if}
-{/if}
-</div>
+	<div class="btn-group-socials">
+		{foreach $tsConfig.oauth key=i item=social}
+			{if $tsPerfil.socials.$i}
+				<span class="btn-social btn-inactive btn-{$i}">Vinculado {$i}</span>
+			{else}
+				<a class="btn-social btn-active btn-{$i}" href="{$social}">Vincular {$i}</a>
+			{/if}
+		{/foreach}
+	</div>
 </div>
 <div class="clearfix"></div>

@@ -245,7 +245,7 @@ $tsPaises = array(
     'ZM' => 'Zambia',
     'ZW' => 'Zimbabue'
 );	// MESES
-	$tsMeces = array(
+	$tsMeses = array(
 		1 => 'Enero',
 		2 => 'Febrero',
 		3 => 'Marzo',

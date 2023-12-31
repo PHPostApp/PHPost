@@ -36,8 +36,8 @@ class tsCore {
 		$this->settings['avatar'] = $this->settings['url'].'/files/avatar';
 		$this->settings['uploads'] = $this->settings['url'].'/files/uploads';
 		$this->settings['public'] = $this->settings['url'].'/public';
-		$this->settings['oauthGithub'] = $this->githubOAuth();
-		$this->settings['oauthDiscord'] = $this->discordOAuth();
+		// Autenticarme con las redes
+		$this->settings['oauth'] = $this->OAuth();
       //
      	if($_GET['do'] == 'portal' || $_GET['do'] == 'posts') 
      		$this->settings['news'] = $this->getNews();
@@ -46,25 +46,57 @@ class tsCore {
 		$this->settings['novemods'] = $this->getNovemods();
 	}
 
-	public function githubOAuth() {
-		$parametros = http_build_query([
-			'client_id' => $this->settings['gh_client_id'],
-			'scope' => 'repo user',
-			'state' => $this->setSEO(strtolower($this->settings['titulo'])) . date('y'),
-			'redirect_uri' => $this->settings['url'] . '/github.php'
-		]);
-		$ruta = "https://github.com/login/oauth/authorize?$parametros";
-		return $ruta;
+	public function getEndPoints(string $social = '', string $type = '') {
+		$getEndPoints = [
+			'github' => [
+				'authorize_url' => 'https://github.com/login/oauth/authorize',
+				'token' => "https://github.com/login/oauth/access_token",
+				'user' => "https://api.github.com/user",
+				'scope' => "user"
+			],
+			'discord' => [
+				'authorize_url' => 'https://discord.com/oauth2/authorize',
+				'token' => "https://discord.com/api/oauth2/token",
+				'user' => "https://discord.com/api/v10/users/@me",
+				'scope' => "email identify"
+			],
+			'gmail' => [
+				'authorize_url' => 'https://accounts.google.com/o/oauth2/auth',
+				'token' => "https://accounts.google.com/o/oauth2/token",
+				'user' => "https://www.googleapis.com/oauth2/v2/userinfo",
+				'scope' => "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+			],
+			'facebook' => [
+				'authorize_url' => 'https://www.facebook.com/v18.0/dialog/oauth',
+				'token' => "https://graph.facebook.com/oauth/access_token",
+				'user' => "https://graph.facebook.com/v18.0/me?fields=id,name,email,picture,short_name",
+				'scope' => "email,public_profile"
+			],
+			'twitter' => [
+				'authorize_url' => 'https://api.twitter.com/oauth/authenticate',
+				'token' => "https://api.twitter.com/oauth/access_token",
+				'user' => "https://graph.facebook.com/v18.0/me?fields=id,name,email,picture,short_name",
+				'scope' => "email,public_profile"
+			]
+		];
+		return $getEndPoints[$social][$type];
 	}
-	public function discordOAuth() {
-		$parametros = http_build_query([
-			'client_id' => $this->settings['discord_client_id'],
-			'scope' => 'identify email',
-			'state' => $this->setSEO(strtolower($this->settings['titulo'])) . date('y'),
-			'response_type' => 'code',
-			'redirect_uri' => $this->settings['url'] . '/discord.php'
-		]);
-		$ruta = "https://discord.com/api/oauth2/authorize?$parametros";
+
+	public function OAuth() {
+		$OAuths = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT social_id, social_name, social_client_id, social_client_secret, social_redirect_uri FROM w_social'));
+		foreach($OAuths as $k => $auth) {
+			$parametros = [
+				'client_id' => $auth['social_client_id'],
+				'scope' => $this->getEndPoints($auth['social_name'], 'scope'),
+				'state' => strtolower($this->settings['titulo']).date('y'),
+				'response_type' => 'code',
+				'redirect_uri' => $auth['social_redirect_uri']
+			];
+			if($auth['social_name'] === 'github') unset($parametros['response_type']);
+			$parametros = http_build_query($parametros);
+			$authorize = $this->getEndPoints($auth['social_name'], 'authorize_url');
+			$ruta[$auth['social_name']] = "$authorize?$parametros";
+		}
 		return $ruta;
 	}
 

@@ -65,13 +65,14 @@ class tsCuenta {
 		global $tsUser;
 		//
 		if(empty($user_id)) $user_id = $tsUser->uid;
-		//
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.*, u.user_github, u.user_discord, u.user_registro, u.user_lastactive FROM u_perfil AS p LEFT JOIN u_miembros AS u ON p.user_id = u.user_id WHERE p.user_id = \''.(int)$user_id.'\' LIMIT 1');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.*, u.user_socials, u.user_registro, u.user_lastactive FROM u_perfil AS p LEFT JOIN u_miembros AS u ON p.user_id = u.user_id WHERE p.user_id = \''.(int)$user_id.'\' LIMIT 1');
 		$perfilInfo = db_exec('fetch_assoc', $query);
 		$fecha = "{$perfilInfo['user_dia']}-{$perfilInfo['user_mes']}-{$perfilInfo['user_ano']}";
 		$perfilInfo['nacimiento'] = date("Y-m-d", strtotime($fecha));
 		// CAMBIOS
       $perfilInfo = $this->unData($perfilInfo);
+		// Redes viculadas
+		$perfilInfo['socials'] = json_decode($perfilInfo['user_socials'], true);
 		// PORCENTAJE
       $total = unserialize($perfilInfo['p_total']);
 		//
@@ -97,7 +98,7 @@ class tsCuenta {
 	public function loadHeadInfo(int $user_id = 0){
 		global $tsUser, $tsCore;
 		// INFORMACION GENERAL
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_github, u.user_discord, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, p.user_sexo, p.user_pais, p.p_nombre, p.p_avatar, p.p_mensaje, p.p_socials, p.p_empresa, p.p_configs FROM u_miembros AS u, u_perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_socials, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, p.user_sexo, p.user_pais, p.p_nombre, p.p_avatar, p.p_mensaje, p.p_socials, p.p_empresa, p.p_configs FROM u_miembros AS u, u_perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
       //
       $data['p_nombre'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_nombre']), true);
       $data['p_mensaje'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_mensaje']), true);
@@ -153,11 +154,19 @@ class tsCuenta {
 			// COMENTARIOS
         	$q3 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(cid) AS c FROM p_comentarios WHERE c_user = $user_id && c_status = 0"));
 			$data['stats']['user_comentarios'] = $q3[0];
+        	// SEGUIDORES
+        	$q4 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(follow_id) AS s FROM u_follows WHERE f_user = $user_id && f_type = 1"));
+			$data['stats']['user_seguidos'] = $q4[0];
+        	// Amigos
+        	$q5 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(f1.follow_id) AS total FROM u_follows AS f1 JOIN u_follows AS f2 ON f1.f_id = f2.f_user AND f1.f_user = f2.f_id WHERE f1.f_user = $user_id AND f1.f_type = 1 AND f2.f_type = 1;"));
+			$data['stats']['user_amigos'] = $q5[0];
         	// ACTUALIZAMOS
         	$user = $tsCore->getIUP([
         		'posts' => $q1[0],
         		'comentarios' => $q3[0],
         		'seguidores' => $q2[0],
+        		'seguidos' => $q4[0],
+        		'amigos' => $q5[0],
         		'cache' => $time
         	], 'user_');
       	
