@@ -13,6 +13,12 @@ class tsPosts extends tsUpload {
 
    use tsPostsExtends;
 
+   public function redirectPost() {
+		global $tsCore;
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT post_id, post_title, c_seo FROM p_posts LEFT JOIN p_categorias ON cid = post_category WHERE LOWER(post_title) LIKE REPLACE('{$_GET['p']}', '-', '%') LIMIT 1"));
+		$tsCore->redirectTo("{$tsCore->settings['url']}/posts/{$data['c_seo']}/{$data['post_id']}/{$_GET['p']}.html");
+	}
+
 	/** 
 	 * simiPosts($q, $like)
 	 * @access public
@@ -106,10 +112,9 @@ class tsPosts extends tsUpload {
 	         if(isset($_POST['key'])) unset($_POST['key']);
 	         if(isset($_POST['ext'])) unset($_POST['ext']);
 			}
-
 		 	// TAGS
 		  	$tags = $this->validTags($postData['tags']);
-		  	if(empty($tags)) return 'Tienes que ingresar por lo menos <b>4</b> tags.';
+		  	if(empty($tags)) return 'Tienes que ingresar por lo menos <strong>4</strong> tags.';
 		  	// ESTOS PUEDEN IR VACIOS
 			$keys = ['visitantes', 'smileys', 'private', 'block_comments', 'sponsored', 'sticky'];
 			foreach ($keys as $key) {
@@ -175,7 +180,7 @@ class tsPosts extends tsUpload {
 		}
 		// TAGS
 		$tags = $this->validTags($postData['tags']);
-		if(empty($tags)) return 'Tienes que ingresar por lo menos <b>4</b> tags.';
+		if(empty($tags)) return 'Tienes que ingresar por lo menos <strong>4</strong> tags.';
 		// ESTOS PUEDEN IR VACIOS
 		$keys = ['visitantes', 'smileys', 'private', 'block_comments', 'sponsored', 'sticky'];
 		foreach ($keys as $key) {
@@ -184,12 +189,14 @@ class tsPosts extends tsUpload {
       		$postData[$key] = (!$tsUser->is_admod AND $tsUser->permisos['most'] != false) ? 0 : ($_POST[$key] === 'on' ? 1 : 0);
     		}
 		}
-		
-		$postData['portada'] = $_POST['key'];
-         
-      $urlimage = $tsUpload->cropAvatarPortada();
-      unset($_POST['key']);
-      unset($_POST['ext']);
+		// VERIFICAMOS LA RUTA DE GUARDADO DE LA IMAGEN Y OTROS ANTES DE ENVIAR EL FORMULARIO.
+		$postData['portada'] = ($_POST['myportada'] === 'url') ? $_POST['url'] : $_POST['key'];
+		if($_POST['myportada'] === 'pc') {
+			$postData['portada'] .= ".{$_POST['ext']}";
+	      $urlimage = parent::cropAvatarPortada();
+	      if(isset($_POST['key'])) unset($_POST['key']);
+	      if(isset($_POST['ext'])) unset($_POST['ext']);
+		}
 		// ACTUALIZAMOS
 		if((int)$tsUser->uid === (int)$data['post_user'] || !empty($tsUser->is_admod) || !empty($tsUser->permisos['moedpo'])) {
 			if(db_exec([__FILE__, __LINE__], 'query', "UPDATE p_posts SET {$tsCore->getIUP($postData, 'post_')} WHERE post_id = $post_id")) {
@@ -372,7 +379,9 @@ class tsPosts extends tsUpload {
 		// POST DESCRIPCIÓN
 		$postData['post_body_descripcion'] = self::removeBBCode($postData['post_body'], 245);
 		// BBCode
-		$postData['post_body'] = $tsCore->parseBadWords($postData['post_smileys'] == 0  ? $tsCore->parseBBCode($postData['post_body']) : $tsCore->parseBBCode($postData['post_body'], 'firma'), true);
+		$t = ($postData['post_smileys'] === 0) ? 'normal' : 'firma';
+		$postData['post_body'] = $tsCore->parseBBCode($postData['post_body'], $t);
+		$postData['post_body'] = $tsCore->parseBadWords($postData['post_body'], true);
 		// FIRMA DEL USUARIO
 		$postData['user_firma'] = $tsCore->parseBadWords($tsCore->parseBBCodeFirma($postData['user_firma']),true);
 		// MEDALLAS
@@ -546,13 +555,14 @@ class tsPosts extends tsUpload {
 		else str_replace('-', ', ',$tags);
 		//
 		if($type === 'post') {
-			$where = "MATCH (post_tags) AGAINST ('$tags' IN BOOLEAN MODE) AND p.post_status = 0 AND post_sticky = 0 ORDER BY rand() LIMIT 0,6";
+			$where = "MATCH (post_tags) AGAINST ('$tags' IN BOOLEAN MODE) AND post_sticky = 0 ORDER BY rand() LIMIT 0,6";
 		} else {
 			$tsPost = self::getPost();
-			$where = "p.post_id != {$tsPost['post_id']} AND p.post_status = 0 AND p.post_user = {$tsPost['post_user']} ORDER BY p.post_id DESC LIMIT 5";
+			$where = "p.post_id != {$tsPost['post_id']} AND p.post_user = {$tsPost['post_user']} ORDER BY p.post_id DESC LIMIT 5";
 		}
 		//
-		return result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT DISTINCT p.post_id, p.post_portada, p.post_title, p.post_category, p.post_date, p.post_private, c.c_seo, u.user_name FROM p_posts AS p LEFT JOIN p_categorias AS c ON c.cid = p.post_category LEFT JOIN u_miembros AS u ON p.post_user = u.user_id WHERE $where"));
+		$data = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT DISTINCT p.post_id, p.post_portada, p.post_title, p.post_category, p.post_date, p.post_private, c.c_seo, u.user_name FROM p_posts AS p LEFT JOIN p_categorias AS c ON c.cid = p.post_category LEFT JOIN u_miembros AS u ON p.post_user = u.user_id WHERE p.post_status = 0 AND $where"));
+		return $data;
 	}
 	/*
 		getLastComentarios()

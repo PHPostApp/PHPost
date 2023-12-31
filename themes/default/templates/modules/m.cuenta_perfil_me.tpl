@@ -45,26 +45,6 @@
 				</select>
 		  </div>
 	 </div>
-	 <div class="field">
-		  <label for="hijos">Hijos</label>
-		  <div class="input-fake">
-				<select class="cuenta-save-2" name="hijos" id="hijos">
-					{foreach from=$tsPData.hijos key=val item=text}
-					 <option value="{$val}" {if $tsPerfil.p_hijos == $val}selected="selected"{/if}>{$text}</option>
-					 {/foreach}
-				</select>
-		  </div>
-	 </div>
-	 <div class="field">
-		  <label for="vivo">Vivo con</label>
-		  <div class="input-fake">
-				<select class="cuenta-save-2" name="vivo" id="vivo">
-					{foreach from=$tsPData.vivo key=val item=text}
-					 <option value="{$val}" {if $tsPerfil.p_vivo == $val}selected="selected"{/if}>{$text}</option>
-					 {/foreach}
-				</select>
-		  </div>
-	 </div>
 	 <div class="buttons">
 		<input type="button" value="Guardar" onclick="cuenta.guardar_datos()" class="mBtn btnOk">
 	 </div>

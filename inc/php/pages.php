@@ -50,22 +50,11 @@
 *	(INSTRUCCIONES DE CODIGO)		*
 
 \*********************************/
-
-    switch($action){
-        case 'ayuda':
-        case 'chat':
-        case 'contact':
-        case 'protocolo':
-        case 'terminos-y-condiciones':
-        case 'privacidad':
-        case 'dmca':
-        //
-        case 'cookies-policy':
-        break;
-        default:
-        $tsCore->redirectTo($tsCore->settings['url']);
-        break;
-    }
+	
+	$paginas = ['ayuda', 'chat', 'contact', 'protocolo', 'terminos-y-condiciones', 'privacidad', 'dmca', 'cookies-policy'];
+	if(!in_array($action, $paginas)) {
+		$tsCore->redirectTo($tsCore->settings['url']);
+	}
     //
     $smarty->assign("tsAction",$action);
 /**********************************\

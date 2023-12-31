@@ -40,8 +40,9 @@ class Callback extends tsCore {
 		 	'code' => $_GET['code'],
 		 	'redirect_uri' => $data['social_redirect_uri']
 		];
+		// Quitamos 'grant_type'
 		if($this->social === 'github' OR $this->social === 'facebook') unset($param['grant_type']);
-
+		// Armamos la consulta
 		return http_build_query($param);
 	}
 

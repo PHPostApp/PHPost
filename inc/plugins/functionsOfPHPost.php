@@ -146,9 +146,21 @@ class fnPHPost {
 		}
 		return $link;
 	}
+	private function getGLobalCuenta() {
+		global $tsCore, $tsUser, $tsPerfil;
 
+		$id = $tsUser->uid;
+		$avatar = "{$tsCore->settings['avatar']}/" . ($tsPerfil['p_avatar'] ? "{$tsPerfil['user_id']}_120" : 'avatar') . '.jpg';
+		
+		return <<< LINEA
+		document.addEventListener("DOMContentLoaded", function() {
+			avatar.uid = '$id';
+			avatar.current = '$avatar';
+		});
+		LINEA;
+	}
 	public function getGlobalData() {
-		global $tsCore, $tsUser, $tsPost, $tsFoto, $tsNots, $tsMPs, $tsAction, $tsCom, $tsTema;
+		global $tsCore, $tsPage, $tsUser, $tsPost, $tsFoto, $tsNots, $tsMPs, $tsAction, $tsCom, $tsTema, $tsMuro;
 		//
 		if(isset($tsUser->uid) OR $tsUser->uid != 0) $data['user_key'] = (int)$tsUser->uid;
 		$data['public'] = $tsCore->settings['public'];
@@ -168,12 +180,14 @@ class fnPHPost {
 		//
 		ksort($global);
 		$global = join(",\n", $global);
-
+		$cuenta = ($tsPage === 'cuenta') ? self::getGLobalCuenta() : '// empty';
+		
 		return <<< LINEA
 		<script type="text/javascript">
 		var global_data = {
 		$global
 		}
+		$cuenta
 		</script>
 		LINEA;
 	}

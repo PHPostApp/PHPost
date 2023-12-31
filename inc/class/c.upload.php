@@ -112,7 +112,7 @@ class tsUpload {
 		} elseif($type == 'url') {
 			$this->file_size = getimagesize($this->file_url);
 			// TAMA�O MINIMO
-			$min_w = 160;
+			$min_w = 180;
 			$min_h = 120;
 			// MAX PARA EVITAR CARGA LENTA
 			$max_w = 1024;
@@ -218,7 +218,7 @@ class tsUpload {
 		$w = $_POST['w'];
 		$h = $_POST['h'];
 		// TAMA�OS
-		$_w = $_h = 120;
+		$_w = $_h = 180;
 		$_tw = $_th = 50;
 		// CREAMOS LA IMAGEN DEPENDIENDO EL TIPO
 		switch($size['mime']){

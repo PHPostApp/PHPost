@@ -22,7 +22,7 @@
 require_once realpath(__DIR__) . DIRECTORY_SEPARATOR . "functionsOfPHPost.php";
 
 function smarty_function_phpost($params, &$smarty) {
-	global $tsCore, $tsPage, $action, $action;
+	global $tsCore, $tsPage, $action, $action, $tsMuro;
 	//
 	$HTML = '';
 	$funcs = new fnPHPost;
@@ -31,7 +31,7 @@ function smarty_function_phpost($params, &$smarty) {
 	if(isset($params['css'])) {
 		if(is_array($params['css'])) {
 			// Añadimos todos los estilos
-			$HTML .= "<!-- Añadidos col el plugin: {phpost css=[\"...\"]} -->\n";
+			$HTML .= "<!-- Añadidos con el plugin: {phpost css=[\"...\"]} -->\n";
 			// Para las notificaciones de usuario
 			if($funcs->getLive() AND !in_array($tsPage, ['login', 'registro'])) array_push($params['css'], 'live.css');
 			// Ahora se añaden en páginas especificas
@@ -41,7 +41,7 @@ function smarty_function_phpost($params, &$smarty) {
 			//
 			foreach($params['css'] as $css) $HTML .= $funcs->getStyle($css);
 		} else {
-			$HTML .= "<!-- Añadidos col el plugin: {phpost css=\"...\"] -->\n";
+			$HTML .= "<!-- Añadidos con el plugin: {phpost css=\"...\"] -->\n";
 			$HTML .= $funcs->getStyle($params['css']);
 		}
 	}
@@ -52,11 +52,11 @@ function smarty_function_phpost($params, &$smarty) {
 		if(is_array($params['js'])) {
 			if(!isset($params['from'])) {
 				// Variable global
-				$HTML .= "<!-- Añadidos col el plugin: {phpost *sin parametros*} -->\n";
+				$HTML .= "<!-- Añadidos con el plugin: {phpost *sin parametros*} -->\n";
 				$HTML .= $funcs->getGlobalData();
 			}
 			// Añadimos todos los scripts
-			$HTML .= "<!-- Añadidos col el plugin: {phpost js=[\"...\"]} -->\n";
+			$HTML .= "<!-- Añadidos con el plugin: {phpost js=[\"...\"]} -->\n";
 			
 			// Básicamente siempre serán necesarios
 			if(!isset($params['from'])) array_unshift($params['js'], "jquery.min.js", "jquery.plugins.js");
@@ -80,7 +80,7 @@ function smarty_function_phpost($params, &$smarty) {
 			$deny = isset($params['from']) ? [] : $params['deny'];
 			foreach($params['js'] as $js) $HTML .= $funcs->getScript($js, $deny);
 		} else {
-			$HTML .= "<!-- Añadidos col el plugin: {phpost js=[\"...\"]} -->\n";
+			$HTML .= "<!-- Añadidos con el plugin: {phpost js=[\"...\"]} -->\n";
 			$HTML .= $funcs->getScript($params['js']);
 		}
 	}

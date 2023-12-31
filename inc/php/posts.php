@@ -62,6 +62,10 @@ if($tsContinue) {
 	// Post anterior/siguiente
 	if(in_array($_GET['action'], ['next', 'prev', 'fortuitae'])) $tsPosts->setNP();
 
+	if(isset($_GET['p'])) {
+		$tsPosts->redirectPost();
+	}
+
 /*
  * -------------------------------------------------------------------
  *  Tareas principales

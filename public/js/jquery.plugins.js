@@ -191,7 +191,7 @@ var mydialog = {
 		$('#mydialog #dialog').fadeOut('fast', () => $(this).remove());
 		this.procesando_fin();
 	},
-	center: function(){
+	center: function() {
 		let diaghei = ($('#mydialog #dialog').height() > $(window).height()-60);
 		let ubicacion = $(window).height() / 2 - $('#mydialog #dialog').height() / 2;
 		$('#mydialog #dialog').css({

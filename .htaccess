@@ -64,7 +64,7 @@ RewriteRule ^posts/([A-Za-z0-9_-]+)/([0-9]+)/(.*).html$ index.php?do=posts&cat=$
 RewriteRule ^posts/editar/([0-9]+)$ inc/php/agregar.php?action=editar&pid=$1 [QSA,L]
 
 # POSTS SHORTEN
-RewriteRule ^p/([0-9]+)$ index.php?do=posts&p=$1 [QSA,L]
+RewriteRule ^p/([A-Za-z0-9_-]+)$ index.php?do=posts&p=$1 [QSA,L]
 
 # RECUPERAR PASS Y VALIDAR CUENTA
 RewriteRule ^password/(.+)/([0-9]+)/(.+)/?$ inc/php/password.php?hash=$1&type=$2&email=$3

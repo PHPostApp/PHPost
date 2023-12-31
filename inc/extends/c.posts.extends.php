@@ -91,6 +91,7 @@ trait tsPostsExtends {
 	*/
 	private function getPortada(string $portada = NULL, array $data = []):string {
 		global $tsCore;
+		
 		if(empty($portada)) {
 			$portada = "{$tsCore->settings['public']}/images/sin_portada.png";
 		} elseif(file_exists(TS_EXTRA.'optimizer.php') AND extension_loaded('gd') AND (int)$tsCore->extras['optimizar'] === 1) {

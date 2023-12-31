@@ -4,7 +4,7 @@
  * Smarty plugin para incluir archivos CSS y JS de forma independiente.
  *
  * Uso: Solo require el nombre del archivo
- *  {meta facebook=true twitter=false} 
+ *  {image type='post|portada' src='' class='opcional' alt='opcional'} 
  *
  * @param array $params 
  * @param Smarty_Internal_Template $smarty Instancia del objeto Smarty.
@@ -14,7 +14,6 @@
 function smarty_function_image($params, &$smarty) {
 	global $tsCore;
 
-	$cover = $tsCore->settings['portada'] . "/c0v3rlvl";
 	$default = [
 		"alt" => "{$tsCore->settings['titulo']} {$tsCore->settings['slogan']}",
 		"attr" => [
@@ -24,15 +23,30 @@ function smarty_function_image($params, &$smarty) {
 			"sizes" => "(max-width: 320px) 280px, (max-width: 480px) 440px, 800px"
 		],
 		"class" => "image " . $params['class'],
-		"style" => $params['style']
+		"style" => $params['style'],
+		"caption" => $params['caption']
 	];
-	if($params['type'] === 'post' OR $params['type'] === 'portada') {
+
+	if(filter_var($params['src'], FILTER_VALIDATE_URL)) {
+		// Al ponerlo así usa la url en caso de que sea un enlace
+	} elseif($params['type'] === 'post' OR $params['type'] === 'portada') {
+		$cover = $tsCore->settings['portada'] . "/c0v3rlvl";
 		$default = [
 			"attr" => [
 				"data-src" => "{$cover}1_{$params['src']}", 
 				"srcset" => "{$cover}3_{$params['src']} 320w, {$cover}2_{$params['src']} 480w, {$cover}1_{$params['src']} 800w"
 			]
 		];
+		//
+		if(empty($params['src'])) {
+			$params['src'] = "{$tsCore->settings['public']}/images/sin_portada.png";
+			$default = [
+				"attr" => [
+					"data-src" => $params['src'], 
+					"srcset" => "{$params['src']} 320w, {$params['src']} 480w, {$params['src']} 800w"
+				]
+			];
+		}
 	} 
 
 	$default['alt'] = isset($params['alt']) ? $params['alt'] : $default['alt'];
@@ -44,7 +58,9 @@ function smarty_function_image($params, &$smarty) {
 		if($key !== 'attr') $attrs[$key] = "$key=\"$attr\"";
 	$otherattr = join(' ', $attrs);
 
-	$image = "<figure><img loading=\"lazy\" $sources $otherattr><figcaption>{$default['alt']}</figcaption></figure>";
+	$caption = ($default['caption'] === true) ? "<figcaption>{$default['alt']}</figcaption>" : '';
+
+	$image = "<figure><img loading=\"lazy\" $sources $otherattr>$caption</figure>";
 	
 	return $image;
 }

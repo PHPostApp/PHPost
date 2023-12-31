@@ -5,7 +5,12 @@
  * @name    c.cuenta.php
  * @author  PHPost Team
  */
+
+require_once TS_INCLUDES . "extends" . TS_PATH . "c.cuenta.extends.php";
+
 class tsCuenta {
+
+   use tsCuentaExtends;
 
 	# Redes sociales disponibles
 	/**
@@ -18,7 +23,7 @@ class tsCuenta {
 			'url' => 'https://facebook.com'
 		],
 		'twitter' => [
-			'iconify' => 'devicon:twitter',
+			'iconify' => 'pajamas:twitter',
 			'nombre' => 'Twitter', 
 			'url' => 'https://twitter.com'
 		],
@@ -100,7 +105,7 @@ class tsCuenta {
 	public function loadHeadInfo(int $user_id = 0){
 		global $tsUser, $tsCore;
 		// INFORMACION GENERAL
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, p.user_sexo, p.user_pais, p.p_nombre, p.p_avatar, p.p_mensaje, p.p_socials, p.p_empresa, p.p_configs FROM u_miembros AS u, u_perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, p.user_sexo, p.user_pais, p.p_nombre, p.p_avatar, p.p_mensaje, p.user_portada AS portada, p.p_socials, p.p_empresa, p.p_configs FROM u_miembros AS u, u_perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
       //
       $data['p_nombre'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_nombre']), true);
       $data['p_mensaje'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_mensaje']), true);
@@ -109,6 +114,7 @@ class tsCuenta {
 			$data['p_socials'] = json_decode($data['p_socials'], true);
 			foreach ($this->redes as $name => $valor) $data['p_socials'][$name];
    	} else $data['p_socials'] = '';
+   	//
 		$data['p_configs'] = unserialize($data['p_configs']);
 		$data['pais']= [
 			'icon'=> strtolower($data['user_pais']),
@@ -144,23 +150,31 @@ class tsCuenta {
 			db_exec([__FILE__, __LINE__], 'query', "UPDATE `w_visitas` SET `date` = $time, `ip` = '$ip' WHERE `for` = $user_id && `type` = 1");
 		}
 		// REAL STATS
-		$data['stats'] = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_rango, u.user_puntos, u.user_posts, u.user_comentarios, u.user_seguidores, u.user_cache, r.r_name, r.r_color FROM u_miembros AS u LEFT JOIN u_rangos AS r ON  u.user_rango = r.rango_id WHERE u.user_id = $user_id"));
+		$data['stats'] = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_rango, u.user_puntos, u.user_posts, u.user_comentarios, u.user_seguidores, u.user_seguidos, u.user_amigos, u.user_cache, r.r_name, r.r_color FROM u_miembros AS u LEFT JOIN u_rangos AS r ON  u.user_rango = r.rango_id WHERE u.user_id = $user_id"));
 		//
 		if((int)$data['stats']['user_cache'] < time() - ((int)$tsCore->settings['c_stats_cache'] * 60)) {
       	// POSTS
         	$q1 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(post_id) AS p FROM p_posts WHERE post_user = $user_id && post_status = 0"));
         	$data['stats']['user_posts'] = $q1[0];
         	// SEGUIDORES
-        	$q2 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(follow_id) AS s FROM u_follows WHERE f_id =$user_id && f_type = 1"));
+        	$q2 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(follow_id) AS s FROM u_follows WHERE f_id = $user_id && f_type = 1"));
 			$data['stats']['user_seguidores'] = $q2[0];
 			// COMENTARIOS
         	$q3 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(cid) AS c FROM p_comentarios WHERE c_user = $user_id && c_status = 0"));
 			$data['stats']['user_comentarios'] = $q3[0];
+        	// SEGUIDOS
+        	$q4 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(follow_id) AS s FROM u_follows WHERE f_user = $user_id && f_type = 1"));
+			$data['stats']['user_seguidos'] = $q4[0];
+        	// Amigos
+        	$q5 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(f1.follow_id) AS total FROM u_follows AS f1 JOIN u_follows AS f2 ON f1.f_id = f2.f_user AND f1.f_user = f2.f_id WHERE f1.f_user = $user_id AND f1.f_type = 1 AND f2.f_type = 1;"));
+			$data['stats']['user_amigos'] = $q5[0];
         	// ACTUALIZAMOS
         	$user = $tsCore->getIUP([
         		'posts' => $q1[0],
         		'comentarios' => $q3[0],
         		'seguidores' => $q2[0],
+        		'seguidos' => $q4[0],
+        		'amigos' => $q5[0],
         		'cache' => $time
         	], 'user_');
       	
@@ -192,7 +206,7 @@ class tsCuenta {
 		$data['comus_total'] = $total[0];
       // ULTIMAS FOTOS
       if(empty($_GET['pid'])){
-		  	$data['fotos'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT foto_id, f_title, f_url FROM f_fotos WHERE f_user = $user_id ORDER BY foto_id DESC LIMIT 6"));
+		  	$data['fotos'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT foto_id, f_title, f_url FROM f_fotos WHERE f_user = $user_id ORDER BY foto_id DESC LIMIT 9"));
 			$data['fotos_total'] = safe_count($data['fotos']);
       }
       //
@@ -262,16 +276,17 @@ class tsCuenta {
 					'dia' => (int)$nac[2],
 					'mes' => (int)$nac[1],
 					'ano' =>  (int)$nac[0],
+					'portada' => $tsCore->setSecure($_POST['portada']),
 					'firma' => $tsCore->setSecure($tsCore->parseBadWords($_POST['firma']), true),
 				];
             $year = date("Y", time());
             // ANTIGUOS DATOS
-				$info = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_dia, user_mes, user_ano, user_pais, user_estado, user_sexo, user_firma FROM U_perfil WHERE user_id = {$tsUser->uid} LIMIT 1"));
+				$info = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_portada, user_dia, user_mes, user_ano, user_pais, user_estado, user_sexo, user_firma FROM u_perfil WHERE user_id = {$tsUser->uid} LIMIT 1"));
 				// EMAIL
             $email_ok = $this->isEmail($perfilData['email']);
             // CORRECCIONES
 				if(!$email_ok){
-					return [
+					$message = [
 						'field' => 'email', 
 						'error' => 'El formato de email ingresado no es v&aacute;lido.'
 					];
@@ -279,36 +294,38 @@ class tsCuenta {
 					$perfilData['email'] = $tsUser->info['user_email'];
 				// CHEQUEAMOS FECHA DE NACIMIENTO
 				} elseif(!checkdate($perfilData['mes'], $perfilData['dia'], $perfilData['ano']) || ($perfilData['ano'] > $year || $perfilData['ano'] < ($year - 100))){
-					return ['error' => 'La fecha de nacimiento no es v&aacute;lida.'];
+					$message = ['error' => 'La fecha de nacimiento no es v&aacute;lida.'];
 					// LOS ANTERIORES
 					$perfilData['mes'] = $info['user_mes'];
 					$perfilData['dia'] = $info['user_dia'];
 					$perfilData['ano'] = $info['user_ano'];
 				// SEXO / GÉNERO
 				} elseif($perfilData['sexo'] > 2) {
-					return ['error' => 'Especifica un g&eacute;nero sexual.'];
+					$message = ['error' => 'Especifica un g&eacute;nero sexual.'];
 					$perfilData['sexo'] = $info['user_sexo'];
 				// PAÍS
 				} elseif(empty($perfilData['pais'])){
-					return ['error' => 'Por favor, especifica tu pa&iacute;s.'];
+					$message = ['error' => 'Por favor, especifica tu pa&iacute;s.'];
 					$perfilData['pais'] = $info['user_pais'];
 				// ESTADO / PROVINCIA
 				} elseif(empty($perfilData['estado'])){
-					return ['error' => 'Por favor, especifica tu estado.'.$_POST['estado']];
+					$message = ['error' => 'Por favor, especifica tu estado.'.$_POST['estado']];
 					$perfilData['estado'] = $info['user_estado'];
 				// FIRMA DEL USUARIO
 				} elseif(strlen($perfilData['firma']) > 300){
-               return ['error' => 'La firma no puede superar los 300 caracteres.'];
+               $message = ['error' => 'La firma no puede superar los 300 caracteres.'];
                $perfilData['firma'] = $info['user_firma'];
             // ES EL MISMO CORREO?
             } elseif($tsUser->info['user_email'] != $perfilData['email']) {
 				   $exists = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id FROM u_miembros WHERE user_email = '{$perfilData['email']}' LIMIT 1"));
 				   // EXISTE?...
 				   if($exists) {
-                  return ['error' => 'Este email ya existe, ingresa uno distinto.'];
+                  $message = ['error' => 'Este email ya existe, ingresa uno distinto.'];
                   $perfilData['email'] = $tsUser->info['user_email'];
                // NO EXISTE?
-               } else return ['error' => 'Los cambios fueron aceptados y ser&aacute;n aplicados en los pr&oacute;ximos minutos. NO OBSTANTE, la nueva direcci&oacute;n de correo electr&oacute;nico especificada debe ser comprobada. '.$tsCore->settings['titulo'].' envi&oacute; un mensaje de correo electr&oacute;nico con las instrucciones necesarias'];
+               } else {
+               	$message = ['error' => 'Los cambios fueron aceptados y ser&aacute;n aplicados en los pr&oacute;ximos minutos. NO OBSTANTE, la nueva direcci&oacute;n de correo electr&oacute;nico especificada debe ser comprobada. '.$tsCore->settings['titulo'].' envi&oacute; un mensaje de correo electr&oacute;nico con las instrucciones necesarias'];
+               }
 				}
 			break;
          // NEW PASSWORD
@@ -318,17 +335,17 @@ class tsCuenta {
             $confirm_passwd = $_POST['confirm_passwd'];
             // Los campos estan vacios?
             if(empty($new_passwd) || empty($confirm_passwd)) 
-            	return ['error' => 'Debes ingresar una contrase&ntilde;a.'];
+            	$message = ['error' => 'Debes ingresar una contrase&ntilde;a.'];
             // La nueva contraseña es corta?
             if(strlen($new_passwd) < 5) 
-             	return ['error' => 'Contrase&ntilde;a no v&aacute;lida.'];
+             	$message = ['error' => 'Contrase&ntilde;a no v&aacute;lida.'];
             // Las contraseñas coinciden?
             if($new_passwd != $confirm_passwd) 
-            	return ['error' => 'Tu nueva contrase&ntilde;a debe ser igual a la confirmaci&oacute;n de la misma.'];
+            	$message = ['error' => 'Tu nueva contrase&ntilde;a debe ser igual a la confirmaci&oacute;n de la misma.'];
            	// Verificamos que la contraseña sea correcta
             $key = $tsCore->createPassword($tsUser->nick, $passwd);
             if($key != $tsUser->info['user_password']) 
-            	return ['error' => 'Tu contrase&ntilde;a actual no es correcta.'];
+            	$message = ['error' => 'Tu contrase&ntilde;a actual no es correcta.'];
             // Guardamos la nueva contraseña
             $new_key = $tsCore->createPassword($tsUser->nick, $new_passwd);
 				if(db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_password = '$new_key' WHERE user_id = {$tsUser->uid}")) return true;
@@ -349,36 +366,36 @@ class tsCuenta {
 				if($status === 0) $nuevo_nick = strtolower($nuevo_nick);
 				// Hay un nick en la lista negra?...
 				if(db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT id FROM w_blacklist WHERE type = 4 && value = '$nuevo_nick' LIMIT 1"))) 
-           		return ['error' => 'Nick no permitido'];           	
+           		$message = ['error' => 'Nick no permitido'];           	
            	// El nick esta en uso?
             if(db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id FROM u_miembros WHERE user_name = '$nuevo_nick' LIMIT 1"))) 
-            	return ['error' => 'Nombre en uso'];
+            	$message = ['error' => 'Nombre en uso'];
             // Buscamos al usuario, para verificar si ha hecho un cambio
 				$data = db_exec("fetch_assoc", db_exec([__FILE__, __LINE__], "query", "SELECT id, user_id, time FROM u_nicks WHERE user_id = {$tsUser->uid} AND estado = 0 LIMIT 1"));
 				if($data !== NULL) {
-					if(!empty((int)$data['id'])) return ['error' => 'Ya tiene una petici&oacute;n de cambio en curso'];
+					if(!empty((int)$data['id'])) $message = ['error' => 'Ya tiene una petici&oacute;n de cambio en curso'];
 					// Realizamos petición
 					elseif(time() - $data['time'] >= 31536000) db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_name_changes = 3 WHERE user_id = {$data['user_id']}");
 				}
 				// Verificamos la contraseña
 				$key = $tsCore->createPassword($tsUser->nick, $_POST['password']);
-				return ['error' => 'Tu contrase&ntilde;a actual no es correcta.'];
+				$message = ['error' => 'Tu contrase&ntilde;a actual no es correcta.'];
 				// Verificamos el correo	
 				$email_ok = $this->isEmail($_POST['pemail']);
 				if(!$email_ok) 
-					return ['field' => 'email', 'error' => 'El formato de email ingresado no es v&aacute;lido.'];
+					$message = ['field' => 'email', 'error' => 'El formato de email ingresado no es v&aacute;lido.'];
 				$email = empty($_POST['pemail']) ? $tsUser->info['user_email'] : $_POST['pemail'];
 				// Si el nick tiene más de 4 y menos de 20 carácteres
 				if(strlen($nuevo_nick) < 4 || strlen($nuevo_nick) > 20) 
-					return ['error' => 'El nick debe tener entre 4 y 20 car&aacute;cteres'];
+					$message = ['error' => 'El nick debe tener entre 4 y 20 car&aacute;cteres'];
 				// Que no tenga espacios, ni carácteres especiales
 				if(!preg_match('/^([A-Za-z0-9]+)$/', $nuevo_nick)) 
-					return ['error' => 'El nick debe ser alfanum&eacute;rico'];
+					$message = ['error' => 'El nick debe ser alfanum&eacute;rico'];
 				// Creamos la nueva contraseña
 				$key = $tsCore->createPassword($nuevo_nick, $_POST['password']);
 				// Verificamos la IP
 				$_SERVER['REMOTE_ADDR'] = $tsCore->validarIP();
-            return ['error' => 'Su IP no se pudo validar'];
+            $message = ['error' => 'Su IP no se pudo validar'];
             $datos = [
             	'user_id' => $tsUser->uid, 
             	'user_email' => $tsCore->setSecure($email), 
@@ -389,7 +406,7 @@ class tsCuenta {
             	'ip' => $_SERVER['REMOTE_ADDR']
             ];
 				if(insertInto([__FILE__, __LINE__], 'u_nicks', $datos)); 
-					return ['error' => 'Proceso iniciado, recibir&aacute; la respuesta en el correo indicado cuando valoremos el cambio.'];
+					$message = ['error' => 'Proceso iniciado, recibir&aacute; la respuesta en el correo indicado cuando valoremos el cambio.'];
          break;
 		}
 		switch ($tab) {
@@ -400,26 +417,31 @@ class tsCuenta {
 				// EXTERNAS, Redes sociales
 				$red__social = [];
 				foreach ($_POST["red"] as $llave => $id) $red__social[$llave] = $tsCore->setSecure($tsCore->parseBadWords($id), true);
+				//
+				for($i = 0; $i < 5; $i++) $gustos[$i] = $tsCore->setSecure($tsCore->parseBadWords($_POST['g_'.$i]), true);
 				$perfilData = array(
 					'nombre' => $tsCore->setSecure($tsCore->parseBadWords($_POST['nombre']), true),
 					'mensaje' => $tsCore->setSecure($tsCore->parseBadWords($_POST['mensaje']), true),
 					'sitio' => $tsCore->setSecure($tsCore->parseBadWords($sitio), true),
 					'socials' => json_encode($red__social),
+					'gustos' => serialize($gustos),
+					'estado' => $tsCore->setSecure($_POST['estado'])
 				);
 				// COMPROBACIONES
-            if(!empty($perfilData['sitio']) && !filter_var($perfilData['sitio'], FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED)) return ['error' => 'El sitio web introducido no es correcto.'];
+            if(!empty($perfilData['sitio']) && !filter_var($perfilData['sitio'], FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED)) $message = ['error' => 'El sitio web introducido no es correcto.'];
 			break;
 		}
-		$thisAccount = (in_array($save, ['', 'privacidad']) or in_array($tab, ['me']));
+		$thisAccount = (in_array($save, ['', 'privacidad']) or ($tab === 'me'));
 		if($thisAccount) {
 			db_exec([__FILE__, __LINE__], "query", "UPDATE u_miembros SET user_email = '{$perfilData['email']}' WHERE user_id = {$tsUser->uid}");
 			if($save === '') array_splice($perfilData, 0, 1);
 		}
 		if($perfilData !== NULL) {
 			$updates = $tsCore->getIUP($perfilData, (in_array($save, ['', 'privacidad']) ? 'user_' : 'p_'));
-			if(!db_exec([__FILE__, __LINE__], "query", "UPDATE u_perfil SET {$updates} WHERE user_id = {$tsUser->uid}")) return ['error' => show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'Base de datos')];
+			if(!db_exec([__FILE__, __LINE__], "query", "UPDATE u_perfil SET {$updates} WHERE user_id = {$tsUser->uid}")) $message = ['error' => show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'Base de datos')];
 		}
-		return ['error' => 'Los cambios fueron aplicados.'];
+		$message = ['error' => 'Los cambios fueron aplicados.'];
+		return $message;
 	}
 	/*
 		checkEmail()
@@ -437,38 +459,34 @@ class tsCuenta {
 	/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 							// MANEJAR BLOQUEOS \\
 	/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-    function bloqueosCambiar(){
-        global $tsCore, $tsUser;
-        //
-        $auser = $tsCore->setSecure($_POST['user']);
-        $bloquear = empty($_POST['bloquear']) ? 0 : 1;
-        // EXISTE?
-        $exists = $tsUser->getUserName($auser);
-        // SI EXISTE Y NO SOY YO
-        if($exists && $tsUser->uid != $auser){
-            if($bloquear == 1){
-                // YA BLOQUEADO?
-				$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT bid FROM u_bloqueos WHERE b_user = \''.$tsUser->uid.'\' AND b_auser = \''.(int)$auser.'\' LIMIT 1');
-                $noexists = db_exec('num_rows', $query);
-                
-                // NO HA SIDO BLOQUEADO
-                if(empty($noexists)) {
-				    if(db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO u_bloqueos (b_user, b_auser) VALUES (\''.$tsUser->uid.'\', \''.(int)$auser.'\')'))
-                    return "1: El usuario fue bloqueado satisfactoriamente."; 
-                } else return '0: Ya has bloqueado a este usuario.';
-                // 
-            } else{
-			    if(db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM u_bloqueos WHERE b_user = \''.$tsUser->uid.'\'  AND b_auser = \''.(int)$auser.'\''))
-                return "1: El usuario fue desbloqueado satisfactoriamente.";
-            }
-        } else return '0: El usuario seleccionado no existe.';
-    }
-    /*
-        loadBloqueos()
-    */
+   public function bloqueosCambiar() {
+      global $tsCore, $tsUser;
+      //
+      $auser = (int)$_POST['user'];
+      $bloquear = empty($_POST['bloquear']) ? 0 : 1;
+      // EXISTE?
+      $exists = $tsUser->getUserName($auser);
+      // SI EXISTE Y NO SOY YO
+      if($exists && $tsUser->uid != $auser){
+         if($bloquear == 1){
+         // YA BLOQUEADO?
+				$noexists = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT bid FROM u_bloqueos WHERE b_user = {$tsUser->uid} AND b_auser = $auser LIMIT 1"));
+				// NO HA SIDO BLOQUEADO
+            if(empty($noexists)) {
+            	if(db_exec([__FILE__, __LINE__], 'query', "INSERT INTO u_bloqueos (b_user, b_auser) VALUES ({$tsUser->uid}, $auser)")) return "1: El usuario fue bloqueado satisfactoriamente."; 
+            } else return '0: Ya has bloqueado a este usuario.';
+              // 
+         } else{
+		    	if(db_exec([__FILE__, __LINE__], 'query', "DELETE FROM u_bloqueos WHERE b_user = {$tsUser->uid} AND b_auser = $auser")) return "1: El usuario fue desbloqueado satisfactoriamente.";
+		   }
+      } else return '0: El usuario seleccionado no existe.';
+   }
+   /*
+       loadBloqueos()
+   */
    public function loadBloqueos(){
       global $tsUser;
-      $data = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT b.*, u.user_name FROM u_miembros AS u LEFT JOIN u_bloqueos AS b ON u.user_id = b.b_auser WHERE b.b_user = ' . (int)$tsUser->uid));
+      $data = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT b.*, u.user_id, u.user_name FROM u_miembros AS u LEFT JOIN u_bloqueos AS b ON u.user_id = b.b_auser WHERE b.b_user = ' . (int)$tsUser->uid));
       //
       return $data;
    }

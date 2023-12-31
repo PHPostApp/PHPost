@@ -38,7 +38,7 @@ include realpath('../../') . DIRECTORY_SEPARATOR . "header.php";
 /**
  * Incluimos el título a la página
 */
-$tsTitle = "Inica sesión en {$tsCore->settings['titulo']}";
+$tsTitle = "Inicia sesión en {$tsCore->settings['titulo']}";
 
 /**
  * Verificamos el nivel de acceso
