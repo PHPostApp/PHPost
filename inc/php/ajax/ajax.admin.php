@@ -29,7 +29,8 @@
 		'admin-ordenar-categorias' => array('n' => 4, 'p' => ''),
 		'admin-updated' => array('n' => 4, 'p' => ''),
 		'admin-update' => array('n' => 4, 'p' => ''),
-		'admin-backup' => array('n' => 4, 'p' => '')
+		'admin-backup' => array('n' => 4, 'p' => ''),
+		'admin-backup-del' => array('n' => 4, 'p' => ''),
 	);
 
 /**********************************\
@@ -148,8 +149,11 @@
 			echo $gh->updateTable(false);
 		break;
 		case 'admin-backup':	
-			if(file_exists(TS_EXTRA.'backup.php'))
+		case 'admin-backup-del':	
+			if(file_exists(TS_EXTRA.'backup.php')) {
 				include TS_EXTRA.'backup.php';
+				$backup = new BackupSite;
+				echo ($action === 'admin-backup') ? $backup->CreateNewBackup() : $backup->DelBackup();
 			} else die('Herramienta premium proximamente...');
 		break;
       default:

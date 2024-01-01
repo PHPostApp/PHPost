@@ -67,6 +67,12 @@ class DataBase {
 
 class Extension {
 
+	private function InfoModules() {
+		ob_start();
+		phpinfo(INFO_MODULES);
+		$phpinfo = ob_get_clean();
+		return $phpinfo;
+	}
 	public function loaderGD(string $type = '') {
 		$status = (!extension_loaded('gd') || !function_exists('gd_info'));
 		if(!$status) $temp = gd_info();
@@ -83,11 +89,18 @@ class Extension {
 		return $msg[$type];
 	}
 
+	public function loaderZip(string $type = '') {
+		$status = (!extension_loaded('zip'));
+		$phpinfo = self::InfoModules();
+		if (preg_match("/zip version\s+(.*)/", $phpinfo, $matches)) $zipv = $matches[1];
+		$msg['message'] = $status ? "La extensión Zip no está habilitada!" : $zipv;
+		$msg['status'] = !$status;
+		return $msg[$type];
+	}
+
 	public function loaderOpenSSL(string $type = '') {
 		$status = (!extension_loaded('openssl'));
-		ob_start();
-		phpinfo(INFO_MODULES);
-		$phpinfo = ob_get_clean();
+		$phpinfo = self::InfoModules();
 		// Buscar la línea que contiene "OpenSSL Library Version"
 		if (preg_match("/OpenSSL Library Version\s+(.*)/", $phpinfo, $matches)) $opensslVersion = $matches[1];
 		$msg['message'] = $status ? "La extensión OpenSSL no está habilitada!" : $opensslVersion;

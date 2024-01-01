@@ -25,3 +25,4 @@ inc/php/newsletter.php
 # Solo el theme default
 themes/*
 !themes/default
+!themes/beatrix

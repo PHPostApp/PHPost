@@ -64,7 +64,10 @@ class tsAdmin {
 		$phpinfo = ob_get_clean();
 		// Buscar la línea que contiene "OpenSSL Library Version"
 		if (preg_match("/OpenSSL Library Version\s+(.*)/", $phpinfo, $matches)) $opensslVersion = $matches[1];
+		if (preg_match("/zip version\s+(.*)/", $phpinfo, $matches)) $zipv = $matches[1];
+		$extZip = extension_loaded('zip') ? true : false;
 		return [
+			'zip' => ($extZip ? 'H' : 'Desh') . 'abilitada (versión ' . $zipv . ')',
 			'php' => PHP_VERSION,
 			'mysql' => db_exec('fetch_row',db_exec([__FILE__, __LINE__], 'query', 'SELECT VERSION()')),
 			'server' => $_SERVER['SERVER_SOFTWARE'],

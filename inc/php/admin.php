@@ -73,6 +73,20 @@
 		if(!empty($_POST['titulo']) OR (!empty($_POST['pkey']) AND !empty($_POST['skey']))) {
 			if($tsAdmin->saveConfig()) $tsCore->redireccionar('admin', $action, 'save=true');
 		}
+	// CREAR COPIA DE SEGURIDAD
+	} elseif($action === 'backup') {
+		$tsTitle = 'Crear copia de seguridad';
+		require_once TS_EXTRA . 'backup.php';
+		$backup = new BackupSite;
+		// Verificamos si existe la carpeta 'respaldo' en 'files/'
+		$backup->verifyFolderBackup();
+		if(empty($act)) {
+			$smarty->assign('verifyFiles', $backup->verifyFiles());
+		} elseif($act === 'nueva') {
+			$tsTitle = 'Crear nueva copia';
+			$smarty->assign('extOK', $backup->extensionOK());
+		}
+
 	} elseif($action === 'extras') {
     	//
 		$tsTitle = 'Configuraci&oacute;n Extras';

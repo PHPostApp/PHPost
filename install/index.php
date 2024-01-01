@@ -96,7 +96,7 @@ switch ($step) {
 	case 2:
 		// No saltar la licensia
 		if (!$_SESSION['license']) header("Location: index.php");
-	
+		$extZip = extension_loaded('zip') ? true : false;
 		$compare = version_compare(PHP_VERSION, '7.0.0', '>');
 		$all = [
 			'php' => [
@@ -113,6 +113,11 @@ switch ($step) {
 				'name' => 'Extensión cURL',
 				'status' => $extension->loaderCURL('message'),
 				'css' => $extension->loaderCURL('status') ? 'ok' :'no'
+			],
+			'zip' => [
+				'name' => 'Extensión Zip',
+				'status' => $extension->loaderZip('message'),
+				'css' => $extension->loaderZip('status') ? 'ok' :'no'
 			],
 			'openssl' => [
 				'name' => 'Extensión OpenSSL',

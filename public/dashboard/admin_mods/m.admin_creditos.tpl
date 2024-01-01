@@ -7,6 +7,7 @@
 			<div class="card">
 				<h5 class="card-header">Informaci&oacute;n de versiones:</h5>
 			  	<ul class="list-group list-group-flush">
+			    	<li class="list-group-item">Extensi&oacute;n ZIP: <strong class="d-block">{$tsVersion.zip}</strong></li>
 			    	<li class="list-group-item">Versi&oacute;n de PHPost: <strong class="d-block">v{$tsConfig.version}</strong></li>
 			    	<li class="list-group-item">Versi&oacute;n de PHP: <strong class="d-block">{$tsVersion.php}</strong></li>
 			    	<li class="list-group-item">Versi&oacute;n de MySQL: <strong class="d-block">{$tsVersion.mysql.0}</strong></li>

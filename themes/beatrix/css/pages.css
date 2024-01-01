@@ -1,0 +1,57 @@
+.pages-header {
+	line-height: 1.6rem;
+	font-family: 'Poppins'!important;
+}
+.pages-header .pages-title {
+	font-size: 2.4rem;
+	font-weight: 500;
+}
+.pages-header small {
+	font-weight: 300;
+	font-size: 1rem;
+	font-style: italic;
+}
+.pages-content {
+	padding: 0 1rem;
+	line-height: 1.7rem;
+}
+.pages-content a {
+	color: var(--primary-color);
+}
+.pages-content .item {
+	margin-bottom: 1.3rem;
+	padding-bottom: 1rem;
+	border-bottom: 1px dashed #CCC;
+}
+.pages-content .item:last-child {
+	border-bottom: 1px solid transparent;
+	margin-bottom: 0;
+}
+.pages-content .item-subtitle {
+	text-transform: uppercase;
+	display: block;
+	font-weight: 700;
+	font-size: 1.5rem;
+}
+.pages-content .item-description {
+	padding-left: 1.3rem;
+	font-size: 0.935rem;
+}
+.pages-content .item-description.non {
+	padding-left: 0;
+}
+
+.pages-content .item .item {
+	padding-left: 1rem;
+	border-bottom: 1px solid transparent;
+}
+.pages-content .item .item .item-subtitle {
+	font-weight: normal;
+	font-size: 1.2rem;
+	text-transform: none;
+	text-decoration: underline;
+}
+.pages-content .item .item ul {
+	padding-left: 2rem!important;
+	font-size: 0.9rem!important;
+}

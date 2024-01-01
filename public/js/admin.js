@@ -62,6 +62,48 @@ sameFn = (page, params, element) => {
 }
 var admin = {
 	//
+	backup: (act = false) => {
+		if(!act) {
+			mydialog.show();
+			mydialog.title('Crear nueva copia');
+			mydialog.body(`<form action="" autocomplete="off">
+				<label for="filename">Nombre:</label> 
+				<input type="text" id="filename" name="name" size="30" placeholder="NombreCopia" />
+	 		</form>`);
+			mydialog.buttons(true, true, 'Aceptar', 'admin.backup(true)', true, true, true, 'Cancelar', 'close', true, false);
+			mydialog.center()
+		} else {
+			const filename = $('#filename').val();
+			mydialog.procesando_inicio();
+			mydialog.title('Este proceso puede llevar varios minutos');
+			mydialog.buttons(false);
+			$.post(global_data.url + '/admin-backup.php', { filename }, response => {
+				const title = (response.charAt(0) === 1) ? 'Bien' : 'Error';
+				mydialog.title(title);
+				mydialog.body(response.substring(3));
+				mydialog.buttons(true, true, 'Aceptar', 'close', true, true, false);
+				mydialog.center();
+				mydialog.procesando_fin();
+			})
+		}
+	},
+	backupDel: (filename, act = false) => {
+		if(!act) {
+			mydialog.show();
+			mydialog.title('Borrar copia');
+			mydialog.body(`Estas seguro de que quieres borrar ${filename}?`);
+			mydialog.buttons(true, true, 'Borrar ahora', 'admin.backupDel(\''+filename+'\', true)', true, true, true, 'Cancelar', 'close', true, false);
+			mydialog.center()
+		} else {
+			$.post(global_data.url + '/admin-backup-del.php', { filename }, response => {
+				const title = (response.charAt(0) === 1) ? 'Bien' : 'Error';
+				mydialog.title(title);
+				mydialog.body(response.substring(3));
+				mydialog.buttons(true, true, 'Aceptar', 'location.reload()', true, true, false);
+				mydialog.center();
+			})
+		}
+	},
 	updated: (gew) => {
 		if(!gew)
 			sameModal('Actualizar', '&#191;Quieres Actualizar los archivos?', `admin.updated(2)`)

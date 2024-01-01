@@ -1,0 +1,171 @@
+/* MODIFICADORES */
+.sidebar {
+	margin-bottom: 1.6rem;
+}
+.section-title h2.title-block {
+	margin-bottom: .9rem;
+}
+.section-title .subtitle-block {
+	margin-top: -35px;
+}
+/* PERFIL */
+.headinfo {
+	background-color: #212121;
+	margin-bottom: 2rem;
+}
+.headinfo .background-profile,
+.headinfo .background-profile-empty {
+	width: 100%;
+	height: 280px;
+	margin: 0 auto;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	border-radius: 0 0 1rem 1rem;
+}
+.headinfo .background-profile-empty {
+	height: 80px;
+	background-color: #343434;
+}
+.profile-info {
+	--avatar: 150px;
+	padding: 1rem 2rem;
+	display: grid;
+	grid-template-columns: var(--avatar) 1fr auto;
+	gap: 1rem;
+	margin-top: -80px;
+	background-image: linear-gradient(to top, #212121, #212121CC, #21212166, transparent);
+}
+.profile-info .profile-picture {
+	--bcolor: #212121;
+	width: var(--avatar);
+	height: var(--avatar);
+	border-radius: 10em;
+	border: 4px solid var(--bcolor);
+	background-color: #21212166;
+}
+.profile-info .profile-picture img {
+	width: 100%;
+	height: 100%;
+	border-radius: 10em;
+}
+.profile-info .profile-picture.online {
+	--bcolor: var(--bs-success);
+}
+.profile-info .profile-picture.inactive {
+	--bcolor: var(--bs-purple);
+}
+.profile-info .profile-picture.banned {
+	--bcolor: var(--bs-danger);
+}
+.profile-info .profile-picture.offline {
+	--bcolor: var(--bs-gray-700);
+}
+.profile-info .profile-picture iconify-icon {
+	position: absolute;
+	bottom: -.2rem;
+	right: -.2rem;
+	font-size: 1.4rem;
+	background-color: #313131;
+	padding: 0.7rem;
+	border-radius: 10em;
+}
+.profile-info .profile-data {
+	display: grid;
+	place-items: center strech; 
+	align-self: end;
+	padding-bottom: 1rem;
+	line-height: 2rem;
+}
+.profile-info .profile-data .nickname {
+	font-weight: 700;
+	font-size: 1.8rem;
+	text-shadow: 0 0 4px #000, 0 0 1rem #000
+}
+.profile-info .profile-data .rango {
+	font-size: 0.6rem;
+	padding: 0 .6rem;
+	border-radius: .3rem;
+	text-transform: uppercase;
+}
+.profile-info .profile-data span:last-child {
+	font-size: 0.8rem;
+	text-transform: uppercase;
+}
+.profile-info .profile-buttons {
+	display: grid;
+	place-items: top; 
+}
+.profile-menu {
+	--border: 3px;
+	border-bottom: var(--border) solid #888;
+}
+.profile-menu #tabs_menu {
+	list-style: none;
+	display: flex;
+	padding-top: .5rem;
+	padding: 0;
+	margin: 0;
+	height: 2.5rem;
+}
+.profile-menu #tabs_menu li {
+	font-size: 0.9rem;
+}
+.profile-menu #tabs_menu li a {
+	display: block;
+	padding: 0.5rem 0.8rem;
+	height: 2.5rem;
+}
+.profile-menu #tabs_menu li.selected a {
+	border-bottom: var(--border) solid var(--bs-primary);
+	background-color: rgba(var(--bs-primary-rgb), .2);
+	height: 2.7rem;
+}
+.profile-menu #tabs_menu li:hover a {
+	border-bottom: var(--border) solid var(--bs-success);
+	background-color: rgba(var(--bs-success-rgb), .2);
+	height: 2.7rem;
+}
+
+.perfil-main {
+	display: grid;
+	grid-template-columns: 30% 70%;
+	gap: 1rem;
+}
+
+.sitios {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 1rem;
+	margin-top: 0.5rem;
+}
+.sitios .sitio.icon {
+	display: block;
+	width: 2.2rem;
+	height: 2.2rem;
+	text-align: center;
+	font-size: 2rem;
+}
+.sitios .sitio.icon.icon_off {
+	pointer-events: none;
+	filter: grayscale(50);
+}
+
+#perfil-foto-bar ul {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(3, 1fr);
+	gap: .3rem;
+	border-radius: .4rem;
+	overflow: hidden;
+}
+#perfil-foto-bar ul li .foto a {
+	display: block;
+	width: 100%;
+	height: 100px;
+}
+#perfil-foto-bar ul li .foto a img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}

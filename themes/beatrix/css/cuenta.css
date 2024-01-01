@@ -1,0 +1,111 @@
+.tabbed-d {
+	display: grid;
+	grid-template-columns: 1fr 250px;
+	gap: 1rem;
+	margin-top: 1rem;
+}
+.tabbed-d .floatL {
+	position: relative;
+}
+.tabbed-d .floatL #alerta_guarda {
+	position: absolute;
+	padding: .71rem;
+	border-radius: .3rem;
+	text-align: center;
+	margin: 2.5rem 1rem 1rem 1rem;
+	background: teal;
+	width: calc(100% - 1rem);
+	z-index: 999;
+}
+.tabbed-d .floatL #alerta_guarda p {
+	font-style: italic;
+}
+.avatar-big-cont {
+	--totalsize: 120px;
+	width: var(--totalsize);
+	height: var(--totalsize);
+	margin: 0 auto 1rem auto;
+	position: relative;
+	overflow: hidden;
+	border-radius: .3rem;
+}
+.avatar-big-cont #drop-region,
+.avatar-big-cont #drop-region input[type=file] {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: var(--totalsize);
+	height: var(--totalsize);
+	cursor: pointer;
+}
+.avatar-big-cont:hover #drop-region {
+	backdrop-filter: blur(4px);
+	background: rgba(0,0,0,.6) url('https://api.iconify.design/clarity/camera-line.svg?color=%23ccc') no-repeat center center / 50%;
+}
+.avatar-big-cont #drop-region input[type=file] {
+	opacity: 0;
+}
+.avatar-cambiar {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 1rem;
+}
+.content-tabs .form-item {
+	display: grid;
+	grid-template-columns: 200px 1fr;
+	gap: 1rem;
+	padding: 0.6rem;
+}
+.content-tabs .buttons {
+	padding: 1rem;
+	text-align: center;
+}
+.content-tabs .buttons input[type="button"] {
+	border: 0px solid;
+	width: max-content;
+	position: relative;
+	font-family: 'Anton';
+	font-size: 18px;
+	line-height: 1;
+	text-align: center;
+	outline: none;
+	box-shadow: none;
+	padding: 1rem 1.9rem;
+	background: #3CFFD0;
+}
+.red-group {
+	display:grid;
+	gap:.6rem;
+	grid-template-columns: repeat(2, 1fr);
+}
+.red-item {
+	--size: 2.8rem;
+	position: relative;
+	display:grid;
+	grid-template-columns: var(--size) 1fr;
+	overflow: hidden;
+	background-color: #232323;
+	border-radius: .3rem;
+}
+.red-item .icon {
+	width: var(--size);
+	height: var(--size);
+	display: grid;
+	place-items: center;
+}
+.red-item .icon iconify-icon {
+	font-size: 1.6rem;
+}
+.red-item input[type=text] {
+	background-color: transparent;
+	border: transparent;
+	color: #EEE;
+}
+.bloqueados .item {
+	padding: 1rem .6rem;
+}
+.bloqueados .item .item-user img {
+	width: 45px;
+	height: 45px;
+	margin-right: 1rem;
+}

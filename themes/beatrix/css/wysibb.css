@@ -1,0 +1,381 @@
+.wysibb.is-invalid {
+	border: 1px solid var(--bs-form-invalid-color);
+}
+.wysibb {
+	--w-btn: 2rem;
+	--nw-btn: -1.2rem;
+	background-color: #222;
+	line-height: normal;
+	position: relative;
+	font-size: 1rem;
+}
+/* ------------------------------
+ # TOOLBAR DE WYSIBB
+------------------------------ */
+.wysibb .wysibb-toolbar {
+	background-color: #202020;
+	border-bottom: 1px solid #CCC;
+	position: relative;
+	padding-right: 1rem;
+}
+.wysibb .wysibb-toolbar .wysibb-toolbar-container {
+	display: inline-block;
+	height: var(--w-btn);
+	margin: 0.3rem;
+}
+.wysibb-toolbar-btn {
+	position: relative;
+	width: var(--w-btn);
+	height: var(--w-btn);
+	text-align: center;
+	display: inline-block;
+	border-radius: .3rem;
+	cursor: pointer;
+	font-size: 1rem;
+}
+.wysibb-toolbar-btn iconify-icon {
+	text-align: center;
+	position: relative;
+	margin-top: .50rem;
+	font-size: 1.2rem;
+}
+.wysibb-toolbar-btn.wbb-select .val {
+	display: block;
+	padding: 0 .4rem;
+	position: relative;
+	height: 100%;
+	line-height: 1.4rem;
+}
+.wysibb-toolbar-btn .btn-tooltip {
+	--bg: #333;
+	position: absolute;
+	font-size: 10px;
+	line-height: 1rem;
+	min-height: 16px;
+	width: max-content;
+	top: -1.3rem;
+	left: 0;
+	background-color: var(--bg);
+	display: none;
+	border-radius: .3rem;
+	padding: 0 .4rem;
+	text-align: center;
+}
+.wysibb-toolbar-btn .btn-tooltip::before {
+	content: '';
+	width: 0;
+	height: 0;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-top: 6px solid var(--bg);
+	bottom: -6px;
+	position: absolute;
+}
+.wysibb-toolbar-btn .btn-tooltip ins {
+	display: 8px;
+	font-style: italic;
+	color: pink;
+	text-decoration: none;
+}
+.wysibb-toolbar-btn:hover {
+	background-color: #333;
+}
+
+.wysibb-toolbar-btn:hover .btn-tooltip {
+	display: block;
+}
+.wbb-list {
+	--bg: #333;
+	--size: 230px;
+	position: absolute;
+	top: var(--w-btn);
+	left: 0;
+	width: var(--size);
+	text-align: left;
+	background-color: var(--bg);
+	display: none;
+	z-index: 99;
+	box-shadow: 0 .3rem .5rem #222;
+}
+.wbb-smilebox .wbb-list,
+.wbb-color-picker {
+	max-height: var(--size);
+	overflow-y: auto;
+}
+.wbb-color-picker {
+	width: 200px;
+	max-height: calc(var(--size) + 100px);
+}
+.wbb-list .option {
+	display: block;
+	padding: .3rem!important;
+	cursor: pointer;
+}
+.wbb-list .option:hover {
+	background-color: #232323;
+}
+.wbb-list .smile {
+	width: calc(calc(var(--size) / 5) - 17px);
+	height: 1.5rem;
+	display: inline-block;
+	text-align: center;
+	margin: 0.2rem;
+}
+.wbb-list .nc {
+	display: block;
+	padding: 0.3rem;
+}
+.wbb-list .sc {
+	display: inline-block;
+   width: 1.125rem;
+   height: 1.125rem;
+   border-collapse: collapse;
+   border:1px solid #FFF5;
+}
+.modeSwitch {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+/* ------------------------------
+ # CUERPO DE WYSIBB
+------------------------------ */
+.wysibb-body {
+	font-size: 1rem;
+}
+.wysibb-text-editor.wysibb-body {
+	padding: 17px 15px 17px 20px;
+	overflow-y: auto;
+}
+/* ------------------------------
+ # MODAL DEL WYSIBB
+------------------------------ */
+#wbbmodal {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	top: 0;
+	right: 0;
+	overflow: auto;
+	zoom: 1;
+	z-index: 1100;
+	background: #0008;
+	-webkit-overflow-scrolling: touch;
+	overflow: auto;
+	text-align: center;
+}
+#wbbmodal .wbb-modal {
+	background: #212121;
+	text-align: left;
+	max-width: 90%;
+	max-height: 90%;
+	margin: 30px auto;
+	box-shadow: 0px 0px 15px #000;
+	overflow: auto;
+}
+#wbbmodal .wbb-modal-title {
+	position: relative;
+	padding: .8rem;
+	border-bottom: 1px solid #ccc;
+}
+#wbbmodal .wbbm-title .wbbclose {
+	display: block;
+	text-transform: uppercase;
+	position: absolute;
+	right: 15px;
+	top: 15px;
+	font-size: 21px;
+	font-weight: bold;
+	cursor: pointer;
+	color: #e5e5e5;
+}
+#wbbmodal .wbbm-title .wbbclose:hover {
+	color: red;
+}
+#wbbmodal .wbbm .wbbm-tablist ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+#wbbmodal .wbbm .wbbm-tablist ul li {
+	padding: .6rem .6rem;
+	cursor: pointer;
+	position: relative;
+	border-radius: .3rem;
+	display: inline-block;
+	margin: .3rem
+}
+#wbbmodal .wbbm .wbbm-tablist ul li.on,
+#wbbmodal .wbbm .wbbm-tablist ul li.on:hover {
+	background: #428bca;
+	color: #fff;
+	cursor: default;
+}
+#wbbmodal .wbbm .wbbm-tablist ul li:hover {
+	background: #084298;
+}
+#wbbmodal .wbbm-cont {
+	padding: 10px 0;
+}
+#wbbmodal .wbbm-content {
+	min-height: 50px;
+	max-height: 100%;
+	padding: 1rem;
+}
+#wbbmodal .wbbm-bottom {
+	padding: 10px;
+	background: #15151544;
+}
+#wbbmodal .wbbm-inp-row {
+	*margin-bottom: 15px;
+}
+#wbbmodal .wbbm-inp-row label {
+	display: block;
+	font-weight: bold;
+	margin-bottom: 3px;
+}
+#wbbmodal #imguploader {
+	text-align: center;
+}
+#wbbmodal #imguploader.drag {
+	border: 3px dashed #ccc6;
+	padding: 2rem 0
+}
+#wbbmodal #imguploader.drag.dragover {
+	background: #feffe4;
+}
+#wbbmodal #imguploader.drag.wbb-loading {
+	padding: 40px 0;
+}
+#wbbmodal #imguploader.drag .p {
+	font-size: 2em;
+	color: #aaa;
+	margin-top: 15px;
+}
+#wbbmodal #imguploader.drag .p2 {
+	color: #AAA;
+}
+#wbbmodal #imguploader.drag .fileupload {
+	margin: 15px 0;
+}
+#wbbmodal .fileupload {
+	margin: 40px 0;
+	position: relative;
+}
+#wbbmodal .dragupload {
+	margin: 10px 0 15px 0;
+	position: relative;
+}
+#wbbmodal .fileupload input.file {
+	opacity: 0;
+	filter: alpha(opacity=0);
+	width: 230px;
+	height: 32px !important;
+	position: absolute;
+	top: 2px;
+	left: 50%;
+	margin-left: -115px;
+	display: block;
+}
+.loader {
+	margin: 30px 0;
+}
+.upl-error {
+	color: red;
+	display: block;
+}
+.powered {
+	display: block;
+	position: absolute;
+	bottom: -18px;
+	right: 5px;
+	font-size: 10px;
+}
+
+/* ------------------------------
+ # SPOILER
+------------------------------ */
+.spoiler {
+	outline: 1px solid #CCC4;
+	border-radius: .3rem;
+	overflow: hidden;
+}
+.spoiler > .title {
+	font-weight: 500;
+	background-color: #333;
+	padding: .3rem;
+}
+.spoiler > .body {
+	padding: .7rem;
+	font-style: italic
+}
+
+/* ------------------------------
+ # MENSAJES
+------------------------------ */
+.bbcmsg {
+	--color: 238, 238, 238;
+	--img: url('https://api.iconify.design/ri/timer-line.svg');
+	background-size: 1.4rem;
+	background-repeat: no-repeat;
+	background-position: .4rem .7rem;
+	display: block;
+	border-radius: .3rem;
+	padding: .6rem .6rem .6rem 2rem;
+
+	background-image: var(--img);
+	border: 1px solid rgba(var(--color), .48);
+	color: rgb(var(--color));
+	background-color: rgba(var(--color), .2);
+	box-shadow: 0 0 1rem rgba(var(--color), .25);
+}
+.bbcmsg.notice {
+	--color: 211, 211, 211;
+	--img: url('https://api.iconify.design/ri/newspaper-line.svg?color=%23D3D3D3');
+}
+.bbcmsg.info {
+	--color: 105, 175, 246;
+	--img: url('https://api.iconify.design/ri/file-info-line.svg?color=%2369AFF6');
+}
+.bbcmsg.warning {
+	--color: 255, 199, 92;
+	--img: url('https://api.iconify.design/ri/alert-line.svg?color=%23FFC75C');
+}
+.bbcmsg.error {
+	--color: 249, 66, 66;
+	--img: url('https://api.iconify.design/ri/close-circle-line.svg?color=%23F94242');
+}
+.bbcmsg.success {
+	--color: 102, 237, 80;
+	--img: url('https://api.iconify.design/ri/shield-flash-line.svg?color=%2366ED50');
+}
+.wbb-list .option .bbcmsg {
+	background-size: 1rem;
+	background-position: .2rem .4rem;
+	padding: .3rem 0rem .3rem 1.4rem;
+	font-size: .9rem;
+}
+
+/* ------------------------------
+ # CITA / CITA USUARIO
+------------------------------ */
+.blockcita {
+	border: 1px solid #CCC4;
+	border-radius: .3rem;
+}
+.blockcita > .cita {
+	padding: .3rem .6rem;
+}
+.blockcita > .citacuerpo {
+	padding: 1rem;
+	font-style: italic;
+	font-family: cursive;
+	background: url('https://api.iconify.design/ri/double-quotes-r.svg?color=%23cccccc22') no-repeat 98% / 4rem;
+}
+
+pre {
+	background-color: #4445;
+}
+.wbb-list .option pre {
+	margin: 0 .3rem;
+}

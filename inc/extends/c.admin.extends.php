@@ -66,7 +66,7 @@ trait tsAdminExtends {
 	}
 
 	# ===================================================
-	# SEO
+	# EXTRA
 	# * getExtra() :: Obtenemos información extra
 	# ===================================================
 	public function getExtra() {
@@ -137,5 +137,6 @@ trait tsAdminExtends {
 		if ($post['global-pointsforposts'] > $post['global-pointsforday']) return 'El rango no puede dar m&aacute;s puntos de los que tiene al d&iacute;a.';
 		return $retornar;
 	}
+	
 
 }
