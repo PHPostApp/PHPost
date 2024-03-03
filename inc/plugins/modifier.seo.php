@@ -1,10 +1,15 @@
 <?php
-/**
- * Smarty plugin
- * @package Smarty
- * @subpackage plugins
- */
 
+/**
+ * Autor: Miguel92
+ * Ejemplo: {$texto|seo} = Este es el texto => este-es-el-texto
+ * Enlace: #
+ * Fecha: Ene 22, 2022
+ * Nombre: seo
+ * Proposito: Convierte en texto en minusculas añadiendo un -
+ * Tipo: modifier
+ * Version: 1.0
+*/
 
 function smarty_modifier_seo($string){
 	$string = htmlentities($string, ENT_QUOTES, 'UTF-8');

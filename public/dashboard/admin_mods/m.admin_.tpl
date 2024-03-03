@@ -88,4 +88,6 @@
 		</div>
 	</div>
 </div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-toolkit/extras/css/joypixels.min.css">
+<script src="https://cdn.jsdelivr.net/combine/npm/timeago,npm/emoji-toolkit"></script>
 {phpost js="versiones.js"}

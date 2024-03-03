@@ -1,14 +1,14 @@
 <?php 
 
 /**
- * Smarty plugin para incluir archivos CSS y JS de forma independiente.
- *
- * Uso: Solo require el nombre del archivo
- *  {image type='post|portada' src='' class='opcional' alt='opcional'} 
- *
- * @param array $params 
- * @param Smarty_Internal_Template $smarty Instancia del objeto Smarty.
- * @return string Código HTML generado por la función.
+ * Autor: Miguel92
+ * Ejemplo: {image type='post|portada' src='' class='opcional' alt='opcional'} 
+ * Enlace: #
+ * Fecha: Dic 20, 2023
+ * Nombre: image
+ * Proposito: Crear la etiqueta <img>
+ * Tipo: function
+ * Version: 1.0
 */
 
 function smarty_function_image($params, &$smarty) {

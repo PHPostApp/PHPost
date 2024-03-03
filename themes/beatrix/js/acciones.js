@@ -646,7 +646,7 @@ var afiliado = {
         form += '<div class="form-line">'
         form += '<label for="aID">RefID <a href="#" onclick="$(this).parent().parent().find('
         form += "'span').css({display: 'block'}); return false"
-        form += '"><img src="' + global_data.img + '/images/icons/help.png"/></a></label><span style="display:none; margin-bottom:5px">Si utilizas <a href="http://www.tscript.in/"><strong>T!Script</strong></a> y ya nos enlazaste, ingresa el ID generado en tu panel de adminsitraci&oacute;n.</span>'
+        form += '"><img src="' + global_data.tema_images + '/images/icons/help.png"/></a></label><span style="display:none; margin-bottom:5px">Si utilizas <a href="http://www.tscript.in/"><strong>T!Script</strong></a> y ya nos enlazaste, ingresa el ID generado en tu panel de adminsitraci&oacute;n.</span>'
         form += '<input type="text" tabindex="5" name="aID" id="aID" value="" style="width:100px!important"/>'
   		form += '</div>'
         form += '</div>'
@@ -773,8 +773,8 @@ $(document).ready(() => {
          use_native: true,
          class_loading: 'lazy-loading',
          callback_error: callback => {
-			   callback.setAttribute("srcset", global_data.img + "/deleted-post.gif");
-			   callback.setAttribute("src", global_data.img + "/suspension.gif");
+			   callback.setAttribute("srcset", global_data.tema_images + "/deleted-post.gif");
+			   callback.setAttribute("src", global_data.tema_images + "/suspension.gif");
 			}
       }
       if(lazyload === '.background') {

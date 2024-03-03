@@ -29,7 +29,7 @@ class tsRegistro extends reCaptcha {
     * @return string
    */
 	public function checkUserEmail(){
-	global $tsCore;
+		global $tsCore;
 		// Variables
 		$username = htmlspecialchars($_POST['nick']);
 		$email = strtolower($_POST['email']);

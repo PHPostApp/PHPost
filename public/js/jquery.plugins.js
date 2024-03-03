@@ -192,13 +192,13 @@ var mydialog = {
 		this.procesando_fin();
 	},
 	center: function() {
-		let diaghei = ($('#mydialog #dialog').height() > $(window).height()-60);
-		let ubicacion = $(window).height() / 2 - $('#mydialog #dialog').height() / 2;
-		$('#mydialog #dialog').css({
-			'position': (diaghei ? 'absolute' : 'fixed'), 
-			'top': (diaghei ? 20 : ubicacion),
-			'left': $(window).width()/2-$('#mydialog #dialog').width()/2
-		});
+      var modal = $('#mydialog #dialog');
+      modal.css({
+         'position': 'fixed',
+         'top': '50%',
+         'left': '50%',
+         'transform': 'translate(-50%, -50%)'
+      });
 	},
 	title: title => $('#mydialog #title').html(title),
 	body: body => $('#mydialog #cuerpo #modalBody').html(body),
@@ -265,7 +265,7 @@ var mydialog = {
 			this.buttons(false, false);
 			this.center();
 		}
-		$('#mydialog #procesando #mensaje').html('<img src="'+global_data.img+'/loading_bar.gif" />');
+		$('#mydialog #procesando #mensaje').html('<img src="'+global_data.tema_images+'/loading_bar.gif" />');
 		$('#mydialog #procesando').fadeIn('fast');
 	},
 	procesando_fin: function(){

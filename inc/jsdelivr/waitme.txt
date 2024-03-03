@@ -1,0 +1,6 @@
+name: waitme
+page: login,registro
+js: waitMe.min.js
+css: waitMe.min.css
+version: 1.19.0
+on: false

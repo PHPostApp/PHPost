@@ -1,0 +1,6 @@
+name: sweetalert2
+page: login,registro
+js: 
+css: dist/sweetalert2.min.css
+version: 11.10.3
+on: false

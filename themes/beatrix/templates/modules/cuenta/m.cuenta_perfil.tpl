@@ -3,5 +3,5 @@
 	<!--ul class="tabs">
 		<li id="me"{if $tsTab == 'me'} class="active"{/if}><a href="{$tsConfig.url}/cuenta/perfil?tab=me">M&aacute;s sobre mi</a></li>
 	</ul-->
-	{include "m.cuenta_perfil_$tsTab.tpl"}
+	{include "m.cuenta_perfil_me.tpl"}
 </div>

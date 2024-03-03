@@ -5,7 +5,7 @@
 			<div id="alerta_guarda" style="display: none;"></div>
 			<ul class="nav">
 				<li class="nav-item"><a class="nav-link{if $tsAccion == ''} active{/if}" href="{$tsConfig.url}/cuenta/">Cuenta</a></li>
-				<li class="nav-item"><a class="nav-link{if $tsAccion == 'perfil'} active{/if}" href="{$tsConfig.url}/cuenta/perfil?tab=me">Perfil</a></li>
+				<li class="nav-item"><a class="nav-link{if $tsAccion == 'perfil'} active{/if}" href="{$tsConfig.url}/cuenta/perfil">Perfil</a></li>
 				<li class="nav-item"><a class="nav-link{if $tsAccion == 'block'} active{/if}" href="{$tsConfig.url}/cuenta/block">Bloqueados</a></li>
 				<li class="nav-item"><a class="nav-link{if $tsAccion == 'clave'} active{/if}" href="{$tsConfig.url}/cuenta/clave">Cambiar Clave</a></li>
 				<li class="nav-item"><a class="nav-link{if $tsAccion == 'nick'} active{/if}" href="{$tsConfig.url}/cuenta/nick">Cambiar Nick</a></li>

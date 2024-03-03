@@ -150,3 +150,9 @@ if (!function_exists('safe_count')) {
       return (is_array($data) || $data instanceof Countable) ? count($data, $mode) : 0;
    }
 }
+
+function setErrorFile(string $message = '', $file, $line) {
+	$file = pathinfo($file, PATHINFO_BASENAME);
+	$message = "$message en $file de la línea $line\n";
+	file_put_contents(TS_ROOT . "errores.log", $message);
+}

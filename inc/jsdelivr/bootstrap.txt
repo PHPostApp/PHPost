@@ -1,0 +1,6 @@
+name: bootstrap
+page: all
+js: dist/js/bootstrap.bundle.min.js
+css: dist/css/bootstrap.min.css
+version: 5.3.2
+on: false

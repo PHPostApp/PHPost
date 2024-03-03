@@ -44,7 +44,7 @@ RewriteRule ^cuenta/([A-Za-z0-9_-]+)$ inc/php/cuenta.php?accion=$1 [QSA,L]
 RewriteRule ^agregar.php$ inc/php/agregar.php [QSA,L]
 
 # CALLBACK PARA REDES SOCIALES
-RewriteRule ^(github.php|discord.php|gmail.php|facebook.php)$ inc/callback/$1 [QSA,L]
+RewriteRule ^(github.php|discord.php|google.php|facebook.php)$ inc/callback/$1 [QSA,L]
 
 #PERFIL
 RewriteRule ^perfil/([A-Za-z0-9_-]+)$ inc/php/perfil.php?user=$1 [QSA,L]
@@ -75,11 +75,6 @@ RewriteRule ^fotos/([A-Za-z0-9_-]+).php$ inc/php/fotos.php?action=$1 [QSA,L]
 RewriteRule ^fotos/([A-Za-z0-9_-]+)$ inc/php/fotos.php?action=album&user=$1 [QSA,L]
 RewriteRule ^fotos/([A-Za-z0-9_-]+)/([0-9]+)$ inc/php/fotos.php?action=album&user=$1&page=$2 [QSA,L]
 RewriteRule ^fotos/([A-Za-z0-9_-]+)/([0-9]+)/([A-Za-z0-9_-]+).html$ inc/php/fotos.php?action=ver&user=$1&fid=$2 [QSA,L]
-
-# ADMIN
-RewriteRule ^admin/medals/nueva inc/php/admin.php?action=medals&act=nueva [QSA,L]
-RewriteRule ^admin/news/editar/([0-9]+)$ inc/php/admin.php?action=news&act=editar&nid=$1 [QSA,L]
-RewriteRule ^admin/news/nueva inc/php/admin.php?action=news&act=nuevo [QSA,L]
 
 # MODERACIÓN
 RewriteRule ^moderacion/buscador/([0-2]+)/([0-2]+)/([A-Za-z0-90.9.:a_zA_z_+_%20_¿?¡!@,'-]+)$ inc/php/moderacion.php?action=buscador&act=search&m=$1&t=$2&texto=$3 [QSA,L]

@@ -2,27 +2,31 @@
 	 <h3>Administrar Temas</h3>
 </div>
 <div id="res" class="boxy-content">
-{if $tsSave}<div class="mensajes  ok">Tus cambios han sido guardados.</div>{/if}
 	{if $tsAct == ''}
-		<table class="admin_table">
+		<table class="table table-striped table-hover align-middle">
+         <caption><a href="{$tsConfig.url}/admin/temas?act=nuevo" class="btn btn-success">Instalar nuevo tema</a></caption>
 			<thead>
-				<th>Vista previa</th>
-				<th>Nombre</th>
-				<th>Opciones</th>
+				<th scope="col">Vista previa</th>
+				<th scope="col">Nombre</th>
+				<th scope="col">Copyright</th>
+				<th scope="col">Opciones</th>
 		  	</thead>
 		  	<tbody>
 		  		{foreach from=$tsTemas item=tema}
 				<tr>
-					<td width="150"><img src="{$tema.t_url}/screenshot.png" width="150" height="100" /></td>
-					<td><strong><u>{$tema.t_name}</u></strong></td>
+					<td width="120">
+						<img src="{$tema.t_url}/screenshot.png" width="100" />
+					</td>
+					<td class="fw-bold text-decoration-underline">{$tema.t_name}</td>
+					<td class="fw-bold text-decoration-underline">{$tema.t_copy}</td>
 					<td class="admin_actions">
-						<a href="{$tsConfig.url}/admin/temas?act=editar&tid={$tema.tid}"><img src="{$tsConfig.images}/icons/editar.png" title="Editar este tema"/></a>
+						<a href="{$tsConfig.url}/admin/temas?act=editar&tid={$tema.tid}"><img src="{$tsConfig.public}/images/icons/editar.svg" title="Editar este tema"/></a>
 					 	{if $tsConfig.tema_id == $tema.tid}
-							<a onclick="return false;"><img src="{$tsConfig.images}/icons/yes.png" title="Este tema est&aacute; en uso" /></a>
+							<a onclick="return false;"><img src="{$tsConfig.public}/images/icons/yes.svg" title="Este tema est&aacute; en uso" /></a>
 					 	{else}
-							<a href="{$tsConfig.url}/admin/temas?act=usar&tid={$tema.tid}&tt={$tema.t_name}"><img src="{$tsConfig.images}/icons/theme.png" title="Usar este tema" /></a>
+							<a href="{$tsConfig.url}/admin/temas?act=usar&tid={$tema.tid}&tt={$tema.t_name}"><img src="{$tsConfig.public}/images/icons/theme.svg" title="Usar este tema" /></a>
 							{if $tema.tid != 1}
-								<a href="{$tsConfig.url}/admin/temas?act=borrar&tid={$tema.tid}&tt={$tema.t_name}"><img src="{$tsConfig.images}/icons/close.png" title="Borrar este tema" /></a>
+								<a href="{$tsConfig.url}/admin/temas?act=borrar&tid={$tema.tid}&tt={$tema.t_name}"><img src="{$tsConfig.public}/images/icons/close.svg" title="Borrar este tema" /></a>
 							{/if}
 					 	{/if}
 					</td>
@@ -31,7 +35,6 @@
 		 	</tbody>
 	 	</table>
 	 	<hr />
-	 	<input type="button"  onclick="location.href = '{$tsConfig.url}/admin/temas?act=nuevo'"value="Instalar nuevo tema" class="mBtn btnOk" style="margin-left:280px;">
 	{elseif $tsAct == 'editar'}
 	 	<form action="" method="post" id="admin_form" autocomplete="off">
 			<label for="ai_name">Nombre del tema:</label> <input type="text" id="ai_name" name="name" value="{$tsTema.t_name}" size="30" disabled="disabled"/> Por copyright no se pude modificar.<br class="spacer" />

@@ -1,18 +1,16 @@
 <?php
+
 /**
- * Smarty cat modifier plugin
- *
- * Type:     modifier
- * Name:     kmg
- * Date:     Jun 11, 2014
- * Purpose:  Convert 10000 => 1K, 1000000 => 1M
- * Example:  {$number|kmg}
- * @author   Kmario19
- * @version 1.0
- * @param int
- * @return string
- * @return decimal
+ * Autor: Kmario19
+ * Ejemplo: {$numeros|kmg} = 34692 => 35K
+ * Enlace: #
+ * Fecha: Jun 11, 2014
+ * Nombre: kmg
+ * Proposito: Convert 10000 => 1K, 1000000 => 1M
+ * Tipo: modifier
+ * Version: 1.0
 */
+
 function smarty_modifier_kmg($number, $decimal = 0){
   $pre = 'KMG';
   if ($number >= 1000) {

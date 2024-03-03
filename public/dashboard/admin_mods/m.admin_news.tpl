@@ -1,42 +1,41 @@
-								<div class="boxy-title">
-									<h3>Noticias</h3>
-								</div>
-								<div id="res" class="boxy-content">
-								{if $tsSave}<div class="mensajes  ok">Tus cambios han sido guardados.</div>{/if}																{if $tsDelete == 'true'}<div class="mensajes  ok">Noticia eliminada.</div>{/if}
-									{if $tsAct == ''}
-									Si necesitas hacer un comunicado a todos los usuarios en general, desde aqu&iacute; podr&aacute;s administrar tus anuncios y los usuarios sin importar donde se encuentren navegando podr&aacute;n visualizarlos.
-									<hr class="separator" />
-									<strong>Lista de noticias</strong>
-									<table cellpadding="0" cellspacing="0" border="0" class="admin_table" width="100%" align="center">
-										<thead>
-											<th>ID</th>
-											<th>Noticia</th>
-											<th>Autor</th>
-											<th>Fecha</th>
-											<th>Estado</th>
-											<th>Acciones</th>
-										</thead>
-										<tbody>
-											{foreach from=$tsNews item=n}
-											<tr>
-												<td>{$n.not_id}</td>
-												<td>{$n.not_body}</td>
-												<td><a href="{$tsConfig.url}/perfil/{$n.user_name}" class="hovercard" uid="{$n.user_id}">{$n.user_name}</a></td>
-												<td>{$n.not_date|hace:true}</td>
-												<td id="status_noticia_{$n.not_id}">{if $n.not_active == 0}<font color="purple">Inactiva</font>{else}<font color="green">Activa</font>{/if}</td>
-												<td class="admin_actions">
-													<a href="{$tsConfig.url}/admin/news/editar/{$n.not_id}"><img src="{$tsConfig.images}/icons/editar.png" title="Editar" /></a>
-													<a onclick="admin.news.accion({$n.not_id}); return false"><img src="{$tsConfig.images}/reactivar.png" title="Activar/Desactivar Noticia" /></a>
-													<a href="{$tsConfig.url}/admin/news?act=borrar&nid={$n.not_id}"><img src="{$tsConfig.images}/icons/close.png" title="Borrar" /></a>
-												</td>
-											</tr>
-											{/foreach}
-										</tbody>
-										<tfoot>
-											<th colspan="6" style="text-align:right;"><input type="button" onclick="location.href = '{$tsConfig.url}/admin/news/nueva'" class="mBtn btnOk" value="Nueva noticia"/></th>
-										</tfoot>
-									</table>
-									{elseif $tsAct == 'nuevo' || $tsAct == 'editar'}
+<div class="boxy-title">
+	<h3>Noticias</h3>
+</div>
+<div id="res" class="boxy-content">
+	{if $tsAct == ''}
+		<p>Si necesitas hacer un comunicado a todos los usuarios en general, desde aqu&iacute; podr&aacute;s administrar tus anuncios y los usuarios sin importar donde se encuentren navegando podr&aacute;n visualizarlos.</p>
+		<hr class="separator" />
+		<strong>Lista de noticias</strong>
+		<table class="table table-striped table-hover align-middle">
+         <caption><a href="{$tsConfig.url}/admin/news?act=nuevo" class="btn btn-success">Nueva noticia</a></caption>
+         <thead>
+            <tr>
+					<th scope="col">ID</th>
+					<th scope="col">Noticia</th>
+					<th scope="col">Autor</th>
+					<th scope="col">Fecha</th>
+					<th scope="col">Estado</th>
+					<th scope="col">Acciones</th>
+            </tr>
+         </thead>
+         <tbody>
+				{foreach from=$tsNews item=n}
+					<tr>
+						<td>{$n.not_id}</td>
+						<td>{$n.not_body}</td>
+						<td><a href="{$tsConfig.url}/perfil/{$n.user_name}" class="hovercard" uid="{$n.user_id}">{$n.user_name}</a></td>
+						<td>{$n.not_date|hace:true}</td>
+						<td id="status_noticia_{$n.not_id}">{if $n.not_active == 0}<font color="purple">Inactiva</font>{else}<font color="green">Activa</font>{/if}</td>
+						<td class="admin_actions">
+							<a href="{$tsConfig.url}/admin/news?editar&nid={$n.not_id}"><img src="{$tsConfig.public}/images/icons/editar.svg" title="Editar" /></a>
+							<a onclick="admin.news.accion({$n.not_id}); return false"><img src="{$tsConfig.public}/images/icons/reactivar.svg" title="Activar/Desactivar Noticia" /></a>
+							<a href="{$tsConfig.url}/admin/news?act=borrar&nid={$n.not_id}"><img src="{$tsConfig.public}/images/icons/close.svg" title="Borrar" /></a>
+						</td>
+					</tr>
+				{/foreach}
+			</tbody>
+		</table>
+	{elseif $tsAct == 'nuevo' || $tsAct == 'editar'}
 									<form action="" method="post" autocomplete="off">
 									<fieldset>
 										<legend>{if $tsAct == 'nuevo'}Agregar nueva{else}Editar{/if} noticia</legend>

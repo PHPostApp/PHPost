@@ -2,7 +2,6 @@
                                     <h3>Moderaci&oacute;n de comunidades</h3>
                                 </div>
                                 <div id="res" class="boxy-content">
-                                {if $tsSave}<div style="display: block;" class="mensajes ok">Tus cambios han sido guardados.</div>{/if}
                                 	{if $tsAct == ''}
                                     <b>Solo los administradores</b> podr&aacute; editar o borrar una comunidad.
                                     <hr class="separator" />
@@ -25,7 +24,7 @@
                                                     <a href="{$tsConfig.url}/moderacion/comunidades?act=info&obj={$r.c_id}"><img src="{$tsConfig.default}/images/icons/details.png" title="Ver Detalles" /></a>
                                                     {if $tsUser->is_admod}<a href="#" onclick="mod.reboot({$r.c_id}, 'comunidades', 'reboot', false); return false;"><img src="{$tsConfig.default}/images/icons/reboot.png" title="{if $r.c_estado == 1}Reactivar Comunidad{else}Desechar denuncias{/if}" /></a>{/if}
                                                     {if $tsUser->is_admod == 1}<a href="{$tsConfig.url}/comunidades/{$r.c_nombre_corto}/editar/" target="_blank"><img src="{$tsConfig.default}/images/icons/edit.png" title="Editar Comunidad" /></a>{/if}
-                                                    {if $tsUser->is_admod == 1}<a href="#" onclick="mod.comunidades.borrar({$r.c_id}); return false"><img src="{$tsConfig.default}/images/icons/close.png" title="Borrar Comunidad" /></a>{/if}
+                                                    {if $tsUser->is_admod == 1}<a href="#" onclick="mod.comunidades.borrar({$r.c_id}); return false"><img src="{$tsConfig.default}/images/icons/close.svg" title="Borrar Comunidad" /></a>{/if}
                                                 </td>
                                             </tr>
                                             {/foreach}{else}
@@ -44,7 +43,7 @@
                                         <span class="floatR admin_actions">
                                             {if $tsUser->is_admod}<a href="#" onclick="mod.reboot({$tsDenuncia.data.c_id}, 'comunidades', 'reboot', true); return false"><img src="{$tsConfig.default}/images/icons/reboot.png" title="{if $tsDenuncia.data.c_estado == 1}Reactivar Comunidad{else}Desechar denuncias{/if}" /></a>{/if}
                                             {if $tsUser->is_admod == 1}<a href="{$tsConfig.url}/comunidades/{$tsDenuncia.data.c_nombre_corto}/editar/" target="_blank"><img src="{$tsConfig.default}/images/icons/edit.png" title="Editar Comunidad" /></a>{/if}
-                                            {if $tsUser->is_admod == 1}<a href="#" onclick="mod.comunidades.borrar({$tsDenuncia.data.c_id}); return false"><img src="{$tsConfig.default}/images/icons/close.png" title="Borrar Comunidad" /></a>{/if}
+                                            {if $tsUser->is_admod == 1}<a href="#" onclick="mod.comunidades.borrar({$tsDenuncia.data.c_id}); return false"><img src="{$tsConfig.default}/images/icons/close.svg" title="Borrar Comunidad" /></a>{/if}
                                         </span>
                                     </h2>
                                     <table cellpadding="0" cellspacing="0" border="0" class="admin_table" width="100%" align="center">

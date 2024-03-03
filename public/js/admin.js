@@ -34,7 +34,24 @@ $(document).ready(() => {
 		   if (tecla.keyCode == 68 || event.keyCode == 100) bsTheme(getCurrent())
 		}
 	}
+	/**
+	 * Este trozo de código solo removerá el alert y modificará la url
+	*/
+	function delete_alert() {
+	   return setTimeout(() => {
+	      href = window.location.href;
+	      href = href.split('?');
+	      // Removerá el div
+	      $('.toast-container').remove();
+	      // Cambiará la url sin recargar la página
+	      window.history.pushState('admin', global_data.titulo, href[0]);
+	   }, 6000);
+	}
+	// Tomará 6s
+	if($('div').hasClass('toast-container')) delete_alert();
+
 })
+
 /**
  * Con estas funciones "sameModal()" y "sameFn()"
  * y de esta forma simplificamos

@@ -15,14 +15,6 @@
 					</div>
 				</div>
 			</form>
-			{phpost css="AtomOneDark.css" js=["highlight.min.js"] from='afterFooter'}
-			<script>
-				const colores = {$tsColor};
-				//hljs.highlightAll();
-				document.querySelectorAll('pre code').forEach((el) => {
-				   hljs.highlightElement(el);
-				});
-			</script>
 		{else}
 			<div class="alert alert-danger text-center">Lo sentimos, pero no puedes publicar un nuevo post.</div>
 		{/if}

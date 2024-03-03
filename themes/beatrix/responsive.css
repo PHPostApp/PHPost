@@ -1,4 +1,4 @@
-@media (min-width: 1200px) and (max-width: 1399px) {
+@media (1200px <= width <= 1399px) {
 
 
     .post-block-template-one .post-block-content-wrap h2.post-title {
@@ -35,7 +35,7 @@
 }
 
 
-@media (min-width: 992px) and (max-width: 1199px) {
+@media (992px <= width <= 1199px) {
 
     .post-block-template-one .post-block-content-wrap h2.post-title {
         font-size: 35px;
@@ -187,7 +187,7 @@
 }
 
 
-@media (min-width: 768px) and (max-width: 991px) {
+@media (768px <= width <= 991px) {
 
     .theme-header-area .container {
         position: relative;
@@ -489,7 +489,7 @@
 }
 
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
 
     .theme-header-area .container {
         position: relative;
@@ -875,7 +875,7 @@
 }
 
 
-@media (min-width: 576px) and (max-width: 767px) {
+@media (576px <= width <= 767px) {
 
     .section-divider {
         max-width: 516px;
@@ -885,7 +885,7 @@
 }
 
 
-@media (max-width: 575px) {
+@media (width <= 575px) {
 
     .logo.theme-logo img {
         max-width: 120px;
@@ -899,7 +899,7 @@
 }
 
 
-@media (max-width: 500px) {
+@media (width <= 500px) {
 
     .header-subscribe {
         display: none;
@@ -937,7 +937,7 @@
 }
 
 
-@media (max-width: 350px) {
+@media (width <= 350px) {
 
     .post-block-template-one .post-block-content-wrap h2.post-title {
         font-size: 24px;

@@ -6,10 +6,6 @@
  * @author  PHPost Team
  */
 
-if(file_exists(TS_EXTRA . 'optimizer.php')) {
-	require_once TS_EXTRA . 'optimizer.php';
-}
-
 class tsCore {
     
 	public $settings;		// CONFIGURACIONES DEL SITIO
@@ -37,15 +33,18 @@ class tsCore {
 		$this->settings['domain'] = str_replace($this->https_on(),'',$this->settings['url']);
 		$this->settings['categorias'] = $this->getCategorias();
       $this->settings['default'] = $this->settings['url'].'/themes/default';
+      # Correspondientes al theme
 		$this->settings['tema'] = $this->getTema();
 		$this->settings['images'] = $this->settings['tema']['t_url'].'/images';
       $this->settings['css'] = $this->settings['tema']['t_url'].'/css';
 		$this->settings['js'] = $this->settings['tema']['t_url'].'/js';
-		//
-		$this->settings['avatar'] = $this->settings['url'].'/files/avatar';
-		$this->settings['uploads'] = $this->settings['url'].'/files/uploads';
-		$this->settings['portada'] = $this->settings['url'].'/files/portadas';
+		# Recursos externos
 		$this->settings['public'] = $this->settings['url'].'/public';
+		//
+		$this->settings['files'] = $this->settings['url'].'/files';
+		$this->settings['avatar'] = $this->settings['files'].'/avatar';
+		$this->settings['uploads'] = $this->settings['files'].'/uploads';
+		$this->settings['portada'] = $this->settings['files'].'/portadas';
 		$this->settings['oauth'] = $this->OAuth();
       //
      	if($_GET['do'] == 'portal' || $_GET['do'] == 'posts') 
@@ -69,7 +68,7 @@ class tsCore {
 				'user' => "https://discord.com/api/v10/users/@me",
 				'scope' => "email identify"
 			],
-			'gmail' => [
+			'google' => [
 				'authorize_url' => 'https://accounts.google.com/o/oauth2/auth',
 				'token' => "https://accounts.google.com/o/oauth2/token",
 				'user' => "https://www.googleapis.com/oauth2/v2/userinfo",
@@ -78,12 +77,6 @@ class tsCore {
 			'facebook' => [
 				'authorize_url' => 'https://www.facebook.com/v18.0/dialog/oauth',
 				'token' => "https://graph.facebook.com/oauth/access_token",
-				'user' => "https://graph.facebook.com/v18.0/me?fields=id,name,email,picture,short_name",
-				'scope' => "email,public_profile"
-			],
-			'twitter' => [
-				'authorize_url' => 'https://api.twitter.com/oauth/authenticate',
-				'token' => "https://api.twitter.com/oauth/access_token",
 				'user' => "https://graph.facebook.com/v18.0/me?fields=id,name,email,picture,short_name",
 				'scope' => "email,public_profile"
 			]
@@ -121,7 +114,7 @@ class tsCore {
 		return db_exec('fetch_assoc', $query);
 	}
 	public function getExtras() {
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT optimizar, extension, tamano, calidad, smarty_cache, smarty_security, smarty_compress, smarty_lifetime FROM w_extras');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT optimizar, extension, width, height, calidad, smarty_cache, smarty_security, smarty_compress, smarty_lifetime FROM w_extras');
 		return db_exec('fetch_assoc', $query);
 	}
 	

@@ -1,0 +1,6 @@
+name: iconify-icon
+page: all
+js: 
+css: 
+version: 1.0.8
+on: false

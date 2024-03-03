@@ -23,7 +23,7 @@ class tsAdmin {
 	*/
 	public function getExtraIcons(string $folder = 'cat', int $size = 16) {
 		# Accedemos a la carpeta de icons
-		$carpeta = opendir( TS_TEMA_ACT . "images/icons/{$folder}" );
+		$carpeta = opendir( TS_PUBLIC . "images/icons/{$folder}" );
 		# Recorremos la carpeta
 		while ($archivo = readdir($carpeta)) {
 			# Obtenemos la extension
@@ -355,6 +355,7 @@ class tsAdmin {
 		//
 		$rid = (int)$_GET['rid'];
 		$r = self::sameArrayRango($_POST);
+		$r['color'] = str_replace('#', '', $r['color']);
 		$set = $tsCore->getIUP($r, 'r_');
 		if (db_exec([__FILE__, __LINE__], 'query', "UPDATE u_rangos SET $set WHERE rango_id = $rid")) return true;
 		else exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );

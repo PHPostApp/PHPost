@@ -1,0 +1,4 @@
+.fotos_home {
+	outline: 1px solid red;
+	grid-template-columns: 1fr 300px;
+}

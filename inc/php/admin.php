@@ -91,9 +91,11 @@
     	//
 		$tsTitle = 'Configuraci&oacute;n Extras';
 		if(empty($act)) $smarty->assign('tsExtra', $tsAdmin->getExtra());
-		if(!empty($_POST['tamano'])) {
+		if(!empty($_POST['width'])) {
 			if($tsAdmin->saveExtra()) $tsCore->redireccionar('admin', $action, 'save=true');
-		}	
+		} elseif($act == 'optimizar') {
+			$smarty->assign('tsOptimizar', $tsAdmin->setOptimize());
+		}
 	} elseif($action === 'seo') {
     	//
 		$tsTitle = 'Configurar SEO';
@@ -106,6 +108,12 @@
     	// CLASE MEDAL
     	require_once TS_CLASS . "c.socials.php";
     	$tsSocials = new tsSocials();
+    	$smarty->assign('tsNetsSocials', [
+    		'discord' => 'Discord', 
+    		'facebook' => 'Facebook',
+    		'github' => 'GitHub', 
+    		'google' => 'Google'
+    	]);
     	//
 		$tsTitle = 'Configurar redes sociales';
 		if(empty($act)) $smarty->assign('tsSocials', $tsSocials->getSocials());
@@ -116,7 +124,7 @@
 				$social = ($act === 'editar') ? $tsSocials->saveSocial() : $tsSocials->newSocial();
 				if($social) $tsCore->redireccionar('admin', $action, 'save=true');
 			} else {
-				if($act === 'editar') $smarty->assign("tsSocial", $tsSocial->getSocial());
+				if($act === 'editar') $smarty->assign("tsSocial", $tsSocials->getSocial());
 				if($act === 'nuevo') $smarty->assign("tsError", $tsSocials->newSocial());
 			} 
 		}

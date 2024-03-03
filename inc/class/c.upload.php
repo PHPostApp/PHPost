@@ -38,10 +38,10 @@ class tsUpload {
 	/*
 	 * newUpload($type) :: $type => URL o ARCHIVO
 	*/
-	public function newUpload(int $type = 1){
+	public function newUpload(int $type = 1) {
 		$this->type = (int)$type;
 		// ARCHIVOS
-		if($this->type == 1){
+		if($this->type == 1) {
 			foreach($_FILES as $file) $fReturn[] = $this->uploadFile($file);
 		// DESDE URL
 		} elseif($this->type == 2) $fReturn[] = $this->uploadUrl();
@@ -132,7 +132,7 @@ class tsUpload {
 	/*
 	 * sendFile($file,$name)
 	*/
-	public function sendFile($file, string $name = ''){
+	public function sendFile($file, string $name = '') {
 		//
 		$url = $this->createImage($file,$name);
 		// SUBIMOS...
@@ -155,7 +155,7 @@ class tsUpload {
 	/*
 	 * createImage()
 	*/
-	public function createImage($file, string $name = ''){
+	public function createImage($file, string $name = '') {
 		global $tsCore;
 		// TAMAÑO
 		$size = empty($this->file_size) ? getimagesize($file['tmp_name']) : $this->file_size;
@@ -163,7 +163,7 @@ class tsUpload {
 		$width = $size[0];
 		$height = $size[1];
 		// ESCALAR SOLO SI LA IMAGEN EXEDE EL TAMAÑO Y SE DEBE ESCALAR
-		if($this->image_scale == true && ($width > $this->image_size_min['w'] || $height > $this->image_size_min['h'])){
+		if($this->image_scale == true && ($width > $this->image_size_min['w'] || $height > $this->image_size_min['h'])) {
 			// OBTENEMOS ESCALA
 			if($width > $height){
 				$_height = ($height * $this->image_size_min['w']) / $width;
@@ -266,7 +266,7 @@ class tsUpload {
 	/*
 	 * uploadImagen()
 	*/
-	public function uploadImagen($params){
+	public function uploadImagen($params) {
 		// User agent
 		$useragent = $_SERVER['HTTP_USER_AGENT'];
 		// SERVIDOR

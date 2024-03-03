@@ -8,7 +8,7 @@
 			{include "m.posts_article.tpl"}
 		{/foreach}
 	{else}
-		<li>No tiene m&aacute;s posts creados.</li>
+		<div class="text-center alert text-warning">No tiene m&aacute;s posts creados.</div>
 	{/if}
 </div>
 <div class="sidebar blog-sidebar mt-40">
@@ -21,6 +21,6 @@
 			{include "m.posts_article.tpl"}
 		{/foreach}
 	{else}
-		<li>No se encontraron posts relacionados.</li>
+		<div class="text-center alert text-warning">No se encontraron posts relacionados.</div>
 	{/if}
 </div>

@@ -77,6 +77,7 @@ if($tsContinue) {
 		$tsPost = $tsPosts->getPost();
 		//
 		if($tsPost['post_id'] > 0) {
+			require_once TS_EXTRA . "redes_sociales.php";
 			// TITULO NUEVO
 			$tsTitle = $tsPost['post_title'].' - '.$tsTitle;
 			// ASIGNAMOS A LA PLANTILLA
@@ -88,6 +89,14 @@ if($tsContinue) {
 			// RELACIONADOS
 			$smarty->assign("tsRelated", $tsPosts->getRelated($tsPost['post_tags'], 'post'));
 			$smarty->assign("tsRelatedUser", $tsPosts->getRelated($tsPost['post_tags'], 'user'));
+			$smarty->assign("tsRedes", $redes);
+
+			$a = $tsPosts->getAutor($tsPost['post_user']);
+			foreach($a['p_socials'] as $name => $red) {
+				if(!empty($red)) {
+					//var_dump($redes[$name]['url']);
+				}
+			}
 			// COMENTARIOS
 			/*$tsComments = $tsPosts->getComentarios($tsPost['post_id']);
 			$tsComments = array('num' => $tsComments['num'], 'data' => $tsComments['data']);
@@ -126,6 +135,7 @@ if($tsContinue) {
 		$tsLastPosts = $tsPosts->getLastPosts($category);
 		$smarty->assign("tsPosts", $tsLastPosts['data']);
 		$smarty->assign("tsPages", $tsLastPosts['pages']);
+		$smarty->assign("tsPopular", $tsPosts->getMostPopular());
 		// ULTIMOS POSTS FIJOS
 		//if(!empty($tsLastPosts['data'])) {
 			//if($tsLastPosts['pages']['current'] === 1 OR $tsCore->settings['tema']['t_name'] === 'beatrix'){
@@ -147,14 +157,7 @@ if($tsContinue) {
 			$catData = $tsPosts->getCatData();
 			$tsTitle = $tsCore->settings['titulo'].' - '.$catData['c_nombre'];
 			$smarty->assign("tsCatData", $catData);
-		}
-		// IMAGENES
-		include TS_CLASS."c.fotos.php";
-		$tsFotos = new tsFotos();
-		$tsImages = $tsFotos->getLastFotos();
-		$smarty->assign("tsImages", $tsImages);
-		$smarty->assign("tsImTotal", safe_count($tsImages));
-		  
+		}		  
 		// AFILIADOS
 		$smarty->assign("tsAfiliados", $tsAfiliado->getAfiliados());
 		// DO <= PARA EL MENU

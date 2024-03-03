@@ -243,7 +243,7 @@ class tsPosts extends tsUpload {
 	public function getCatData() {
 		global $tsCore;
 		// OBTENEMOS LA CATEGORÍA
-		$cat = (int)$_GET['cat'];
+		$cat = $tsCore->setSecure($_GET['cat']);
 		// OBTENEMOS EL NOMBRE Y SEO DE LA CATEGORÍA
 		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT c_nombre, c_seo FROM p_categorias WHERE c_seo = '$cat' LIMIT 1"));
 		return $data;
@@ -281,10 +281,8 @@ class tsPosts extends tsUpload {
 		foreach($lastPosts['data'] as $i => $dato) {
 			$lastPosts['data'][$i]['post_url'] = self::generateURL($dato);
 			$lastPosts['data'][$i]['post_descripcion'] = self::removeBBCode($dato['post_body']);
-			$lastPosts['data'][$i]['post_portada'] = self::getPortada($dato['post_portada'], [
-				'post_id' => $dato['post_id'],
-				'post_date' => $dato['post_date']
-			]);
+			$lastPosts['data'][$i]['post_fecha'] = self::generateDate($dato['post_date']);
+			$lastPosts['data'][$i]['post_portada'] = self::getPortada($dato['post_portada'], "user{$dato['user_id']}postid{$dato['post_id']}date{$dato['post_date']}");
 		}
 		//
 		return $lastPosts;
@@ -426,34 +424,37 @@ class tsPosts extends tsUpload {
 	/*
 		getSideData($array)
 	*/
-	function getAutor($user_id){
+	public function getAutor(int $user_id = 0){
 		global $tsUser, $tsCore;
-		  // DATOS DEL AUTOR
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_id, u.user_name, u.user_rango, u.user_puntos, u.user_lastactive, u.user_last_ip, u.user_activo, u.user_baneado, p.user_pais, p.user_sexo, p.user_firma FROM u_miembros AS u LEFT JOIN u_perfil AS p ON u.user_id = p.user_id WHERE u.user_id = \''.(int)$user_id.'\' LIMIT 1');
-		  $data = db_exec('fetch_assoc', $query);
-		  
-		$data['user_seguidores'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT follow_id FROM u_follows WHERE f_id = \''.(int)$user_id.'\' && f_type = \'1\''));
-		$data['user_comentarios'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT cid FROM p_comentarios WHERE c_user = \''.(int)$user_id.'\' && c_status = \'0\''));
-		$data['user_posts'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT post_id FROM p_posts WHERE post_user = \''.(int)$user_id.'\' && post_status = \'0\''));
+		// DATOS DEL AUTOR
+		$data = db_exec('fetch_assoc',db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_rango, u.user_puntos, u.user_lastactive, u.user_last_ip, u.user_activo, u.user_baneado, p.user_pais, p.user_sexo, p.user_firma, p.p_socials FROM u_miembros AS u LEFT JOIN u_perfil AS p ON u.user_id = p.user_id WHERE u.user_id = $user_id LIMIT 1"));
+
+		$data['user_seguidores'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT follow_id FROM u_follows WHERE f_id = $user_id && f_type = 1"));
+		$data['user_comentarios'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT cid FROM p_comentarios WHERE c_user = $user_id && c_status = 0"));
+		$data['user_posts'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT post_id FROM p_posts WHERE post_user = $user_id && post_status = 0"));
 		
 		// RANGOS DE ESTE USUARIO
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT r_name, r_color, r_image FROM u_rangos WHERE rango_id = \''.$data['user_rango'].'\' LIMIT 1');
-		$data['rango'] = db_exec('fetch_assoc', $query);
-		
-		  // STATUS
-		  $is_online = (time() - ($tsCore->settings['c_last_active'] * 60));
-		  $is_inactive = (time() - (($tsCore->settings['c_last_active'] * 60) * 2)); // DOBLE DEL ONLINE
-		  if($data['user_lastactive'] > $is_online) $data['status'] = array('t' => 'Usuario Online', 'css' => 'online');
-		  elseif($data['user_lastactive'] > $is_inactive) $data['status'] = array('t' => 'Usuario Inactivo', 'css' => 'inactive');
-		  else $data['status'] = array('t' => 'Usuario Offline', 'css' => 'offline');
+		$data['rango'] = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT r_name, r_color, r_image FROM u_rangos WHERE rango_id = '{$data['user_rango']}' LIMIT 1"));
+	
+		// STATUS
+		$is_online = (time() - ($tsCore->settings['c_last_active'] * 60));
+		$is_inactive = (time() - (($tsCore->settings['c_last_active'] * 60) * 2)); // DOBLE DEL ONLINE
+		if($data['user_lastactive'] > $is_online) $data['status'] = ['t' => 'Usuario Online', 'css' => 'online'];
+		elseif($data['user_lastactive'] > $is_inactive) $data['status'] = ['t' => 'Usuario Inactivo', 'css' => 'inactive'];
+		else $data['status'] = ['t' => 'Usuario Offline', 'css' => 'offline'];
 		// PAIS
-		include(TS_EXTRA."datos.php"); // Fix 10/06/2013
-		$data['pais'] = array('icon' => strtolower($data['user_pais']),'name' => $tsPaises[$data['user_pais']]);
+		include TS_EXTRA . "datos.php"; 
+		$data['pais'] = [
+			'icon' => strtolower($data['user_pais']),
+			'name' => $tsPaises[$data['user_pais']]
+		];
+		// Redes Sociales
+		if(!empty($data['p_socials'])) {
+			$data['p_socials'] = (array)json_decode($data['p_socials'], true);
+   	} else $data['p_socials'] = '';
 		// FOLLOWS
 		if($data['user_seguidores'] > 0){
-			$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT follow_id FROM u_follows WHERE f_id = \''.(int)$user_id.'\' AND f_user = \''.$tsUser->uid.'\' AND f_type = \'1\'');
-			$data['follow'] = db_exec('num_rows', $query);
-			
+			$data['follow'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT follow_id FROM u_follows WHERE f_id = $user_id AND f_user = {$tsUser->uid} AND f_type = 1"));
 		}
 		// RETURN
 		return $data;

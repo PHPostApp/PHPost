@@ -2,7 +2,6 @@
    <h3>Configuración SEO</h3>
 </div>
 <div id="res" class="boxy-content">
-   {if $tsSave}<div class="alert alert-success">Configuraciones guardadas</div>{/if}
    <form action="" method="post" autocomplete="off">
       <fieldset>
          <dl>
@@ -64,27 +63,18 @@
             	{/foreach}
             </dd>
          </dl>
-         <div class="search-results">
+         <div class="search-results bg-dark-subtle rounded p-3 my-3 mx-auto">
 	        	<div class="result">
-               <img class="rounded image mb-3" src="{$tsSeo.seo_portada}" alt="{$tsSeo.seo_titulo}">
-	            <span class="title text-primary">{$tsSeo.seo_titulo}</span><br>
-	            <span class="url fst-italic">{$tsConfig.url}</span><br>
-	            <p class="description m-0 p-0">{$tsSeo.seo_descripcion}</p>
+               <img class="rounded image mb-3 object-fit-cover w-100" src="{$tsSeo.seo_portada}" alt="{$tsSeo.seo_titulo}">
+	            <span class="title text-primary fw-bold fs-5">{$tsSeo.seo_titulo}</span><br>
+	            <span class="url fst-italic text-success-emphasis">{$tsConfig.url}</span><br>
+	            <p class="description m-0 p-0 text-secondary-emphasis">{$tsSeo.seo_descripcion}</p>
 	        	</div>
 	      </div>
          <style>
             .search-results {
                width: 600px;
-               margin: 1rem auto;
-               padding: 1rem;
-               border: var(--bs-border-width) solid var(--bs-content-border-color);
-               border-radius: 5px;
-               background-color: var(--bs-content-bg);
             }
-           .title { font-size: 18px; font-weight: bold; }
-           .url { color: #006621; }
-           .description { color: #545454; }
-           .image { width: 100%;object-fit: cover; }
          </style>
          <script>
             $('#titulo').on('keyup', () => $('.result .title').html($('#titulo').val()))

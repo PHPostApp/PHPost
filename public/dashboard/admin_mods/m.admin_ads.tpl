@@ -2,7 +2,6 @@
 	<h3>Administrar Publicidad</h3>
 </div>
 <div id="res" class="boxy-content">
-	{if $tsSave}<div class="mensajes  ok">Tus cambios han sido guardados.</div>{/if}
 	<form action="" method="post" autocomplete="off">
 		<fieldset>
 			<legend>C&oacute;digos</legend>

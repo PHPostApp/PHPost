@@ -17,7 +17,7 @@ define('BLOCKED', SCRIPT_ROOT . '.lock');
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 session_start();
 //
-$version_id = "1.3.0.024";
+$version_id = "1.3.0.032";
 $version_title = "Risus $version_id";
 $wversion_code = str_replace([' ', '.'], '_', strtolower($version_title));
 
@@ -25,12 +25,13 @@ $step = empty($_GET['step']) ? 0 : $_GET['step'];
 $step = htmlspecialchars(intval($step));
 $next = true; // CONTINUAR
 
+$tema_a_usar = 'beatrix';
 $theme = [
 	'tid' => 1, 
-	't_name' => 'PHPost', 
-	't_url' => '/themes/default', 
-	't_path' => 'default', 
-	't_copy' => 'PHPost & Miguel92'
+	't_name' => ucfirst($tema_a_usar), 
+	't_url' => '/themes/' . $tema_a_usar, 
+	't_path' => $tema_a_usar, 
+	't_copy' => 'Miguel92'
 ];
 
 // Intento de sistema de dirección automática
@@ -163,7 +164,7 @@ switch ($step) {
 						$bderror .= '<br/>' . mysqli_error($db_link);
 					}
 				}
-				if (!in_array(0, $exe)) header("Location: index.php?step=4");
+				if (!in_array(0, $exe)) header("Location: index.php?step=5");
 				else {
 					$message = 'Lo sentimos, pero ocurrió un problema. Inténtalo nuevamente; borra las tablas que se hayan guardado en tu base de datos: ' . $bderror;
 				}
@@ -218,12 +219,12 @@ switch ($step) {
 				file_put_contents(CONFIGINC, $config);
 				setcookie("upperkey", $web['c_upperkey'], time() + 3600);
 				// Publicidad
-				$linkad = "https://joelmiguelvalente.github.io/grupos/";
+				$linkad = "https://phpost.es/";
 				$sizesad = ['160x600','300x250','468x60','728x90'];
 				foreach ($sizesad as $key => $ad) {
 					$width = explode('x', $ad)[0];
 					$height = explode('x', $ad)[1];
-					$html = "<a href=\"$linkad\" target=\"_blank\"><img alt=\"ads $ad\" title=\"Publicidad $ad\" width=\"$width\" height=\"$height\" src=\"{$web['url']}/public/images/ad$ad.png\"></a>";
+					$html = "<a href=\"$linkad\" target=\"_blank\"><img alt=\"ads $ad\" title=\"Publicidad $ad\" width=\"$width\" height=\"$height\" src=\"https://phpost.es/feed/ads/ad$ad.png\"></a>";
 					$set[] = "ads_" . explode('x', $ad)[0] . " = '" . html_entity_decode($html) . "'";
 				}
 				$ads = join(', ', $set);

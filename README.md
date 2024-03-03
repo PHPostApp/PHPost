@@ -1,8 +1,18 @@
-# PHPost 2023
+![GitHub repo size](https://img.shields.io/github/repo-size/PHPostApp/PHPost)
+
+# PHPost 2023-2024
 PHPost Risus es un sistema de compartimiento de enlaces que permite crear un sitio web similar a Taringa!
 
 # Por ahora
 Este repositorio fue actualizado, no esta completamente todo el script, pero si lo necesario para que este pueda funcionar. Todo lo que es el diseño no se ha tocado solo un poco en los botones y el modal, luego todo sigue igual.
+
+# NOTA 02.03.24
+PHPost:
+ - Mucho más estructurado.
+ - Mucho más limpio.
+ - Actualización completa del plugins function.jsdelivr.php 
+ - Actualización completa del plugins function.phpost.php es parecido a function.hook.php, pero mejor (lo termine hoy 02.03.24)
+ - Optimizador de imágenes mejorado y reestructurado desde cero (Aún no estará disponible para su uso, pero funciona) 
 
 ### Actualizaciones
  * PHP 8.x

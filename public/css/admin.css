@@ -187,6 +187,23 @@ form fieldset dl dt span {
     font-weight: 300;
     font-style: italic;
 }
+form fieldset dl small {
+    color: var(--bs-secondary-text-emphasis);
+    font-style: italic;
+    font-size: 11px;
+    
+}
 form fieldset dl dd.small .input-group {
     width: 120px!important;
+}
+.admin_actions a {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    display: inline-block;
+}
+.admin_actions a img {
+    width: 24px;
+    height: 24px;
 }

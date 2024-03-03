@@ -36,7 +36,7 @@
 									</li>
 									{if $tsConfig.c_fotos_private == 1 || $tsUser->is_member}
 									<li class="has-children">
-										<a title="Ir a Fotos" href="blog-category.html">Fotos</a>
+										<a title="Ir a Fotos" href="{$tsConfig.url}/fotos/">Fotos</a>
 										<ul class="dropdown sub-menu">
 											<li><a href="{$tsConfig.url}/fotos/">Inicio</a></li>
 											{if $tsUser->is_admod || $tsUser->permisos.gopf}
@@ -71,6 +71,10 @@
 											<li><a href="{$tsConfig.url}/comunidades/mod-history/">Historial</a></li>
 										</ul>
 									</li>
+									{if !$tsUser->is_member}
+										<li><a href="{$tsConfig.url}/login">Iniciar sesi&oacute;n</a></li>
+										<li><a href="{$tsConfig.url}/registro">Crear cuenta</a></li>
+									{/if}
 								</ul>
 							</nav>
 						</div>
@@ -95,11 +99,13 @@
 								</div>
 							</div>
 						</div>
+						{if $tsUser->is_member}
 						<div class="header-burger-menu">
 							<div class="burger-nav-bar">
 								<span class="tp-header__bars tp-menu-bar" style="cursor: pointer;"><iconify-icon icon="ri:menu-fill"></iconify-icon></span>
 							</div>
 						</div>
+						{/if}
 					</div>
 				</div>
 			</div>
@@ -115,7 +121,7 @@
 		{if $tsUser->is_member}
 		<div class="tpoffcanvas__logo offcanvas-logo mb-3">
 			<a href="{$tsConfig.url}/perfil/{$tsUser->info.user_name}" class="d-block text-center">
-				<img src="{$tsConfig.avatar}/{$tsUser->uid}_120.jpg" class="image rounded-circle mb-2" alt="Logo">
+				<img src="{$tsConfig.avatar}/{$tsUser->uid}_120.jpg?{$smarty.now}" class="image rounded-circle mb-2" alt="Logo">
 				<h3 class="py-2">{$tsUser->nick}</h3>
 				<small class="d-block fw-bold py-2 text-uppercase">{$tsUser->email}</small>
 			</a>
@@ -157,13 +163,6 @@
 					{/if}
 					<div class="item-canvas">
 						<a href="{$tsConfig.url}/login-salir.php" class="fs-4">Cerrar sesión</a>
-					</div>
-				{else}
-					<div class="item-canvas">
-						<a href="{$tsConfig.url}/login" class="fs-4">Iniciar sesi&oacute;n</a>
-					</div>
-					<div class="item-canvas">
-						<a href="{$tsConfig.url}/registro" class="fs-4">Crear cuenta</a>
 					</div>
 				{/if}
 

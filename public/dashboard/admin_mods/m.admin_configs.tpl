@@ -2,7 +2,6 @@
    <h3>Configuraci&oacute;n del Sitio</h3>
 </div>
 <div id="res" class="boxy-content">
-   {if $tsSave}<div class="alert alert-success">Configuraciones guardadas</div>{/if}
    <form action="" method="post" autocomplete="off">
       <fieldset>
          <dl>

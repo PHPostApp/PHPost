@@ -17,7 +17,7 @@ const login = (() => {
 		if(status) {
 			loading
 			.css({width: '100%',display: 'grid',placeItems: 'center',marginBottom: '.3rem'})
-			.html('<img src="'+global_data.img+'/loading_bar.gif" />');
+			.html('<img src="'+global_data.tema_images+'/loading_bar.gif" />');
 		} else loading.removeAttr('style').html('')
 	}
 

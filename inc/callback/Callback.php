@@ -75,7 +75,7 @@ class Callback extends tsCore {
 				"Authorization: token " . $data, 
 				"User-Agent: ". parent::getSettings()['titulo']
 			];
-		} elseif($this->social === 'discord' OR $this->social === 'gmail') {
+		} elseif($this->social === 'discord' OR $this->social === 'google') {
 			$array = ["Authorization: Bearer " . $data];
 		}
 		return $array;

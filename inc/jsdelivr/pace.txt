@@ -1,0 +1,6 @@
+name: pace-js
+page: all
+js: 
+css: pace-theme-default.min.css
+version: 1.2.4
+on: false

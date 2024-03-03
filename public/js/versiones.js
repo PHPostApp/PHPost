@@ -43,7 +43,7 @@ changeBranch = (branch = 'master') => {
 		//
 		$('#lastCommit').html('');
 		// Reemplazamos \n por saltos de línea con <br>
-		content = response.commit.message.replace(/\n/g, '<br>');
+		content = response.commit.message.replace(/\n\s*\n/g, '<br>');
 		// Si la pantalla es menor a 1120px solo tendrá 7 caracteres
 		SHA = (window.width < 1120) ? response.sha.substring(0, 7) : response.sha;
 		// Si la Cookie no existe la crearemos por 7 días
@@ -75,7 +75,8 @@ changeBranch = (branch = 'master') => {
 		$('.panel-info.last-commit .card-footer').html(`<span>Sha: <a href="${response.html_url}" class="text-decoration-none text-primary" rel="noreferrer" target="_blank">${SHA}</a></span><span>${hace}</span>`);
 
 		// La añadimos al HTML
-		$('#lastCommit').append(html);
+		let transform = joypixels.toImage(html);
+		$('#lastCommit').append(transform);
 	}, 'json')
 }
 // Autoejecutamos

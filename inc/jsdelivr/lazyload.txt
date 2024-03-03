@@ -1,0 +1,6 @@
+name: vanilla-lazyload
+page: all
+js: 
+css: dist/vanilla-lazyload.min.css
+version: 17.8.4
+on: false

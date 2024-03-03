@@ -1,28 +1,16 @@
 <?php
-/**
- * Smarty plugin
- * @package Smarty
- * @subpackage plugins
- */
-
 
 /**
- * Smarty cat modifier plugin
- *
- * Type:     modifier<br>
- * Name:     hace<br>
- * Date:     Feb 24, 2010
- * Purpose:  catenate a value to a variable
- * Input:    string to catenate
- * Example:  {$var|cat:"foo"}
- * @link http://smarty.php.net/manual/en/language.modifier.cat.php cat
- *          (Smarty online manual)
- * @author   Ivan Molina Pavana
- * @version 1.0
- * @param string
- * @param string
- * @return string
- */
+ * Autor: Ivan Molina Pavana
+ * Ejemplo: {$date|hace:true} = Hace 1 minuto | Hace 3 días
+ * Enlace: #
+ * Fecha: Feb 24, 2010
+ * Nombre: hace
+ * Proposito: Hace cuanto se realizo
+ * Tipo: modifier
+ * Version: 1.0
+*/
+
 function smarty_modifier_hace($fecha, $show = false){
      
     $ahora = time();

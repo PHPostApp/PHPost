@@ -5,10 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{$tsTitle}</title>
 {meta facebook=true twitter=true}
-{phpost 
-	favicon="favicon.ico" 
-	css=["bootstrap.min.css", "app.css", "responsive.css", "$tsPage.css", "wysibb.css"] 
-}
+{jsdelivr type="css" files=['bootstrap','pace','croppr']}
+{phpost css=["app.css", "responsive.css"] scriptGlobal=true}
 </head>
 <body>
 {if $tsUser->is_admod == 1}{$tsConfig.install}{/if}

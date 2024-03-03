@@ -2,7 +2,6 @@
 	<h3>Opciones del registro</h3>
 </div>
 <div id="res" class="boxy-content">
-	{if $tsSave}<div class="mensajes  ok">Configuraciones guardadas</div>{/if}
 	<form action="" method="post" autocomplete="off">
       <fieldset>
 		  	<legend>Configuraci&oacute;n del Registro</legend>

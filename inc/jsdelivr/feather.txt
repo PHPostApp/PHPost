@@ -1,0 +1,6 @@
+name: feather-icons
+page: all
+js: 
+css: 
+version: 4.29.1
+on: false

@@ -26,39 +26,37 @@
                   <div class="author-body">
                      <span class="subtitle">{$tsAutor.rango.r_name}</span>
                      <h5 class="title">{$tsAutor.user_name}</h5>
-                     <p class="author-inner-text">My favorite compliment is being told that I look like my mom. Seeing myself in her image, like this daughter up top, makes me so proud of how far I’ve come.</p>
+                     <p class="author-inner-text">{$tsAutor.user_firma}</p>
                      <div class="social-share-author">
-                        <a href="#"><iconify-icon icon="la:facebook-f"></iconify-icon></a>
-                        <a href="#"><iconify-icon icon="la:instagram"></iconify-icon></a>
-                        <a href="#"><iconify-icon icon="pajamas:twitter"></iconify-icon></a>
-                        <a href="#"><iconify-icon icon="la:linkedin-in"></iconify-icon></a>
+                        {foreach $tsAutor.p_socials key=name item=red}
+                           {if !empty($red)}
+                              <a href="{$tsRedes.$name.url}/{$red}" rel="external" target="_blank" class="icon">
+                                 <iconify-icon icon="{$tsRedes.$name.iconify}"></iconify-icon>
+                              </a>
+                           {/if}
+                        {/foreach}
                      </div>
                   </div>
                </div>
                <!-- INICIO COMENTAR -->
-               <div class="theme-comment-area">
-                  <div class="comment-respond">
-                     <h4 class="title">Post a comment</h4>
-                  </div>
-               </div>
+               <a name="comentarios"></a>
+               {include "m.posts_comments.tpl"}
+               <a name="comentarios-abajo"></a>
                <!-- FIN COMENTAR -->
+               {if !$tsUser->is_member}
+                  <div class="text-center mt-4 alert alert-warning">Para poder comentar necesitas estar <a href="{$tsConfig.url}/registro" class="fw-bold" rel="internal">Registrado.</a><br> O.. ya tienes usuario? <a href="{$tsConfig.url}/login" class="fw-bold" rel="internal">Logueate!</a></div>
+               {elseif $tsPost.block > 0}
+                  <div class="text-center mt-4 alert alert-danger">&iquest;Te has portado mal? {$tsPost.user_name} te ha bloqueado y no podr&aacute;s comentar sus post.</div>
+               {/if}
             </div>
          </div>
          <div class="col-lg-4">
             {include "m.posts_usuario_relacionado.tpl"}             
-                        </div>
-                    </div>
+         </div>
+      </div>
 	</div>
 </div>
 
-{phpost css="AtomOneDark.css" js="highlight.min.js" from='beforeFooter'}
-<script>
-   const colores = [];
-   //hljs.highlightAll();
-   document.querySelectorAll('pre code').forEach((el) => {
-      hljs.highlightElement(el);
-   });
-</script>
 {*<div class="post-wrapper">
 	{include "m.posts_autor.tpl"}
 	{include "m.posts_content.tpl"}
@@ -71,11 +69,7 @@
 	{include "m.posts_comments.tpl"}
 	<a name="comentarios-abajo"></a>
 	<br />
-	{if !$tsUser->is_member}
-		<div class="emptyData clearfix">Para poder comentar necesitas estar <a href="{$tsConfig.url}/registro">Registrado.</a> O.. ya tienes usuario? <a href="{$tsConfig.url}/login">Logueate!</a></div>
-	{elseif $tsPost.block > 0}
-		<div class="emptyData clearfix">&iquest;Te has portado mal? {$tsPost.user_name} te ha bloqueado y no podr&aacute;s comentar sus post.</div>
-	{/if}
+	
 	<div style="text-align:center"><a class="irCielo" href="#cielo"><strong>Ir al cielo</strong></a></div>
 </div>
 <div style="clear:both"></div> *}    

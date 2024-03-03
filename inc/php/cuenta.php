@@ -59,6 +59,7 @@
 	if(empty($action)){
 		include_once TS_EXTRA . 'datos.php';
 		include_once TS_EXTRA . 'geodata.php';
+		require_once TS_EXTRA . "redes_sociales.php";
 		// SOLO MENORES DE 84 AÑOS xD Y MAYORES DE...
 		$now_year = date("Y", time());
 		// 100años - 16años = 84años
@@ -73,7 +74,7 @@
 		// PERFIL INFO
       $tsPerfil = $tsCuenta->loadPerfil();
 		$smarty->assign("tsPerfil", $tsPerfil);
-		$smarty->assign("tsRedes", $tsCuenta->redes);
+		$smarty->assign("tsRedes", $redes);
 		// PERFIL DATA
 		$smarty->assign("tsPData",$tsPerfilData);
       $smarty->assign("tsPrivacidad",$tsPrivacidad);

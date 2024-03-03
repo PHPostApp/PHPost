@@ -2,8 +2,8 @@
    <h3>Configuraciones extras del Sitio</h3>
 </div>
 <div id="res" class="boxy-content">
-   {if $tsSave}<div class="alert alert-success">Configuraciones guardadas</div>{/if}
    <form action="" method="post" autocomplete="off">
+      {if $tsAct == ''}
       <fieldset>			
 			{if $optimizer}
          <dl>
@@ -19,10 +19,19 @@
             </dd>
          </dl>
          <dl>
-            <dt><label for="ai_tamano">Tamaño de la imagen:</label><br /><span>Tamaño por defecto para la imagen.</span></dt>
+            <dt><label for="ai_tamano">Anchura de la imagen:</label><br /><span>Anchura por defecto para la imagen.</span></dt>
             <dd class="small">
                <div class="input-group">
-                  <input class="form-control" type="text" id="ai_tamano" name="tamano" maxlength="4" value="{$tsExtra.tamano}" />
+                  <input class="form-control" type="text" id="ai_width" name="width" maxlength="4" value="{$tsExtra.width}" />
+                  <span class="input-group-text">px</span>
+               </div>
+            </dd>
+         </dl>
+         <dl>
+            <dt><label for="ai_tamano">Altura de la imagen:</label><br /><span>Altura por defecto para la imagen.</span></dt>
+            <dd class="small">
+               <div class="input-group">
+                  <input class="form-control" type="text" id="ai_height" name="height" maxlength="4" value="{$tsExtra.height}" />
                   <span class="input-group-text">px</span>
                </div>
             </dd>
@@ -61,5 +70,15 @@
          </dl>
          <p><input type="submit" name="save" value="Guardar Cambios" class="btn btn-primary" /></p>
       </fieldset>
+      {elseif $tsAct == 'optimizar'} 
+         {foreach $tsOptimizar key=i item=image}
+            <div class="p-1 mb-3">
+               <span>Imagen sin optimizar: {$image.post_portada|truncate:40}</span>   
+               <span class="d-block">Imagen optimizada: {$image.post_portada_optimizada}</span>  
+               <span class="d-block">La imagen ha sido descargada y optimizada. ✔️</span>
+               <small>Usuario: {$image.user_id} - Post: {$image.post_id} - Creado {$image.post_date|hace}</small> 
+            </div>
+         {/foreach}
+      {/if}
    </form>
 </div>

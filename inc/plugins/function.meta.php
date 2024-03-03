@@ -1,14 +1,14 @@
 <?php 
 
 /**
- * Smarty plugin para incluir archivos CSS y JS de forma independiente.
- *
- * Uso: Solo require el nombre del archivo
- *  {meta facebook=true twitter=false} 
- *
- * @param array $params Parámetros pasados a la función (en este caso, 'facebook|twitter').
- * @param Smarty_Internal_Template $smarty Instancia del objeto Smarty.
- * @return string Código HTML generado por la función.
+ * Autor: Miguel92
+ * Ejemplo: {meta facebook=true twitter=false} 
+ * Enlace: #
+ * Fecha: Dic 31, 2023  
+ * Nombre: meta
+ * Proposito: Añadir las etiquetas meta para facebook y twitter(X) 
+ * Tipo: function 
+ * Version: 1.0 
 */
 
 include_once TS_CLASS . "c.admin.php";
@@ -62,8 +62,6 @@ function smarty_function_meta($params, &$smarty) {
 		$robots_data = json_decode($data['seo_robots_data'], true);
 		$meta .= "<meta name=\"{$nameRobots[$robots_data['name']]}\" content=\"{$contentRobots[$robots_data['content']]}\" />\n";
 	}
-	
-	# $meta .= "<meta rel=\"manifest\" href=\"/manifest.json\" />\n";
 
 	if((int)$data['seo_sitemap']) {
 		$meta .= "<link rel=\"sitemap\" type=\"application/xml\" title=\"Mapa del sitio\" href=\"{$tsCore->settings['url']}/sitemap.xml\">\n";

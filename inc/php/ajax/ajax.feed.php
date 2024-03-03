@@ -41,7 +41,7 @@
 	switch($action){
 		case 'feed-support':
 			//<--- CONSULTAR ACTUALIZACIONES OFICIALES Y VERIFICAR VERSIÓN ACTUAL DE ESTE SCRIPT
-				$json = $tsCore->getUrlContent($conexion . 'index.php?type=support&key=' . $key);
+				$json = $tsCore->getUrlContent($conexion . 'index.php?from=PHPost&type=support&key=' . $key);
 				echo $json;
 			//--->
 		break;
@@ -51,7 +51,7 @@
 			 * PHPost Risus 1.3.0.024 *
 			*/
 			$time = time();
-			$version_now = 'Risus 1.3.0.024';
+			$version_now = 'Risus 1.3.0.032';
 			$version_code = str_replace([' ', '.'], '_', strtolower($version_now));
 			# ACTUALIZAR VERSIÓN
 			if($tsCore->settings['version'] != $version_now) {
@@ -59,7 +59,7 @@
 				db_exec([__FILE__, __LINE__], 'query', "UPDATE `w_stats` SET stats_time_upgrade = $time WHERE stats_no = 1 LIMIT 1");
 			}
 			//<---
-			$json = $tsCore->getUrlContent($conexion . 'index.php?type=version&key=' . $key);
+			$json = $tsCore->getUrlContent($conexion . 'index.php?from=PHPost&type=version&key=' . $key);
 			echo $json;
 			//--->
 		break;

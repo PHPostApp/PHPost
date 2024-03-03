@@ -417,7 +417,7 @@ function compartir(socials_net, post_title) {
 	shortUrl = `${global_data.url}/p/${post_title}`;
 	encode_url = (socials_net == 'telegram') ? rawurlencode(shortUrl) : encodeURIComponent(shortUrl);
 	// Agregamos un mensaje
-	invite = "Hola a todos, los invito a ver este articulo espectacular! " + global_data.s_title;
+	invite = "Hola a todos, los invito a ver este articulo espectacular! " + global_data.titulo;
 	invite = (socials_net == 'telegram') ? rawurlencode(invite) : encodeURIComponent(invite);
 	// Seleccionamos la url correspondiente a la red social!
 	switch (socials_net) {
@@ -436,7 +436,7 @@ function compartir(socials_net, post_title) {
 	}
 	url = url.replace('$1', encode_url).replace('$2', invite)
 	// Abrimos una ventana para compartir
-	window.open(url, global_data.s_title + ' - ' + global_data.s_slogan, 'directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=yes, width=700, height=400, left=300, top=150');
+	window.open(url, global_data.titulo + ' - ' + global_data.slogan, 'directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=yes, width=700, height=400, left=300, top=150');
 }
 
 insertarRed = () => {
@@ -457,14 +457,14 @@ $(document).ready(() => {
       $('#body_comm').removeAttr('onblur onfocus class style title').css('height', '80').html('').wysibb(wbbOpt);
    }
    insertarRed();
-      // Función para escapar HTML
-    function escapeHtml(html) {
-        var div = document.createElement('div');
-        div.textContent = html; 
-        return div.innerHTML.replace(/(?:\r\n|\n\n)/g, "\n");
-    }
-    var bloques = [].slice.call(document.querySelectorAll('.post-wrapper pre code'))
-    bloques.map( bloque => $(bloque).html(escapeHtml(bloque.innerText)))
-    // Inicializar highlight.js
-    hljs.highlightAll();
+   // Función para escapar HTML
+   function escapeHtml(html) {
+       var div = document.createElement('div');
+       div.textContent = html; 
+       return div.innerHTML.replace(/(?:\r\n|\n\n)/g, "\n");
+   }
+   var bloques = [].slice.call(document.querySelectorAll('.post-wrapper pre code'))
+   bloques.map( bloque => $(bloque).html(escapeHtml(bloque.innerText)))
+   //
+   comentario.cargar(global_data.postid, 1, global_data.autor)
 })

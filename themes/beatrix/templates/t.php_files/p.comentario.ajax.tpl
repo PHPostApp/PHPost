@@ -180,7 +180,7 @@
                             
 							{else}
                             	
-								<div id="no-comments">Este post no tiene comentarios, S&eacute; el primero!</div>
+								<div id="no-comments" class="my-4 text-center alert text-primary">Este post no tiene comentarios, S&eacute; el primero!</div>
                             
 							{/if}
                             

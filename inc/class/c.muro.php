@@ -153,7 +153,7 @@ class tsMuro {
 	 public function streamPost(){
 		  global $tsCore, $tsUser, $tsMonitor, $tsActividad;
 		  //
-		  $pid = intval($_POST['pid']);
+		  $pid = (int)$_POST['pid'];
 		  $data = $tsCore->setSecure($_POST['data'], true);
 		  $adj = $tsCore->setSecure($_POST['adj'], true);
 		  $type = $_GET['type'];
@@ -180,7 +180,7 @@ class tsMuro {
 					 // ANTI FLOOD
 					 $tsCore->antiFlood();
 					 //				//
-				if(db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO u_muro (p_user, p_user_pub, p_body, p_date, p_type, p_ip) VALUES (\''.(int)$pid.'\', \''.$tsUser->uid.'\', \''.$data.'\', \''.$date.'\', \'1\', \''.$_SERVER['REMOTE_ADDR'].'\') ')){
+					if(db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO u_muro (p_user, p_user_pub, p_body, p_date, p_type, p_ip) VALUES (\''.(int)$pid.'\', \''.$tsUser->uid.'\', \''.$data.'\', \''.$date.'\', \'1\', \''.$_SERVER['REMOTE_ADDR'].'\') ')){
 						  $pub_id = db_exec('insert_id');
 						  //
 						  $type = ($pid == $tsUser->uid) ? 'status' : 'mpub';

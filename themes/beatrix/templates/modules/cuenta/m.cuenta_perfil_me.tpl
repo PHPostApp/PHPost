@@ -27,17 +27,6 @@
          {/foreach}
        </div>
 	</div>
-	<div class="form-item">
-		<label class="form-label">Me gustar&iacute;a</label>
-		<div class="input-fake">
-			{foreach from=$tsPData.gustos key=val item=text}
-				<div class="form-check">
-				  	<input class="form-check-input" type="checkbox" name="g_{$val}" value="1" id="vg{$val}"{if $tsPerfil.p_gustos.$val == 1} checked{/if}>
-				  	<label class="form-check-label" for="vg{$val}">{$text}</label>
-				</div>
-			{/foreach}
-		</div>
-	 </div>
 	 <div class="form-item">
 		  <label class="form-label" for="estado">Estado Civil</label>
 		  <div class="input-fake">

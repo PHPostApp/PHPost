@@ -172,17 +172,15 @@ class tsFotos {
         //
 		$max = 10; // MAXIMO A MOSTRAR
 		$limit = $tsCore->setPageLimit($max, true);		
+        $isAdmodFoto = ($tsUser->is_admod && (int)$tsCore->settings['c_see_mod'] == 1) ? '' : "WHERE f.f_status = 0 AND u.user_activo = 1 && u.user_baneado = 0";
 		// PAGINAS
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(f.foto_id) FROM f_fotos AS f LEFT JOIN u_miembros AS u ON u.user_id = f.f_user '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'WHERE f.f_status = \'0\' AND u.user_activo = \'1\' && u.user_baneado = \'0\''));
+		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(f.foto_id) FROM f_fotos AS f LEFT JOIN u_miembros AS u ON u.user_id = f.f_user $isAdmodFoto");
 		list ($total) = db_exec('fetch_row', $query);
 		
 		$data['pages'] = $tsCore->pageIndex($tsCore->settings['url']."/fotos/?",$_GET['s'],$total, $max);
         //
-		$query = 'SELECT f.foto_id, f.f_title, f.f_date, f.f_description, f.f_url, f.f_status, u.user_name, u.user_activo, u.user_baneado FROM f_fotos AS f LEFT JOIN u_miembros AS u ON u.user_id = f.f_user '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'WHERE f.f_status = \'0\' AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' ORDER BY f.foto_id DESC LIMIT '.$limit;
-        $data['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', $query));
+		$data['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT f.foto_id, f.f_title, f.f_date, f.f_description, f.f_url, f.f_status, u.user_name, u.user_activo, u.user_baneado FROM f_fotos AS f LEFT JOIN u_miembros AS u ON u.user_id = f.f_user $isAdmodFoto ORDER BY f.foto_id DESC LIMIT $limit"));
         
-		
-        //
         return $data;
     }
     /*

@@ -2,8 +2,6 @@
 	 <h3>Administrar Lista Negra</h3>
 </div>
 <div id="res" class="boxy-content">
-	{if $tsSave}<div class="mensajes  ok">Tus cambios han sido guardados.</div>{/if}
-	{if $tsError}<div class="alert alert-danger">{$tsError}</div>{/if}
 	{if !$tsAct}
 		{if !$tsBlackList.data}
 			<div class="phpostAlfa">No hay nada en tu lista negra.</div>
@@ -29,8 +27,8 @@
 						<td><a href="{$tsConfig.url}/perfil/{$b.user_name}" class="hovercard" uid="{$b.user_id}">{$b.user_name}</a></td>
 						<td>{$b.date|hace}</td>
 						<td class="admin_actions">
-							<a href="{$tsConfig.url}/admin/blacklist?act=editar&id={$b.id}"><img src="{$tsConfig.images}/icons/editar.png" title="Editar" /></a>
-							<a href="#" onclick="admin.blacklist.borrar({$b.id}); return false"><img src="{$tsConfig.images}/icons/close.png" title="Eliminar"/></a>
+							<a href="{$tsConfig.url}/admin/blacklist?act=editar&id={$b.id}"><img src="{$tsConfig.public}/images/icons/editar.svg" title="Editar" /></a>
+							<a href="#" onclick="admin.blacklist.borrar({$b.id}); return false"><img src="{$tsConfig.public}/images/icons/close.svg" title="Eliminar"/></a>
 						</td>
 					</tr>
 					{/foreach}

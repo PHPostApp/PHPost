@@ -29,7 +29,7 @@
                                                 <td>{if $c.c_estado == 0}<font color="green">Activada</font>{else}<font color="red">Oculta</font>{/if}</td>
                                                 <td class="admin_actions">
                                                     <a href="{$tsConfig.url}/admin/comunidades?act=temas&comid={$c.c_id}"><img src="{$tsConfig.default}/images/icons/details.png" width="14px" height="14px" title="Ver temas" /></a>
-                                                    <a href="{$tsConfig.url}/comunidades/{$c.c_nombre_corto}/editar/"><img src="{$tsConfig.default}/images/icons/editar.png" title="Editar Comunidad" /></a>
+                                                    <a href="{$tsConfig.url}/comunidades/{$c.c_nombre_corto}/editar/"><img src="{$tsConfig.default}/images/icons/editar.svg" title="Editar Comunidad" /></a>
                                                 </td>
                                             </tr>
                                             {/foreach}
@@ -63,7 +63,7 @@
                                                 <td>{if $t.t_estado == 0}<font color="green">Activado</font>{else}<font color="red">Oculto</font>{/if}</td>
                                                 <td><a href="{$tsConfig.url}/moderacion/buscador/1/1/{$t.t_ip}" class="geoip" target="_blank">{$t.t_ip}</a></td>
                                                 <td class="admin_actions">
-                                                    <a href="{$tsConfig.url}/comunidades/{$t.c_nombre_corto}/editar-tema/{$t.t_id}/" target="_blank"><img src="{$tsConfig.default}/images/icons/editar.png" title="Editar Tema" /></a>
+                                                    <a href="{$tsConfig.url}/comunidades/{$t.c_nombre_corto}/editar-tema/{$t.t_id}/" target="_blank"><img src="{$tsConfig.default}/images/icons/editar.svg" title="Editar Tema" /></a>
                                                 </td>
                                             </tr>
                                             {/foreach}

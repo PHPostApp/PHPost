@@ -1,0 +1,6 @@
+name: halfmoon
+page: all
+js: 
+css: css/halfmoon.min.css
+version: 2.0.1
+on: false

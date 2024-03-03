@@ -2,7 +2,6 @@
                                     <h3>Moderaci&oacute;n de temas</h3>
                                 </div>
                                 <div id="res" class="boxy-content">
-                                {if $tsSave}<div style="display: block;" class="mensajes ok">Tus cambios han sido guardados.</div>{/if}
                                 	{if $tsAct == ''}
                                     Recuerda leer el protocolo para poder moderar los temas que han sido denunciados por otros usuarios, si te es posible y se puede editar un tema, no lo borres, <b>Ed&iacute;talo!</b> 
                                     <hr class="separator" />
@@ -25,7 +24,7 @@
                                                     <a href="{$tsConfig.url}/moderacion/temas?act=info&obj={$r.t_id}"><img src="{$tsConfig.default}/images/icons/details.png" title="Ver Detalles" /></a>
                                                     {if $tsUser->is_admod}<a href="#" onclick="mod.reboot({$r.t_id}, 'temas', 'reboot', false); return false;"><img src="{$tsConfig.default}/images/icons/reboot.png" title="{if $r.t_estado == 1}Reactivar Tema{else}Desechar denuncias{/if}" /></a>{/if}
                                                     {if $tsUser->is_admod}<a href="{$tsConfig.url}/comunidades/{$r.c_nombre_corto}/editar/" target="_blank"><img src="{$tsConfig.default}/images/icons/edit.png" title="Editar Tema" /></a>{/if}
-                                                    {if $tsUser->is_admod}<a href="#" onclick="mod.temas.borrar({$r.t_id}, false); return false"><img src="{$tsConfig.default}/images/icons/close.png" title="Borrar Tema" /></a>{/if}
+                                                    {if $tsUser->is_admod}<a href="#" onclick="mod.temas.borrar({$r.t_id}, false); return false"><img src="{$tsConfig.default}/images/icons/close.svg" title="Borrar Tema" /></a>{/if}
                                                 </td>
                                             </tr>
                                             {/foreach}{else}
@@ -44,7 +43,7 @@
                                         <span class="floatR admin_actions">
                                             {if $tsUser->is_admod}<a href="#" onclick="mod.reboot({$tsDenuncia.data.t_id}, 'temas', 'reboot', true); return false"><img src="{$tsConfig.default}/images/icons/reboot.png" title="{if $tsDenuncia.data.t_estado == 1}Reactivar Tema{else}Desechar denuncias{/if}" /></a>{/if}
                                             {if $tsUser->is_admod}<a href="{$tsConfig.url}/comunidades/{$tsDenuncia.data.c_nombre_corto}/editar/" target="_blank"><img src="{$tsConfig.default}/images/icons/edit.png" title="Editar Tema" /></a>{/if}
-                                            {if $tsUser->is_admod}<a href="#" onclick="mod.temas.borrar({$tsDenuncia.data.t_id}, false); return false"><img src="{$tsConfig.default}/images/icons/close.png" title="Borrar Tema" /></a>{/if}
+                                            {if $tsUser->is_admod}<a href="#" onclick="mod.temas.borrar({$tsDenuncia.data.t_id}, false); return false"><img src="{$tsConfig.default}/images/icons/close.svg" title="Borrar Tema" /></a>{/if}
                                         </span>
                                     </h2>
                                     <table cellpadding="0" cellspacing="0" border="0" class="admin_table" width="100%" align="center">

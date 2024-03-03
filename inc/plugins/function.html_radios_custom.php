@@ -1,47 +1,16 @@
 <?php
+
 /**
- * Smarty plugin
- *
- * @package    Smarty
- * @subpackage PluginsFunction
- */
-/**
- * Smarty {html_radios_custom} function plugin
- * File:       function.html_radios_custom.php
- * Type:       function
- * Name:       html_radios_custom
- * Date:       24.Feb.2003
- * Purpose:    Prints out a list of radio input types
- * Params:
- *
- * - name       (optional) - string default "radio"
- * - values     (required) - array
- * - options    (required) - associative array
- * - checked    (optional) - array default not set
- * - separator  (optional) - ie <br> or &nbsp;
- * - output     (optional) - the output next to each radio button
- * - assign     (optional) - assign the output as an array to this variable
- * - escape     (optional) - escape the content (not value), defaults to true
- *
- * Examples:
- *
- * {html_radios_custom values=$ids output=$names}
- * {html_radios_custom values=$ids name='box' separator='<br>' output=$names}
- * {html_radios_custom values=$ids checked=$checked separator='<br>' output=$names}
- *
- * @link    https://www.smarty.net/manual/en/language.function.html.radios.php {html_radios_custom}
- *          (Smarty online manual)
- * @author  Christopher Kvarme <christopher.kvarme@flashjab.com>
- * @author  credits to Monte Ohrt <monte at ohrt dot com>
- * @version 1.0
- *
- * @param array                    $params   parameters
- * @param Smarty_Internal_Template $template template object
- *
- * @return string
- * @uses    smarty_function_escape_special_chars()
- * @throws \SmartyException
- */
+ * Autor: Miguel92
+ * Ejemplo: {html_radios_custom values=$ids checked=$checked separator='<br>' output=$names}
+ * Enlace: https://www.smarty.net/manual/en/language.function.html.radios.php 
+ * Fecha: Ene 05, 2024 
+ * Nombre: html_radios_custom
+ * Proposito: Prints out a list of radio input types 
+ * Tipo: function 
+ * Version: 1.0 
+*/
+
 function smarty_function_html_radios_custom($params, Smarty_Internal_Template $template) {
 	$template->_checkPlugins(
         array(

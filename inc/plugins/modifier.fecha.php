@@ -1,27 +1,16 @@
 <?php
-/**
- * Smarty plugin
- * @package Smarty
- * @subpackage plugins
- */
-
 
 /**
- * Smarty cat modifier plugin
- *
- * Type:     modifier<br>
- * Name:     fecha<br>
- * Date:     Feb 24, 2010
- * Purpose:  catenate a value to a variable
- * Input:    string to catenate
- * Example:  {$var|fecha}
- * @link http://smarty.php.net/manual/en/language.modifier.cat.php cat
- *          (Smarty online manual)
- * @author   Ivan Molina Pavana
- * @version 1.0
- * @param string
- * @return string
- */
+ * Autor: Ivan Molina Pavana
+ * Ejemplo: {$date|fecha:d_m_A} = 27.05.2022
+ * Enlace: #
+ * Fecha: Feb 24, 2010
+ * Nombre: fecha
+ * Proposito: Obtenemos la fecha
+ * Tipo: modifier
+ * Version: 1.0
+*/
+
 function smarty_modifier_fecha($fecha, $format = false){
     $_meces = array('','enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre');
     $_dias = array('Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado');

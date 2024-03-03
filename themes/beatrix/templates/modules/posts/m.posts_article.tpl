@@ -2,7 +2,7 @@
 	<div class="post-block-style-inner post-block-list-style-inner">
 		<div class="post-block-media-wrap{if $userpost === 'outname'} user{/if}">
          <a href="{$tsConfig.url}/posts/{$p.c_seo}/{$p.post_id}/{$p.post_title|seo}.html" rel="dc:relation">
-         	{image type="post" src="{$p.post_portada}" class="rounded" alt="{$p.post_title}"}
+         	{image type="post" src="{$p.post_portada}" class="rounded bg-secondary" alt="{$p.post_title}"}
          </a>
       </div>
       <div class="post-block-content-wrap">

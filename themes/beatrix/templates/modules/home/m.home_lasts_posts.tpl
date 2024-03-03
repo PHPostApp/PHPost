@@ -38,7 +38,7 @@
             	<div class="post-meta-author-box">
             		{if $TypePost === 'normal'}Por {/if}<a href="{$tsConfig.url}/perfil/{$p.user_name}">{$p.user_name}</a>
             	</div>
-            	<div class="post-meta-date-box">{$p.post_date|date_format:'M. d'} {if $p.post_private}| Privado{/if}</div>
+            	<div class="post-meta-date-box">{$p.post_fecha} {if $p.post_private}| Privado{/if}</div>
             </div>
          </div>
       </div>

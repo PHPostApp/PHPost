@@ -56,7 +56,7 @@ var live = {
 			   setTimeout(function(){ live.hide(); }, live.hide_time);
 			} else {
 				// TITULO
-				$(document).attr('title', global_data.s_title + ' (' + total_notis + ') - ' + global_data.s_slogan);
+				$(document).attr('title', global_data.titulo + ' (' + total_notis + ') - ' + global_data.slogan);
 				// 
 				var sound_type = (live.m_total > 0) ? 'newMessage' : 'newAlert';
 				//

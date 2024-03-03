@@ -2,8 +2,6 @@ automatizer/
 cache/
 upgrade/
 optimizer/
-PullIn/
-PullIn_/
 
 # Los avatares
 files/avatar/*_120.jpg
@@ -18,6 +16,7 @@ inc/ext/optimizer.php
 inc/ext/thumb.php
 inc/php/newsletter.php
 *.zip
+*.log
 
 # Archivo generado desde el install
 .lock

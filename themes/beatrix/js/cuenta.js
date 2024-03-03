@@ -64,7 +64,10 @@ var cuenta = {
 	},
 	guardar_datos: () => {
 		$('#loading').slideDown(250);
-		$.post(global_data.url + '/cuenta-guardar.php', $("form[name=editarcuenta]").serialize(), response => cuenta.alerta(response.error), 'json')
+		$.post(global_data.url + '/cuenta-guardar.php', $("form[name=editarcuenta]").serialize(), response => {
+			console.log(response)
+			cuenta.alerta(response.error)
+		}, 'json')
 	}
 }
 
@@ -104,6 +107,7 @@ var avatar = {
 	current: false,
 	success: false,
 	total: 2,
+	imgCrop: '',
 	fetching: async (url, data) => {
 		const uploader = await fetch(global_data.url + '/upload-' + url + '.php', {
 			method: 'POST',
@@ -137,18 +141,34 @@ var avatar = {
 		mydialog.body(`<img class="avatar-cortar" src="${newImageUpload}" />`);
 		mydialog.buttons(true, true, 'Cortar', `avatar.guardar()`, true, true, true, 'Cancelar', 'close', true, false);
 		mydialog.center();
-		$("#avatar-img, #avatar-menu").attr("src", newImageUpload).on('load', () => {
+		avatar.imgCrop = $('.avatar-cortar');
+		$("#avatar-img, #avatar-menu").on('load', () => {
 			var croppr = new Croppr('.avatar-cortar', {
 			   aspectRatio: 1, // Mantemos el tamanio cuadrado 1:1
-			   // Tamano por defecto
-    			maxSize: {width: 120, height: 120}, 
+			   // Minimo de 160px x  160px
+    			startSize: [160, 160, 'px'], 
+    			minSize: [160, 160, 'px'], 
     			// Enviamos las coordenadas para cortar la imagen
     			// Tiene la funcion onCropEnd ya que es como va a quedar
     			onCropEnd: data => avatar.informacion = data,
+            onCropMove: avatar.vistaPrevia
 			});
+		}).attr("src", newImageUpload);
+	},
+	vistaPrevia: function (coords) {
+		let rx = 160 / coords.width;
+		let ry = 160 / coords.height;
+		$('#avatar-img').css({
+			width: Math.round(rx * avatar.imgCrop[0].width) + 'px',
+			height: Math.round(ry * avatar.imgCrop[0].height) + 'px',
+			marginLeft: '-' + Math.round(rx * coords.x) + 'px',
+			marginTop: '-' + Math.round(ry * coords.y) + 'px'
 		});
 	},
-	recargar: () => $("#avatar-img, #avatar-menu, .avatar-big").attr("src", avatar.current + '?t=' + getCache()),
+	recargar: () => $("#avatar-img, #avatar-menu").attr({
+		src: avatar.current + '?t=' + getCache(),
+		style: ''
+	}),
 	guardar: async () => {
 		if (empty(avatar.informacion)) cuenta.alerta('Debes seleccionar una parte de la foto', 0);
 		else {

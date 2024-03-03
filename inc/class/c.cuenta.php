@@ -7,57 +7,11 @@
  */
 
 require_once TS_INCLUDES . "extends" . TS_PATH . "c.cuenta.extends.php";
+require_once TS_EXTRA . "redes_sociales.php";
 
 class tsCuenta {
 
    use tsCuentaExtends;
-
-	# Redes sociales disponibles
-	/**
-	  * Si van a agregar más debe ser así 'nombre_minuscula => 'nombre_inicial_mayuscula',
-	*/
-	var $redes = [
-		'facebook' => [
-			'iconify' => 'devicon:facebook',
-			'nombre' => 'Facebook', 
-			'url' => 'https://facebook.com'
-		],
-		'twitter' => [
-			'iconify' => 'pajamas:twitter',
-			'nombre' => 'Twitter', 
-			'url' => 'https://twitter.com'
-		],
-		'instagram' => [
-			'iconify' => 'skill-icons:instagram',
-			'nombre' => 'Instagram',
-			'url' => 'https://twitter.com'
-		],
-		'youtube' => [
-			'iconify' => 'logos:youtube-icon',
-			'nombre' => 'Youtube',
-			'url' => 'https://youtube.com'
-		],
-		'twitch' => [
-			'iconify' => 'logos:twitch',
-			'nombre' => 'Twitch',
-			'url' => 'https://twitch.tv'
-		],
-		'tiktok' => [
-			'iconify' => 'logos:tiktok-icon',
-			'nombre' => 'Tiktok',
-			'url' => 'https://www.tiktok.com/@'
-		],
-		'discord' => [
-			'iconify' => 'skill-icons:discord',
-			'nombre' => 'Discord',
-			'url' => 'https://discord.com/users'
-		],
-		'reddit' => [
-			'iconify' => 'logos:reddit-icon',
-			'nombre' => 'Reddit',
-			'url' => 'https://www.reddit.com/user'
-		]
-	];
 
    /**
     * @name loadPerfil()
@@ -89,13 +43,12 @@ class tsCuenta {
        loadExtras()
    */
    private function unData($data){
-      //
-      $d = ['p_gustos', 'p_tengo', 'p_idiomas', 'p_configs'];
-      foreach ($d as $v) $data[$v] = unserialize($data[$v]);
+      global $redes;
+      foreach (['p_gustos', 'p_tengo', 'p_idiomas', 'p_configs'] as $val) 
+      	$data[$val] = unserialize($data[$val]);
 		// Redes sociales
-      $data["redes"] = $this->redes;
-		$data['p_socials'] = json_decode($data['p_socials'], true);
-		foreach ($this->redes as $name => $valor) $data['p_socials'][$name];
+      $data["redes"] = $redes;
+		$data['p_socials'] = (array)json_decode($data['p_socials'], true);
       //
       return $data;
    }
@@ -103,17 +56,14 @@ class tsCuenta {
 		loadHeadInfo($user_id)
 	*/
 	public function loadHeadInfo(int $user_id = 0){
-		global $tsUser, $tsCore;
+		global $tsUser, $tsCore, $redes;
 		// INFORMACION GENERAL
 		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_registro, u.user_lastactive, u.user_activo, u.user_baneado, p.user_sexo, p.user_pais, p.p_nombre, p.p_avatar, p.p_mensaje, p.user_portada AS portada, p.p_socials, p.p_empresa, p.p_configs FROM u_miembros AS u, u_perfil AS p WHERE u.user_id = $user_id AND p.user_id = $user_id"));
       //
       $data['p_nombre'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_nombre']), true);
       $data['p_mensaje'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_mensaje']), true);
       // Redes Sociales
-		if(!empty($data['p_socials'])) {
-			$data['p_socials'] = json_decode($data['p_socials'], true);
-			foreach ($this->redes as $name => $valor) $data['p_socials'][$name];
-   	} else $data['p_socials'] = '';
+		$data['p_socials'] = (!empty($data['p_socials'])) ? (array)json_decode($data['p_socials'], true) : '';
    	//
 		$data['p_configs'] = unserialize($data['p_configs']);
 		$data['pais']= [
@@ -261,7 +211,6 @@ class tsCuenta {
 		global $tsCore, $tsUser;
 		//
 		$save = htmlspecialchars($_POST['pagina']);
-		$tab = isset($_POST['tab']) ? htmlspecialchars($_POST['tab']) : '';
 		$maxsize = 1000;	// LIMITE DE TEXTO
 		// GUARDAR...
 		switch($save) {
@@ -327,6 +276,24 @@ class tsCuenta {
                	$message = ['error' => 'Los cambios fueron aceptados y ser&aacute;n aplicados en los pr&oacute;ximos minutos. NO OBSTANTE, la nueva direcci&oacute;n de correo electr&oacute;nico especificada debe ser comprobada. '.$tsCore->settings['titulo'].' envi&oacute; un mensaje de correo electr&oacute;nico con las instrucciones necesarias'];
                }
 				}
+			break;
+			case 'perfil':
+            // INTERNOS
+            $sitio = trim($_POST['sitio']);
+            if(!empty($sitio)) $sitio = substr($sitio, 0, 4) == 'http' ? $sitio : 'http://'.$sitio;
+				// EXTERNAS, Redes sociales
+				$red__social = [];
+				foreach ($_POST["red"] as $llave => $id) $red__social[$llave] = $tsCore->setSecure($tsCore->parseBadWords($id), true);
+				//
+				$perfilData = array(
+					'nombre' => $tsCore->setSecure($tsCore->parseBadWords($_POST['nombre']), true),
+					'mensaje' => $tsCore->setSecure($tsCore->parseBadWords($_POST['mensaje']), true),
+					'sitio' => $tsCore->setSecure($tsCore->parseBadWords($sitio), true),
+					'socials' => json_encode($red__social),
+					'estado' => $tsCore->setSecure($_POST['estado'])
+				);
+				// COMPROBACIONES
+            if(!empty($perfilData['sitio']) && !filter_var($perfilData['sitio'], FILTER_VALIDATE_URL)) $message = ['error' => 'El sitio web introducido no es correcto.'];
 			break;
          // NEW PASSWORD
          case 'clave':
@@ -409,30 +376,8 @@ class tsCuenta {
 					$message = ['error' => 'Proceso iniciado, recibir&aacute; la respuesta en el correo indicado cuando valoremos el cambio.'];
          break;
 		}
-		switch ($tab) {
-			case 'me':
-            // INTERNOS
-            $sitio = trim($_POST['sitio']);
-            if(!empty($sitio)) $sitio = substr($sitio, 0, 4) == 'http' ? $sitio : 'http://'.$sitio;
-				// EXTERNAS, Redes sociales
-				$red__social = [];
-				foreach ($_POST["red"] as $llave => $id) $red__social[$llave] = $tsCore->setSecure($tsCore->parseBadWords($id), true);
-				//
-				for($i = 0; $i < 5; $i++) $gustos[$i] = $tsCore->setSecure($tsCore->parseBadWords($_POST['g_'.$i]), true);
-				$perfilData = array(
-					'nombre' => $tsCore->setSecure($tsCore->parseBadWords($_POST['nombre']), true),
-					'mensaje' => $tsCore->setSecure($tsCore->parseBadWords($_POST['mensaje']), true),
-					'sitio' => $tsCore->setSecure($tsCore->parseBadWords($sitio), true),
-					'socials' => json_encode($red__social),
-					'gustos' => serialize($gustos),
-					'estado' => $tsCore->setSecure($_POST['estado'])
-				);
-				// COMPROBACIONES
-            if(!empty($perfilData['sitio']) && !filter_var($perfilData['sitio'], FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED)) $message = ['error' => 'El sitio web introducido no es correcto.'];
-			break;
-		}
-		$thisAccount = (in_array($save, ['', 'privacidad']) or ($tab === 'me'));
-		if($thisAccount) {
+		
+		if($save == '') {
 			db_exec([__FILE__, __LINE__], "query", "UPDATE u_miembros SET user_email = '{$perfilData['email']}' WHERE user_id = {$tsUser->uid}");
 			if($save === '') array_splice($perfilData, 0, 1);
 		}

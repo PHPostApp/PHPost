@@ -49,7 +49,7 @@ var portal = {
     },
     // PAGINAS PARA LOS ULTIMOS POSTS
     posts_page: function(type, page, scroll){
-        $('#portal_' + type + '_content').html('<center><img src="' + global_data.img + '/images/fb-loading.gif" /></center>');
+        $('#portal_' + type + '_content').html('<center><img src="' + global_data.tema_images + '/images/fb-loading.gif" /></center>');
         //
   		if(scroll == true) $.scrollTo('#cuerpocontainer', 250);
         if(typeof portal.cache[type + '_' + page] == 'undefined'){

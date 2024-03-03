@@ -40,8 +40,8 @@
 		<span class="d-block mb-2 text-center fs-4">Continuar con...</span>
 		<div class="form-line" style="text-align: center;">
 			{foreach $tsConfig.oauth key=i item=social}
-				<a class="btn btn-social btn-{if $i == 'gmail'}google{else}{$i}{/if} btn-block mb-3" href="{$social}">
-					<span><iconify-icon icon="fa6-brands:{if $i == 'gmail'}google{else}{$i}{/if}"></iconify-icon></span> {$i|ucfirst}
+				<a class="btn btn-social btn-{$i} btn-block mb-3" href="{$social}">
+					<span><iconify-icon icon="fa6-brands:{$i}"></iconify-icon></span> {$i|ucfirst}
 				</a>
 			{/foreach}
 		</div>

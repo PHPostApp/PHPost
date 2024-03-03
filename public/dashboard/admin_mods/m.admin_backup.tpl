@@ -2,8 +2,6 @@
 	 <h3>Administrar Copias de seguridad</h3>
 </div>
 <div id="res" class="boxy-content">
-	{if $tsSave}<div class="mensajes ok">Copia creada correctamente!.</div>{/if}
-	{if $extOK}<div class="mensajes error">{$extOK}</div>{/if}
 	{if $tsAct == ''}
 		{if !$verifyFiles}
 			<div class="phpostAlfa">No hay copias de seguridad.</div>

@@ -1,0 +1,6 @@
+name: jquery
+page: all
+js: 
+css: 
+version: 4.0.0-beta
+on: true

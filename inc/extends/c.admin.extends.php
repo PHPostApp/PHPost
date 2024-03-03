@@ -71,7 +71,7 @@ trait tsAdminExtends {
 	# ===================================================
 	public function getExtra() {
 		global $tsCore;
-		$extra = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT optimizar, extension, tamano, calidad, smarty_security, smarty_compress, smarty_lifetime FROM w_extras WHERE extraid = 1'));
+		$extra = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT optimizar, extension, width, height, calidad, smarty_security, smarty_compress, smarty_lifetime FROM w_extras WHERE extraid = 1'));
 		return $extra;
 	}
 	public function saveExtra() {
@@ -81,6 +81,28 @@ trait tsAdminExtends {
 		foreach($_POST as $key => $val) $_POST[$key] = is_numeric($val) ? (int)$val : $tsCore->setSecure($val);
 		$set = $tsCore->getIUP($_POST);
 		if (db_exec([__FILE__, __LINE__], 'query', "UPDATE w_extras SET $set WHERE extraid = 1")) return true;
+	}
+
+	public function setOptimize() {
+		include_once TS_EXTRA . 'optimizer.php';
+		$Optimizer = new Optimizer;
+		$tsCore = new tsCore;
+
+		$posts = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT post_id, post_portada, post_date, user_id FROM p_posts LEFT JOIN u_miembros ON post_user = user_id"));
+		foreach($posts as $pid => $post) {
+			if(filter_var($post['post_portada'], FILTER_VALIDATE_URL)) {
+				$Optimizer->url_image = $post['post_portada'];
+				$Optimizer->params_image = [
+					'w' => 360,
+					'h' => 230,
+					'q' => (int)$tsCore->extras['calidad'],
+					'e' => (int)$tsCore->extras['extension'],
+					'd' => "user{$post['user_id']}postid{$post['post_id']}date{$post['post_date']}"
+				];
+				$posts[$pid]['post_portada_optimizada'] = $Optimizer->start(); 
+			}
+		}
+		return $posts;
 	}
 
 	# ===================================================

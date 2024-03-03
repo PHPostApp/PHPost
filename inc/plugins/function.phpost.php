@@ -1,88 +1,303 @@
 <?php
 
 /**
- * Smarty plugin para incluir archivos CSS y JS de forma independiente.
- *
- * Uso: Solo require el nombre del archivo
- *  1 - {phpost css=["archivo.css"]} 
- *  2 - {phpost js=["archivo.js"]} 
- *  3 - {phpost favicon="archivo.ico"} 
- *  4 - {phpost global=['key1' => 'val1', 'key2' => 'val2']} 
- *
- * Genera una etiqueta <link> si se proporciona un archivo CSS,
- * o una etiqueta <script> si se proporciona un archivo JS.
- * Si se proporciona un archivo CSS, se agrega un parámetro de consulta
- * con la marca de tiempo actual para evitar el almacenamiento en caché.
- *
- * @param array $params Parámetros pasados a la función (en este caso, 'file').
- * @param Smarty_Internal_Template $smarty Instancia del objeto Smarty.
- * @return string Código HTML generado por la función.
+ * Autor: Miguel92
+ * Ejemplo: {phpost css=["archivo.css"] js=["archivo.js"] favicon="archivo.ico" global=['key1' => 'val1', 'key2' => 'val2']} 
+ * Enlace: #
+ * Fecha: Mar 01, 2024 
+ * Nombre: phpost
+ * Proposito: Añadir las etiquetas necesarias dentro del <head>
+ * Tipo: function 
+ * Version: 1.0 
 */
 
-require_once realpath(__DIR__) . DIRECTORY_SEPARATOR . "functionsOfPHPost.php";
+#require_once realpath(__DIR__) . DIRECTORY_SEPARATOR . "functionsOfPHPost.php";
+
+class SmartyPHPost {
+
+	# Variable para almacenar datos necesarios
+	public $system;
+
+	# Para almacenar las rutas de acceso a carpeta
+	private $folders;
+
+	# Para almacenar los enlaces
+	private $routes;
+
+	# Variables de permisos
+	private $allow_extension = ['ico', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'webp'];
+
+	# Variables para determinar el tipo
+	private $images_types = [
+  	   'ico' => 'x-icon',
+  	   'png' => 'png',
+  	   'jpg' => 'jpeg',
+  	   'jpeg' => 'jpeg',
+  	   'webp' => 'webp',
+  	   'svg' => 'svg+xml'
+  	];
+
+  	# Acceso a carpeta de los recursos a usar
+  	private $resources = ['root', 'css', 'images', 'js'];
+
+  	/**
+  	 * @access public
+  	 * 
+  	*/
+  	public function __construct($smarty) {
+  		$this->system['tsCore'] = new tsCore;
+  		$this->system['tsUser'] = new tsUser;
+  		$accessClass = ['action', 'tsAction', 'tsCom', 'tsFoto', 'tsMPs', 'tsMuro', 'tsNots', 'tsPage', 'tsPages', 'tsPerfil', 'tsPost', 'tsTema'];
+  		foreach($accessClass as $class) $this->system[$class] = $GLOBALS[$class];
+
+		# Enlaces a los recursos y Directorios
+		$settings = [
+		   'routes' => [
+		      'tema' => $this->system['tsCore']->settings['tema']['t_url'], 
+		      'public' => $this->system['tsCore']->settings['public']
+		   ],
+		   'folders' => [
+		      'tema' => $smarty->template_dir['tema'], 
+		      'public' => $smarty->template_dir['public']
+		   ]
+		];
+		foreach($settings as $settingKey => $settingValue):
+		   foreach($settingValue as $routeKey => $routeValue):
+		      foreach($this->resources as $folder):
+		      	$slash = ($settingKey == 'routes' ? '/' : '');
+		      	$dir = ($folder == 'root' ? '' : "$slash$folder");
+		         $this->$settingKey[$routeKey][$folder] = $routeValue . $dir;
+		      endforeach;
+		   endforeach;
+		endforeach;
+  	}
+
+  	/**
+  	 * @access private
+  	 * Función para recorres las carpetas
+  	 * @param $filename Archivo a comprobar su existencia.
+  	 * @return string Url del archivo existente.
+  	*/
+  	private function setFileExistsInRoute(string $filename = ''):string {
+  		$response = '';
+  		foreach($this->folders as $f => $folders) {
+  			foreach($folders as $name => $folder) {
+  				$file_path = $folder . ($name == 'root' ? '' : TS_PATH) . $filename;
+  				if(file_exists($file_path)) {
+  					$response = $this->routes[$f][$name] . "/$filename";
+  					break 2;
+  				}
+  			}
+  		}
+  		return $response;
+  	}
+
+  	private function Integrity(string $file = ''):string {
+		$file_content = file_get_contents($file);
+		$hash = base64_encode(hash('sha256', $file_content, true));
+		return "integrity=\"sha256-$hash\" crossorigin=\"anonymous\"";
+	}
+
+	/**
+	 * @access private
+    * Genera una etiqueta HTML para un recurso (CSS o JS) desde JSDelivr.
+    * 
+    * @param string $file La ruta del recurso
+    * @return string La etiqueta HTML generada.
+   */
+	private function generateHtmlTag(string $file = ''):string {
+		$typeTag = pathinfo($file, PATHINFO_EXTENSION);
+		$integrity = self::Integrity($file);
+		$file .= '?' . uniqid();
+		if($typeTag == 'css') {
+			return "<link rel=\"stylesheet\" href=\"$file\" $integrity/>\n";
+		} else {
+			return "<script src=\"$file\" $integrity></script>\n";
+		}
+	}
+
+  	/**
+  	 * @access private 
+  	 * Verifica permisos
+  	*/
+  	private function setPermisson(string $choice = '', string $subchoice = ''):bool {
+  		$permisos = [
+  			'live' => (int)$this->system['tsCore']->settings['c_allow_live'] === 1,
+  			'notLive' => !in_array($this->system['tsPage'], ['login', 'registro']),
+  			'admin' => ($this->system['tsPage'] == $choice AND $this->system['action'] == $subchoice),
+  			'php_files' => ($this->system['tsPage'] == "php_files/p.$subchoice.home")
+  		];
+  		return $permisos[$choice];
+  	}
+
+	/**
+  	 * @access private 
+  	 * Verifica permisos
+  	*/
+  	private function setPermissonEspecial() {
+		return ($this->system['tsUser']->is_admod OR $this->system['tsUser']->permisos['moacp'] OR $this->system['tsUser']->permisos['most'] OR $this->system['tsUser']->permisos['moayca'] OR $this->system['tsUser']->permisos['mosu'] OR $this->system['tsUser']->permisos['modu'] OR $this->system['tsUser']->permisos['moep'] OR $this->system['tsUser']->permisos['moop'] OR $this->system['tsUser']->permisos['moedcopo'] OR $this->system['tsUser']->permisos['moaydcp'] OR $this->system['tsUser']->permisos['moecp']);
+	}
+
+  	/**
+  	 * @access public
+  	 * Buscamos y agregamos el archivo individual
+  	*/
+  	public function setStylesheet(string $stylesheet = '') {
+		$filename = self::setFileExistsInRoute($stylesheet);
+	  	if(!empty($filename)) {
+	  		return self::generateHtmlTag($filename);
+	  	}
+  	}
+  	/**
+  	 * @access public
+  	 * Buscamos y agregamos las hojas de estilos
+  	*/
+  	public function setStylesheets(mixed $stylesheets = '') {
+  		# Si no es array, lo convertimos
+  		$stylesheets = (array)$stylesheets;
+  		// Añadimos archivos escenciales
+  		$stylesheets = [...$stylesheets, "{$this->system['tsPage']}.css", "wysibb.css"];
+	  	// Quitamos 'wysibb' del array
+		if($this->system['tsPage'] == 'admin') {
+			$posicion = array_search("wysibb.css", $stylesheets);
+			if($posicion !== false) unset($stylesheets[$posicion]);
+			$stylesheets = array_values($stylesheets);
+		}
+  		// Añadimos el archivo 'live.css'
+  		if(self::setPermisson('live') && self::setPermisson('notLive')) 
+  			$stylesheets = [...$stylesheets, "live.css"];
+  		// Añadimos si esta en Admin > rangos
+  		if(self::setPermisson('admin', 'rangos')) $stylesheets = [...$stylesheets, "colorpicker.css"];
+
+  		foreach($stylesheets as $style) {
+  			$filename = self::setFileExistsInRoute($style);
+  			if(!empty($filename)) {
+  				$tag[] = self::generateHtmlTag($filename);
+  			}
+  		}
+  		return join("", $tag);
+  	}
+
+  	/**
+  	 * @access public
+  	 * Buscamos y agregamos el archivo individual
+  	*/
+  	public function setScript(string $script = '') {
+		$filename = self::setFileExistsInRoute($script);
+	  	if(!empty($filename)) {
+	  		return self::generateHtmlTag($filename);
+	  	}
+  	}
+
+  	/**
+  	 * @access public
+  	 * Buscamos y agregamos los scripts
+  	*/
+  	public function setScripts(mixed $scripts = '', bool $isArray = true) {
+  		if(!$isArray) return self::setScript($scripts);
+	  	// Añadimos archivos escenciales
+	  	$scripts = ['jquery.plugins.js', ...$scripts, "wysibb.js", "{$this->system['tsPage']}.js"];
+	  	// Quitamos 'wysibb' del array
+		if($this->system['tsPage'] == 'admin') {
+			$posicion = array_search("wysibb.js", $scripts);
+			if($posicion !== false) unset($scripts[$posicion]);
+			$scripts = array_values($scripts);
+		}
+		// Añadimos el archivo 'moderacion.js'
+	  	if(self::setPermissonEspecial() AND $this->system['tsPage'] != 'admin') {
+	  		$scripts = [...$scripts, "moderacion.js"];
+	  	}
+		// Añadimos el archivo 'live.js'
+	  	if(self::setPermisson('live') && self::setPermisson('notLive')) $scripts = [...$scripts, "live.js"];
+		if(self::setPermisson('php_files', 'borradores')) $scripts = [...$scripts, 'borradores.js'];
+		
+		if(self::setPermisson('php_files', 'favoritos')) $scripts = [...$scripts, 'favoritos.js'];
+
+	  	// Movemos 'app.js' al final
+		$appIndex = array_search('app.js', $scripts);
+		if ($appIndex !== false) {
+		   unset($scripts[$appIndex]);
+		   $scripts[] = 'app.js';
+		}
+	  	foreach($scripts as $script) {
+	  		$filename = self::setFileExistsInRoute($script);
+	  		if(!empty($filename)) {
+	  			$tag[] = self::generateHtmlTag($filename);
+	  		}
+	  	}
+	  	return join("", $tag);
+  	}
+
+  	public function setScriptLineGlobal() {
+  		$claves = [];
+  		if($this->system['tsUser']->uid != 0) $claves['user_key'] = $this->system['tsUser']->uid;
+  		if(isset($this->system['tsPost']['post_id'])) {
+			$claves['postid'] = (int)$this->system['tsPost']['post_id'];
+			$claves['autor'] = (int)$this->system['tsPages']['autor'];
+		}
+		if(isset($this->system['tsFoto']['foto_id'])) {
+			$claves['fotoid'] = (int)$this->system['tsFoto']['foto_id'];
+		}
+		/*if(isset($this->system['tsCom'])) {
+			$claves['comid'] = (int)$this->system['tsCom'];
+		}
+		if(isset($this->system['tsTema'])) {
+			$claves['temaid'] = (int)$this->system['tsTema'];
+		}*/
+
+		// Siempre
+		$claves['public_images'] = $this->system['tsCore']->settings['public'] . '/images';
+		$claves['tema_images'] = $this->system['tsCore']->settings['images'];
+		$others = ['url', 'public', 'domain', 'titulo', 'slogan'];
+		foreach ($others as $key => $other) $claves[$other] = $this->system['tsCore']->settings[$other];
+		//
+		foreach ($claves as $key => $value) 
+			$global[$key] = "\t$key: " . (is_numeric($value) ? $value : "'$value'");
+		ksort($claves);
+		$append = "{\n" . join(",\n", $global) . "\n}";
+
+		if($this->system['tsUser']->uid != 0 AND $this->system['tsPage'] != 'admin') {
+			$avatar = "{$this->system['tsCore']->settings['avatar']}/" . ($this->system['tsPerfil']['p_avatar'] ? "{$this->system['tsUser']->uid}_120" : 'avatar') . '.jpg';
+			$append .= <<< LINEA
+			\ndocument.addEventListener("DOMContentLoaded", function() {
+				avatar.uid = {$this->system['tsUser']->uid};
+				avatar.current = '$avatar';
+			});
+			LINEA;
+		}
+		$hash = base64_encode(hash('sha256', $append, true));
+  		return <<< LINEA
+		<script type="text/javascript" integrity="sha256-$hash" crossorigin="anonymous">
+		const global_data = $append
+		</script>
+		LINEA;
+  	}
+
+}
 
 function smarty_function_phpost($params, &$smarty) {
-	global $tsCore, $tsPage, $action, $action, $tsMuro;
-	//
-	$HTML = '';
-	$funcs = new fnPHPost;
 
-	// Añadimos este isset ya que si no exite $params['css'] generará un error
+	# Inicializamos la clase
+	$SmartyPHPost = new SmartyPHPost($smarty);
+
+	# Inicializamos la variable
+	$template = '';
+	
+	# Añadimos las hojas de estilos
 	if(isset($params['css'])) {
-		if(is_array($params['css'])) {
-			// Añadimos todos los estilos
-			$HTML .= "<!-- Añadidos con el plugin: {phpost css=[\"...\"]} -->\n";
-			// Para las notificaciones de usuario
-			if($funcs->getLive() AND !in_array($tsPage, ['login', 'registro'])) array_push($params['css'], 'live.css');
-			// Ahora se añaden en páginas especificas
-			if($tsPage === 'admin') {
-				if($action === 'rangos') array_push($params['css'], 'colorpicker.css');
-			}
-			//
-			foreach($params['css'] as $css) $HTML .= $funcs->getStyle($css);
-		} else {
-			$HTML .= "<!-- Añadidos con el plugin: {phpost css=\"...\"] -->\n";
-			$HTML .= $funcs->getStyle($params['css']);
-		}
+		$template .= "<!-- Añadimos los estilos elegidos y necesarios -->\n";
+		$template .= $SmartyPHPost->setStylesheets($params['css']);
 	}
 
-	// Añadimos este isset ya que si no exite $params['js'] generará un error
-	if(isset($params['js']) OR isset($params['deny']) OR isset($params['from'])) {
-		// Ahora usamos 'deny' para evitar que agregue 2 veces el mismo archivo
-		if(is_array($params['js'])) {
-			if(!isset($params['from'])) {
-				// Variable global
-				$HTML .= "<!-- Añadidos con el plugin: {phpost *sin parametros*} -->\n";
-				$HTML .= $funcs->getGlobalData();
-			}
-			// Añadimos todos los scripts
-			$HTML .= "<!-- Añadidos con el plugin: {phpost js=[\"...\"]} -->\n";
-			
-			// Básicamente siempre serán necesarios
-			if(!isset($params['from'])) array_unshift($params['js'], "jquery.min.js", "jquery.plugins.js");
-			
-			// Ahora se añaden en páginas especificas
-			if($tsPage === 'posts') array_push($params['js'], 'highlight.min.js');
-			if($tsPage === 'admin') {
-				if(empty($action)) array_push($params['js'], 'timeago.min.js', 'timeago.es.js');
-				elseif($action === 'rangos') array_push($params['js'], 'colorpicker.js');
-			}
-			if($tsPage === 'php_files/p.borradores.home') array_push($params['js'], 'borradores.js');
-			if($tsPage === 'php_files/p.favoritos.home') array_push($params['js'], 'favoritos.js');
-			if(!isset($params['from'])) {
-				// Si es administrador, moderador o tiene permisos
-				if($funcs->getPerms()) array_push($params['js'], 'moderacion.js');
-
-				// Para las notificaciones de usuario
-				if($funcs->getLive() AND !in_array($tsPage, ['login', 'registro'])) array_push($params['js'], 'live.js');
-			}
-			//
-			$deny = isset($params['from']) ? [] : $params['deny'];
-			foreach($params['js'] as $js) $HTML .= $funcs->getScript($js, $deny);
-		} else {
-			$HTML .= "<!-- Añadidos con el plugin: {phpost js=[\"...\"]} -->\n";
-			$HTML .= $funcs->getScript($params['js']);
-		}
+	# Añadimos los scripts
+	if(isset($params['js'])) {
+		$template .= "<!-- Añadimos los scripts elegidos y necesarios -->\n";
+		$template .= $SmartyPHPost->setScripts($params['js'], is_array($params['js']));
 	}
-	return trim($HTML);
+
+	if(isset($params['scriptGlobal'])) {
+		$template .= $SmartyPHPost->setScriptLineGlobal();
+	}	
+
+	return trim($template);
 }
