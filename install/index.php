@@ -6,87 +6,32 @@
  * @copyright 2011-2023
  */
 
-define('DS', DIRECTORY_SEPARATOR);
-define('SCRIPT_ROOT', realpath('../') . DS);
-define('INSTALL_ROOT', realpath('./') . DS);
-define('CONFIGINC', SCRIPT_ROOT . 'config.inc.php');
-define('CONFIGINC2', INSTALL_ROOT . 'config.copy.php');
-define('LICENSE', SCRIPT_ROOT . 'LICENSE');
-define('BLOCKED', SCRIPT_ROOT . '.lock');
-
-error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
+error_reporting(E_ALL);
 session_start();
-//
-$version_id = "1.3.0.032";
-$version_title = "Risus $version_id";
-$wversion_code = str_replace([' ', '.'], '_', strtolower($version_title));
 
-$step = empty($_GET['step']) ? 0 : $_GET['step'];
-$step = htmlspecialchars(intval($step));
-$next = true; // CONTINUAR
-
-$tema_a_usar = 'beatrix';
-$theme = [
-	'tid' => 1, 
-	't_name' => ucfirst($tema_a_usar), 
-	't_url' => '/themes/' . $tema_a_usar, 
-	't_path' => $tema_a_usar, 
-	't_copy' => 'Miguel92'
-];
-
-// Intento de sistema de dirección automática
-$ssl = 'http';
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' || !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-   $ssl = 'https';
-}
-$local = dirname(dirname($_SERVER["REQUEST_URI"]));
-// Creando las url base e install
-$url = "$ssl://" . ($_SERVER['HTTP_HOST'] === 'localhost' ? "localhost$local" : $_SERVER['HTTP_HOST']);
-$base_install = "$url/install";
-
-require_once INSTALL_ROOT . "functions.php";
-
-if(file_exists(BLOCKED)) header("Location: ../");
+require_once realpath(__DIR__) . DIRECTORY_SEPARATOR . 'functions.php';
+if(file_exists(FILE_BLOCKED_INSTALL)) header("Location: ../");
 
 switch ($step) {
 	case 0:
-		// Copiamos el archivo a la ruta del sitio
-		if(!file_exists(CONFIGINC)) {
-			copy(CONFIGINC2, CONFIGINC);
-			// Forzamos los permisos
-			chmod(CONFIGINC, 0666);
-		}
-		// Creamos la carpeta en caso que no exista!
-		if(!is_dir(SCRIPT_ROOT . 'cache')) {
-			mkdir(SCRIPT_ROOT . 'cache', 0777);
-			// Forzamos los permisos
-			chmod(SCRIPT_ROOT . 'cache', 0777);
-		}
-		// Forzamos los permisos
-		chmod(SCRIPT_ROOT . 'files' . DS . 'avatar', 0777);
-		chmod(SCRIPT_ROOT . 'files' . DS . 'uploads', 0777);
-		chmod(SCRIPT_ROOT . 'files' . DS . 'portadas', 0777);
 		$_SESSION['license'] = false;
 		$license = file_get_contents(LICENSE);
 	break;
 	// OBTENER PERMISOS
 	case 1:
 		if ($_POST['license']) {
-			$all = [
-				"config" => '../config.inc.php',
-				"cache" => '../cache/',
-				"avatar" => '../files/avatar/',
-				"portadas" => '../files/portadas/',
-				"uploads" => '../files/uploads/'
-			];
-			foreach ($all as $key => $val) {
-				$permisos[$key]['chmod'] = (int)substr(sprintf('%o', fileperms($val)), -3);
-				$permisos[$key]['css'] = 'OK';
-				if ($key === 'config' && $permisos[$key]['chmod'] != 666) {
-					$permisos[$key]['css'] = 'NO';
+			foreach($checkPerms as $cpkey => $check) {
+				$newkey = pathinfo($check, PATHINFO_BASENAME);
+				if($newkey == 'config.inc.php') $newkey = "config";
+				$permisos[$newkey]['icon'] = is_dir($check) ? "solar:folder-bold-duotone" : "solar:code-file-bold-duotone";
+				$permisos[$newkey]['root'] = str_replace(TS_ROOT, '..\\', $check);
+				$permisos[$newkey]['chmod'] = (int)substr(sprintf('%o', fileperms($check)), -3);
+				$permisos[$newkey]['css'] = 'success';
+				if ($newkey === 'config' && $permisos[$newkey]['chmod'] != 666) {
+					$permisos[$newkey]['css'] = 'danger';
 					$next = false;
-				} elseif ($key != 'config' && $permisos[$key]['chmod'] != 777) {
-					$permisos[$key]['css'] = 'NO';
+				} elseif ($newkey != 'config' && $permisos[$newkey]['chmod'] != 777) {
+					$permisos[$newkey]['css'] = 'danger';
 					$next = false;
 				}
 			}
@@ -97,36 +42,7 @@ switch ($step) {
 	case 2:
 		// No saltar la licensia
 		if (!$_SESSION['license']) header("Location: index.php");
-		$extZip = extension_loaded('zip') ? true : false;
-		$compare = version_compare(PHP_VERSION, '7.0.0', '>');
-		$all = [
-			'php' => [
-				'name' => 'PHP', 
-				'status' => PHP_VERSION,
-				'css' => $compare ? 'ok' :'no'
-			],
-			'gd' => [
-				'name' => 'Extensión GD',
-				'status' => $extension->loaderGD('message'),
-				'css' => $extension->loaderGD('status') ? 'ok' :'no'
-			],
-			'curl' => [
-				'name' => 'Extensión cURL',
-				'status' => $extension->loaderCURL('message'),
-				'css' => $extension->loaderCURL('status') ? 'ok' :'no'
-			],
-			'zip' => [
-				'name' => 'Extensión Zip',
-				'status' => $extension->loaderZip('message'),
-				'css' => $extension->loaderZip('status') ? 'ok' :'no'
-			],
-			'openssl' => [
-				'name' => 'Extensión OpenSSL',
-				'status' => $extension->loaderOpenSSL('message'),
-				'css' => $extension->loaderOpenSSL('status') ? 'ok' :'no'
-			]
-		];
-
+		
 		$_SESSION['license'] = true;
 	break;
 	// COMPROBAR BASE DE DATOS
@@ -164,7 +80,7 @@ switch ($step) {
 						$bderror .= '<br/>' . mysqli_error($db_link);
 					}
 				}
-				if (!in_array(0, $exe)) header("Location: index.php?step=5");
+				if (!in_array(0, $exe)) header("Location: index.php?step=4");
 				else {
 					$message = 'Lo sentimos, pero ocurrió un problema. Inténtalo nuevamente; borra las tablas que se hayan guardado en tu base de datos: ' . $bderror;
 				}
@@ -176,13 +92,12 @@ switch ($step) {
 		// No saltar la licensia
 		if (!$_SESSION['license']) header("Location: index.php");
 		$next = false;
-		if ($_POST['save']) {
+		if (isset($_POST['save'])) {
          // Con esto evitamos escribir todos los campos
          foreach($_POST['web'] as $key => $val) $web[$key] = htmlspecialchars($val);
 			// Verificamos que todos los campos esten llenos
          if (in_array('', $web)) $message = 'Todos los campos son requeridos';
 			else {
-				define('TS_HEADER', true);
 				// DATOS DE CONEXION
 				require_once CONFIGINC;
             // CONECTAMOS
@@ -192,14 +107,15 @@ switch ($step) {
             //
             if ($db['hostname'] === 'dbhost' OR $database->num_rows('SELECT user_id FROM u_miembros WHERE user_id = 1 || user_rango = 1')) $message = 'Vuelva al paso anterior, no se han guardado los datos de acceso correctamente.';
 				// Cambia el nombre de la categoría Taringa! por el del sitio web creado
-            require_once SCRIPT_ROOT . 'inc' . DS . 'plugins' . DS . "modifier.seo.php";
+            require_once TS_PLUGINS . "modifier.seo.php";
             $name = $database->escape($web['name']);
 				$seo = smarty_modifier_seo($name);
 				// Actualizamos
 				$database->query("UPDATE `p_categorias` SET c_nombre = '$name', c_seo = '$seo' WHERE cid = 30 LIMIT 1");
             // Insertamos en w_temas
-            $database->query("INSERT INTO w_temas (tid, t_name, t_url, t_path, t_copy) VALUES({$theme['tid']}, '{$theme['t_name']}', '{$web['url']}{$theme['t_url']}', '{$theme['t_path']}', '{$theme['t_copy']}')");
-            // Insertamos en w_site_seo
+				foreach($themes as $theme) {
+            	$database->query("INSERT INTO w_temas (tid, t_name, t_url, t_path, t_copy) VALUES({$theme['tid']}, '{$theme['t_name']}', '{$web['url']}{$theme['t_url']}', '{$theme['t_path']}', '{$theme['t_copy']}')");
+				}
             // SEO TITLE
             $seoTitle = "{$web['name']} - {$web['slogan']}";
             // SEO DESCRIPTION
@@ -229,7 +145,7 @@ switch ($step) {
 				}
 				$ads = join(', ', $set);
 				// UPDATE
-				if ($database->query("UPDATE w_configuracion SET titulo = '{$web['name']}', slogan = '{$web['slogan']}', url = '{$web['url']}', email = '{$web['mail']}', `optimizar` = 0, c_upperkey = {$web['c_upperkey']}, $ads, version = '$version_title', version_code = '$wversion_code', pkey = '{$web['pkey']}', skey = '{$web['skey']}' WHERE tscript_id = 1")) header("Location: index.php?step=5");
+				if ($database->query("UPDATE w_configuracion SET titulo = '{$web['name']}', slogan = '{$web['slogan']}', url = '{$web['url']}', email = '{$web['mail']}', `tema_id` = {$web['tema_id']}, c_upperkey = {$web['c_upperkey']}, $ads, version = '$version_title', version_code = '$wversion_code', pkey = '{$web['pkey']}', skey = '{$web['skey']}' WHERE tscript_id = 1")) header("Location: index.php?step=5");
 				else $message = $database->error();
 			}
 		}
@@ -241,7 +157,7 @@ switch ($step) {
 
 		// Step
 		$next = false;
-		if ($_POST['save']) {
+		if (isset($_POST['save'])) {
          // Con esto evitamos escribir todos los campos
          foreach ($_POST['user'] as $key => $val) $user[$key] = htmlspecialchars($val);
 			// Evitamos que los campos esten vacios
@@ -259,10 +175,9 @@ switch ($step) {
             if(isset($_COOKIE['upperkey']) AND (int)$_COOKIE['upperkey'] === 0) {
    				$user['name'] = strtolower($user['name']);
             }
-            $key = createPassword($user['name'], $user['passc']);
+            $key = $Install->createPassword($user['name'], $user['passc']);
             $time = time();
 				// DATOS DE CONEXION
-				define('TS_HEADER', true);
 				require_once CONFIGINC;
             // CONECTAMOS
             $database->db = $db;
@@ -283,7 +198,7 @@ switch ($step) {
                foreach ($sizes as $k => $v) {
                   copy(
                   	str_replace('$1', $v, $avatar), 
-                  	SCRIPT_ROOT . "files" . DS . "avatar" . DS . "{$user_id}_$v.jpg"
+                  	TS_AVATAR . "{$user_id}_$v.jpg"
                   );
                }
                $database->query("INSERT INTO u_perfil (user_id, p_avatar) VALUES ($user_id, 1)");
@@ -304,7 +219,6 @@ switch ($step) {
 		// No saltar la licensia
 		if (!$_SESSION['license']) header("Location: index.php");
 		// DATOS DE CONEXION
-		define('TS_HEADER', true);
 		require_once CONFIGINC;
       // CONECTAMOS
       $database->db = $db;
@@ -328,7 +242,7 @@ switch ($step) {
          ];
          $key = base64_encode(serialize($code));
          // Abrir el archivo en modo de escritura ("w")
-         $handle = fopen(BLOCKED, "w");
+         $handle = fopen(FILE_BLOCKED_INSTALL, "w");
          // Escribir los datos en el archivo
          fwrite($handle, $key);
          // Cerrar el archivo
@@ -377,7 +291,7 @@ switch ($step) {
 				  		<fieldset>
 							<legend>Licencia</legend>
 							<p>Para utilizar <strong>PHPost <?=$version_title?></strong> debes estar de acuerdo con nuestra licencia de uso.</p>
-							<textarea name="license" rows="15"><?=$license?></textarea>
+							<textarea name="license" rows="20"><?=$license?></textarea>
 							<p><input type="submit" class="gbqfb" value="Acepto"/></p>
 				  		</fieldset>
 				  	</form>
@@ -386,14 +300,23 @@ switch ($step) {
 					  	<fieldset>
 							<legend>Permisos de escritura</legend>
 							<p>Los siguientes archivos y directorios requieren de permisos especiales, debes cambiarlos desde tu cliente FTP, los archivos deben tener permiso <strong>666</strong> y los direcorios <strong>777</strong></p>
-							<?php foreach ($permisos as $k => $val): 
-								$txt = ($val['css'] === 'OK') ? 'Escribible' : $val['status'];
-							?>
-		                  <dl>
-		                     <dt><label for="<?=$key?>"><?=$all[$k]?></label></dt>
-		                     <dd><span class="status <?=strtolower($val['css']); ?>"><?=$txt?></span></dd>
-		                  </dl>
-	                  <?php endforeach; ?>
+							<div class="grid">
+								<?php foreach ($permisos as $name => $val): 
+			                     $txt = ($val['css'] === 'success') ? 'Permisos aplicados correctamente' : $val['status'];		                     
+			                  ?>
+			              	   <div class="col">
+			              	   	<div class="permisos">
+			              	   		<div class="icon">
+				           	      		<iconify-icon icon="<?=$val['icon']?>"></iconify-icon>
+				           	      	</div>
+				           	      	<div class="data">
+					        	            <span for="<?=$key?>"><code><?=$val['root']?></code></span>
+					        	            <span class="status text-<?=$val['css']?>"><?=$txt?></span>
+					        	         </div>
+				           	      </div>
+				           	   </div>
+			              	<?php endforeach; ?>
+			            </div>
 							<p><input type="submit" class="gbqfb" value="<?=($next ? 'Continuar &raquo;' : 'Volver a verificar')?>"/></p>
 						</fieldset>
 					</form>
@@ -401,13 +324,40 @@ switch ($step) {
 					<form action="index.php<?=($next ? '?step=3' : '')?>" method="post">
 					  	<fieldset>
 							<legend>Verificaciones del sistema</legend>
-							<p>Las siguientes verificaciones son necesarias para el correcto funcionamiento del script, ya que este puede hacer que funcione de una manera no deseada</p>
-							<?php foreach ($all as $k => $val): ?>
-		                  <dl>
-		                     <dt><label for="<?=$key?>"><?=$val['name']?></label></dt>
-		                     <dd><span class="status <?=$val['css']?>"><?=$val['status']?></span></dd>
-		                  </dl>
-	                  <?php endforeach; ?>
+							<p>Antes de empezar debes tener estas extensiones y versión de PHP actualizadas/activadas para no tener problemas al usar el script, en caso contrario que alguno de las extensiones no esten habilitadas, podrás utilizarlas igual, pero tendrás problemas en algunas ocaciones.</p>
+               <div class="grid">
+               	<div class="col">
+               		<?php $php = $Install->checkVersionPHP(); ?>
+			            <div class="permisos">
+			            	<div class="icon d-flex justify-content-center align-items-center bg-<?= $php['clase'] ?>"><iconify-icon icon="<?=$php['icono']?>"></iconify-icon></div>
+			            	<div class="data">
+				            	<span class="d-block">PHP: <strong><?= $php['version'] ?></strong></span>
+				            	<span class="status text-<?= $php['clase'] ?>"><?= $php['mensaje'] ?></span>
+				            </div>
+			            </div>
+               	</div>
+               	<div class="col">
+               		<div class="permisos">
+			            	<div class="icon bg-success"><iconify-icon icon="solar:check-read-line-duotone"></iconify-icon></div>
+			            	<div class="data">
+				            	<span class="d-block">Smarty: <strong>4.3.2</strong></span>
+				            	<span class="status text-success">Actualizada a la versión 4.3.2</span>
+				            </div>
+			            </div>
+               	</div>
+						<?php foreach($Install->checkExtension() as $name => $check): ?>
+							<div class="col">
+				            <div class="permisos">
+				            	<div class="icon bg-<?= $check['clase'] ?>"><iconify-icon icon="<?=$check['icono']?>"></iconify-icon></div>
+				            	<div class="data">
+					            	<span><span class="text-uppercase"><?=$name?></span>: <strong><?= $check['version'] ?></strong> <span class="status text-<?= $check['clase'] ?>"><?= $check['mensaje'] ?></span></span>
+					            	<small><em><?= $check['nota'] ?></em></small>
+					            	
+				            	</div>
+				            </div>
+				          </div>
+						<?php endforeach; ?>
+               </div>
 	                  <p>Para activar las extensiones necesarias puedes ir la página <strong><a href="https://www.php.net/manual/es/install.pecl.windows.php" target="_blank" rel="noreferrer">oficial de php</a></strong> y leer la parte de "Cargando una extensión"</p>
 							<p><input type="submit" class="gbqfb" value="Continuar &raquo;"/></p>
 						</fieldset>
@@ -462,12 +412,26 @@ switch ($step) {
                        <dt><label for="f7">Usar mayúsculas en Registro y Login:</label><span>&nbsp;</span></dt>
                        <dd>
                        	<label class="radio" for="d0">
-                       		<input type="radio" id="d0" name="web[c_upperkey]" value="0"<?=((int)$web['c_upperkey'] ? '' : ' checked')?>/>
+                       		<input type="radio" id="d0" name="web[c_upperkey]" value="0"<?=(!empty($web['c_upperkey']) ? '' : ' checked')?>/>
                        		<span>No</span>
                        	</label>
                        	<label class="radio" for="d1">
-                       		<input type="radio" id="d1" name="web[c_upperkey]" value="1"<?=((int)$web['c_upperkey'] ? '' : ' checked')?>/>
+                       		<input type="radio" id="d1" name="web[c_upperkey]" value="1"<?=(empty($web['c_upperkey']) ? '' : ' checked')?>/>
                        		<span>Si</span>
+                       	</label>
+
+                       	</dd>
+                    </dl>
+                    <dl>
+                       <dt><label for="theme">Que tema usar&aacute;s:</label><span>&nbsp;</span></dt>
+                       <dd>
+                       	<label class="radio" for="theme0">
+                       		<input type="radio" id="theme0" name="web[tema_id]" value="1"<?=(!empty($web['tema_id']) ? '' : ' checked')?>/>
+                       		<span>Default</span>
+                       	</label>
+                       	<label class="radio" for="theme1">
+                       		<input type="radio" id="theme1" name="web[tema_id]" value="2"<?=(empty($web['tema_id']) ? '' : ' checked')?>/>
+                       		<span>Beatrix</span>
                        	</label>
 
                        	</dd>
@@ -538,6 +502,6 @@ switch ($step) {
 			</div>
 		</footer>
 	</main>
-
+	<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 </body>
 </html>

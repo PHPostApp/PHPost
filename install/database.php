@@ -500,6 +500,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_extras` (
   `width` int(4) NOT NULL DEFAULT 420,
   `height` int(4) NOT NULL DEFAULT 360,
   `calidad` int(3) NOT NULL DEFAULT 80,
+  `smarty_cache` int(1) NOT NULL DEFAULT 0,
   `smarty_security` int(1) NOT NULL DEFAULT 0,
   `smarty_compress` int(1) NOT NULL DEFAULT 0,
   `smarty_lifetime` int(3) NOT NULL DEFAULT 1,
@@ -726,6 +727,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `c_comunidades` (
   `c_temas` int(11) NOT NULL DEFAULT 0,
   `c_seguidores` int(11) NOT NULL DEFAULT 0,
   `c_fecha` int(11) NOT NULL DEFAULT 0,
+  `c_rango` int(11) NOT NULL DEFAULT 3,
   `c_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`c_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";

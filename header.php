@@ -8,57 +8,19 @@
  * @author  PHPost Team
  */
 
-/*
- * -------------------------------------------------------------------
- *  Estableciendo variables importantes
- * -------------------------------------------------------------------
- */
-
 if( !defined('TS_HEADER') ) define('TS_HEADER', TRUE);
 
 // Sesión
 if(!isset($_SESSION)) session_start();
 
 // Reporte de errores
-error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE ^ E_DEPRECATED);
+error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 ini_set('display_errors', TRUE);
 
 // Límite de ejecución
 set_time_limit(300);
 
-/*
- * -------------------------------------------------------------------
- *  Definiendo constantes
- * -------------------------------------------------------------------
-*/
-//DEFINICION DE CONSTANTES
-define('TS_PATH', DIRECTORY_SEPARATOR);
-
-define('TS_ROOT', realpath(__DIR__) . TS_PATH);
-
-define('TS_CACHE', TS_ROOT . 'cache' . TS_PATH);
-
-define('TS_INCLUDES', TS_ROOT . 'inc' . TS_PATH);
-
-define('TS_FILES', TS_ROOT . 'files' . TS_PATH);
-
-define('TS_THEMES', TS_ROOT . 'themes' . TS_PATH);
-
-define('TS_CLASS', TS_INCLUDES . 'class' . TS_PATH);
-
-define('TS_EXTRA', TS_INCLUDES . 'ext' . TS_PATH);
-
-define('TS_PLUGINS', TS_INCLUDES . 'plugins' . TS_PATH);
-
-define('TS_SMARTY', TS_INCLUDES . 'smarty' . TS_PATH);
-
-define('TS_AVATAR', TS_FILES . 'avatar' . TS_PATH);
-
-define('TS_UPLOADS', TS_FILES . 'uploads' . TS_PATH);
-
-define('TS_PORTADAS', TS_FILES . 'portadas' . TS_PATH);
-
-set_include_path(get_include_path() . PATH_SEPARATOR . realpath('./'));
+require_once realpath(__DIR__) . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . 'definitions.php';
 
 
 /*
@@ -71,22 +33,26 @@ set_include_path(get_include_path() . PATH_SEPARATOR . realpath('./'));
 include TS_EXTRA.'functions.php';
 
 // Nucleo
-include TS_CLASS.'c.core.php';
+include TS_CLASS . 'c.core.php';
 
 // Controlador de usuarios
-include TS_CLASS.'c.user.php';
+include TS_CLASS . 'c.user.php';
 
 // Monitor de usuario
-include TS_CLASS.'c.monitor.php';
+include TS_CLASS . 'c.monitor.php';
 
 // Actividad de usuario
-include TS_CLASS.'c.actividad.php';
+include TS_CLASS . 'c.actividad.php';
 
 // Mensajes de usuario
-include TS_CLASS.'c.mensajes.php';
+include TS_CLASS . 'c.mensajes.php';
+
+// Smarty
+include TS_CLASS . 'c.smarty.php';
 
 // Crean requests
-include TS_EXTRA.'QueryString.php';
+include TS_EXTRA . 'QueryString.php';
+
 
 /*
  * -------------------------------------------------------------------
@@ -112,22 +78,32 @@ $tsActividad = new tsActividad();
 // Mensajes
 $tsMP = new tsMensajes();
 
+// Definimos el template a utilizar
+$tsTema = $tsCore->settings['tema']['t_path'];
+if(empty($tsTema)) $tsTema = 'default';
+define('TS_TEMA', $tsTema);
+
 // Smarty
-require_once TS_EXTRA . 'smarty.php';
+$smarty = new tsSmarty();
+// Nueva configuración
+$smarty->output(false);
+
 	
 /*
  * -------------------------------------------------------------------
  *  Asignación de variables
  * -------------------------------------------------------------------
 */
-	 
+
 // Configuraciones
 $smarty->assign('tsConfig', $tsCore->settings);
-$smarty->assign('tsSeoData', $tsCore->settings['seo']);
-$smarty->assign('tsExtras', $tsCore->extras);
+
+$smarty->assign('tsSeoData', $tsCore->getSettings('seo'));
+
+$smarty->assign('tsExtras', $tsCore->getSettings('extras'));
 
 // Obtejo usuario
-$smarty->assign('tsUser',$tsUser);
+$smarty->assign('tsUser', $tsUser);
 
 // Avisos
 $smarty->assign('tsAvisos', $tsMonitor->avisos);
@@ -136,10 +112,10 @@ $smarty->assign('tsAvisos', $tsMonitor->avisos);
 $smarty->assign('tsNots', $tsMonitor->notificaciones);
 
 // Mensajes
-$smarty->assign('tsMPs',$tsMP->mensajes);
+$smarty->assign('tsMPs', $tsMP->mensajes);
 
-if (!extension_loaded('gd') && !function_exists('gd_info')) {
-	echo '<span style="position:fixed;margin:1rem;z-index:999;background:#F00D;color:#FFF;padding:.4rem 1rem;border-radius: .3rem;">La extensi&oacute;n GD no est&aacute; habilitada en tu servidor.</span>';
+if (!extension_loaded('gd') || !function_exists('gd_info')) {
+	echo '<span style="position:fixed;margin:1rem;z-index:999;background:#F00;color:#FFF;padding:.875rem 1.875rem;border-radius: .3rem;">La extensi&oacute;n GD no est&aacute; habilitada en tu servidor.</span>';
 }	 
 
 /*
@@ -172,4 +148,8 @@ if($tsCore->settings['offline'] == 1 && ($tsUser->is_admod != 1 && $tsUser->perm
 		//
 		exit;
 	}
+}
+
+if(file_exists(TS_ROOT . 'upgrade-version.php')) {
+	require_once TS_ROOT . 'upgrade-version.php';
 }

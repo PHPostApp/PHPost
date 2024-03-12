@@ -1,0 +1,89 @@
+*,*::after,*::before{
+	margin:0;
+	padding:0;
+	box-sizing:border-box;
+	color: inherit;
+}
+body, .box {
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+body {
+	width: 100%;
+	height: 100vh;
+	font: normal normal 400 1rem/1.5rem "Lato", sans-serif;
+}
+.box {
+	color:#323232;
+	padding: 1rem 2rem;
+	width:calc(100% - 40%);
+	height:calc(100vh - 10vh);
+	margin:0 auto;
+	text-align: center;
+	letter-spacing: 1px;
+}
+small {
+	display: block;
+	font-style: italic;
+	padding: 2px 0;
+	margin: 12px auto;
+}
+h3 {
+	font-weight: 500;
+	font-size: 2rem;
+	padding: .5rem 0;
+}
+a {
+	color: #444;
+	display: block;
+	font-weight: 800;
+	text-decoration: none;
+}
+strong {
+	color:coral;
+	font-weight: 900;
+	display: block;
+	font-size: 2rem;
+	line-height: 2rem;
+	text-transform: uppercase;
+	margin-bottom: 1rem;
+}
+.separator {
+	width: 50%;
+	font-weight: 600;
+	text-transform: uppercase;
+	font-size: 1rem;
+	margin: 1rem 0;
+	position: relative;
+	height: 2rem;
+	line-height: 2rem;
+}
+.separator::before {
+	content: '';
+	width: 100%;
+	height: 2px;
+	background-color: #000;
+	position: absolute;
+	top: 1rem;
+	left: 0;
+	z-index: -1;
+}
+.separator span {
+	background-color: #fff;
+	display: inline-block;
+	padding: 0 0.5rem;
+}
+.redes {
+	padding: 1rem;
+}
+.redes a {
+	background: inherit;
+	color: inherit;
+	display: inline-block;
+	width: 4rem;
+	height: 3rem;
+	font-size: 3rem;
+	margin: 0.5rem;
+}

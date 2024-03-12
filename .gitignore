@@ -1,7 +1,5 @@
-automatizer/
 cache/
-upgrade/
-optimizer/
+files/optimizer/*.*
 
 # Los avatares
 files/avatar/*_120.jpg
@@ -11,10 +9,9 @@ files/portadas/*.*
 
 # Archivos
 config.inc.php
-inc/ext/backup.php
-inc/ext/optimizer.php
-inc/ext/thumb.php
-inc/php/newsletter.php
+private/tools/tool.backup.php
+private/tools/tool.optimizer.php
+upgrade-version.php
 *.zip
 *.log
 
@@ -22,6 +19,6 @@ inc/php/newsletter.php
 .lock
 
 # Solo el theme default
-themes/*
-!themes/default
-!themes/beatrix
+public/themes/*
+!public/themes/default
+!public/themes/beatrix

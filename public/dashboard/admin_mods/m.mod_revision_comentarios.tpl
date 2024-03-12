@@ -2,7 +2,7 @@
 								   <h3>Comentarios desaprobados</h3>
 								</div>
 								<div id="res" class="boxy-content" style="position:relative">
-								{if !$tsComentarios.datos}
+								{if !$tsComunidadesentarios.datos}
 								<div class="phpostAlfa">No hay comentarios ocultos</div>
 								{else}
 								<table cellpadding="0" cellspacing="0" border="0" class="admin_table" width="100%" align="center">
@@ -16,7 +16,7 @@
 										<th>Acciones</th>
 									</thead>
 									<tbody>
-										{foreach from=$tsComentarios.datos item=c}
+										{foreach from=$tsComunidadesentarios.datos item=c}
 										<tr id="div_cmnt_{$c.cid}">
 											<td>{$c.cid}</td>
 											<td><a href="{$tsConfig.url}/perfil/{$c.user_name}" class="hovercard" uid="{$c.user_id}">{$c.user_name}</a></td>
@@ -32,7 +32,7 @@
 										{/foreach}
 									</tbody>
 									<tfoot>
-										<td colspan="7">P&aacute;ginas: {$tsComentarios.pages}</td>
+										<td colspan="7">P&aacute;ginas: {$tsComunidadesentarios.pages}</td>
 									</tfoot>
 								</table>
 								{/if}

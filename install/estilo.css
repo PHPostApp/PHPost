@@ -124,7 +124,7 @@ main > section > section form fieldset textarea {
 	border-radius: .3rem;
 	width: 100%;
 	box-sizing: border-box;
-	height: calc(var(--height-form) - 8rem);
+	*height: calc(var(--height-form) - 8rem);
 }
 main > section > section form fieldset dl {
 	display: grid;
@@ -228,14 +228,14 @@ label.radio {
 	margin-top: 0.4rem;
 	margin-right: 0.6rem;
 	position: relative;
-	width: 50px;
-	display: inline-block;
+	display: flex;
+	justify-content: flex-start;
+	width: max-content
 }
 label.radio span {
-	position: absolute;
-	right: .2rem;
-	top: 0;
+	display: block;
 	font-weight: 600;
+	width: 60px;
 }
 label.radio input {
 	border: transparent;
@@ -248,7 +248,7 @@ label.radio input::before {
 	background-color: #B0CCFA;
 	border-radius: 10em;
 	position: absolute;
-	top: .2rem;
+	top: .25rem;
 	left: 0;
 }
 label.radio input:checked::before {
@@ -259,4 +259,28 @@ label.radio input:checked::before {
 	padding: 1rem 0;
 	text-align: center;
 	background-color: #FDBBBB;
+}
+.text-success {
+	color: #0CAE64;
+}
+.text-danger {
+	color: #AE0C0C;
+}
+.grid,
+.grid > .col .permisos {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: .5rem;
+}
+.grid > .col {
+	margin-bottom: 1rem;
+}
+.grid > .col .permisos {
+	grid-template-columns: 50px 1fr;
+}
+.grid > .col .permisos .icon * {
+	font-size: 50px;
+}
+.grid > .col .data .status {
+	display: block;
 }
