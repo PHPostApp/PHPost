@@ -5,8 +5,8 @@
  * @name    c.user.php
  * @author  PHPost Team
  */
-include_once TS_EXTRA . "reCaptcha.php";
-class tsUser extends reCaptcha {
+
+class tsUser  {
 
 	var $info = array();		// SI EL USUARIO ES MIEMBRO CARGAMOS DATOS DE LA TABLA
 	var $is_member = 0;		// EL USUARIO ESTA LOGUEADO?
@@ -192,12 +192,7 @@ class tsUser extends reCaptcha {
       // Existe el usuario
       if(empty($data)) return '0: El usuario no existe.';
 		// Solo cuando inicia sesion, no cuando activa la cuenta
-		/*if($this->is_type === 'login') {
-			// Verificando el captcha
-	      if (!parent::verify($this->response)) return '0: No hemos podido validar tu humanidad';
-		}*/
-      // CHECAMOS
-      if($tsCore->createPassword($data['user_name'], $password, $data['user_password'])){
+      if(!$tsCore->createPassword($data['user_name'], $password, $data['user_password'])){
 			return '0: Tu contrase&ntilde;a es incorrecta.';
 		} else {
          if((int)$data['user_activo'] === 1) {

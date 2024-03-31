@@ -1,4 +1,4 @@
-const comprobar = (id, encode = false) => {
+comprobar = (id, encode = false) => {
 	input = $('.formulario #' + id);
 	if (empty(input.val())) {
 		input.focus();
@@ -8,7 +8,7 @@ const comprobar = (id, encode = false) => {
 	return encode ? encodeURIComponent(input.val()) : input;
 }
 
-const cargando = (status = false) => {
+cargando = (status = false) => {
 	const loading = $("#login_cargando");
 	if(status) {
 		loading
@@ -28,6 +28,7 @@ iniciarSesion = () => {
 	$('#login_error p').html('').hide();
 	$('#loading').fadeIn(250);
 	$.post(global_data.url + '/login-user.php', params, h => {
+		console.log(h)
 		switch(h.charAt(0)){
 			case '0':
 				$('#login_error p').html(h.substring(3)).show();
