@@ -1,0 +1,52 @@
+Usar nueva función del modal:
+
+Antes, bueno se puede seguir usando esta forma del modal
+mydialog.show();
+mydialog.title('Titulo que se vera en el modal');
+mydialog.body('TODO EL CONTENIDO DEL MODAL');
+mydialog.buttons(true, true, 'TEXTO', "ACCION", true, false, true, 'TEXTO', 'ACCION', true, true);
+mydialog.center();
+
+Pero hay una forma más simple para hacerlo!
+mydialog.faster({
+	title: 'Titulo que se vera en el modal',
+	body: 'TODO EL CONTENIDO DEL MODAL',
+	buttons: {
+		ok: {text: 'TEXTO', action: 'ACCION' },
+		fail: {text: 'TEXTO', action: 'ACCION' }
+	}
+})
+en buttons puede ser 
+buttons: false
+buttons: {
+	ok: {text: 'TEXTO', action: 'ACCION' }
+}
+
+Al objeto de "faster({...})" puede ir
+mydialog.faster({
+	class_aux: 'UNA CLASE ADICIONAL QUE DESEES',
+	close_button: TRUE|FALSE, // Boton para cerrar el modal
+	mask_button: TRUE|FALSE, // Cerrar el modal haciendo clic en la máscara
+	size: 'big|normal|small', // Son 3 tamaños para el modal
+})
+
+El "size" se puede usar de forma normal, así:
+mydialog.size = 'normal'
+
+=======================================================================
+Nuevo "Mini modal para alertas"
+
+Colores 
+ * Default
+ * Danger
+ * Success
+ * Primary
+
+Formas de uso:
+AlertFloat.elclass = 'SI DESEAS AÑADIR UNA CLASE EXTRA'
+AlertFloat.show({
+	title: 'string', // El titulo para la alerta
+	body: 'string', // El mensaje de la alerta
+	type: 'string', // default|danger|success|primary
+	timeout: int // Tiempo en segundos, ej: 3s = 3000ms
+})

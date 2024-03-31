@@ -1,0 +1,98 @@
+.sidebar-tabs {
+	position: relative;
+}
+.sidebar-tabs .avatar-big-cont .avatar-loading,
+.avatar-big-cont .avatarimg, 
+.avatar-big-cont .avatarimg input[type=file] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #FFF8;
+    display: grid;
+    place-items: center;
+}
+.avatar-big-cont .avatarimg, 
+.avatar-big-cont .avatarimg input[type=file] {
+    width: 100%;
+    height: 100%;
+    border-radius: .3rem;
+    object-fit: cover;
+}
+.avatar-big-cont .avatarimg, 
+.avatar-big-cont .avatarimg input[type=file] {
+    opacity: 0;
+}
+.avatar-big-cont:hover .avatarimg {
+    color: #333;
+    opacity: 1;
+    display: block;
+    background-color: #fff8;
+    line-height: 120px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+}
+.avatar-big-cont:hover .avatarimg::before {
+    content: 'Cambiar avatar';
+}
+#input_add {
+    margin-top: 10px;
+}
+#input_add > div {
+    --colleft: 200px;
+    --colright: 35px;
+    display: grid;
+    grid-template-columns: var(--colleft) var(--colright);
+    width: calc(var(--colleft) + var(--colright));
+    border-radius: .3rem;
+    overflow: hidden;
+    height: 2rem;
+    background-color: #2470BD;
+}
+#input_add > div input {
+    padding: .6rem .3rem;
+    width: var(--colleft);
+    box-sizing: border-box;
+    border: 0 solid transparent;
+    background: transparent;
+    color: #FFF;
+}
+#input_add > div input::placeholder {
+    color: #FFF;
+    font-style: italic;
+    font-weight: 300;
+}
+#input_add > div .verify {
+    width: var(--colright);
+    height: 2rem;
+    text-align: center;
+    line-height: 2rem;
+    font-weight: 600;
+    color: #FFF;
+    cursor: pointer;
+}
+#input_add > div .verify:hover {
+    background-color: #255C94;
+}
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.tabs li a {
+    display: block;
+    font-weight: 600;
+    padding: 0.3rem 1rem;
+    color: #888;
+    border-radius: .3rem;
+}
+.tabs li:hover a,
+.tabs li.active a {
+    background-color: #3371af;
+    color: #FFF;
+}
+.content-tabs.perfil fieldset {
+    border-top: 3px solid #3371af;
+}
