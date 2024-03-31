@@ -5,7 +5,7 @@
 		<div class="perfil-data">
 			<div class="perfil-avatar">
 				<a href="{$tsConfig.url}/perfil/{$tsInfo.nick}">
-					<img alt="perfil avatar user" class="image" src="{$tsConfig.images}/mantenimiento.gif" data-src="{$tsConfig.avatar}/{if $tsInfo.p_avatar}{$tsInfo.uid}_120{else}avatar{/if}.jpg?{$smarty.now}"/>
+					<img alt="perfil avatar user" class="image" src="{$tsConfig.avatar}/{if $tsInfo.p_avatar}{$tsInfo.uid}{else}avatar{/if}_50.jpg" data-src="{$tsConfig.avatar}/{if $tsInfo.p_avatar}{$tsInfo.uid}_120{else}avatar{/if}.jpg?{$smarty.now}"/>
 				</a>
 			</div>
 			<div class="perfil-info">

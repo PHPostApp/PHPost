@@ -4,11 +4,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{$tsTitle}</title>
+{googlefonts fonts="Roboto"}
 {phpost 
 	favicon="favicon.ico" 
-	css=["estilo.css", "phpost.css", "extras.css", "$tsPage.css", "wysibb.css"] 
-	js=["acciones.js", "wysibb.js", "$tsPage.js"] 
-	deny=["moderacion.js", "cuenta.js"]
+	css=["estilo.css", "phpost.css", "extras.css"] 
+	js=["acciones.js"] 
+	scriptGlobal=true
 }
 <script>
 $(document).ready(() => {

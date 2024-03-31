@@ -852,7 +852,7 @@ $(document).ready(() => {
 	// EXTRAS
 	$('a[title]').tipsy({ gravity: $.fn.tipsy.autoNS });
 	// Ejecutamos LazyLoad - by Miguel92
-   var LazyLoadClass = ['.image', '.background', '.iframe']
+   var LazyLoadClass = ['img[data-src]', '.background', '.iframe']
    LazyLoadClass.map( lazyload => {
    	let NewOptions = {
          elements_selector: lazyload,

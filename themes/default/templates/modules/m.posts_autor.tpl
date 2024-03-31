@@ -13,7 +13,7 @@
                         <div class="box_cuerpo">
                         	<div class="avatarBox">
                                 <a href="{$tsConfig.url}/perfil/{$tsAutor.user_name}">
-                                    <img title="Ver perfil de {$tsAutor.user_name}" alt="Ver perfil de {$tsAutor.user_name}" class="avatar" src="{$tsConfig.url}/files/avatar/{$tsAutor.user_id}_120.jpg"/>
+                                    <img title="Ver perfil de {$tsAutor.user_name}" alt="Ver perfil de {$tsAutor.user_name}" class="avatar" src="{$tsConfig.url}/files/avatar/{$tsAutor.user_id}_50.jpg" data-src="{$tsConfig.url}/files/avatar/{$tsAutor.user_id}_120.jpg"/>
                                 </a>
 							</div>
                             <a href="{$tsConfig.url}/perfil/{$tsAutor.user_name}" style="text-decoration:none">
