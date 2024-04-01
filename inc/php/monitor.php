@@ -39,7 +39,7 @@ if($tsLevelMsg != 1){
 //
 if($tsContinue) {
 
-	$action = htmlspecialchars($_GET['action']);
+	$action = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : '';
 
 	if(empty($action)){
       $tsMonitor->show_type = 2;

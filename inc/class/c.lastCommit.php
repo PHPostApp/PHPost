@@ -3,19 +3,13 @@
 class UpdateGithub {
 
 	// Usuario de la cuenta de github
-	private $user = 'joelmiguelvalente';
+	private $user = 'ScriptParaPHPost';
 
 	// Nombre del repositorio
 	private $repo = 'PHPost';
 
 	// main | experimental
-	private $branch = 'master';
-
-	// Separamos por seguridad
-	private $prefix = 'ghp';
-
-	// Parte del token, pero codificado
-	private $token = 'dWxLV0Zyd1k4VGs0cVpycUxwdUNWcUZ3alFET2ltNDRYRXZX';
+	private $branch = 'main';
 
 	public $ruta;
 
@@ -24,15 +18,9 @@ class UpdateGithub {
 	public function __construct() {
 	}
 
-	/**
-	 * Token solo de lectura del repo
-	*/
-	private function getAccess() {
-		  return $this->prefix . '_' . base64_decode($this->token);
-	}
 
 	private function setHeader() {
-		$token = self::getAccess();
+		$token = $token = (file_exists(TS_ROOT . '.env')) ? getenv('USER_GITHUB_TOKEN') : '';
 		$app = "Actualizaciones de los archivos";
 		return ['http' => [
 			'header' => "Authorization: token {$token}\r\n" .

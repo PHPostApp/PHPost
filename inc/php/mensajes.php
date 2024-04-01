@@ -46,7 +46,7 @@
 
 \*********************************/
 
-	$action = htmlspecialchars($_GET['action']);
+	$action = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : '';
 	$unread = empty($_GET['qt']) ? false : true;
 
 /**********************************\

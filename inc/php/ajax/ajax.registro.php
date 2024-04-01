@@ -84,7 +84,7 @@
 		break;
 		case 'registro-geo':
 			include("../ext/geodata.php");
-			$pais = htmlspecialchars($_GET['pais_code']);
+			$pais = isset($_GET['pais_code']) ? htmlspecialchars($_GET['pais_code']) : '';
 			//
 			if($pais) $html = '1: ';
 			else $html = '0: El campo <b>pais_code</b> es requerido para esta operacion';

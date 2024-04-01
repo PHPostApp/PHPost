@@ -32,7 +32,7 @@
 
 \*********************************/
 
-	$action = htmlspecialchars($_GET['action']);
+	$action = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : '';
 	$action_type = explode('-',$action);
 	$action_type = $action_type[0];
 

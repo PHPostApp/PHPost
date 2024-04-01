@@ -43,7 +43,7 @@
 	require('../class/c.moderacion.php');
 	$tsMod = new tsMod();
     //
-    $do = htmlspecialchars($_GET['do']);
+    $do = isset($_GET['do']) ? htmlspecialchars($_GET['do']) : '';
 	// CODIGO
 	switch($action){
 		case 'moderacion-posts':

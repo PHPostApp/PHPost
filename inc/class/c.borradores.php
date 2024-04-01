@@ -72,7 +72,7 @@ class tsDrafts {
          ];
 			$dft[] = json_encode($draftjson, JSON_FORCE_OBJECT);
 		}
-		return join(',', $dft);
+		return is_array($dft) ? join(',', $dft) : '';
 	}
 	/*
 		getDraft()

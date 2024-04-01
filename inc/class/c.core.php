@@ -433,10 +433,13 @@ class tsCore {
 	*/
    # Seguridad
 	public function setSecure($string, $xss = false) {
-   	// Verificar si magic_quotes_gpc estaba activado en la configuración de PHP
-   	if (ini_get('magic_quotes_gpc')) $string = stripslashes($string);
-   	// Escapar el valor
-   	$string = db_exec('real_escape_string', $string);
+	   if(empty($string)) return $string;
+	   // Verificar si magic_quotes_gpc estaba activado en la configuración de PHP
+	   if (version_compare(PHP_VERSION, '7.4.0') < 0 && get_magic_quotes_gpc()) {
+	      $string = stripslashes($string);
+	   }
+	   // Escapar el valor
+	   $string = db_exec('real_escape_string', $string);
    	// Aplicar filtrado XSS si es necesario
    	if ($xss) $string = htmlspecialchars($string, ENT_COMPAT | ENT_QUOTES, 'UTF-8');
    	// Retornamos la información

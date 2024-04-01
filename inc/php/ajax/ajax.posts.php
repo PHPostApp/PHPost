@@ -48,7 +48,7 @@
 	switch($action){
 		case 'posts-genbus':
 			//<--
-                $do = htmlspecialchars($_GET['do']);
+                $do = isset($_GET['do']) ? htmlspecialchars($_GET['do']) : '';
                 $q = $tsCore->setSecure($_POST['q']);
                 //
                 if($do == 'search'){

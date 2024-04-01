@@ -46,9 +46,9 @@
 \*********************************/
 
 	// ACTION
-	$action = htmlspecialchars($_GET['action']);
+	$action = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : '';
 	// ACTION 2
-	$act = htmlspecialchars($_GET['act']);
+	$act = isset($_GET['act']) ? htmlspecialchars($_GET['act']) : '';
 	// CLASE POSTS
 	include("../class/c.moderacion.php");
 	$tsMod = new tsMod();

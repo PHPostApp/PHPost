@@ -27,7 +27,7 @@
 
 /*++++++++ = ++++++++*/
 	// PARA LAS FOTOS...
-    $action = htmlspecialchars($_GET['action']);		
+    $action = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : '';
 	if($tsCore->settings['c_fotos_private'] == '0') {	
     if($action == '' || $action == 'ver') $tsLevel = 0;		
 	}else{		

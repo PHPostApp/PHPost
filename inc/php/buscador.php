@@ -44,10 +44,10 @@
 
 \*********************************/
 
-	$q = htmlspecialchars($_GET['q']);
-    $e = htmlspecialchars($_GET['e']);
-    $c = (int)$_GET['cat'];
-    $a = htmlspecialchars($_GET['autor']);
+	$q = isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '';
+   $e = isset($_GET['e']) ? htmlspecialchars($_GET['e']) : '';
+   $c = (int)$_GET['cat'];
+   $a = isset($_GET['autor']) ? htmlspecialchars($_GET['autor']) : '';
 	//
 	include("../class/c.posts.php");
 	$tsPosts = new tsPosts();

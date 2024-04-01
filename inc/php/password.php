@@ -38,7 +38,7 @@
 	$email = $tsCore->setSecure($_GET['email']);
 	//$email = str_replace('/', '@', $tsCore->setSecure($email));
 	$type = intval($_GET['type']);
-	$key = htmlspecialchars($_GET['hash']);
+	$key = isset($_GET['hash']) ? htmlspecialchars($_GET['hash']) : '';
 	$tsData = db_exec([__FILE__, __LINE__], 'query', 'SELECT user_id, user_name, user_email FROM u_miembros WHERE user_email = \''.$email.'\'') or exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );
 	// borrar viejos
 	db_exec([__FILE__, __LINE__], 'query', 'DELETE FROM `w_contacts` WHERE `time` < \''.(time() - 86400).'\'') or exit( show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db') );

@@ -943,7 +943,8 @@ class tsPosts {
 			$favoritos[] = json_encode($favjson, JSON_FORCE_OBJECT);
 		}
 		//
-		return join(',', $favoritos);
+
+		return is_array($favoritos) ? join(',', $favoritos) : '';
 	}
 	/*
 		delFavorito()
