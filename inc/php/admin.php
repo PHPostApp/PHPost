@@ -49,9 +49,9 @@
 	include_once TS_CLASS . "c.admin.php";
 
 	// ACTION
-	$action = htmlspecialchars($_GET['action']);
+	$action = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : '';
 	// ACTION 2
-	$act = htmlspecialchars($_GET['act']);
+	$act = isset($_GET['act']) ? htmlspecialchars($_GET['act']) : '';
 	// CLASE POSTS
 	$tsAdmin = new tsAdmin();
 	
