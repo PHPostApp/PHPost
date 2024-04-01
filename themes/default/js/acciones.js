@@ -55,33 +55,29 @@ var form_ff = 0;
 //Cargo el formulario
 function registro_load_form(){
    $('#loading').fadeIn(250);
-	$.ajax({
-		type: 'POST',
-		url: global_data.url + '/registro-form.php',
-		success: function(h){
-			switch(h.charAt(0)){
-				case '0': //Error
-					mydialog.alert('Error', h.substring(3));
-				break;
-				case '1': //OK. Ya es miembro
-					mydialog.faster({
-			   		close: true,
-			   		title: 'Registro',
-			   		body: h.substring(3),
-			   		buttons: {
-			   			ok: {text: 'Crear cuenta', action: 'crearCuenta()' }
-			   		}
-			   	})
-				break;
-			}
-         $('#loading').fadeOut(350);
-		},
-		error: () => {
-			mydialog.error_500("registro.load_form("+data+")");
-         $('#loading').fadeOut(350);
+   $.post(`${global_data.url}/registro-form.php`, h => {
+		switch(h.charAt(0)){
+			case '0': //Error
+				mydialog.alert('Error', h.substring(3));
+			break;
+			case '1': //OK. Ya es miembro
+				mydialog.faster({
+		   		close: true,
+		   		title: 'Registro',
+		   		body: h.substring(3),
+		   		buttons: {
+		   			ok: {text: 'Crear cuenta', action: 'crearCuenta()' }
+		   		}
+		   	})
+			break;
 		}
-	});
+      $('#loading').fadeOut(350);
+   }).fail(() => {
+		mydialog.error_500("registro.load_form("+data+")");
+      $('#loading').fadeOut(350);
+   })
 }
+
 function login_load_form(){
    $('#loading').fadeIn(250);
    $.post(global_data.url + '/login-form.php', response => {
@@ -106,59 +102,43 @@ function bloquear(user, bloqueado, lugar, aceptar){
 		mydialog.center();
 		return;
 	}
-	if(bloqueado)
-		mydialog.procesando_inicio('Procesando...', 'Bloquear usuario');
-        $('#loading').fadeIn(250);
-	$.ajax({
-		type: 'POST',
-		url: global_data.url + '/bloqueos-cambiar.php',
-		data: 'user='+user+(bloqueado ? '&bloquear=1' : '')+gget('key'),
-		success: function(h){
-			mydialog.alert('Bloquear Usuarios', h.substring(3));
-            //
-            if(h.charAt(0) == 1){
-    			switch(lugar){
-    				case 'perfil':
-    					if(bloqueado)
-    						$('#bloquear_cambiar').html('Desbloquear').removeClass('bloquearU').addClass('desbloquearU').attr('href', "javascript:bloquear('"+user+"', false, '"+lugar+"')");
-    					else
-    						$('#bloquear_cambiar').html('Bloquear').removeClass('desbloquearU').addClass('bloquearU').attr('href', "javascript:bloquear('"+user+"', true, '"+lugar+"')");
-    					break;
-    				case 'respuestas':
-    				case 'comentarios':
-    					if (bloqueado) {
-    						$('li.desbloquear_'+user).show();
-    						$('li.bloquear_'+user).hide();
-    					}
-    					else {
-    						$('li.bloquear_'+user).show();
-    						$('li.desbloquear_'+user).hide();
-    					}
-    					break;
-    				case 'mis_bloqueados':
-    					if(bloqueado)
-    						$('.bloquear_usuario_'+user).attr('title', 'Desbloquear Usuario').removeClass('bloqueadosU').addClass('desbloqueadosU').html('Desbloquear').attr('href', "javascript:bloquear('"+user+"', false, '"+lugar+"')");
-    					else
-    						$('.bloquear_usuario_'+user).attr('title', 'Bloquear Usuario').removeClass('desbloqueadosU').addClass('bloqueadosU').html('Bloquear').attr('href', "javascript:bloquear('"+user+"', true, '"+lugar+"')");
-    					break;
-                    case 'mensajes':
-    					if(bloqueado)
-    						$('#bloquear_cambiar').html('Desbloquear').attr('href', "javascript:bloquear('"+user+"', false, '"+lugar+"')");
-    					else
-    						$('#bloquear_cambiar').html('Bloquear').attr('href', "javascript:bloquear('"+user+"', true, '"+lugar+"')");
-                    break;
-    			}
-            }
-            $('#loading').fadeOut(350);
-		},
-		error: () => {
-			mydialog.error_500("bloquear('"+user+"', '"+bloqueado+"', '"+lugar+"', true)");
-            $('#loading').fadeOut(350);
-		},
-		complete: () => {
-			mydialog.procesando_fin();
-            $('#loading').fadeOut(350);
-		}
+	if(bloqueado) mydialog.procesando_inicio('Procesando...', 'Bloquear usuario');
+  	$('#loading').fadeIn(250);
+  	let data = 'user=' + user + (bloqueado ? '&bloquear=1' : '') + gget('key');
+	$.post(`${global_data.url}/bloqueos-cambiar.php`, data, h => {
+		mydialog.alert('Bloquear Usuarios', h.substring(3));
+      if(h.charAt(0) == 1){
+    		switch(lugar){
+    			case 'perfil':
+    				if(bloqueado)
+    					$('#bloquear_cambiar').html('Desbloquear').removeClass('bloquearU').addClass('desbloquearU').attr('href', "javascript:bloquear('"+user+"', false, '"+lugar+"')");
+    				else
+    					$('#bloquear_cambiar').html('Bloquear').removeClass('desbloquearU').addClass('bloquearU').attr('href', "javascript:bloquear('"+user+"', true, '"+lugar+"')");
+    			break;
+    			case 'respuestas':
+    			case 'comentarios':
+    				$('li.desbloquear_'+user)[(bloqueado ? 'show' : 'hide')]()
+    				$('li.bloquear_'+user)[(bloqueado ? 'hide' : 'show')]()
+    			break;
+    			case 'mis_bloqueados':
+    				if(bloqueado)
+    					$('.bloquear_usuario_'+user).attr('title', 'Desbloquear Usuario').removeClass('bloqueadosU').addClass('desbloqueadosU').html('Desbloquear').attr('href', "javascript:bloquear('"+user+"', false, '"+lugar+"')");
+    				else
+    					$('.bloquear_usuario_'+user).attr('title', 'Bloquear Usuario').removeClass('desbloqueadosU').addClass('bloqueadosU').html('Bloquear').attr('href', "javascript:bloquear('"+user+"', true, '"+lugar+"')");
+    			break;
+            case 'mensajes':
+    				if(bloqueado) $('#bloquear_cambiar').html('Desbloquear').attr('href', "javascript:bloquear('"+user+"', false, '"+lugar+"')");
+    				else $('#bloquear_cambiar').html('Bloquear').attr('href', "javascript:bloquear('"+user+"', true, '"+lugar+"')");
+                break;
+    		}
+      }
+      $('#loading').fadeOut(350);
+	}).fail(() => {
+		mydialog.error_500("bloquear('"+user+"', '"+bloqueado+"', '"+lugar+"', true)");
+      $('#loading').fadeOut(350);
+	}).done(() => {
+		mydialog.procesando_fin();
+      $('#loading').fadeOut(350);
 	});
 }
 
@@ -277,6 +257,7 @@ var notifica = {
 			type: 'post', 
 			data: param.join('&') + gget('key'),
 			success: function (r) {
+				console.log(r)
 				$(obj).removeClass('spinner');
 				cb(r, obj);
             $('#loading').fadeOut(350);

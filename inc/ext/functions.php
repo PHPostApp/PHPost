@@ -151,6 +151,12 @@ if (!function_exists('safe_count')) {
    }
 }
 
+if (!function_exists('safe_unserialize')) {
+   function safe_unserialize($data) {
+      return (!is_null($data) && ($data !== false || $data === 'b:0;')) ? unserialize($data) : [];
+   }
+}
+
 if(file_exists(TS_ROOT . '.env')) {
 	$dotenv = fopen(TS_ROOT . '.env', 'r');
 	if ($dotenv) {

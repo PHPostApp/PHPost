@@ -57,7 +57,9 @@ class LimpiarSolicitud extends tsCore {
 	   // No dependamos de la configuración ini ... ¿por qué incluso tener COOKIE allí, de todos modos?
 		$_REQUEST = $_POST + $_GET;
 		// Compruebe si la solicitud proviene de este sitio
-   	$IsMySite = strpos(preg_replace("/https?:\/\/|www\./", "", $_SERVER["HTTP_REFERER"]), preg_replace("/https?:\/\/|www\./", "", $_SERVER["HTTP_HOST"])) === 0;
+   	$referer = isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "";
+		$host = isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : "";
+		$IsMySite = strpos(preg_replace("/https?:\/\/|www\./", "", $referer), preg_replace("/https?:\/\/|www\./", "", $host)) === 0;
    	$findPage = ['admin', 'moderacion', 'cuenta'];
    	if((!empty($_SERVER["HTTP_REFERER"]) && (in_array($tsPage, $findPage) || $_SERVER['QUERY_STRING'] == 'action=login-salir') && !$IsMySite) || $_SERVER["REQUEST_METHOD"] === "POST" && !$IsMySite) die("Invalid request");
    }

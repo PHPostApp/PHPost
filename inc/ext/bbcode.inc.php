@@ -100,6 +100,7 @@ class BBCode {
      * y para tags de YouTube de la versión anterior
      */
     private function unclosedTags() {
+        if (!isset($this->text)) return; 
         $this->text = preg_replace("/[\.com]+\/v\//i", ".com/watch?v=", $this->text);
         $this->text = preg_replace("/\[swf=(http|https)?(\:\/\/)?www\.youtube\.com\/watch\?v([A-z0-9=\-]+?)\]/i", "[video]$1$2www.youtube.com/watch?v$3[/video]", $this->text);
        

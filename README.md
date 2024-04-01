@@ -17,9 +17,10 @@ Se agrego un archivo para realizar un mayor control sobre las acciones de insert
 
 ### ¿Que es .env.example?
 Este archivo hay que renombrarlo a `.env` y allí colocan su [token de github](https://github.com/settings/tokens?type=beta) y así poder acceder a los commits de una mejor manera, ya que sin el token las consultas a los token es limitada.
- 1 - [Generan un nuevo token](https://github.com/settings/personal-access-tokens/new)
- 2 - Asignan un nombre que deseen
- 3 - **Expiration** eligen una fecha
- 4 - y dan a generar token
+
+ * [Generan un nuevo token](https://github.com/settings/personal-access-tokens/new)
+ * Asignan un nombre que deseen
+ * **Expiration** eligen una fecha
+ * y dan a generar token
 
 No deben compartir el archivo .env, ni su token

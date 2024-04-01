@@ -52,7 +52,7 @@
 		</div>
 		<ul class="post-cat-date">
 		<li><strong>Categor&iacute;a:</strong> <a href="{$tsConfig.url}/posts/{$tsPost.categoria.c_seo}/">{$tsPost.categoria.c_nombre}</a></li>
-		  <li><strong>Creado:</strong><span> {$tsPost.post_date}.</span></li>
+		  <li><strong>Creado:</strong><span> {$tsPost.post_date|fecha}.</span></li>
 		</ul>
 									 <div class="clearfix"></div>
 										

@@ -18,6 +18,8 @@ class tsUser  {
 	var $uid = 0;				// USER ID
 	var $is_error;				// SI OCURRE UN ERROR ESTA VARIABLE CONTENDRA EL NUMERO DE ERROR
 	var $session;
+	var $permisos;
+	var $email;
 
 	public function __construct() {
 		global $tsCore, $tsMedal;

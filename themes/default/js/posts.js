@@ -117,12 +117,13 @@ function add_favoritos(){
 		return;
 	}
 	add_favoritos_agregado = true;
-	 $('#loading').fadeIn(250);
+	$('#loading').fadeIn(250);
 	$.ajax({
 		type: 'POST',
 		url: global_data.url + '/favoritos-agregar.php',
 		data: gget('postid', true),
 		success: function(h){
+			console.log(h)
 			switch(h.charAt(0)){
 				case '0': //Error
 					$('.post-metadata .mensajes').addClass('error').html(h.substring(3)).slideDown();

@@ -322,113 +322,98 @@ class tsPosts {
 	/*
 		getPost()
 	*/
-	function getPost(){
+	public function getPost(){
 		global $tsCore, $tsUser;
 		//
-		$post_id = intval($_GET['post_id']);
+		$time = time();
+		$post_id = (int)$_GET['post_id'];
 		if(empty($post_id)) return array('deleted','Oops! Este post no existe o fue eliminado.');
 		// DAR MEDALLA
 		$this->DarMedalla($post_id);
 		// DATOS DEL POST
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT c.* ,m.*, u.user_id FROM `p_posts` AS c LEFT JOIN `u_miembros` AS u ON c.post_user = u.user_id LEFT JOIN `u_perfil` AS m ON c.post_user = m.user_id  WHERE `post_id` = \''.(int)$post_id.'\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' LIMIT 1');
-		//		
-		$postData = db_exec('fetch_assoc', $query);
-		
+		$postData = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT c.* ,m.*, u.user_id FROM `p_posts` AS c LEFT JOIN `u_miembros` AS u ON c.post_user = u.user_id LEFT JOIN `u_perfil` AS m ON c.post_user = m.user_id  WHERE `post_id` = \''.(int)$post_id.'\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' LIMIT 1'));
 		//
 		if(empty($postData['post_id'])) {
-			$tsDraft = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT b_title FROM p_borradores WHERE b_post_id = \''.(int)$post_id.'\' LIMIT 1'));
-			if(!empty($tsDraft['b_title'])) return array('deleted','Oops! Este post no existe o fue eliminado.');
-			else return array('deleted','Oops! El post fue eliminado!');
-		}
-		elseif($postData['post_status'] == 1 && (!$tsUser->is_admod && $tsUser->permisos['moacp'] == false)) return array('denunciado','Oops! El Post se encuentra en revisi&oacute;n por acumulaci&oacute;n de denuncias.');
-		  elseif($postData['post_status'] == 2 && (!$tsUser->is_admod && $tsUser->permisos['morp'] == false)) return array('deleted','Oops! El post fue eliminado!');
+			$tsDraft = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT b_title FROM p_borradores WHERE b_post_id = $post_id LIMIT 1"));
+			$text = (!empty($tsDraft['b_title'])) ? 'Este post no existe o fue eliminado.' : 'El post fue eliminado!';
+			return array('deleted','Oops! ' . $text);
+		} elseif($postData['post_status'] == 1 && (!$tsUser->is_admod && $tsUser->permisos['moacp'] == false)) return array('denunciado','Oops! El Post se encuentra en revisi&oacute;n por acumulaci&oacute;n de denuncias.');
+		elseif($postData['post_status'] == 2 && (!$tsUser->is_admod && $tsUser->permisos['morp'] == false)) return array('deleted','Oops! El post fue eliminado!');
 		elseif($postData['post_status'] == 3 && (!$tsUser->is_admod && $tsUser->permisos['mocp'] == false)) return array('denunciado','Oops! El Post se encuentra en revisi&oacute;n, a la espera de su publicaci&oacute;n.');
 		elseif(!empty($postData['post_private']) && empty($tsUser->is_member)) return array('privado', $postData['post_title']);
   
-		  //ESTADÍSTICAS
-		  if((int)$postData['post_cache'] < time()-((int)$tsCore->settings['c_stats_cache']*60)){        
-		$q1 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(u.user_name) AS c FROM u_miembros AS u LEFT JOIN p_comentarios AS c ON u.user_id = c.c_user WHERE c.c_post_id = \''.(int)$post_id.'\' && c.c_status = \'0\' && u.user_activo = \'1\' && u.user_baneado = \'0\''));
-		$q2 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(u.user_name) AS s FROM u_miembros AS u LEFT JOIN u_follows AS f ON u.user_id = f.f_user WHERE f.f_type = \'2\' && f.f_id = \''.(int)$post_id.'\' && u.user_activo = \'1\' && u.user_baneado = \'0\''));
-		$q3 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(follow_id) AS m FROM u_follows WHERE f_type = \'3\' && f_id = \''.(int)$post_id.'\''));
-		$q4 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(fav_id) AS f FROM p_favoritos WHERE fav_post_id = \''.(int)$post_id.'\''));
-		  
-		  // NÚMERO DE COMENTARIOS
-		$postData['post_comments'] = $q1[0];
-		// NÚMERO DE SEGUIDORES
-		$postData['post_seguidores'] = $q2[0];
-		// NÚMERO DE SEGUIDORES
-		$postData['post_shared'] = $q3[0];
-		// NÚMERO DE FAVORITOS
-		$postData['post_favoritos'] = $q4[0];
-		  
+		//ESTADÍSTICAS
+		if((int)$postData['post_cache'] > $time - ((int)$tsCore->settings['c_stats_cache'] * 60)) {
+		  	// NÚMERO DE COMENTARIOS
+			$postData['post_comments'] = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(u.user_name) AS c FROM u_miembros AS u LEFT JOIN p_comentarios AS c ON u.user_id = c.c_user WHERE c.c_post_id = $post_id && c.c_status = 0 && u.user_activo = 1 && u.user_baneado = 0"));
+			// NÚMERO DE SEGUIDORES
+			$postData['post_seguidores'] = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(u.user_name) AS s FROM u_miembros AS u LEFT JOIN u_follows AS f ON u.user_id = f.f_user WHERE f.f_type = 2 && f.f_id = $post_id && u.user_activo = 1 && u.user_baneado = 0"));
+			// NÚMERO DE SEGUIDORES
+			$postData['post_shared'] = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(follow_id) AS m FROM u_follows WHERE f_type = 3 && f_id = $post_id"));
+			// NÚMERO DE FAVORITOS
+			$postData['post_favoritos'] = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(fav_id) AS f FROM p_favoritos WHERE fav_post_id = $post_id"));
+        	// ACTUALIZAMOS
+        	$post = $tsCore->getIUP([
+        		'comments' => $postData['post_comments'][0],
+        		'seguidores' => $postData['post_seguidores'][0],
+        		'shared' => $postData['post_shared'][0],
+        		'favoritos' => $postData['post_favoritos'][0],
+        		'cache' => $time
+        	], 'post_');
+
 		  //ACTUALIZAMOS LAS ESTADÍSTICAS
-		  db_exec([__FILE__, __LINE__], 'query', 'UPDATE p_posts SET post_comments = \''.$q1[0].'\', post_seguidores = \''.$q2[0].'\', post_shared = \''.$q3[0].'\', post_favoritos = \''.$q4[0].'\', post_cache = \''.time().'\' WHERE post_id = \''.(int)$post_id.'\'');
-		  }
-		  
-		  // BLOQUEADO
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT bid FROM u_bloqueos WHERE b_user = \''.(int)$postData['post_user'].'\' AND b_auser = \''.$tsUser->uid.'\' LIMIT 1');
-		$postData['block'] = db_exec('num_rows', $query);
-		
+		  db_exec([__FILE__, __LINE__], 'query', "UPDATE p_posts SET $post WHERE post_id = $post_id");
+		}
+		// BLOQUEADO
+		$postData['block'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT bid FROM u_bloqueos WHERE b_user = {$postData['post_user']} AND b_auser = {$tsUser->uid} LIMIT 1"));
 		// FOLLOWS
 		if($postData['post_seguidores'] > 0){
-			$q1 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(follow_id) AS f FROM u_follows WHERE f_id = \''.(int)$postData['post_id'].'\' AND f_user = \''.$tsUser->uid.'\' AND f_type = \'2\''));
-			$postData['follow'] = $q1[0];	
+			$postData['follow'] = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(follow_id) AS f FROM u_follows WHERE f_id = {$postData['post_id']} AND f_user = {$tsUser->uid} AND f_type = 2"))[0];	
 		}
 		//VISITANTES RECIENTES
-		if($postData['post_visitantes']){
-		$postData['visitas'] = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT v.*, u.user_id, u.user_name FROM w_visitas AS v LEFT JOIN u_miembros AS u ON v.user = u.user_id WHERE v.for = \''.(int)$postData['post_id'].'\' && v.type = \'2\' && v.user > 0 ORDER BY v.date DESC LIMIT 10'));
+		if($postData['post_visitantes']) {
+			$postData['visitas'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT v.*, u.user_id, u.user_name FROM w_visitas AS v LEFT JOIN u_miembros AS u ON v.user = u.user_id WHERE v.for = {$postData['post_id']} && v.type = 2 && v.user > 0 ORDER BY v.date DESC LIMIT 10"));
 		}
-		  //PUNTOS
-		  if($postData['post_user'] == $tsUser->uid || $tsUser->is_admod){
-		  $postData['puntos'] = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT p.*, u.user_id, u.user_name FROM p_votos AS p LEFT JOIN u_miembros AS u ON p.tuser = u.user_id WHERE p.tid = \''.(int)$postData['post_id'].'\' && p.type = \'1\' ORDER BY p.cant DESC'));
+		//PUNTOS
+		if($postData['post_user'] == $tsUser->uid || $tsUser->is_admod){
+			$postData['puntos'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT p.*, u.user_id, u.user_name FROM p_votos AS p LEFT JOIN u_miembros AS u ON p.tuser = u.user_id WHERE p.tid = {$postData['post_id']} && p.type = 1 ORDER BY p.cant DESC"));
 		}
-		  // CATEGORIAS
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT c.c_nombre, c.c_seo FROM p_categorias AS c  WHERE c.cid = \''.$postData['post_category'].'\'');
-		$postData['categoria'] = db_exec('fetch_assoc', $query);
-		
+		// CATEGORIAS
+		$postData['categoria'] = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT c.c_nombre, c.c_seo FROM p_categorias AS c  WHERE c.cid = {$postData['post_category']}"));
 		// BBCode
 		$postData['post_body'] = $tsCore->parseBadWords($postData['post_smileys'] == 0  ? $tsCore->parseBBCode($postData['post_body']) : $tsCore->parseBBCode($postData['post_body'], 'firma'), true);
 		$postData['user_firma'] = $tsCore->parseBadWords($tsCore->parseBBCodeFirma($postData['user_firma']),true);
 		// MEDALLAS
-		  $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT m.*, a.* FROM w_medallas AS m LEFT JOIN w_medallas_assign AS a ON a.medal_id = m.medal_id WHERE a.medal_for = \''.(int)$postData['post_id'].'\' AND m.m_type = \'2\' ORDER BY a.medal_date');
-		$postData['medallas'] = result_array($query);
-		  $postData['m_total'] = count($postData['medallas']);
-		  
+		$postData['medallas'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT m.*, a.* FROM w_medallas AS m LEFT JOIN w_medallas_assign AS a ON a.medal_id = m.medal_id WHERE a.medal_for = {$postData['post_id']} AND m.m_type = 2 ORDER BY a.medal_date"));
+		$postData['m_total'] = safe_count($postData['medallas']);
 		// TAGS
-		$postData['post_tags'] = explode(",",$postData['post_tags']);
-		$postData['n_tags'] = count($postData['post_tags']) - 1;
-		// FECHA
-		$postData['post_date'] = strftime("%d.%m.%Y a las %H:%M hs",$postData['post_date']);
+		$postData['post_tags'] = explode(",", $postData['post_tags']);
+		$postData['n_tags'] = safe_count($postData['post_tags']) - 1;
 		// NUEVA VISITA : FUNCION SIMPLE
-		$visitado = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT id FROM `w_visitas` WHERE `for` = \''.(int)$post_id.'\' && `type` = \'2\' && '.($tsUser->is_member ? '(`user` = \''.$tsUser->uid.'\' OR `ip` LIKE \''.$_SERVER['REMOTE_ADDR'].'\')' : '`ip` LIKE \''.$_SERVER['REMOTE_ADDR'].'\'').' LIMIT 1'));
+		$likeip = "`ip` LIKE '{$_SERVER['REMOTE_ADDR']}'";
+		$useriplike = $tsUser->is_member ? "(`user` = {$tsUser->uid} OR $likeip)" : $likeip;
+		$visitado = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT id FROM `w_visitas` WHERE `for` = $post_id && `type` = 2 && $useriplike LIMIT 1"));
 		if($tsUser->is_member && $visitado == 0) {
-			db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO w_visitas (`user`, `for`, `type`, `date`, `ip`) VALUES (\''.$tsUser->uid.'\', \''.(int)$post_id.'\', \'2\', \''.time().'\', \''.$_SERVER['REMOTE_ADDR'].'\')');
-			db_exec([__FILE__, __LINE__], 'query', 'UPDATE p_posts SET post_hits = post_hits + 1 WHERE post_id = \''.(int)$post_id.'\' AND post_user != \''.$tsUser->uid.'\'');
-		}else{
-		db_exec([__FILE__, __LINE__], 'query', 'UPDATE `w_visitas` SET `date` = \''.time().'\', ip = \''.$tsCore->getIP().'\' WHERE `for` = \''.(int)$post_id.'\' && `type` = \'2\' && `user` = \''.$tsUser->uid.'\' LIMIT 1');
+			db_exec([__FILE__, __LINE__], 'query', "INSERT INTO w_visitas (`user`, `for`, `type`, `date`, `ip`) VALUES ({$tsUser->uid}, $post_id, 2, $time, '{$_SERVER['REMOTE_ADDR']}')");
+			db_exec([__FILE__, __LINE__], 'query', "UPDATE p_posts SET post_hits = post_hits + 1 WHERE post_id = $post_id AND post_user != {$tsUser->uid}");
+		} else{
+			db_exec([__FILE__, __LINE__], 'query', "UPDATE `w_visitas` SET `date` = $time, ip = '{$tsCore->getIP()}' WHERE `for` = $post_id && `type` = 2 && `user` = {$tsUser->uid} LIMIT 1");
 		}
 		if($tsCore->settings['c_hits_guest'] == 1 && !$tsUser->is_member && !$visitado) {
-			db_exec([__FILE__, __LINE__], 'query', 'INSERT INTO w_visitas (`user`, `for`, `type`, `date`, `ip`) VALUES (\''.$tsUser->uid.'\', \''.(int)$post_id.'\', \'2\', \''.time().'\', \''.$_SERVER['REMOTE_ADDR'].'\')');
-			db_exec([__FILE__, __LINE__], 'query', 'UPDATE p_posts SET post_hits = post_hits + 1 WHERE post_id = \''.(int)$post_id.'\'');
+			db_exec([__FILE__, __LINE__], 'query', "INSERT INTO w_visitas (`user`, `for`, `type`, `date`, `ip`) VALUES ({$tsUser->uid}, $post_id, 2, $time, '{$_SERVER['REMOTE_ADDR']}')");
+			db_exec([__FILE__, __LINE__], 'query', "UPDATE p_posts SET post_hits = post_hits + 1 WHERE post_id = $post_id");
 		}
-		  // AGREGAMOS A VISITADOS... PORTAL
-		  if($tsCore->settings['c_allow_portal']){
-			 $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT last_posts_visited FROM u_portal WHERE user_id = \''.$tsUser->uid.'\' LIMIT 1');
-				$data = db_exec('fetch_assoc', $query);
-				
-				$visited = unserialize($data['last_posts_visited']);
-				if(!is_array($visited)) $visited = array();
-				$total = count($visited);
-				if($total > 10){
-					 array_splice($visited, 0, 1); // HACK
-				}
-				//
-				if(!in_array($postData['post_id'],$visited))
-					 array_push($visited,$postData['post_id']);
-				//
-				$visited = serialize($visited);
-			db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_portal SET last_posts_visited = \''.$visited.'\' WHERE user_id = \''.$tsUser->uid.'\'');
-		  }
+		// AGREGAMOS A VISITADOS... PORTAL
+		if($tsCore->settings['c_allow_portal']){
+			$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT last_posts_visited FROM u_portal WHERE user_id = {$tsUser->uid} LIMIT 1"));
+		
+			$visited = safe_unserialize($data['last_posts_visited']);
+			$total = safe_count($visited);
+			if($total > 10) array_splice($visited, 0, 1);
+			if(!in_array($postData['post_id'],$visited)) $visited = [...$visited ,$postData['post_id']];
+			$visited = serialize($visited);
+			db_exec([__FILE__, __LINE__], 'query', "UPDATE u_portal SET last_posts_visited = '$visited' WHERE user_id = {$tsUser->uid}");
+		}
 		//
 		return $postData;
 	}
@@ -938,10 +923,27 @@ class tsPosts {
 		
 		//
 		foreach($data as $fav){
-			$favoritos .= '{"fav_id":'.$fav['fav_id'].',"post_id":'.$fav['post_id'].',"titulo":"'.$fav['post_title'].'","categoria":"'.$fav['c_seo'].'","categoria_name":"'.$fav['c_nombre'].'","imagen":"'.$fav['c_img'].'","url":"'.$tsCore->settings['url'].'/posts/'.$fav['c_seo'].'/'.$fav['post_id'].'/'.$tsCore->setSEO($fav['post_title']).'.html","fecha_creado":'.$fav['post_date'].',"fecha_creado_formato":"'.strftime("%d\/%m\/%Y a las %H:%M:%S hs",$fav['post_date']).'.","fecha_creado_palabras":"'.$tsCore->setHace($fav['post_date'],true).'","fecha_guardado":'.$fav['fav_date'].',"fecha_guardado_formato":"'.strftime("%d\/%m\/%Y a las %H:%M:%S hs",$fav['fav_date']).'.","fecha_guardado_palabras":"'.$tsCore->setHace($fav['fav_date'],true).'","puntos":'.$fav['post_puntos'].',"comentarios":'.$fav['post_comments'].'},';
+			$favjson= [
+				"fav_id" => $fav['fav_id'],
+				"post_id" => $fav['post_id'],
+				"titulo" => $fav['post_title'],
+				"categoria" => $fav['c_seo'],
+				"categoria_name" => $fav['c_nombre'],
+				"imagen" => $fav['c_img'],
+				"url" => $tsCore->settings['url'].'/posts/'.$fav['c_seo'].'/'.$fav['post_id'].'/'.$tsCore->setSEO($fav['post_title']).'.html',
+				"fecha_creado" => $fav['post_date'],
+				"fecha_creado_formato" => $tsCore->setHace($fav['post_date']),
+				"fecha_creado_palabras" => $tsCore->setHace($fav['post_date'],true),
+				"fecha_guardado" =>  $tsCore->setHace($fav['post_date']),
+				"fecha_guardado_formato" => $tsCore->setHace($fav['post_date']),
+				"fecha_guardado_palabras" => $tsCore->setHace($fav['fav_date'],true),
+				"puntos" => $fav['post_puntos'],
+				"comentarios" => $fav['post_comments']
+			];
+			$favoritos[] = json_encode($favjson, JSON_FORCE_OBJECT);
 		}
 		//
-		return $favoritos;
+		return join(',', $favoritos);
 	}
 	/*
 		delFavorito()
