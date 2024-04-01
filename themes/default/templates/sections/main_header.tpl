@@ -13,8 +13,8 @@
 }
 <script>
 $(document).ready(() => {
-{if $tsNots > 0}notifica.popup({$tsNots});{/if}
-{if $tsMPs > 0 && $tsAction != 'leer'}mensaje.popup({$tsMPs});{/if}
+	notifica.popup({$tsNots});
+	mensaje.popup({$tsMPs});
 });
 </script>
 </head>

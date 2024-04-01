@@ -25,6 +25,48 @@
     font-weight: bold;
     color: #FFF;
 }
+.phpost h4.options,
+.phpost h4.options > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.phpost h4.options > div {
+    justify-content: flex-end;
+}
+.list-group-item {
+    padding: 0.5rem;
+    display: block;
+    position: relative;
+    font-weight: 300!important;
+    border-bottom: 1px solid #CCC;
+    line-height: 1.5rem;
+}
+.list-group-item:last-child {
+    border-bottom: 1px solid transparent;
+}
+.list-group-item .fw-bold {
+    font-size: 1rem;
+    font-weight: 400;
+}
+.list-group-item .text-secondary {
+    color: #666;
+    font-style: italic;
+}
+.list-group-item .badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: inline-block;
+    padding: .2rem .6rem;
+    background-color: #4D90FE;
+    color: #FFF;
+}
+.data-github {
+    font-size: .75rem;
+    line-height: .5rem;
+    padding: .5rem;
+}
 .pp_list {
     margin: 0;
 }

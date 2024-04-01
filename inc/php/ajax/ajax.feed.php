@@ -36,13 +36,13 @@
 		'i' => $tsUser->uid
 	];
 	$key = base64_encode(serialize($code));
+	$conexion = "https://phpost.es/feed/";
 	// CODIGO
 	switch($action){
 		case 'feed-support':
 			//<--- CONSULTAR ACTUALIZACIONES OFICIALES Y VERIFICAR VERSIÓN ACTUAL DE ESTE SCRIPT
-				$json = $tsCore->getUrlContent('http://www.phpost.net/feed/index.php?type=support&key='.$key);
-				if(substr($json,0,1) == '0') eval(base64_decode(substr($json,2)));
-				else echo $json;
+				$json = $tsCore->getUrlContent($conexion . 'index.php?from=PHPost&type=support&key=' . $key);
+				echo $json;
 			//--->
 		break;
 		case 'feed-version':
@@ -51,7 +51,7 @@
 			 * PHPost Risus 1.3.0.005 *
 			*/
 			$time = time();
-			$version_now = 'Risus 1.3.0.005';
+			$version_now = 'Risus 1.3.0.006';
 			$version_code = str_replace([' ', '.'], '_', strtolower($version_now));
 			# ACTUALIZAR VERSIÓN
 			if($tsCore->settings['version'] != $version_now){
@@ -59,8 +59,8 @@
 				db_exec([__FILE__, __LINE__], 'query', "UPDATE `w_stats` SET stats_time_upgrade = $time WHERE stats_no = 1 LIMIT 1");
 			}
 			//<---
-				$json = $tsCore->getUrlContent('http://www.phpost.net/feed/index.php?type=version&key='.$key);
-				echo $json;
+			$json = $tsCore->getUrlContent($conexion . 'index.php?from=PHPost&type=version&key=' . $key);
+			echo $json;
 			//--->
 		break;
 		  default:

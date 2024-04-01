@@ -100,7 +100,10 @@ class Extension {
 $database = new DataBase();
 $extension = new Extension;
 
-function createPassword(string $username = '', string $password = '') {
+function createPassword(string $username = '', string $password = '', int $c_upperkey = 0) {
+	if($c_upperkey === 0) $username = strtolower($username);
+	$username = 'UmlzdXMyMw==' . md5($username);
 	$password = 'UmlzdXMyMw==' . md5($password);
-	return md5($password . $username);
+	$md5 = md5($password . $username);
+	return $md5;
 }

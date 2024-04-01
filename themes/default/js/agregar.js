@@ -76,12 +76,6 @@ function confirmleave() {
 }
 //
 preliminar = () => {
-	//COMPROBAR TITULO
-   if (countUpperCase($('input[name=titulo]').val()) < 5) {
-		error($('input[name=titulo]'), 'Debes ingresar un titulo para el post', true);
-		$('input[name=titulo]').focus();
-		return false;
-	}
 	//COMPROBAR CONTENIDO
 	if ($('textarea[name=cuerpo]').bbcode().length < 1) {
 		error($('.wysibb'), 'Ingresa contenido para el post', true);

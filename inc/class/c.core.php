@@ -11,7 +11,7 @@ class tsCore {
 
 	// No quitar, ni reemplazar
 	private $keygen = 'UmlzdXMyMw==';
-
+	
 	public function https_on() {
 	   if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') $isSecure = false;
 	   elseif (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') $isSecure = true;

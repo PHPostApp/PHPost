@@ -210,7 +210,8 @@ class SmartyPHPost {
 	  		$scripts = ["highlight.min.js", ...$scripts];
 		}
 		if($this->system['tsPage'] == 'admin') {
-  			$scripts = [...$scripts, "timeago.es.js"];
+			if($this->system['action'] == '')
+  				$scripts = [...$scripts, "timeago.min.js", "timeago.es.js"];
 			$posicion = array_search("wysibb.js", $scripts);
 			if($posicion !== false) unset($scripts[$posicion]);
 			$scripts = array_values($scripts);
@@ -325,15 +326,15 @@ function smarty_function_phpost($params, &$smarty) {
 		$template .= $SmartyPHPost->setStylesheets($params['css']);
 	}
 
+	if(isset($params['scriptGlobal'])) {
+		$template .= $SmartyPHPost->setScriptLineGlobal();
+	}	
+
 	# Añadimos los scripts
 	if(isset($params['js'])) {
 		$template .= "<!-- Añadimos los scripts elegidos y necesarios -->\n";
 		$template .= $SmartyPHPost->setScripts($params['js'], is_array($params['js']));
 	}
-
-	if(isset($params['scriptGlobal'])) {
-		$template .= $SmartyPHPost->setScriptLineGlobal();
-	}	
 
 	return trim($template);
 }

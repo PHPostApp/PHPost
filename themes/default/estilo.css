@@ -144,6 +144,8 @@ hr {
 	font-size: 14px;
 	line-height: 1rem;
 	padding: 1.125rem 1.5rem;
+	max-height: 250px;
+	overflow-y: auto;
 }
 #mydialog #procesando {
 	display: none;

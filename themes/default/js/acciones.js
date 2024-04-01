@@ -15,7 +15,7 @@ function close_login_box(){
 }
 function ir_a_categoria(cat){
 	if(cat!='root' && cat!='linea') {
-		href = (cat==-2) ? 'posts/' : `posts/${cat}`;
+		href = (cat==-2) ? 'posts/' : `posts/${cat}/`;
 		location.href = `${global_data.url}/${href}`;
 	}
 }
@@ -288,16 +288,16 @@ var notifica = {
 		});
 	},
 	follow: function (type, id, cb, obj) {
-		this.ajax(Array('action=follow', 'type='+type, 'obj='+id), cb, obj);
+		this.ajax(['action=follow', 'type='+type, 'obj='+id], cb, obj);
 	},
 	unfollow: function (type, id, cb, obj) {
-		this.ajax(Array('action=unfollow', 'type='+type, 'obj='+id), cb, obj);
+		this.ajax(['action=unfollow', 'type='+type, 'obj='+id], cb, obj);
 	},
 	spam: function (id, cb) {
-		this.ajax(Array('action=spam', 'postid='+id), cb);
+		this.ajax(['action=spam', 'postid='+id], cb);
 	},
 	c_spam: function (id, cb) {
-		this.ajax(Array('action=c_spam', 'temaid='+id), cb);
+		this.ajax(['action=c_spam', 'temaid='+id], cb);
 	},
 	sharePost: function (id) {
 		mydialog.show();

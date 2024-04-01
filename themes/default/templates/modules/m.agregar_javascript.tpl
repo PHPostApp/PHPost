@@ -185,14 +185,14 @@ $(document).ready(function(){
 			}
 			mydialog.class_aux = 'preview';
 			mydialog.show(true);
-			mydialog.title('...');
+			mydialog.title($('input[name=titulo]').val() ?? 'Vista previa');
 			mydialog.body('Cargando vista previa....<br><br><img src="' + global_data.url + '/themes/default/images/loading_bar.gif">');
             mydialog.center();
             // PREVIEW
 			$.ajax({
 				type: 'post',
 				url: global_data.url + '/posts-preview.php?ts=true',
-				data: 'titulo=' + encodeURIComponent($('input[name=titulo]').val()) + '&cuerpo=' + encodeURIComponent($('textarea[name=cuerpo]').val()),
+				data: 'cuerpo=' + encodeURIComponent($('textarea[name=cuerpo]').val()),
 				success: function(r) {
 					mydialog.body(r);
 					mydialog.buttons(true, true, button_title, 'postSave()', true, true, true, 'Cerrar previsualizaci&oacute;n', 'close', true, false);

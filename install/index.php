@@ -237,7 +237,6 @@ switch ($step) {
             if(isset($_COOKIE['upperkey']) AND (int)$_COOKIE['upperkey'] === 0) {
    				$user['name'] = strtolower($user['name']);
             }
-            $key = createPassword($user['name'], $user['passc']);
             $time = time();
 				// DATOS DE CONEXION
 				define('TS_HEADER', true);
@@ -246,6 +245,10 @@ switch ($step) {
             $database->db = $db;
             $database->db_link = $database->conn();
             $database->setNames();
+            // Creamos contraseña
+            $data = $database->fetch_assoc("SELECT c_upperkey FROM w_configuracion WHERE tscript_id = 1");
+            $key = createPassword($user['name'], $user['passc'], (int)$data['c_upperkey']);
+           
             //COMPROBAMOS QUE NO HAYA ADMINISTRADORES Y/O EL PRIMER USUARIO REGISTRADO
             if($database->num_rows("SELECT user_id FROM u_miembros WHERE user_id = 1 OR user_rango = 1 LIMIT 1")) {
                $message = 'No se puede registrar, ya existe un administrador.';

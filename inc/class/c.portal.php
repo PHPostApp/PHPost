@@ -42,22 +42,23 @@ class tsPortal{
      * @param array
      * @return array
      */
-     public function composeCategories(){
-        global $tsCore, $tsUser;
-        //
-        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `last_posts_cats` FROM `u_portal` WHERE `user_id` = \''.$tsUser->uid.'\'');
-        $data = db_exec('fetch_assoc', $query);
-        
-        //
-        $data = unserialize($data['last_posts_cats']);
-        foreach($tsCore->settings['categorias'] as $key => $cat){
-            if(in_array($cat['cid'], $data)) $cat['check'] = 1;
-            else $cat['check'] = 0;
-            $categories[] = $cat;
-        }
-        //
-        return $categories;
-     }
+   public function composeCategories(){
+      global $tsCore, $tsUser;
+      //
+      $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `last_posts_cats` FROM `u_portal` WHERE `user_id` = \''.$tsUser->uid.'\'');
+      $data = db_exec('fetch_assoc', $query);
+      
+      //
+      if($data['last_posts_cats'] == NULL) return [];
+      $data = unserialize($data['last_posts_cats']);
+      foreach($tsCore->settings['categorias'] as $key => $cat){
+         if(in_array($cat['cid'], $data)) $cat['check'] = 1;
+         else $cat['check'] = 0;
+         $categories[] = $cat;
+      }
+      //
+      return $categories;
+   }
      /** getMyPosts()
      * @access public
      * @param

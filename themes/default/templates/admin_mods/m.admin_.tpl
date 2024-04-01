@@ -11,12 +11,20 @@
 	 
 	<hr class="separator" />
 	<div class="phpost">
-		<h4>Último commit en Github</h4>
-		<ul id="last_gh" class="pp_list">
+		<h4>PHPost en directo</h4>
+		<ul id="ulitmas_noticias" class="pp_list">
 			<div class="phpostAlfa">Cargando...</div>
 		</ul>
-		<h4>PHPost en directo</h4>
-		<ul id="news_pp" class="pp_list">
+		<h4 class="options">Último commit en Github
+					<div class="text-end">
+						<!-- Radio buttons as toggle buttons -->
+						<input type="radio" name="branch" class="btn-check" id="main" checked>
+						<label class="btn btn-outline-primary" for="main">Main</label>
+						 
+						<input type="radio" name="branch" class="btn-check" id="dev">
+						<label class="btn btn-outline-primary" for="dev">Dev</label>
+					</div></h4>
+		<ul id="lastCommit" class="pp_list">
 			<div class="phpostAlfa">Cargando...</div>
 		</ul>
 	</div>
@@ -24,12 +32,14 @@
 		<h4>Estado</h4>
 		<ul id="status_pp" class="pp_list">
 			<li>
-				<div class="title">Todos los archivos</div>
+				<div class="title">Estado de los archivos</div>
 				<div class="body">
-					<strong>Est&aacute;n {if $tsConfig.updated === '0'}des{/if}actualizado</strong>
-					{if $tsConfig.updated === '0'}
-					<br>
-					<a href="javascript:admin.updated()">Actualizar ahora con Github</a>
+					{if $tsConfig.updated === '1'}
+						<strong>Estas al día</strong>
+					{else}
+						<strong>Hay nuevas actualizaciones</strong>
+						<br>
+						<a href="javascript:admin.updated()">Actualizar ahora con Github</a>
 					{/if}
 				</div>
 			</li>
@@ -55,33 +65,6 @@
 	</div>
 	<div class="clearBoth"></div>
 </div>
-{literal}
-<script type="text/javascript">
-$(() => {
-	$.getJSON(global_data.url + "/feed-support.php", response => {
-		$('#news_pp').html('');
-		response.map( data => {
-			const { link, title, info } = data;
-			var html = `<li>
-				<div class="title">
-					<a href="${link}" target="_blank">${title}</a>
-				</div>
-				<div class="body">${info}</div>
-			</li>`;
-			$('#news_pp').append(html);
-		})
-	})
-	//
-	$.getJSON(global_data.url + "/feed-version.php?v=risus", response => {
-		const { title, text } = response
-		$('#version_pp').append(`
-         <li>
-            <div class="title">${title}</div>
-            <div class="body"><b>${text}</b></div>
-         </li>
-      `);
-	});
-});
-</script>
-{/literal}
-{phpost js="last-commit.js"}
+<script src="https://cdn.jsdelivr.net/npm/emoji-toolkit@8.0.0/lib/js/joypixels.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/emoji-toolkit@8.0.0/extras/css/joypixels.min.css" rel="stylesheet">
+{phpost js="versiones.js"}
