@@ -150,3 +150,15 @@ if (!function_exists('safe_count')) {
       return (is_array($data) || $data instanceof Countable) ? count($data, $mode) : 0;
    }
 }
+
+if(file_exists(TS_ROOT . '.env')) {
+	$dotenv = fopen(TS_ROOT . '.env', 'r');
+	if ($dotenv) {
+	   while (($line = fgets($dotenv)) !== false) {
+	      if (preg_match('/\A([a-zA-Z0-9_]+)=(.*)\z/', trim($line), $matches)) {
+	         putenv(sprintf('%s=%s', $matches[1], $matches[2]));
+	      }
+	   }
+	   fclose($dotenv);
+	}
+}

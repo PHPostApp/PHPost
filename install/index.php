@@ -11,13 +11,13 @@ define('SCRIPT_ROOT', realpath('../') . DS);
 define('INSTALL_ROOT', realpath('./') . DS);
 define('CONFIGINC', SCRIPT_ROOT . 'config.inc.php');
 define('CONFIGINC2', INSTALL_ROOT . 'config.copy.php');
-define('LICENSE', SCRIPT_ROOT . 'license.txt');
+define('LICENSE', SCRIPT_ROOT . 'LICENSE');
 define('BLOCKED', SCRIPT_ROOT . '.lock');
 
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 session_start();
 //
-$version_id = "1.3.006";
+$version_id = "1.3.008";
 $version_title = "Risus $version_id";
 $wversion_code = str_replace([' ', '.'], '_', strtolower($version_title));
 

@@ -2,11 +2,11 @@
 	<h3>Centro de Administraci&oacute;n</h3>
 </div>
 <div id="res" class="boxy-content">
-	<p><strong>Bienvenido(a), {$tsUser->nick}!</strong><br />Este es tu &quot;Centro de Administraci&oacute;n de PHPost&quot;. Aqu&iacute; puedes modificar la configuraci&oacute;n de tu web, modificar usuarios, modificar posts, y muchas otras cosas.<br />Si tienes algun problema, por favor revisa la p&aacute;gina de &quot;Soporte y Cr&eacute;ditos&quot;.  Si esa informaci&oacute;n no te sirve, puedes <a href="https://phpost.net/foro/" target="_blank">visitarnos para solicitar ayuda</a> acerca de tu problema.</p>
+	<p><strong>Bienvenido(a), {$tsUser->nick}!</strong><br />Este es tu &quot;Centro de Administraci&oacute;n de PHPost&quot;. Aqu&iacute; puedes modificar la configuraci&oacute;n de tu web, modificar usuarios, modificar posts, y muchas otras cosas.<br />Si tienes algun problema, por favor revisa la p&aacute;gina de &quot;Soporte y Cr&eacute;ditos&quot;.  Si esa informaci&oacute;n no te sirve, puedes <a href="https://phpost.es" target="_blank">visitarnos para solicitar ayuda</a> acerca de tu problema.</p>
 	<hr>
 	<p><h3>También pudes sumarte a nuestros grupos:</h3>
-		<span style="display: block;">Discord <a href="https://discord.gg/mx25MxAwRe" target="_blank">PHPost '23</a></span>
-		<span style="display: block;">Telegram <a href="https://t.me/PHPost23" target="_blank">PHPost '23</a></span>
+		<span style="display: block;">Discord <a href="https://discord.gg/mx25MxAwRe" target="_blank">PHPost '24</a></span>
+		<span style="display: block;">Telegram <a href="https://t.me/PHPost23" target="_blank">PHPost '24</a></span>
 	</p>
 	 
 	<hr class="separator" />

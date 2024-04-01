@@ -29,8 +29,7 @@ endif;
 // CODIGO
 switch($action){
 	case 'github-api':
-
-		$token = '11AGEWD2Y0KyNxbjoa8wXO_ENTCbIQyOiwwpHeX1Bmfp4BRhgkpne6cE3Rh5USETHg6WMG77BJjJ3e765v';
+		$token = (file_exists(TS_ROOT . '.env')) ? getenv('USER_GITHUB_TOKEN') : '';
 
 		$branch = isset($_POST['branch']) ? $tsCore->setSecure($_POST['branch']) : 'main';
 
@@ -38,11 +37,11 @@ switch($action){
 
 		$ch = curl_init($url);
 
+		if(file_exists(TS_ROOT . '.env')) $header[] = 'Authorization: token ' . $token;
+		$header[] = 'User-Agent: PHPost App';
+
 		// Configura la cabecera de autenticación con el token
-		curl_setopt($ch, CURLOPT_HTTPHEADER, [
-		   'Authorization: token github_pat_' . $token,
-		   'User-Agent: PHPost App'
-		]);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 
 		// Establece algunas opciones adicionales de cURL si es necesario
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -56,5 +55,6 @@ switch($action){
 
 		// Cierra la sesión cURL
 		curl_close($ch);
+
 	break;
 }

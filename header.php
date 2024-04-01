@@ -150,29 +150,29 @@ if (!extension_loaded('gd') && !function_exists('gd_info')) {
  *  Validaciones extra
  * -------------------------------------------------------------------
  */
-	 // Baneo por IP
-	 $ip = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
-	 if(!filter_var($ip, FILTER_VALIDATE_IP)) die('Su ip no se pudo validar.'); 
-	 if(db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT id FROM w_blacklist WHERE type = \'1\' && value = \''.$ip.'\' LIMIT 1'))) die('Bloqueado');
+// Baneo por IP
+$ip = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
+if(!filter_var($ip, FILTER_VALIDATE_IP)) die('Su ip no se pudo validar.'); 
+if(db_exec('num_rows', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT id FROM w_blacklist WHERE type = \'1\' && value = \''.$ip.'\' LIMIT 1'))) die('Bloqueado');
 
-	 // Online/Offline
-	 if($tsCore->settings['offline'] == 1 && ($tsUser->is_admod != 1 && $tsUser->permisos['govwm'] == false) && $_GET['action'] != 'login-user'){
-		$smarty->assign('tsTitle',$tsCore->settings['titulo'].' -  '.$tsCore->settings['slogan']);
-		  if(empty($_GET['action'])) 
-			$smarty->display('sections/mantenimiento.tpl');
-		  else die('Espera un poco...');
-		exit();
-	 // Banned
-	 } elseif($tsUser->is_banned) {
-		  $banned_data = $tsUser->getUserBanned();
-		  if(!empty($banned_data)){
-				// SI NO ES POR AJAX
-				if(empty($_GET['action'])){
-					 $smarty->assign('tsBanned',$banned_data);
-					 $smarty->display('sections/suspension.tpl');
-				} 
-				else die('<div class="emptyError">Usuario suspendido</div>');
-				//
-				exit;
-		  }
-	 }
+// Online/Offline
+if($tsCore->settings['offline'] == 1 && ($tsUser->is_admod != 1 && $tsUser->permisos['govwm'] == false) && $_GET['action'] != 'login-user'){
+	$smarty->assign('tsTitle',$tsCore->settings['titulo'].' -  '.$tsCore->settings['slogan']);
+	  if(empty($_GET['action'])) 
+		$smarty->display('sections/mantenimiento.tpl');
+	  else die('Espera un poco...');
+	exit();
+// Banned
+} elseif($tsUser->is_banned) {
+	  $banned_data = $tsUser->getUserBanned();
+	  if(!empty($banned_data)){
+			// SI NO ES POR AJAX
+			if(empty($_GET['action'])){
+				 $smarty->assign('tsBanned',$banned_data);
+				 $smarty->display('sections/suspension.tpl');
+			} 
+			else die('<div class="emptyError">Usuario suspendido</div>');
+			//
+			exit;
+	  }
+}

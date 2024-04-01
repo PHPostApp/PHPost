@@ -21,6 +21,7 @@ inc/php/newsletter.php
 
 # Archivo generado desde el install
 .lock
+.env
 
 # Solo el theme default
 themes/*

@@ -11,8 +11,8 @@
 	Versi&oacute;n de GD: <strong>{$tsVersion.gd}</strong>
 	<hr class="separator" />
 	<strong>Cr&eacute;ditos:</strong><br />
-	La primera versi&oacute;n del fue desarrollada por <a href="mailto:jneutron@phpost.net">JNeutron</a>. El resto de versiones se mantiene por <a href="mailto:isidro@phpost.net">Isidro</a> y la participaci&oacute;n de los usuarios de la <a href="https://phpost.net/foro/">comunidad</a>.
+	La primera versi&oacute;n del fue desarrollada por <a href="mailto:jneutron@phpost.net">JNeutron</a>. El resto de versiones se mantiene por <a href="mailto:isidro@phpost.net">Isidro</a> y la participaci&oacute;n de los usuarios de la <a href="https://phpost.es">comunidad</a>.
 	<hr class="separator" />
 	<strong>Derechos de autor:</strong><br />
-	Es de vital importancia recordar que el dise&ntilde;o y esquema de <strong>PHPost</strong> fueron <strong>BASADOS</strong> en la popular p&aacute;gina <a href="https://www.taringa.net" target="_blank">Taringa!</a>, cuyos cr&eacute;ditos y derechos de autor no pretenden ser adue&ntilde;ados por <a href="https://phpost.net/foro/">PHPost</a> ni ning&uacute;n desarrollador. Dichos dise&ntilde;os y esquemas han sido adoptados a <strong>PHPost</strong> con fines meramente <strong>EDUCATIVOS</strong> y no se pretende <strong>LUCRAR</strong> con los mismos. Por ello, todas las im&aacute;genes, dise&ntilde;os y logos pertenecen a sus respectivos creadores.<br />
+	Es de vital importancia recordar que el dise&ntilde;o y esquema de <strong>PHPost</strong> fueron <strong>BASADOS</strong> en la popular p&aacute;gina <a href="https://www.taringa.net" target="_blank">Taringa!</a>, cuyos cr&eacute;ditos y derechos de autor no pretenden ser adue&ntilde;ados por <a href="https://phpost.es">PHPost</a> ni ning&uacute;n desarrollador. Dichos dise&ntilde;os y esquemas han sido adoptados a <strong>PHPost</strong> con fines meramente <strong>EDUCATIVOS</strong> y no se pretende <strong>LUCRAR</strong> con los mismos. Por ello, todas las im&aacute;genes, dise&ntilde;os y logos pertenecen a sus respectivos creadores.<br />
 </div>

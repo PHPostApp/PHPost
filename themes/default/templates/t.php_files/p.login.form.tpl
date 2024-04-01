@@ -32,4 +32,11 @@
 		<span style="cursor:pointer;color:green;font-weight: bold;" onclick="registro_load_form(); return false">Registrate Ahora!</span>
 	</div>
 
-<script src="{$tsConfig.js}/login.js"></script>
+<script src="{$tsConfig.js}/login.js?{$smarty.now}"></script>
+<script>
+document.onkeydown = tecla => {
+	if(tecla.code == 'Enter' && tecla.key == 'Enter' && tecla.keyCode == 13) {
+		iniciarSesion()
+	}
+};
+</script>

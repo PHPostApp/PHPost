@@ -262,26 +262,27 @@ var mydialog = {
 			this.buttons(false, false);
 			this.center();
 		}
-		$('#mydialog #procesando #mensaje').html('<img src="'+global_data.img+'/loading_bar.gif" />');
+		$('#mydialog #procesando #mensaje').html('<img src="'+global_data.tema_images+'/loading_bar.gif" />');
 		$('#mydialog #procesando').fadeIn('fast');
 	},
 	procesando_fin: function(){
 		$('#mydialog #procesando').fadeOut('fast');
 	},
 	faster: obj => {
-		if(!empty(obj.class_aux)) mydialog.class_aux = obj.addClass;
-		if(obj.close_button) mydialog.close_button = obj.close_button;
-		if(obj.mask_button) mydialog.mask_button = obj.mask_button;
-		if(obj.size) mydialog.size = obj.size; // small | normal | big
+		const { class_aux, addClass, close_button, mask_button, size, title, body, buttons } = obj
+		if(!empty(class_aux)) mydialog.class_aux = addClass;
+		mydialog.close_button = (close_button);
+		mydialog.mask_button = (mask_button);
+		mydialog.size = (size) ? size : 'normal'; // small | normal | big
 		mydialog.show(true);
-		mydialog.title(obj.title);
-		mydialog.body(obj.body);
-		if(typeof obj.buttons === 'boolean') {
+		mydialog.title(title);
+		mydialog.body(body);
+		if(typeof buttons === 'boolean') {
 			mydialog.buttons(false)
-		} else if(obj.buttons.fail !== undefined) {
-			mydialog.buttons(true, true, obj.buttons.ok.text, obj.buttons.ok.action, true, true, true, obj.buttons.fail.text, obj.buttons.fail.action, true, false);
+		} else if(buttons.fail !== undefined) {
+			mydialog.buttons(true, true, buttons.ok.text, buttons.ok.action, true, true, true, buttons.fail.text, buttons.fail.action, true, false);
 		} else {
-			mydialog.buttons(true, true, obj.buttons.ok.text, obj.buttons.ok.action, true, true, false);
+			mydialog.buttons(true, true, buttons.ok.text, buttons.ok.action, true, true, false);
 		}
 		mydialog.center();
 	}

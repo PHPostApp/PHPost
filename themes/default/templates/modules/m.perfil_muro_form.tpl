@@ -37,11 +37,11 @@
                                         <textarea class="status autogrow" id="wall" onfocus="onfocus_input(this)" onblur="onblur_input(this)" title="{if $tsInfo.uid == $tsUser->uid}&iquest;Qu&eacute; est&aacute;s pensando?{else}Escribe algo....{/if}"></textarea>
                                     </div>
                                     <div id="fotoFrame">
-                                        <input type="text" class="itext" name="ifoto" value="https://phpost.net/foro//images/ejemplo.jpg" title="https://phpost.net/foro//images/ejemplo.jpg" onfocus="onfocus_input(this)" onblur="onblur_input(this)"/>
+                                        <input type="text" class="itext" name="ifoto" value="https://phpost.es/images/ejemplo.jpg" title="https://phpost.es/images/ejemplo.jpg" onfocus="onfocus_input(this)" onblur="onblur_input(this)"/>
                                         <a href="#" class="btn_g adj" onclick="muro.stream.adjuntar(); return false;">Adjuntar</a>
                                     </div>
                                     <div id="enlaceFrame">
-                                        <input type="text" class="itext" name="ienlace" value="https://phpost.net/foro//blog/ejemplo.html" title="https://phpost.net/foro//blog/ejemplo.html" onfocus="onfocus_input(this)" onblur="onblur_input(this)"/>
+                                        <input type="text" class="itext" name="ienlace" value="https://phpost.es/blog/ejemplo.html" title="https://phpost.es/blog/ejemplo.html" onfocus="onfocus_input(this)" onblur="onblur_input(this)"/>
                                         <a href="#" class="btn_g adj" onclick="muro.stream.adjuntar(); return false;">Adjuntar</a>
                                     </div>
                                     <div id="videoFrame">
