@@ -130,7 +130,12 @@
 			//--->
 		break;
 		case 'admin-updated':
+			echo 'No se puede actualizar, hasta mejorar el sistema de actualizado.';
+			die;
 			if((int)$tsCore->settings['updated'] === 0 AND isset($_POST['update_now'])) {
+				/**
+				 * Si ignoras esto podrías borrar todo
+				 * NO IGNORAR ESE DIE;
 				require_once TS_CLASS . "c.lastCommit.php";
 				$gh = new UpdateGithub;
 				$gh->ruta = TS_ROOT;
@@ -139,6 +144,7 @@
 					echo '<br><h3>Actualizando tabla...</h3>';
 					echo $gh->updateTable();
 				}
+				*/
 			} else echo 'Ya tienes todos los archivos actualizados.';
 		break;
 		case 'admin-update':

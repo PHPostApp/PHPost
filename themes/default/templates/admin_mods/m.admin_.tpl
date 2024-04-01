@@ -16,14 +16,15 @@
 			<div class="phpostAlfa">Cargando...</div>
 		</ul>
 		<h4 class="options">Último commit en Github
-					<div class="text-end">
-						<!-- Radio buttons as toggle buttons -->
-						<input type="radio" name="branch" class="btn-check" id="main" checked>
-						<label class="btn btn-outline-primary" for="main">Main</label>
-						 
-						<input type="radio" name="branch" class="btn-check" id="dev">
-						<label class="btn btn-outline-primary" for="dev">Dev</label>
-					</div></h4>
+			<div class="text-end">
+				<!-- Radio buttons as toggle buttons -->
+				<input type="radio" name="branch" class="btn-check" id="main" checked>
+				<label class="btn btn-outline-primary" for="main">Main</label>
+				 
+				<input type="radio" name="branch" class="btn-check" id="dev">
+				<label class="btn btn-outline-primary" for="dev">Dev</label>
+			</div>
+		</h4>
 		<ul id="lastCommit" class="pp_list">
 			<div class="phpostAlfa">Cargando...</div>
 		</ul>

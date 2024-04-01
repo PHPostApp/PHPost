@@ -46,13 +46,12 @@ class UpdateGithub {
 
 	private function deleteDirRecursive(string $directorio = '') {
 		$archivos = glob($directorio . '/*');
-    	foreach ($archivos as $archivo) {
-        	if (is_dir($archivo)) {
-        		self::deleteDirRecursive($archivo); // Llama a la función de manera recursiva
-        	} elseif (is_file($archivo)) {
-           	unlink($archivo); // Elimina archivos individuales
-        	}
-    	}
+
+	  	$dir = new RecursiveDirectoryIterator($directorio, FilesystemIterator::SKIP_DOTS);
+      $files = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::CHILD_FIRST);
+      foreach($files as $file) {
+      	$file->isDir() ? rmdir($file) : unlink($file);
+      }
 	}
 
 	private function delete(array $files = [], $directorioLocal) {
@@ -123,7 +122,6 @@ class UpdateGithub {
 
     	// Descargamos los archivos
     	self::downloads($commit['files']);
-    	
 	 	// Quitamos los archivos/carpetas que ya no estan
 	 	self::delete($commit['files'], $this->ruta);
 	}
