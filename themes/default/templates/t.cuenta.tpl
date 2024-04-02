@@ -10,7 +10,7 @@
 	<div class="floatL">
 		<ul class="menu-tab">
 			<li{if $tsAccion == ''} class="active"{/if}><a href="{$tsConfig.url}/cuenta/">Cuenta</a></li>
-			<li{if $tsAccion == 'perfil'} class="active"{/if}><a href="{$tsConfig.url}/cuenta/perfil?tab=me">Perfil</a></li>    
+			<li{if $tsAccion == 'perfil'} class="active"{/if}><a href="{$tsConfig.url}/cuenta/perfil">Perfil</a></li>    
 			<li{if $tsAccion == 'block'} class="active"{/if}><a href="{$tsConfig.url}/cuenta/block">Bloqueados</a></li>
 			<li{if $tsAccion == 'clave'} class="active"{/if}><a href="{$tsConfig.url}/cuenta/clave">Cambiar Clave</a></li>
 			<li{if $tsAccion == 'nick'} class="active"{/if}><a href="{$tsConfig.url}/cuenta/nick">Cambiar Nick</a></li>
@@ -28,7 +28,7 @@
 </div>
 <div style="clear:both"></div>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/croppr@2.3.1/dist/croppr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/croppr@2.3.1/dist/croppr.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/croppr/dist/croppr.min.css">
+<script src="https://cdn.jsdelivr.net/combine/npm/iconify-icon,npm/croppr"></script>
 <script src="{$tsConfig.js}/cuenta.js?{$smarty.now}"></script>
 {include "main_footer.tpl"}

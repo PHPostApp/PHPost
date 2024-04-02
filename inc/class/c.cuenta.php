@@ -5,54 +5,8 @@
  * @name    c.cuenta.php
  * @author  PHPost Team
  */
+require_once TS_EXTRA . "datos.php";
 class tsCuenta {
-
-	# Redes sociales disponibles
-	/**
-	  * Si van a agregar más debe ser así 'nombre_minuscula => 'nombre_inicial_mayuscula',
-	*/
-	var $redes = [
-		'facebook' => [
-			'iconify' => 'devicon:facebook',
-			'nombre' => 'Facebook', 
-			'url' => 'https://facebook.com'
-		],
-		'twitter' => [
-			'iconify' => 'devicon:twitter',
-			'nombre' => 'Twitter', 
-			'url' => 'https://twitter.com'
-		],
-		'instagram' => [
-			'iconify' => 'skill-icons:instagram',
-			'nombre' => 'Instagram',
-			'url' => 'https://twitter.com'
-		],
-		'youtube' => [
-			'iconify' => 'logos:youtube-icon',
-			'nombre' => 'Youtube',
-			'url' => 'https://youtube.com'
-		],
-		'twitch' => [
-			'iconify' => 'logos:twitch',
-			'nombre' => 'Twitch',
-			'url' => 'https://twitch.tv'
-		],
-		'tiktok' => [
-			'iconify' => 'logos:tiktok-icon',
-			'nombre' => 'Tiktok',
-			'url' => 'https://www.tiktok.com/@'
-		],
-		'discord' => [
-			'iconify' => 'skill-icons:discord',
-			'nombre' => 'Discord',
-			'url' => 'https://discord.com/users'
-		],
-		'reddit' => [
-			'iconify' => 'logos:reddit-icon',
-			'nombre' => 'Reddit',
-			'url' => 'https://www.reddit.com/user'
-		]
-	];
 
    /**
     * @name loadPerfil()
@@ -82,13 +36,13 @@ class tsCuenta {
        loadExtras()
    */
    private function unData($data){
+   	global $redes;
       //
-      $d = ['p_gustos', 'p_tengo', 'p_idiomas', 'p_configs'];
-      foreach ($d as $v) $data[$v] = unserialize($data[$v]);
+      $data['p_configs'] = unserialize($data['p_configs']);
 		// Redes sociales
-      $data["redes"] = $this->redes;
-		$data['p_socials'] = json_decode($data['p_socials'], true);
-		foreach ($this->redes as $name => $valor) $data['p_socials'][$name];
+      $data["redes"] = $redes;
+		$data['p_socials'] = ($data['p_socials'] != NULL) ? json_decode($data['p_socials'], true) : [];
+		foreach ($redes as $name => $valor) $data['p_socials'][$name];
       //
       return $data;
    }
@@ -105,7 +59,7 @@ class tsCuenta {
       // Redes Sociales
 		if(!empty($data['p_socials'])) {
 			$data['p_socials'] = json_decode($data['p_socials'], true);
-			foreach ($this->redes as $name => $valor) $data['p_socials'][$name];
+			foreach ($redes as $name => $valor) $data['p_socials'][$name];
    	} else $data['p_socials'] = '';
 		$data['p_configs'] = unserialize($data['p_configs']);
 		$data['pais']= [
@@ -265,7 +219,7 @@ class tsCuenta {
             $email_ok = $this->isEmail($perfilData['email']);
             // CORRECCIONES
 				if(!$email_ok){
-					return [
+					$message = [
 						'field' => 'email', 
 						'error' => 'El formato de email ingresado no es v&aacute;lido.'
 					];
@@ -273,36 +227,36 @@ class tsCuenta {
 					$perfilData['email'] = $tsUser->info['user_email'];
 				// CHEQUEAMOS FECHA DE NACIMIENTO
 				} elseif(!checkdate($perfilData['mes'], $perfilData['dia'], $perfilData['ano']) || ($perfilData['ano'] > $year || $perfilData['ano'] < ($year - 100))){
-					return ['error' => 'La fecha de nacimiento no es v&aacute;lida.'];
+					$message = ['error' => 'La fecha de nacimiento no es v&aacute;lida.'];
 					// LOS ANTERIORES
 					$perfilData['mes'] = $info['user_mes'];
 					$perfilData['dia'] = $info['user_dia'];
 					$perfilData['ano'] = $info['user_ano'];
 				// SEXO / GÉNERO
 				} elseif($perfilData['sexo'] > 2) {
-					return ['error' => 'Especifica un g&eacute;nero sexual.'];
+					$message = ['error' => 'Especifica un g&eacute;nero sexual.'];
 					$perfilData['sexo'] = $info['user_sexo'];
 				// PAÍS
 				} elseif(empty($perfilData['pais'])){
-					return ['error' => 'Por favor, especifica tu pa&iacute;s.'];
+					$message = ['error' => 'Por favor, especifica tu pa&iacute;s.'];
 					$perfilData['pais'] = $info['user_pais'];
 				// ESTADO / PROVINCIA
 				} elseif(empty($perfilData['estado'])){
-					return ['error' => 'Por favor, especifica tu estado.'.$_POST['estado']];
+					$message = ['error' => 'Por favor, especifica tu estado.'.$_POST['estado']];
 					$perfilData['estado'] = $info['user_estado'];
 				// FIRMA DEL USUARIO
 				} elseif(strlen($perfilData['firma']) > 300){
-               return ['error' => 'La firma no puede superar los 300 caracteres.'];
+               $message = ['error' => 'La firma no puede superar los 300 caracteres.'];
                $perfilData['firma'] = $info['user_firma'];
             // ES EL MISMO CORREO?
             } elseif($tsUser->info['user_email'] != $perfilData['email']) {
 				   $exists = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id FROM u_miembros WHERE user_email = '{$perfilData['email']}' LIMIT 1"));
 				   // EXISTE?...
 				   if($exists) {
-                  return ['error' => 'Este email ya existe, ingresa uno distinto.'];
+                  $message = ['error' => 'Este email ya existe, ingresa uno distinto.'];
                   $perfilData['email'] = $tsUser->info['user_email'];
                // NO EXISTE?
-               } else return ['error' => 'Los cambios fueron aceptados y ser&aacute;n aplicados en los pr&oacute;ximos minutos. NO OBSTANTE, la nueva direcci&oacute;n de correo electr&oacute;nico especificada debe ser comprobada. '.$tsCore->settings['titulo'].' envi&oacute; un mensaje de correo electr&oacute;nico con las instrucciones necesarias'];
+               } else $message = ['error' => 'Los cambios fueron aceptados y ser&aacute;n aplicados en los pr&oacute;ximos minutos. NO OBSTANTE, la nueva direcci&oacute;n de correo electr&oacute;nico especificada debe ser comprobada. '.$tsCore->settings['titulo'].' envi&oacute; un mensaje de correo electr&oacute;nico con las instrucciones necesarias'];
 				}
 			break;
          // NEW PASSWORD
@@ -312,20 +266,19 @@ class tsCuenta {
             $confirm_passwd = $_POST['confirm_passwd'];
             // Los campos estan vacios?
             if(empty($new_passwd) || empty($confirm_passwd)) 
-            	return ['error' => 'Debes ingresar una contrase&ntilde;a.'];
+            	$message = ['error' => 'Debes ingresar una contrase&ntilde;a.'];
             // La nueva contraseña es corta?
             if(strlen($new_passwd) < 5) 
-             	return ['error' => 'Contrase&ntilde;a no v&aacute;lida.'];
+             	$message = ['error' => 'Contrase&ntilde;a no v&aacute;lida.'];
             // Las contraseñas coinciden?
             if($new_passwd != $confirm_passwd) 
-            	return ['error' => 'Tu nueva contrase&ntilde;a debe ser igual a la confirmaci&oacute;n de la misma.'];
+            	$message = ['error' => 'Tu nueva contrase&ntilde;a debe ser igual a la confirmaci&oacute;n de la misma.'];
            	// Verificamos que la contraseña sea correcta
-            $key = $tsCore->createPassword($tsUser->nick, $passwd);
-            if($key != $tsUser->info['user_password']) 
-            	return ['error' => 'Tu contrase&ntilde;a actual no es correcta.'];
+            if(!$tsCore->createPassword($tsUser->nick, $passwd, $tsUser->info['user_password'])) 
+            	$message = ['error' => 'Tu contrase&ntilde;a actual no es correcta.'];
             // Guardamos la nueva contraseña
             $new_key = $tsCore->createPassword($tsUser->nick, $new_passwd);
-				if(db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_password = '$new_key' WHERE user_id = {$tsUser->uid}")) return true;
+				if(db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_password = '$new_key' WHERE user_id = {$tsUser->uid}")) return ['error' => 'Tu contrase&ntilde;a se actualizó correctamente.'];
 			break;
 			// PRIVACIDAD
          case 'privacidad':
@@ -343,20 +296,20 @@ class tsCuenta {
 				if($status === 0) $nuevo_nick = strtolower($nuevo_nick);
 				// Hay un nick en la lista negra?...
 				if(db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT id FROM w_blacklist WHERE type = 4 && value = '$nuevo_nick' LIMIT 1"))) 
-           		return ['error' => 'Nick no permitido'];           	
+           		$message = ['error' => 'Nick no permitido'];           	
            	// El nick esta en uso?
             if(db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id FROM u_miembros WHERE user_name = '$nuevo_nick' LIMIT 1"))) 
-            	return ['error' => 'Nombre en uso'];
+            	$message = ['error' => 'Nombre en uso'];
             // Buscamos al usuario, para verificar si ha hecho un cambio
 				$data = db_exec("fetch_assoc", db_exec([__FILE__, __LINE__], "query", "SELECT id, user_id, time FROM u_nicks WHERE user_id = {$tsUser->uid} AND estado = 0 LIMIT 1"));
 				if($data !== NULL) {
-					if(!empty((int)$data['id'])) return ['error' => 'Ya tiene una petici&oacute;n de cambio en curso'];
+					if(!empty((int)$data['id'])) $message = ['error' => 'Ya tiene una petici&oacute;n de cambio en curso'];
 					// Realizamos petición
 					elseif(time() - $data['time'] >= 31536000) db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_name_changes = 3 WHERE user_id = {$data['user_id']}");
 				}
 				// Verificamos la contraseña
 				$key = $tsCore->createPassword($tsUser->nick, $_POST['password']);
-				return ['error' => 'Tu contrase&ntilde;a actual no es correcta.'];
+				$message = ['error' => 'Tu contrase&ntilde;a actual no es correcta.'];
 				// Verificamos el correo	
 				$email_ok = $this->isEmail($_POST['pemail']);
 				if(!$email_ok) 
@@ -364,15 +317,15 @@ class tsCuenta {
 				$email = empty($_POST['pemail']) ? $tsUser->info['user_email'] : $_POST['pemail'];
 				// Si el nick tiene más de 4 y menos de 20 carácteres
 				if(strlen($nuevo_nick) < 4 || strlen($nuevo_nick) > 20) 
-					return ['error' => 'El nick debe tener entre 4 y 20 car&aacute;cteres'];
+					$message = ['error' => 'El nick debe tener entre 4 y 20 car&aacute;cteres'];
 				// Que no tenga espacios, ni carácteres especiales
 				if(!preg_match('/^([A-Za-z0-9]+)$/', $nuevo_nick)) 
-					return ['error' => 'El nick debe ser alfanum&eacute;rico'];
+					$message = ['error' => 'El nick debe ser alfanum&eacute;rico'];
 				// Creamos la nueva contraseña
 				$key = $tsCore->createPassword($nuevo_nick, $_POST['password']);
 				// Verificamos la IP
 				$_SERVER['REMOTE_ADDR'] = $tsCore->validarIP();
-            return ['error' => 'Su IP no se pudo validar'];
+            $message = ['error' => 'Su IP no se pudo validar'];
             $datos = [
             	'user_id' => $tsUser->uid, 
             	'user_email' => $tsCore->setSecure($email), 
@@ -383,84 +336,36 @@ class tsCuenta {
             	'ip' => $_SERVER['REMOTE_ADDR']
             ];
 				if(insertInto([__FILE__, __LINE__], 'u_nicks', $datos)); 
-					return ['error' => 'Proceso iniciado, recibir&aacute; la respuesta en el correo indicado cuando valoremos el cambio.'];
+					$message = ['error' => 'Proceso iniciado, recibir&aacute; la respuesta en el correo indicado cuando valoremos el cambio.'];
          break;
-		}
-		switch ($tab) {
-			case 'me':
+			case 'perfil':
             // INTERNOS
             $sitio = trim($_POST['sitio']);
             if(!empty($sitio)) $sitio = substr($sitio, 0, 4) == 'http' ? $sitio : 'http://'.$sitio;
 				// EXTERNAS, Redes sociales
 				$red__social = [];
 				foreach ($_POST["red"] as $llave => $id) $red__social[$llave] = $tsCore->setSecure($tsCore->parseBadWords($id), true);
-				for($i = 0; $i < 5; $i++) $gustos[$i] = $tsCore->setSecure($tsCore->parseBadWords($_POST['g_'.$i]), true);
 				$perfilData = array(
 					'nombre' => $tsCore->setSecure($tsCore->parseBadWords($_POST['nombre']), true),
 					'mensaje' => $tsCore->setSecure($tsCore->parseBadWords($_POST['mensaje']), true),
 					'sitio' => $tsCore->setSecure($tsCore->parseBadWords($sitio), true),
 					'socials' => json_encode($red__social),
-					'gustos' => serialize($gustos),
-					'estado' => $tsCore->setSecure($_POST['estado']),
-					'hijos' => $tsCore->setSecure($_POST['hijos']),
-					'vivo' => $tsCore->setSecure($_POST['vivo']),
 				);
 				// COMPROBACIONES
-            if(!empty($perfilData['sitio']) && !filter_var($perfilData['sitio'], FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED)) return ['error' => 'El sitio web introducido no es correcto.'];
-			break;
-			case 'fisico':
-				// EXTRAS
-				$tengo = array($tsCore->setSecure($_POST['t_0']),$tsCore->setSecure($_POST['t_1']));
-				$perfilData = array(
-					'altura' => $tsCore->setSecure($_POST['altura']),
-					'peso' => $tsCore->setSecure($_POST['peso']),
-					'pelo' => $tsCore->setSecure($_POST['pelo_color']),
-					'ojos' => $tsCore->setSecure($_POST['ojos_color']),
-					'fisico' => $tsCore->setSecure($_POST['fisico']),
-					'dieta' => $tsCore->setSecure($_POST['dieta']),
-					'tengo' => serialize($tengo),
-					'fumo' => $tsCore->setSecure($_POST['fumo']),
-					'tomo' => $tsCore->setSecure($_POST['tomo_alcohol']),
-				);
-			break;
-			case 'job':
-				// EXTRAS
-				for($i = 0; $i<7;$i++) $idiomas[$i] = $tsCore->setSecure($_POST['idioma_'.$i]);
-				$perfilData = array(
-					'estudios' => $tsCore->setSecure($_POST['estudios']),
-					'idiomas' => serialize($idiomas),
-					'profesion' => $tsCore->setSecure($tsCore->parseBadWords($_POST['profesion'], true)),
-					'empresa' => $tsCore->setSecure($tsCore->parseBadWords($_POST['empresa'],true)),
-					'sector' => $tsCore->setSecure($_POST['sector']),
-					'ingresos' => $tsCore->setSecure($_POST['ingresos']),
-					'int_prof' => $tsCore->setSecure(substr($_POST['intereses_profesionales'],0,$maxsize), true),
-					'hab_prof' => $tsCore->setSecure(substr($_POST['habilidades_profesionales'],0,$maxsize), true),
-				);
-			break;
-			case 'pref':
-				$perfilData = array(
-					'intereses' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['intereses'],0,$maxsize)), true),
-					'hobbies' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['hobbies'],0,$maxsize)), true),
-					'tv' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['tv'],0,$maxsize)), true),
-					'musica' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['musica'],0,$maxsize)), true),
-					'deportes' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['deportes'],0,$maxsize)), true),
-					'libros' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['libros'],0,$maxsize)), true),
-					'peliculas' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['peliculas'],0,$maxsize)), true),
-					'comida' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['comida'],0,$maxsize)), true),
-					'heroes' => $tsCore->setSecure($tsCore->parseBadWords(substr($_POST['heroes'],0,$maxsize)), true),
-				);
+            if(!empty($perfilData['sitio']) && !filter_var($perfilData['sitio'], FILTER_VALIDATE_URL)) $message = ['error' => 'El sitio web introducido no es correcto.'];
 			break;
 		}
-		$thisAccount = (in_array($save, ['', 'privacidad']) or in_array($tab, ['me', 'fisico', 'job', 'pref']));
-		if($thisAccount) {
+		if(empty($save)) {
 			db_exec([__FILE__, __LINE__], "query", "UPDATE u_miembros SET user_email = '{$perfilData['email']}' WHERE user_id = {$tsUser->uid}");
 			if($save === '') array_splice($perfilData, 0, 1);
 		}
+	
 		if($perfilData !== NULL) {
 			$updates = $tsCore->getIUP($perfilData, (in_array($save, ['', 'privacidad']) ? 'user_' : 'p_'));
-			if(!db_exec([__FILE__, __LINE__], "query", "UPDATE u_perfil SET {$updates} WHERE user_id = {$tsUser->uid}")) return ['error' => show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'Base de datos')];
+			if(!db_exec([__FILE__, __LINE__], "query", "UPDATE u_perfil SET {$updates} WHERE user_id = {$tsUser->uid}")) $message = ['error' => show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'Base de datos')];
+			$message = ['error' => 'Los cambios fueron aplicados.'];
 		}
-		return ['error' => 'Los cambios fueron aplicados.'];
+		return $message;
 	}
 	/*
 		checkEmail()

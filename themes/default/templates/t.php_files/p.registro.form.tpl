@@ -3,12 +3,13 @@
 	<div class="mensajeAviso">
 		<span>Obteniendo código de reCAPTCHA...</span>
 	</div>
-	{if !empty({$tsConfig.gh_client_id})}
-	<div class="form-line" style="text-align: center;">
-		<a style="background: #000;display: inline-block;padding: .3rem 1rem;color: #FFF;border-radius: .3rem;margin-bottom: .7rem;" href="{$tsConfig.oauthGithub}">Crear cuenta con GitHub</a>
-		<a style="background: #000;display: inline-block;padding: .3rem 1rem;color: #FFF;border-radius: .3rem;margin-bottom: .7rem;" href="{$tsConfig.oauthDiscord}">Crear cuenta con Discord</a>
+	<div class="form-line">
+		{foreach $OAuth key=i item=social}
+			<a class="btn-social btn-active btn-icon-only btn-{$i}" href="{$social}">
+				<span class="btn-iconify btn-icon-{$i}"></span> Crear cuenta con {$i|ucfirst}
+			</a>
+		{/foreach}
 	</div>
-	{/if}
 	<div class="form-line">
 		<label for="nick">Ingresa tu usuario*</label>
 		<input name="nick" type="text" id="nick" tabindex="1" placeholder="Ingrese un nombre de usuario &uacute;nico" autocomplete="off" /> 

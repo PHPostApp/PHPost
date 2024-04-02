@@ -511,3 +511,45 @@ $tsPaises = array(
     		'Otra raz&oacute;n (especificar)'
       ),
 	);
+$redes = [
+     'facebook' => [
+          'iconify' => 'devicon:facebook',
+          'nombre' => 'Facebook', 
+          'url' => 'https://facebook.com'
+     ],
+     'twitter' => [
+          'iconify' => 'devicon:twitter',
+          'nombre' => 'Twitter', 
+          'url' => 'https://twitter.com'
+     ],
+     'instagram' => [
+          'iconify' => 'skill-icons:instagram',
+          'nombre' => 'Instagram',
+          'url' => 'https://twitter.com'
+     ],
+     'youtube' => [
+          'iconify' => 'logos:youtube-icon',
+          'nombre' => 'Youtube',
+          'url' => 'https://youtube.com'
+     ],
+     'twitch' => [
+          'iconify' => 'logos:twitch',
+          'nombre' => 'Twitch',
+          'url' => 'https://twitch.tv'
+     ],
+     'tiktok' => [
+          'iconify' => 'logos:tiktok-icon',
+          'nombre' => 'Tiktok',
+          'url' => 'https://www.tiktok.com/@'
+     ],
+     'discord' => [
+          'iconify' => 'skill-icons:discord',
+          'nombre' => 'Discord',
+          'url' => 'https://discord.com/users'
+     ],
+     'reddit' => [
+          'iconify' => 'logos:reddit-icon',
+          'nombre' => 'Reddit',
+          'url' => 'https://www.reddit.com/user'
+     ]
+];

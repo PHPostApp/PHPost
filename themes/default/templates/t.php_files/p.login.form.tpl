@@ -4,12 +4,15 @@
 	</span>
 	
 	<div class="formulario">
-		{if !empty({$tsConfig.gh_client_id})}
-		<div class="form-line" style="text-align: center;">
-			<a style="background: #000;display: inline-block;padding: .3rem 1rem;color: #FFF;border-radius: .3rem;margin-bottom: .7rem;" href="{$tsConfig.oauthGithub}">Inicio de sesión con GitHub</a>
-			<a style="background: #000;display: inline-block;padding: .3rem 1rem;color: #FFF;border-radius: .3rem;margin-bottom: .7rem;" href="{$tsConfig.oauthDiscord}">Iniciar sesión con Discord</a>
-		</div>
-		{/if}
+		{if $OAuth}
+				<div class="form-line d-flex justify-content-center align-items-center gap-3">
+					{foreach $OAuth key=i item=social}
+						<a class="btn-social btn-active btn-icon-only btn-{$i}" href="{$social}">
+							<span class="btn-iconify btn-icon-{$i}"></span> Vincular {$i|ucfirst}
+						</a>
+					{/foreach}
+				</div>
+			{/if}
 		<div class="form-line">
 			<label>Usuario o Email</label>
 			<input type="text" id="nickname" autocomplete="OFF" placeholder="JohnDoe o johndoe@servermail.com" name="nick" maxlength="64">

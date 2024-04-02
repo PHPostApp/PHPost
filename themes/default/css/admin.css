@@ -130,7 +130,7 @@
 li#a_main {background-image: url(../../../public/images/icons/robot.png);}
 li#a_creditos {background-image: url(../../../public/images/icons/information-shield.png);}
 li#a_configs {background-image: url(../../../public/images/icons/gear.png);}
-li#a_configs, li#a_registro {background-image: url(../../../public/images/icons/gear.png);}
+li#a_configs, li#a_registro, li#a_socials {background-image: url(../../../public/images/icons/gear.png);}
 li#a_temas {background-image: url(../../../public/images/icons/color.png);}
 li#a_news {background-image: url(../../../public/images/icons/newspaper.png);}
 li#a_ads {background-image: url(../../../public/images/icons/currency.png);}

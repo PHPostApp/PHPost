@@ -76,6 +76,7 @@
 				$smarty->assign("tsMax", (int)$max_year);
 				$smarty->assign("tsMaxY", (int)$start_year);
 				$smarty->assign("tsEndY", (int)$end_year);
+   			$smarty->assign('OAuth', $tsCore->OAuth());
 			}
 		break;
 		case 'registro-check-nick':	

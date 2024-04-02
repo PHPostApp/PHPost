@@ -69,6 +69,7 @@
 		break;
 		case 'login-form':
 			// Solo debo poner esto
+			$smarty->assign('OAuth', $tsCore->OAuth());
 		break;
 		case 'login-salir':
 			//<---

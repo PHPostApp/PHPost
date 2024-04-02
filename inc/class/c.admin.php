@@ -696,6 +696,11 @@ class tsAdmin {
 	# * getChangeNicks() :: Obtenemos todos los nicks
 	# * ChangeNick_o_no() :: Aprobamos/Denegamos nick
 	# ===================================================
+	# ===================================================
+	# CAMBIOS DE NICK
+	# * getChangeNicks() :: Obtenemos todos los nicks
+	# * ChangeNick_o_no() :: Aprobamos/Denegamos nick
+	# ===================================================
 	public function getChangeNicks(string $realizado = '') {
 		global $tsCore;
 		# Cambio realizado

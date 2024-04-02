@@ -73,7 +73,7 @@
 		// PERFIL INFO
       $tsPerfil = $tsCuenta->loadPerfil();
 		$smarty->assign("tsPerfil", $tsPerfil);
-		$smarty->assign("tsRedes", $tsCuenta->redes);
+		$smarty->assign("tsRedes", $redes);
 		// PERFIL DATA
 		$smarty->assign("tsPData",$tsPerfilData);
       $smarty->assign("tsPrivacidad",$tsPrivacidad);

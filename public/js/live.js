@@ -51,7 +51,7 @@ const live = {
 			} else {
 				// TITULO
 				$(document).attr({
-					title: `${global_data.s_title} (${total_notis}) - ${global_data.s_slogan}`
+					title: `${global_data.titulo} (${total_notis}) - ${global_data.slogan}`
 				});
 				// 
 				let sound_type = (live.m_total > 0) ? 'Message' : 'Alert';

@@ -4,8 +4,8 @@
 <div id="res" class="boxy-content">
    {if $tsAct == ''}
 
-      <table class="table table-striped table-hover">
-         <caption><a href="{$tsConfig.url}/admin/socials?act=nueva" class="btn btn-success">Agregar Nueva Red social</a></caption>
+      <table class="admin_table table-striped table-hover">
+         <caption><a href="{$tsConfig.url}/admin/socials?act=nueva" class="mBtn btnOk">Agregar Nueva Red social</a></caption>
          <thead>
             <tr>
                <th scope="col">Red</th>
@@ -18,14 +18,14 @@
          <tbody>
             {foreach from=$tsSocials item=social}
             <tr id="{$social.social_id}">
-               <th style="width: 100px;" class="text-center" scope="row"><iconify-icon icon="logos:{$social.social_name}"></iconify-icon></th>
+               <th style="width: 100px;text-transform: capitalize;" class="text-center" scope="row">{$social.social_name}</th>
                <td>{$social.social_client_id|truncate:25}</td>
                <td>{$social.social_client_secret|truncate:25}</td>
                <td>{$social.social_redirect_uri|replace:"{$tsConfig.url}":''}</td>
                <td class="align-bottom">
                   <div class="admin_actions">
-                     <a href="{$tsConfig.url}/admin/socials?act=editar&id={$social.social_id}"><img src="{$tsConfig.public}/images/icons/editar.svg" title="Editar red social"/></a>
-                     <a href="{$tsConfig.url}/admin/socials?act=borrar&id={$social.social_id}"><img src="{$tsConfig.public}/images/icons/close.svg" title="Borrar red social"/></a>
+                     <a href="{$tsConfig.url}/admin/socials?act=editar&id={$social.social_id}"><img src="{$tsConfig.public}/images/icons/editar.png" title="Editar red social"/></a>
+                     <a href="{$tsConfig.url}/admin/socials?act=borrar&id={$social.social_id}"><img src="{$tsConfig.public}/images/icons/close.png" title="Borrar red social"/></a>
                   </div>
                </td>
             </tr>
@@ -38,7 +38,7 @@
 	      <fieldset>
 	         <legend>{$tsAct|ucfirst} red social</legend>
 	         {if $tsAct === 'editar'}
-	         	<input type="hidden" name="social_id" value="{$social.social_id}">
+	         	<input type="hidden" name="social_id" value="{$tsSocial.social_id}">
 	         {else}
 	         	<dl>
             		<dt><label for="social_name">Sitio:</label></dt>

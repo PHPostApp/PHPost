@@ -52,31 +52,15 @@ class tsCore {
 				'authorize_url' => 'https://github.com/login/oauth/authorize',
 				'token' => "https://github.com/login/oauth/access_token",
 				'user' => "https://api.github.com/user",
+				'revoke' => "",
 				'scope' => "user"
 			],
 			'discord' => [
 				'authorize_url' => 'https://discord.com/oauth2/authorize',
 				'token' => "https://discord.com/api/oauth2/token",
 				'user' => "https://discord.com/api/v10/users/@me",
+				'revoke' => "https://discord.com/api/oauth2/token/revoke",
 				'scope' => "email identify"
-			],
-			'gmail' => [
-				'authorize_url' => 'https://accounts.google.com/o/oauth2/auth',
-				'token' => "https://accounts.google.com/o/oauth2/token",
-				'user' => "https://www.googleapis.com/oauth2/v2/userinfo",
-				'scope' => "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
-			],
-			'facebook' => [
-				'authorize_url' => 'https://www.facebook.com/v18.0/dialog/oauth',
-				'token' => "https://graph.facebook.com/oauth/access_token",
-				'user' => "https://graph.facebook.com/v18.0/me?fields=id,name,email,picture,short_name",
-				'scope' => "email,public_profile"
-			],
-			'twitter' => [
-				'authorize_url' => 'https://api.twitter.com/oauth/authenticate',
-				'token' => "https://api.twitter.com/oauth/access_token",
-				'user' => "https://graph.facebook.com/v18.0/me?fields=id,name,email,picture,short_name",
-				'scope' => "email,public_profile"
 			]
 		];
 		return $getEndPoints[$social][$type];
@@ -88,7 +72,7 @@ class tsCore {
 			$parametros = [
 				'client_id' => $auth['social_client_id'],
 				'scope' => $this->getEndPoints($auth['social_name'], 'scope'),
-				'state' => strtolower($this->settings['titulo']).date('y'),
+				//'state' => strtolower($this->settings['titulo']).date('y'),
 				'response_type' => 'code',
 				'redirect_uri' => $auth['social_redirect_uri']
 			];

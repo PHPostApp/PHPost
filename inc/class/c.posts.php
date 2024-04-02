@@ -498,9 +498,6 @@ class tsPosts {
 	/*
 		deletePost()
 	*/
-	/* 
-		deletePost()
-	*/
 	function deletePost(){
 		global $tsCore, $tsUser;
 		//

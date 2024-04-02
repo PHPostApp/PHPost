@@ -48,6 +48,9 @@ var cuenta = {
 	},
 	guardar_datos: () => {
 		$('#loading').slideDown(250);
-		$.post(global_data.url + '/cuenta-guardar.php', $("form[name=editarcuenta]").serialize(), response => cuenta.alerta(response.error), 'json')
+		$.post(global_data.url + '/cuenta-guardar.php', $("form[name=editarcuenta]").serialize(), response => {
+			console.log(response)
+			cuenta.alerta(response.error)
+		}, 'json')
 	}
 }
