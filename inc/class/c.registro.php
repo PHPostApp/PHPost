@@ -31,8 +31,8 @@ class tsRegistro extends reCaptcha {
 	public function checkUserEmail(){
 	global $tsCore;
 		// Variables
-		$username = htmlspecialchars($_POST['nick']);
-		$email = strtolower($_POST['email']);
+		$username = htmlspecialchars($_POST['nick'] ?? '');
+		$email = strtolower($_POST['email'] ?? '');
       $which = empty($username) ? 'email' : 'nick';
       // MENSAJE
 		$valid = "1: El $which est&aacute; disponible.";	// DEFAULT

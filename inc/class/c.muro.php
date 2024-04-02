@@ -10,7 +10,7 @@ class tsMuro {
 	/*
 		  getPrivacity()
 	*/
-	public function getPrivacity(int $user_id = 0, string $username = '', $follow = NULL, $yfollow = NULL){
+	public function getPrivacity(int $user_id = 0, string $username = null, $follow = NULL, $yfollow = NULL){
 		global $tsUser;
 		$priv['m']['v'] = true;
 		$priv['mf']['v'] = true;

@@ -50,7 +50,7 @@ class tsPortal{
       
       //
       if($data['last_posts_cats'] == NULL) return [];
-      $data = unserialize($data['last_posts_cats']);
+      $data = safe_unserialize($data['last_posts_cats']);
       foreach($tsCore->settings['categorias'] as $key => $cat){
          if(in_array($cat['cid'], $data)) $cat['check'] = 1;
          else $cat['check'] = 0;
@@ -71,7 +71,7 @@ class tsPortal{
         $data = db_exec('fetch_assoc', $query);
         
         //
-        $cat_ids = unserialize($data['last_posts_cats']);
+        $cat_ids = safe_unserialize($data['last_posts_cats']);
         if(is_array($cat_ids)){
             $cat_ids = implode(',',$cat_ids);
             $where = "p.post_category IN ({$cat_ids})";
@@ -104,7 +104,7 @@ class tsPortal{
        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT `last_posts_'.$type.'` FROM `u_portal` WHERE `user_id` = \''.$tsUser->uid.'\' LIMIT 1');
         $dato = db_exec('fetch_assoc', $query);
         
-        $visited = unserialize($dato['last_posts_'.$type]);
+        $visited = safe_unserialize($dato['last_posts_'.$type]);
         krsort($visited);
 		// LO HAGO ASI PARA ORDENAR SIN NECESITAR OTRA VARIABLE
         foreach($visited as $key => $id){

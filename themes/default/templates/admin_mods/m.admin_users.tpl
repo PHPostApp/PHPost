@@ -20,7 +20,7 @@
 			<tbody>
 				{foreach from=$tsMembers.data item=m}
 				<tr>
-					<td><img src="{$tsConfig.images}/icons/ran/{$m.r_image}" /></td>
+					<td><img src="{$tsConfig.public}/images/icons/ran/{$m.r_image}" /></td>
 					<td align="left"><a href="{$tsConfig.url}/perfil/{$m.user_name}" class="hovercard" uid="{$m.user_id}" style="color:#{$m.r_color};">{$m.user_name}</a></td>
 					<td>{$m.user_email}</td>
 					<td>{if $m.user_lastactive == 0} Nunca{else}{$m.user_lastactive|hace:true}{/if}</td>
@@ -28,10 +28,10 @@
 					<td><a href="{$tsConfig.url}/moderacion/buscador/1/1/{$m.user_last_ip}" class="geoip" target="_blank">{$m.user_last_ip}</a></td>
 					<td id="status_user_{$m.user_id}">{if $m.user_baneado == 1}<font color="red">Suspendido</font>{elseif $m.user_activo == 0}<font color="purple">Inactivo</font>{else}<font color="green">Activo</font>{/if}</td>
 					<td class="admin_actions">
-						<a href="{$tsConfig.url}/admin/users?act=show&uid={$m.user_id}"><img src="{$tsConfig.images}/icons/editar.png" title="Editar Usuario" /></a>
+						<a href="{$tsConfig.url}/admin/users?act=show&uid={$m.user_id}"><img src="{$tsConfig.public}/images/icons/editar.png" title="Editar Usuario" /></a>
 						<a onclick="admin.users.setInActive({$m.user_id}); return false;"><img src="{$tsConfig.images}/reactivar.png" title="Activar/Desactivar Usuario" /></a>
-						<a href="#" onclick="mod.users.action({$m.user_id}, 'aviso', false); return false;"><img src="{$tsConfig.images}/icons/warning.png" title="Enviar Alerta" /></a>
-						<a href="#" onclick="mod.{if $m.user_baneado == 1}reboot({$m.user_id}, 'users', 'unban', false){else}users.action({$m.user_id}, 'ban', false){/if}; return false;"><img src="{$tsConfig.images}/icons/power_{if $m.user_baneado == 1}on{else}off{/if}.png" title="{if $m.user_baneado == 1}Reactivar{else}Suspender{/if} Usuario" /></a>
+						<a href="#" onclick="mod.users.action({$m.user_id}, 'aviso', false); return false;"><img src="{$tsConfig.public}/images/icons/warning.png" title="Enviar Alerta" /></a>
+						<a href="#" onclick="mod.{if $m.user_baneado == 1}reboot({$m.user_id}, 'users', 'unban', false){else}users.action({$m.user_id}, 'ban', false){/if}; return false;"><img src="{$tsConfig.public}/images/icons/power_{if $m.user_baneado == 1}on{else}off{/if}.png" title="{if $m.user_baneado == 1}Reactivar{else}Suspender{/if} Usuario" /></a>
 					</td>
 				</tr>
 				{/foreach}

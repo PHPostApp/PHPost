@@ -51,6 +51,7 @@ class SmartyPHPost {
   		$this->system['tsCore'] = new tsCore;
   		$this->system['tsUser'] = new tsUser;
   		$accessClass = ['action', 'tsAction', 'tsFoto', 'tsMPs', 'tsMuro', 'tsNots', 'tsPage', 'tsPages', 'tsPerfil', 'tsPost'];
+
   		foreach($accessClass as $class) $this->system[$class] = $GLOBALS[$class];
 
 		# Enlaces a los recursos y Directorios
@@ -248,8 +249,8 @@ class SmartyPHPost {
 			$claves['postid'] = (int)$this->system['tsPost']['post_id'];
 			$claves['autor'] = (int)$this->system['tsPages']['autor'];
 		}
-		if(isset($this->system['tsFoto']['foto_id'])) {
-			$claves['fotoid'] = (int)$this->system['tsFoto']['foto_id'];
+		if(isset($this->system['tsFoto']['foto']['foto_id'])) {
+			$claves['fotoid'] = (int)$this->system['tsFoto']['foto']['foto_id'];
 		}
 	
 		if(isset($this->system['tsComunidades']->comid)) {
