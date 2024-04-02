@@ -47,11 +47,11 @@ class UpdateGithub {
 	private function deleteDirRecursive(string $directorio = '') {
 		$archivos = glob($directorio . '/*');
 
-	  	$dir = new RecursiveDirectoryIterator($directorio, FilesystemIterator::SKIP_DOTS);
-      $files = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::CHILD_FIRST);
-      foreach($files as $file) {
-      	$file->isDir() ? rmdir($file) : unlink($file);
-      }
+	  	//$dir = new RecursiveDirectoryIterator($directorio, FilesystemIterator::SKIP_DOTS);
+      //$files = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::CHILD_FIRST);
+      //foreach($files as $file) {
+      //	$file->isDir() ? rmdir($file) : unlink($file);
+      //}
 	}
 
 	private function delete(array $files = [], $directorioLocal) {

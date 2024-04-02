@@ -21,6 +21,8 @@ define('TS_PLUGINS', TS_INCLUDES . 'plugins' . TS_PATH);
 
 define('TS_SMARTY', TS_INCLUDES . 'smarty' . TS_PATH);
 
+define('TS_WHOOPS', TS_INCLUDES . 'Whoops' . TS_PATH);
+
 define('TS_AVATAR', TS_FILES . 'avatar' . TS_PATH);
 
 define('TS_UPLOADS', TS_FILES . 'uploads' . TS_PATH);

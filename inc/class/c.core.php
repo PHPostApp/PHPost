@@ -104,8 +104,8 @@ class tsCore {
 		getSettings() :: CARGA DESDE LA DB LAS CONFIGURACIONES DEL SITIO
 	*/
 	public function getSettings() {
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM w_configuracion');
-		return db_exec('fetch_assoc', $query);
+		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM w_configuracion')); 
+		return $query;
 	}
 	
 	public function getNovemods() {
