@@ -3,7 +3,7 @@
  * Controlador
  *
  * @name    admin.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
 */
 
 /**********************************\
@@ -94,6 +94,18 @@
 				if($act === 'nuevo') $smarty->assign("tsError", $tsSocials->newSocial());
 			} 
 		}
+	// Redes sociales
+	} elseif($action === 'seo') {
+    	// CLASE MEDAL
+    	require_once TS_CLASS . "c.seo.php";
+    	$tsSeo = new tsSeo();
+    	
+		$tsTitle = 'Configurar SEO';
+		if(empty($act)) $smarty->assign('tsSeo', $tsSeo->getSeo());
+		if(!empty($_POST['titulo'])) {
+			if($tsSeo->saveSEO()) $tsCore->redireccionar('admin', $action, 'save=true');
+		}
+
 	// Temas
 	} elseif($action === 'temas') {
 		$tsTitle = 'Diseños / Temas';

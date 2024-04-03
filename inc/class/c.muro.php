@@ -3,7 +3,7 @@
  * Modelo para el control del muro
  *
  * @name    c.muro.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsMuro {
 

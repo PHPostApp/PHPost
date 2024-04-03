@@ -25,7 +25,7 @@
 				{foreach from=$tsMedals.medallas item=m}
 					<tr id="medal_id_{$m.medal_id}">
 						<td>{$m.medal_id}</td>
-						<td><img src="{$tsConfig.public}/images/icons/med/{$m.m_image}_16.png" /></td>
+						<td><img src="{$tsConfig.public}/images/icons/med/{$m.m_image}" /></td>
 						<td>{if $m.m_type == 1}Usuario{elseif $m.m_type == 2}Post{else}Foto{/if}</td>
 						<td>{$m.m_title}</td>
 						<td>{$m.m_description}</td>
@@ -62,7 +62,7 @@
 			{foreach from=$tsAsignaciones.asignaciones item=m}
 				<tr id="assign_id_{$m.id}">
 					<td>{$m.id}</td>
-					<td><img src="{$tsConfig.public}/images/icons/med/{$m.m_image}_16.png" title="{$m.m_title}"/></td>
+					<td><img src="{$tsConfig.public}/images/icons/med/{$m.m_image}" title="{$m.m_title}"/></td>
 					<td>{if $m.m_type == 1}Usuario{elseif $m.m_type == 2}Post{else}Foto{/if}</td>
 					<td>{if $m.m_type == 1}<a href="{$tsConfig.url}/perfil/{$m.user_name}" class="hovercard" uid="{$m.user_id}">@{$m.user_name}</a>{elseif $m.m_type == 2}<a href="{$tsConfig.url}/posts/{$m.c_seo}/{$m.post_id}/{$m.post_title|seo}.html" target="_blank">{$m.post_title}</a>{else}<a href="{$tsConfig.url}/fotos/autor/{$m.foto_id}/{$m.f_title}.html" target="_blank">{$m.f_title}</a>{/if}</td>
 					<td>{$m.m_date|hace:true}</td>{*date_format:"%d/%m/%Y"*}
@@ -83,7 +83,7 @@
 				$('#med_img').on('change', () => {
 					var cssi = $("#med_img option:selected").val();
 					$('#c_icon').css({ 
-	         		"background": 'url(\'{$tsConfig.public}/images/icons/med/'+cssi+'_16.png\') no-repeat center',
+	         		"background": 'url(\'{$tsConfig.public}/images/icons/med/'+cssi+'\') no-repeat center',
 	         		"background-size": '16px'
 	         	});
 				});
@@ -103,7 +103,7 @@
 				<dl>
 					<dt><label for="cat_img">Icono de la categor&iacute;a:</label></dt>
 					<dd>
-						<img src="{$tsConfig.images}/space.gif" style="background:url({$tsConfig.public}/images/icons/med/{if $tsMed.m_image}{$tsMed.m_image}{else}{$tsIcons.0}{/if}_16.png) no-repeat left center;" width="16" height="16" id="c_icon"/>
+						<img src="{$tsConfig.images}/space.gif" style="background:url({$tsConfig.public}/images/icons/med/{if $tsMed.m_image}{$tsMed.m_image}{else}{$tsIcons.0}{/if}) no-repeat left center;" width="16" height="16" id="c_icon"/>
 						<select name="med_img" id="med_img" style="width:164px">
 						{foreach from=$tsIcons key=i item=img}
 							<option value="{$img}"{if $tsMed.m_image == $img} selected{/if}>{$img}</option>

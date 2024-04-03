@@ -3,7 +3,7 @@
  * Modelo para el control de los borradores
  *
  * @name    c.borradores.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsDrafts {
 

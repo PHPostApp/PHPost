@@ -3,7 +3,7 @@
  * Modelo para el control de los usuarios
  *
  * @name    c.user.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 
 class tsUser  {

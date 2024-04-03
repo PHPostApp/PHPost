@@ -19,15 +19,6 @@ function ir_a_categoria(cat){
 		location.href = `${global_data.url}/${href}`;
 	}
 }
-//Imprimir editores
-function print_editor(){
-   //Editor de respuesta de mensajes
-   if($('#respuesta').length && !$('.wysibb-texarea').length){
-      var wbbOpt = { buttons: "smilebox,|,bold,italic,underline,strike,sup,sub,|,img,video,link,|,removeFormat" }
-      $('#respuesta').removeAttr('onblur onfocus class style title').css('height', '80').html('').wysibb(wbbOpt);
-   }
-}
-/* FIN - Editor */
 
 function gget(data, sin_amp){
 	var r = data + '=';
@@ -257,7 +248,6 @@ var notifica = {
 			type: 'post', 
 			data: param.join('&') + gget('key'),
 			success: function (r) {
-				console.log(r)
 				$(obj).removeClass('spinner');
 				cb(r, obj);
             $('#loading').fadeOut(350);
@@ -654,124 +644,60 @@ var denuncia = {
     }
 }
 
-
-
-
-
 /* AFILIACION */
-var afiliado = {
-    vars: Array(),
-    nuevo: () => {
-        // CARGAMOS Y BORRAMOS
-        var form = '';
-        form += '<div class="emptyData" style="margin-bottom:10px" id="AFStatus"><span>Ingresa los datos de tu web para afiliarte.</span></div>'
-        form += '<div style="padding:0 35px;" id="AFormInputs">'
-        form += '<div class="form-line">'
-        form += '<label for="atitle">T&iacute;tulo</label>'
-        form += '<input type="text" tabindex="1" name="atitle" id="atitle" maxlength="35"/>'
-  		form += '</div>'
-        form += '<div class="form-line">'
-        form += '<label for="aurl">Direcci&oacute;n</label>'
-        form += '<input type="text" tabindex="2" name="aurl" id="aurl" value="http://"/>'
-  		form += '</div>'
-        form += '<div class="form-line">'
-        form += '<label for="aimg">Banner <small>(216x42px)</small></label>'
-        form += '<input type="text" tabindex="3" name="aimg" id="aimg" value="http://"/>'
-  		form += '</div>'
-        form += '<div class="form-line">'
-        form += '<label for="atxt">Descripci&oacute;n</label>'
-        form += '<textarea tabindex="4" rows="10" name="atxt" id="atxt" style="height:60px; width:295px"></textarea>'
-  		form += '</div>'
-        form += '<div class="form-line">'
-        form += '<label for="aID">RefID <a href="#" onclick="$(this).parent().parent().find('
-        form += "'span').css({display: 'block'}); return false"
-        form += '"><img src="' + global_data.img + '/images/icons/help.png"/></a></label><span style="display:none; margin-bottom:5px">Si utilizas <a href="http://www.tscript.in/"><strong>T!Script</strong></a> y ya nos enlazaste, ingresa el ID generado en tu panel de adminsitraci&oacute;n.</span>'
-        form += '<input type="text" tabindex="5" name="aID" id="aID" value="" style="width:100px!important"/>'
-  		form += '</div>'
-        form += '</div>'
-        //
-        mydialog.class_aux = 'registro';
-        mydialog.mask_close = false;
-        mydialog.close_button = true;
-		mydialog.show(true);
-		mydialog.title('Nueva Afiliaci&oacute;n');
-		mydialog.body(form);
-		mydialog.buttons(true, true, 'Enviar', 'afiliado.enviar(0)', true, true, true, 'Cancelar', 'close', true, false);
-		mydialog.center();
-    },
-
-    enviar: () => {
-        var inputs = $('#AFormInputs :input');
-        var status = true;
-        var params = '';
-        //
-        inputs.each(() => {
-            var val = $(this).val();
-            // EL CAMPO AID NO ES NECESARIO
-            if($(this).attr('name') == 'aID') val = '0'; 
-            // COMPROBAMOS CAMPOS VACIOS
-          /*  if((val == '') && status == true) {
-                var campo = $(this).parent().find('label');
-                $('#AFStatus > span').fadeOut().text('No has completado el campo ' + campo.text()).fadeIn();
-                status = false;
-            } else*/ if(status == true){
-                // JUNTAMOS LOS DATOS
-                params += $(this).attr('name') + '=' + val + '&';
-            }
-		});
-        //
-        if(status == true){
-            mydialog.procesando_inicio('Enviando...', 'Nueva Afiliaci&oacute;n');
-            afiliado.enviando(params);
-        }
-    },
-    enviando: function(params){
-    	//
-        $('#loading').fadeIn(250); 
-    	$.ajax({
-    		type: 'POST',
-    		url: global_data.url + '/afiliado-nuevo.php',
-    		data: params,
-    		success: function(h){
-    		  mydialog.procesando_fin();
-    		  switch(h.charAt(0)){
-    		      case '0':
-                $('#AFStatus > span').fadeOut().text('La URL es incorrecta').fadeIn();
-                   // mydialog.buttons(true, true, 'Aceptar', 'mydialog.close()', true, true);
-                  break;
-                  case '1':
-                    mydialog.body(h.substring(3));
-                    mydialog.buttons(true, true, 'Aceptar', 'mydialog.close()', true, true);
-                  break;
-                     case '2':
-                $('#AFStatus > span').fadeOut().text('Faltan datos').fadeIn();
-                   // mydialog.buttons(true, true, 'Aceptar', 'mydialog.close()', true, true);
-                  break;
-    		  }
-              mydialog.center();
-              $('#loading').fadeOut(350); 
-    		}
-    	});
-    },
-    detalles: function(aid){
-        $('#loading').fadeIn(250); 
-    	$.ajax({
-    		type: 'POST',
-    		url: global_data.url + '/afiliado-detalles.php',
-    		data: 'ref=' + aid,
-    		success: function(h){
-    		    mydialog.class_aux = '';
-        		mydialog.show(true);
-        		mydialog.title('Detalles');
-        		mydialog.body(h);
-                mydialog.buttons(true, true, 'Aceptar', 'mydialog.close()', true, true);
-                mydialog.center();
-                $('#loading').fadeOut(350); 
-                
-    		}
-    	});   
-    }
-}
+const afiliado = {
+	vars: Array(),
+	nuevo: () => {
+		$.get(global_data.url + '/afiliado-nuevo-form.php', form => {
+			mydialog.faster({
+				title: 'Nueva Afiliaci&oacute;n',
+				body: form,
+				buttons: {
+					ok: { text: 'Enviar', action: 'afiliado.enviar(0)' },
+					fail: { text: 'Cancelar', action: 'close' },
+				}
+			});
+		})
+	},
+	enviar: () => {
+		verifyInput('#aurl', 'La url no puede estar vacío.');
+		verifyInput('#atitle', 'El titulo no puede estar vacío.');
+		verifyInput('#atxt', 'La descripcion no puede estar vacío.');
+		mydialog.procesando_inicio('Enviando...', 'Nueva Afiliaci&oacute;n');
+		afiliado.enviando($('form[name="AFormInputs"]').serialize());
+	},
+	enviando: function(params){
+		$('#loading').fadeIn(250); 
+		$.post(global_data.url + '/afiliado-enviando.php', params, h => {
+			mydialog.procesando_fin();
+			switch(h.charAt(0)){
+				case '0':
+				case '2':
+					let text = (h.charAt(0) == 2) ? 'Faltan datos' : 'La URL es incorrecta';
+					$('#AFStatus > span').fadeOut().text(text).fadeIn();
+				break;
+				case '1':
+					mydialog.body(h.substring(3));
+					mydialog.buttons(true, true, 'Aceptar', 'close', true, true);
+				break;
+			}
+			mydialog.center();
+			$('#loading').fadeOut(350); 
+		})
+	},
+	detalles: function(ref){
+		$('#loading').fadeIn(250); 
+		$.post(`${global_data.url}/afiliado-detalles.php`, { ref }, response => {
+			mydialog.faster({
+				title: 'Detalles',
+				body: response,
+				buttons: {
+					ok: { text: 'Aceptar', action: 'close' }
+				}
+			});
+		}) 
+	}
+};
 
 /* IMAGENES */
 var imagenes = {
@@ -813,11 +739,19 @@ $(document).ready(() => {
    /* IMAGENES */
    imagenes.presentacion();
 
-	$('body').on('click', e => { 
-		if ($('#mon_list').css('display') != 'none' && $(e.target).closest('#mon_list').length == 0 && $(e.target).closest('a[name=Monitor]').length == 0) notifica.last();
-   	if ($('#mp_list').css('display') != 'none' && $(e.target).closest('#mp_list').length == 0 && $(e.target).closest('a[name=Mensajes]').length == 0) mensaje.last(); 
-   });
-	print_editor();
+   const DisplayDropdown = [
+		{id: '#mon_list', name: 'Monitor', func: notifica.last},
+		{id: '#mp_list', name: 'Mensajes', func: mensaje.last}
+	];
+	$('body').on('click', function(e) {
+		DisplayDropdown.map( ({ id, name, func }) => {
+			if(
+				$(id).css('display') !== 'none' && 
+				$(e.target).closest(id).length === 0 && 
+				$(e.target).closest(`a[name=${name}]`).length === 0
+			) func.call();
+		})
+	});
 	
 	$('div.new-search > div.search-body > form > input[name=q]').on('focus', () => {
 		if ($(this).val() == 'Buscar') $(this).val(''); 

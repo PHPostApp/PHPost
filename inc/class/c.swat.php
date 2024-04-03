@@ -3,7 +3,7 @@
  * Modelo para el control denuncias
  *
  * @name    c.swat.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsSwat{
 	

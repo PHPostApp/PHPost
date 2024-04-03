@@ -3,7 +3,7 @@
  * Clase para el manejo de los posts
  *
  * @name    c.posts.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 
 class tsPosts {
@@ -383,6 +383,8 @@ class tsPosts {
 		// BBCode
 		$postData['post_body'] = $tsCore->parseBadWords($postData['post_smileys'] == 0  ? $tsCore->parseBBCode($postData['post_body']) : $tsCore->parseBBCode($postData['post_body'], 'firma'), true);
 		$postData['user_firma'] = $tsCore->parseBadWords($tsCore->parseBBCodeFirma($postData['user_firma']),true);
+		// Para el seo
+		$postData['post_body_descripcion'] = $tsCore->truncate(strip_tags(preg_replace("/[\r\n|\n|\r]+/", " ", $postData['post_body'])), 230);
 		// MEDALLAS
 		$postData['medallas'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT m.*, a.* FROM w_medallas AS m LEFT JOIN w_medallas_assign AS a ON a.medal_id = m.medal_id WHERE a.medal_for = {$postData['post_id']} AND m.m_type = 2 ORDER BY a.medal_date"));
 		$postData['m_total'] = safe_count($postData['medallas']);

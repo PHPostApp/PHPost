@@ -20,7 +20,7 @@
 			<tbody>
 				{foreach from=$tsMembers.data item=m}
 				<tr>
-					<td><img src="{$tsConfig.public}/images/icons/ran/{$m.r_image}" /></td>
+					<td><img src="{$tsConfig.public}/images/icons/ran/{$m.r_image}_16.png" /></td>
 					<td align="left"><a href="{$tsConfig.url}/perfil/{$m.user_name}" class="hovercard" uid="{$m.user_id}" style="color:#{$m.r_color};">{$m.user_name}</a></td>
 					<td>{$m.user_email}</td>
 					<td>{if $m.user_lastactive == 0} Nunca{else}{$m.user_lastactive|hace:true}{/if}</td>

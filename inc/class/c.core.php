@@ -3,7 +3,7 @@
  * Funciones globales
  *
  * @name    c.core.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsCore {
     
@@ -664,6 +664,40 @@ class tsCore {
 		$md5 = md5($password . $username);
 		if(!empty($verify)) $md5 = ($md5 === $verify);
 		return $md5;
+	}
+
+	/*
+     * Sacar imagen del post
+     * si hay mas de una imagen, tomamos la 2 (casi siempre la 1 es de "bienvenido")
+   */
+	public function extraer_img($texto) {
+	   // del tipo [img=imagen] o [img=imagen]
+	   preg_match_all('/(\[img(\=|\]))((http|https)?(\:\/\/)?([^\<\>[:space:]]+)\.(jpg|jpeg|png|gif|webp))(\]|\[	\/img\])/i', $texto, $imgs);
+	   // Si no se encontraron imágenes, devolver la imagen por defecto
+	   if(empty($imgs[3])) {
+	      return $this->settings['images'] . '/imagen_no_disponible.webp';
+	   }
+	   // Devolver la primera imagen encontrada
+	   return $imgs[3][0];
+	}
+
+
+   public function nobbcode($nobbcode = '') {
+    	// Elimina los códigos BBcodes
+    	$nobbcode = preg_replace('/\[([^\]]*)\]/', '', $nobbcode); 
+    	// Elimina las URLs
+    	$nobbcode = preg_replace('@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?)?)@', ' ', $nobbcode);
+    	return $nobbcode;
+	}
+
+
+	public function truncate($string = '', $can = NULL){
+		$stc = ($can == '') ? 150 : $can;
+		$str = wordwrap($string, $stc);
+		$str = str_replace('&nbsp;', ' ', $str);
+		$str = explode("\n", $str);
+		$str = $str[0] . '...';
+		return $str;
 	}
 
 }

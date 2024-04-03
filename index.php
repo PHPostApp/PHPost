@@ -3,7 +3,7 @@
  * Resuelve para la home
  *
  * @name    index.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 
 /*

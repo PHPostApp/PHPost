@@ -4,7 +4,7 @@
  * Modelo para el control del registro de usuarios
  *
  * @name    c.registro.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 
 include_once TS_EXTRA . "reCaptcha.php";

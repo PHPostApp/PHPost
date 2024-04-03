@@ -3,7 +3,7 @@
  * Modelo para el control de la actividad
  *
  * @name    c.actividad.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 
 /**

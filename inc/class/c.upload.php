@@ -3,7 +3,7 @@
  * Modelo para subir im�genes
  *
  * @name    c.upload.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsUpload {
 

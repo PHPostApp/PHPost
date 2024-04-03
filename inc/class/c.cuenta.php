@@ -3,7 +3,7 @@
  * Modelo para el control y edición de la cuenta de usuario
  *
  * @name    c.cuenta.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 require_once TS_EXTRA . "datos.php";
 class tsCuenta {

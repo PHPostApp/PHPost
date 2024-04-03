@@ -5,7 +5,7 @@ if (!defined('TS_HEADER')) exit('No se permite el acceso directo al script');
  * Modelo para instanciar Smarty
  *
  * @name    c.smarty.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 
 require_once TS_SMARTY . 'bootstrap.php';

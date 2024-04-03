@@ -292,3 +292,23 @@ var mydialog = {
 document.onkeydown = e => {
 	if(e.keyCode === 27 || e.which === 27) mydialog.close();
 };
+
+const verifyInput = (selector, errorMessage) => {
+   const input = $(selector);
+   const helpText = input.next('.help');
+
+   if (input.val().trim() === '') {
+      input.parent().addClass('was-error');
+      helpText.text(errorMessage);
+      input.focus();
+      return false;
+   } else {
+      input.parent().removeClass('was-error');
+      helpText.text('');
+      return true;
+   }
+};
+
+$('input').on('keyup', function() {
+	$(this).parent().removeClass('was-error').find('.help').html('')
+});

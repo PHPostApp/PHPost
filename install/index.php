@@ -2,7 +2,7 @@
 
 /**
  * @name install.php
- * @author PHPost Team
+ * @author Miguel92 & PHPost.es
  * @copyright 2011-2023
  */
 

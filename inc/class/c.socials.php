@@ -6,7 +6,7 @@ if (!defined('TS_HEADER'))
  * Modelo para la adminitración
  *
  * @name    c.socials.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsSocials {
 

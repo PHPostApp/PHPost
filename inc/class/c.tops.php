@@ -3,7 +3,7 @@
  * Modelo para el control de los tops
  *
  * @name    c.tops.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsTops {
 	

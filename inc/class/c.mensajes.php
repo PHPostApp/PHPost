@@ -3,7 +3,7 @@
  * Modelo para el control de los mensajes privados
  *
  * @name    c.mensajes.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsMensajes {
     

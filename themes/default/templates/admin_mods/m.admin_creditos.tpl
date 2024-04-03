@@ -7,7 +7,6 @@
 	Versi&oacute;n de PHP: <strong>{$tsVersion.php}</strong><br />
 	Versi&oacute;n de MySQL: <strong>{$tsVersion.mysql.0}</strong><br />
 	Versi&oacute;n del Servidor: <strong>{$tsVersion.server}</strong><br />
-	Versi&oacute;n de OpenSSL: <strong>{$tsVersion.openssl}</strong><br />
 	Versi&oacute;n de GD: <strong>{$tsVersion.gd}</strong>
 	<hr class="separator" />
 	<strong>Cr&eacute;ditos:</strong><br />

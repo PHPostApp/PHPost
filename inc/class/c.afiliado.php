@@ -3,7 +3,7 @@
  * Modelo para el control de los afiliados
  *
  * @name    c.afiliado.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsAfiliado {
 

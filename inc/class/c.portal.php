@@ -3,7 +3,7 @@
  * Modelo para el control del portal/mi
  *
  * @name    c.portal.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsPortal{
 

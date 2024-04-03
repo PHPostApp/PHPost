@@ -3,7 +3,7 @@
  * Modelo para el control de las funciones de la moderación
  *
  * @name    c.moderacion.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsMod {
 

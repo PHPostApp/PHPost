@@ -282,5 +282,15 @@ li#a_badwords {background-image: url(../../../public/images/icons/stop.png);}
     background-color: #CCC8;
 }
 .estadisticasList ul li {
-    padding: 0.3rem;
+    padding: .5rem .3rem;
+}
+.boxy-content input:not([type="radio"], [type="checkbox"], [type="button"], [type="submit"]),
+.boxy-content select,
+.boxy-content textarea {
+    border: 1px solid #CCC!important;
+    border-radius: .325rem!important;
+    box-shadow: none!important;
+    width: 100%!important;
+    padding: 0.325rem !important;
+    box-sizing: border-box;
 }

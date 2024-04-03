@@ -15,6 +15,7 @@
 	<li id="a_configs"><span class="cat-title"><a href="{$tsConfig.url}/admin/configs">Configuraci&oacute;n </a></span></li>
 	<li id="a_registro"><span class="cat-title"><a href="{$tsConfig.url}/admin/registro">Configurar registro </a></span></li>
 	<li id="a_socials"><span class="cat-title"><a href="{$tsConfig.url}/admin/socials">Configurar redes sociales</a></span></li>
+	<li id="a_seo"><span class="cat-title"><a href="{$tsConfig.url}/admin/seo">Configurar SEO</a></span></li>
 	<li id="a_temas"><span class="cat-title"><a href="{$tsConfig.url}/admin/temas">Temas y apariencia</a></span></li>
 	<li id="a_news"><span class="cat-title"><a href="{$tsConfig.url}/admin/news">Noticias</a></span></li>
 	<li id="a_ads"><span class="cat-title"><a href="{$tsConfig.url}/admin/ads">Publicidad</a></span></li>

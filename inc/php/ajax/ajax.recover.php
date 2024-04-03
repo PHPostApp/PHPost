@@ -3,7 +3,7 @@
  * Controlador AJAX
  *
  * @name    ajax.recover.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
 */
 	$tsLevel = 1; // solo visitantes
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);

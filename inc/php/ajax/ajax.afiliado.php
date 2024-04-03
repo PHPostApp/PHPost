@@ -3,7 +3,7 @@
  * Controlador AJAX
  *
  * @name    ajax.afiliado.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
 */
 /**********************************\
 
@@ -13,7 +13,8 @@
 
 	// NIVELES DE ACCESO Y PLANTILLAS DE CADA ACCIÓN
 	$files = array(
-		'afiliado-nuevo' => array('n' => 0, 'p' => ''),
+		'afiliado-nuevo-form' => array('n' => 0, 'p' => 'nuevo-form'),
+		'afiliado-enviando' => array('n' => 0, 'p' => ''),
 		'afiliado-borrar' => array('n' => 0, 'p' => ''),
 		'afiliado-setaction' => array('n' => 0, 'p' => ''),
       'afiliado-url' => array('n' => 0, 'p' => ''),
@@ -45,7 +46,9 @@
    $tsAfiliado = new tsAfiliado;
 	// CODIGO
 	switch($action){
-		case 'afiliado-nuevo':
+		case 'afiliado-nuevo-form':
+		break;
+		case 'afiliado-enviando':
 			//<---
          echo $tsAfiliado->newAfiliado();
 			//--->

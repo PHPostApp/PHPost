@@ -3,7 +3,7 @@
  * Controlador
  *
  * @name    monitor.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
 */
 
 /**********************************\

@@ -4,7 +4,7 @@
  * Modelo para el control del envio de emails
  *
  * @name    c.emails.php
- * @author  PHPost Team & Miguel92
+ * @author  Miguel92 & PHPost.es & Miguel92
  */
 error_reporting(-1);
 ini_set('display_errors', 'On');

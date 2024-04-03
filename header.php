@@ -5,7 +5,7 @@
  * Carga las clases base y ejecuta la solicitud.
  *
  * @name    header.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 
 /*

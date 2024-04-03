@@ -1,3 +1,28 @@
+const favs = {
+	add: () => {
+		mydialog.faster({
+	   	title: 'Añadir favicon',
+	   	body: `<div class="form-line">
+	   		<label for="size">Tamaño</label>
+ 		 		<input type="number" id="size" placeholder="16" />
+			</div>`,
+	   	buttons: {
+	   		ok: { text: 'S&iacute;', action: `favs.insert()` },
+	   		fail: { text: 'No', action: 'close' }
+	   	}
+	   });
+	},
+	insert: () => {
+		let size = empty($('input#size').val()) ? 16 : $('input#size').val();
+		const html = `<div class="input-group mb-3">
+          <span class="input-group-text" id="pixeles">${size}x${size}</span>
+      	<input class="form-control" type="text" id="images" name="images[${size}]" value="" />
+      	<button type="button" class="mBtn btnOk" onclick="$(this).parent().remove()">Quitar</button>
+      </div>`;
+      $('#addFavs').append(html);
+      mydialog.close();
+	}
+}
 /**
  * Con estas funciones "sameModal()" y "sameFn()"
  * y de esta forma simplificamos

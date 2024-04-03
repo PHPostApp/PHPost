@@ -3,7 +3,7 @@
  * Modelo para el control de las medallas
  *
  * @name    c.medals.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsMedal {
 

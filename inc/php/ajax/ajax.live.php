@@ -3,7 +3,7 @@
  * Controlador AJAX
  *
  * @name    ajax.live.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
 */
 /**********************************\
 

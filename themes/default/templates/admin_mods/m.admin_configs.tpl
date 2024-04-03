@@ -36,13 +36,13 @@
          <dl>
             <dt><label for="ai_active">Usuario online:</label><br /><span>Tiempo que debe trascurrir para considerar que un usuario est&aacute; en linea.</span></dt>
             <dd>
-               <input type="text" id="ai_active" name="c_last_active" style="width:10%" maxlength="2" value="{$tsConfig.c_last_active}" /> min.
+               <input type="text" id="ai_active" name="c_last_active" style="width:10%!important" maxlength="2" value="{$tsConfig.c_last_active}" /> min.
             </dd>
          </dl>
          <dl>
             <dt><label for="ai_stats_cache">Estad&iacute;sticas en buffer:</label><br /><span>Tiempo que debe trascurrir para actualizar las estad&iacute;sticas del sitio.</span></dt>
             <dd>
-               <input type="text" id="ai_stats_cache" name="c_stats_cache" style="width:10%" maxlength="2" value="{$tsConfig.c_stats_cache}" /> min.
+               <input type="text" id="ai_stats_cache" name="c_stats_cache" style="width:10%!important" maxlength="2" value="{$tsConfig.c_stats_cache}" /> min.
             </dd>
          </dl>
          <dl>

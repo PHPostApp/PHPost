@@ -3,7 +3,7 @@
  * Modelo para el control de las fotos
  *
  * @name    c.fotos.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsFotos {
 

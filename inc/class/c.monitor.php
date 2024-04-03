@@ -3,7 +3,7 @@
  * Modelo para el control del monitor de usuario
  *
  * @name    c.monitor.php
- * @author  PHPost Team
+ * @author  Miguel92 & PHPost.es
  */
 class tsMonitor {
 
@@ -503,15 +503,15 @@ class tsMonitor {
 				$oracion['ltit'] = ($this->show_type == 1) ? substr($data['c_body'],0,20).'...' : '';
 			break;
 			case 15:
-				$oracion['text'] = "Recibiste una nueva <span title=\"{$data['m_title']}\"><strong>medalla</strong> <img src=\"$site_url/public/images/icons/med/{$data['m_image']}_16.png\"/></span>";
+				$oracion['text'] = "Recibiste una nueva <span title=\"{$data['m_title']}\"><strong>medalla</strong> <img src=\"$site_url/public/images/icons/med/{$data['m_image']}\"/></span>";
 			break;
 			case 16:
 				$post_title = $tsCore->setSEO($data['post_title']);
-				$oracion['text'] = "Tu <a href=\"$site_url/posts/{$data['c_seo']}/{$data['post_id']}/{$post_title}.html\" title=\"$post_title\"><strong>post</strong></a> tiene una nueva <span title=\"{$data['m_title']}\"><strong>medalla</strong> <img src=\"$site_url/public/images/icons/med/{$data['m_image']}_16.png\"/></span>";
+				$oracion['text'] = "Tu <a href=\"$site_url/posts/{$data['c_seo']}/{$data['post_id']}/{$post_title}.html\" title=\"$post_title\"><strong>post</strong></a> tiene una nueva <span title=\"{$data['m_title']}\"><strong>medalla</strong> <img src=\"$site_url/public/images/icons/med/{$data['m_image']}\"/></span>";
 			break;
 			case 17:
 				$f_title = $tsCore->setSEO($data['f_title']);
-				$oracion['text'] = "Tu <a href=\"$site_url/fotos/{$data['user_name']}/{$data['foto_id']}/$f_title.html\" title=\"$f_title\"><strong>foto</strong></a> tiene una nueva <span title=\"{$data['m_title']}\"><strong>medalla</strong> <img src=\"$site_url/public/images/icons/med/{$data['m_image']}_16.png\"/></span>";
+				$oracion['text'] = "Tu <a href=\"$site_url/fotos/{$data['user_name']}/{$data['foto_id']}/$f_title.html\" title=\"$f_title\"><strong>foto</strong></a> tiene una nueva <span title=\"{$data['m_title']}\"><strong>medalla</strong> <img src=\"$site_url/public/images/icons/med/{$data['m_image']}\"/></span>";
 			break;
 		}
 		# RETORNAMOS
