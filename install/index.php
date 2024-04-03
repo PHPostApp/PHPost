@@ -202,7 +202,7 @@ switch ($step) {
 				$linkad = "https://joelmiguelvalente.github.io/grupos/";
 				$sizesad = ['160x600','300x250','468x60','728x90'];
 				foreach ($sizesad as $key => $ad) {
-					$html = "<a href=\"$linkad\" target=\"_blank\"><img src=\"{$web['url']}/public/images/ad$ad.png\"></a>";
+					$html = "<a href=\"$linkad\" target=\"_blank\"><img src=\"{$web['url']}/public/images/ad$ad.webp\"></a>";
 					$set[] = "ads_" . explode('x', $ad)[0] . " = '" . html_entity_decode($html) . "'";
 				}
 				$ads = join(', ', $set);
