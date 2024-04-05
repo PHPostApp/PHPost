@@ -109,10 +109,14 @@ class tsTops {
 		getHomeTopPostsQuery($data)
 	*/
 	function getHomeTopPostsQuery($date){
-		
+		$tsCore = new tsCore;
 		//
 		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_category, p.post_title, p.post_puntos, c.c_seo FROM p_posts AS p LEFT JOIN p_categorias AS c ON c.cid = p.post_category  WHERE p.post_status = 0 AND p.post_date BETWEEN \''.$date['start'].'\' AND \''.$date['end'].'\' ORDER BY p.post_puntos DESC LIMIT 15');
 		$data = result_array($query);
+
+		foreach ($data as $pid => $post) {
+			$data[$pid]['post_portada'] = $tsCore->verifyUrl($post['post_portada'] ?? '');
+		}
 		
 		//
 		return $data;

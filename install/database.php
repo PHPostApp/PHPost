@@ -247,8 +247,10 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_miembros` (
   `user_name` varchar(16) NOT NULL DEFAULT '',
   `user_password` varchar(66) NOT NULL DEFAULT '',
   `user_email` varchar(35) NOT NULL DEFAULT '',
-  `user_avatares` tinytext NOT NULL DEFAULT '',
-  `user_socials` tinytext NOT NULL DEFAULT '{\"discord\":false,\"facebook\":false,\"github\":false,\"gmail\":false}',
+  `user_avatares` tinytext NULL,
+  `user_socials` tinytext NULL,
+  `user_cover` tinytext NULL,
+  `user_chat` int(12) NOT NULL DEFAULT 0,
   `user_rango` int(3) NOT NULL DEFAULT 3,
   `user_puntos` int(6) unsigned NOT NULL DEFAULT 0,
   `user_posts` int(11) NOT NULL DEFAULT 0,
@@ -672,7 +674,43 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_site_seo` (
   `seo_robots_data` text NULL DEFAULT '',
   `seo_robots` int(1) NULL DEFAULT 0,
   `seo_sitemap` int(1) NULL DEFAULT 0,
+  `seo_facebook_app` varchar(120) NULL DEFAULT '',
+  `seo_twitter_user` varchar(120) NULL DEFAULT '',
   PRIMARY KEY (`seo_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
 
 $phpost_sql[] = "INSERT INTO `w_site_seo` (`seo_id`) VALUES (1);";
+
+$phpost_sql[] = "CREATE TABLE c_chat_zones (
+  `zone_id` int(12) NOT NULL AUTO_INCREMENT,
+  `zone_name` varchar(120) NOT NULL DEFAULT '',
+  `zone_perms` text,
+  `zone_advertisement` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`zone_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE c_chat_messages (
+  `msg_id` int(12) NOT NULL AUTO_INCREMENT,
+  `msg_user` int(12) NOT NULL DEFAULT 0,
+  `msg_zone` int(12) NOT NULL DEFAULT 1,
+  `msg_text` text,
+  `msg_date` int(12) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`msg_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE c_chat_private_messages (
+  `private_id` int(12) NOT NULL AUTO_INCREMENT,
+  `private_user` int(12) NOT NULL DEFAULT 0,
+  `private_to_user` int(12) NOT NULL DEFAULT 0,
+  `private_text` text,
+  `private_date` int(12) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`private_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";
+
+$phpost_sql[] = "CREATE TABLE c_chat_blacklist (
+`ban_id` int(12) NOT NULL AUTO_INCREMENT,
+  `ban_user` int(12) NOT NULL DEFAULT 0,
+  `ban_expire` int(12) NOT NULL DEFAULT 0,
+  `ban_date` int(12) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`ban_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;";

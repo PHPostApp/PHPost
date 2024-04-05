@@ -11,6 +11,8 @@ class tsCore {
 
 	// No quitar, ni reemplazar
 	private $keygen = 'UmlzdXMyMw==';
+
+	private $verification;
 	
 	public function https_on() {
 	   if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') $isSecure = false;
@@ -20,6 +22,15 @@ class tsCore {
 	   }
 	   $isSecure = 'http' . ($isSecure ? 's' : '') . '://';
 	   return $isSecure;
+	}
+
+	/**
+	 * @access public
+	 * @description Es solo para comprobar que fue instalado
+	*/
+	public function verification() {
+		$encode = base64_encode("{$this->settings['url']} - {$this->settings['version']}");
+		return $encode;
 	}
 
 	public function __construct() {
@@ -33,8 +44,9 @@ class tsCore {
       $this->settings['css'] = $this->settings['tema']['t_url'].'/css';
 		$this->settings['js'] = $this->settings['tema']['t_url'].'/js';
 		//
-		$this->settings['avatar'] = $this->settings['url'].'/files/avatar';
-		$this->settings['uploads'] = $this->settings['url'].'/files/uploads';
+		$this->settings['files'] = $this->settings['url'].'/files';
+		$this->settings['avatar'] = $this->settings['files'].'/avatar';
+		$this->settings['uploads'] = $this->settings['files'].'/uploads';
 		$this->settings['public'] = $this->settings['url'].'/public';
 		// Autenticarme con las redes
 		$this->settings['oauth'] = $this->OAuth();
@@ -151,17 +163,18 @@ class tsCore {
 		if(is_dir($upgrade_dir)) return '<div id="msg_install">Por favor, elimine la carpeta <b>upgrade</b></div>';
 	}
     
-    // FUNCIÓN CONCRETA PARA CENSURAR
-	
-	function parseBadWords($c, $s = FALSE) 
-    {
-        $q = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT word, swop, method, type FROM w_badwords '.($s == true ? '' : ' WHERE type = \'0\'')));
-        
-        foreach($q AS $badword) 
-        {
-        $c = str_ireplace((empty($badword['method']) ? $badword['word'] : $badword['word'].' '),($badword['type'] == 1 ? '<img class="qtip" title="'.$badword['word'].'" src="'.$badword['swop'].'" align="absmiddle"/>' : $badword['swop'].' '),$c);
-        }
-        return $c;
+   // FUNCIÓN CONCRETA PARA CENSURAR
+	public function parseBadWords($c, $s = FALSE)  {
+      $q = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT word, swop, method, type FROM w_badwords '.($s == true ? '' : ' WHERE type = \'0\'')));
+      if(empty($c)) return;
+      foreach($q AS $badword) {
+      	$search = ((int)$badword['method'] == 0) ? $badword['word'] : "{$badword['word']} ";
+      	$replace = ((int)$badword['type'] == 1) ? '<img title="'.$badword['word'].'" src="'.$badword['swop'].'" align="absmiddle"/>' : "{$badword['swop']} ";
+      	$c = str_ireplace($search, $replace, $c);
+      }
+
+      return $c;
+
 	}        
 	
 	/*
@@ -365,27 +378,28 @@ class tsCore {
     * @author KMario 	 - https://www.phpost.net/foro/perfil/6266-kmario19/
     * @author ReModWrite - https://www.phpost.net/foro/perfil/526172-remodwrite/
 	*/
-	public function system_pagination(int $totalItems = 0, int $itemsPerPage = 0) {
+	public function system_pagination(int $totalItems = 0, int $itemsPerPage = 0, string $inPage = '') {
     	// Obtenemos la pagina actual
    	$currentPage = empty($_GET['page']) ? 1 : (int)$_GET['page'];
    	// Si no existe devolvemos algo vacío
-    	if ($totalItems <= 0) return '';
-    	$page = "?page=";
+    	if ($totalItems <= 0) return 0;
+    	$page = (empty($inPage) ? '' : $inPage) . "?page=";
+    	$pagination['current'] = $currentPage;
     	// Empezamos con la estructura de la paginación
-    	$pagination = '<ul class="pagination pagination-sm justify-content-center">';
+    	$pagination['item'] = '<nav class="nav-page-numbers">';
     	// Calculamos el total de páginas necesarias.
     	$totalPages = ceil($totalItems / $itemsPerPage);
     	// Limitamos el valor de $currentPage para asegurarnos de que no se exceda el rango.
     	$currentPage = max(1, min($currentPage, $totalPages));
     	// Enlace a página anterior.
     	if ($currentPage > 1) {
-      	$pagination .= "<li class=\"page-item\"><a class=\"navPages\" href=\"{$this->settings['url']}/$page" . ($currentPage - 1) . "\" title=\"Página anterior\">&laquo;</a></li>";
+      	$pagination['item'] .= "<div class=\"page-item\"><a class=\"prev page-numbers\" href=\"{$this->settings['url']}/$page" . ($currentPage - 1) . "\" title=\"P&aacute;gina anterior\">&LeftAngleBracket;</a></div>";
     	}
     	// Enlaces de primera y última página.
     	if ($currentPage > 3) {
-      	$pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"{$this->settings['url']}/$page1\">1</a></li>";
+      	$pagination['item'] .= "<div class=\"page-item\"><a class=\"page-numbers\" href=\"{$this->settings['url']}/$page1\">1</a></div>";
         	if ($currentPage > 6) {
-            $pagination .= "<li class=\"page-item\"><span class=\"page-link\">...</span></li>";
+            $pagination['item'] .= "<div class=\"page-item off\"><span class=\"page-numbers\">...</span></div>";
         	}
     	}
 	   // Mostramos los enlaces de la paginación.
@@ -393,20 +407,23 @@ class tsCore {
 	   $endPage = min($totalPages, $currentPage + 2);
 	   //
     	for ($i = $startPage; $i <= $endPage; $i++) {
-        	$activeClass = ($currentPage === $i) ? ' active' : '';
-        	$pagination .= "<li class=\"page-item{$activeClass}\"><a class=\"page-link\" href=\"{$this->settings['url']}/$page{$i}\">{$i}</a></li>";
-    	}
+        	if($currentPage === $i) {
+				$pagination['item'] .= "<div class=\"page-item\"><span aria-current=\"page\" class=\"page-numbers current\">{$i}</span></div>";
+        	} else {
+        		$pagination['item'] .= "<div class=\"page-item\"><a class=\"page-numbers\" href=\"{$this->settings['url']}/$page{$i}\">{$i}</a></div>";
+        	}
+      }
     	// Enlaces después del número 6.
     	if ($currentPage < $totalPages - 4) {
-        	$pagination .= "<li class=\"page-item\"><span class=\"page-link\">...</span></li>";
-        	$pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"{$this->settings['url']}/$page{$totalPages}\">{$totalPages}</a></li>";
+        	$pagination['item'] .= "<div class=\"page-item off\"><span class=\"page-numbers\">...</span></div>";
+        	$pagination['item'] .= "<div class=\"page-item\"><a class=\"page-numbers\" href=\"{$this->settings['url']}/$page{$totalPages}\">{$totalPages}</a></div>";
     	}
     	// Enlace a página siguiente.
     	if ($currentPage < $totalPages) {
-      	$pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"{$this->settings['url']}/$page" . ($currentPage + 1) . "\" title=\"Página siguiente\">&raquo;</a></li>";
+      	$pagination['item'] .= "<div class=\"page-item\"><a class=\"next page-numbers\" href=\"{$this->settings['url']}/$page" . ($currentPage + 1) . "\" title=\"P&aacute;gina siguiente\">&RightAngleBracket;</a></div>";
     	}
     	// Finalizamos la paginación
-    	$pagination .= '</ul>';
+    	$pagination['item'] .= '</nav>';
     	return $pagination;
 	}
 
@@ -699,5 +716,60 @@ class tsCore {
 		$str = $str[0] . '...';
 		return $str;
 	}
+
+	public function getAvatar(int $uid = 0, int $size = 50) {
+		$user = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, p_avatar FROM u_perfil WHERE user_id = $uid"));
+		$ensamble = (int)$user['p_avatar'] == 1 ? "{$user['user_id']}_$size" : "avatar";
+		return "{$this->settings['avatar']}/{$ensamble}.jpg?" . uniqid();
+	}
+
+	public function generateName(int $total = 10) {
+      $text = '';
+      # GENERAMOS ID PARA LA LICENCIA
+      for ($i = 65; $i <= 90; $i++) $text .= chr($i); // De A ... Z
+      for ($i = 97; $i <= 122; $i++) $text .= chr($i); // De a ... z
+      # Return
+      return substr(str_shuffle($text), 0, $total);
+   }
+
+   public function covers_posts(string $image = '') {
+      if(!empty($_FILES["imagen"]["name"])) {
+      	# Obtenemos la extension del archivo
+      	$ext = pathinfo($_FILES["imagen"]["name"], PATHINFO_EXTENSION);
+         # Carpeta a guardar portadas
+         $archivo = empty($image) ? $this->generateName(12).'.'.$ext : $image;
+         $urlimage = $archivo;
+         $nuevoarchivo = TS_FILES . 'posts' . TS_PATH . $archivo;
+         if(!is_dir(TS_FILES . 'posts' . TS_PATH)) {
+         	mkdir(TS_FILES . 'posts' . TS_PATH);
+         	chmod(TS_FILES . 'posts' . TS_PATH, 0777);
+         }
+         // Revisamos si se envía realmente una imagen
+         $check = getimagesize($_FILES["imagen"]["tmp_name"]);
+         if($check === false) {
+            return 'El archivo que vas a enviar no es una imagen válida, verifica la imagen del post ' . $check["mime"];
+         }
+         // Verificar tamaño de la imagen | 2 MB
+         $mb_one = 1048576 * 2;
+         if ($_FILES["imagen"]["size"] > $mb_one) {
+            return 'La imagen debe pesar por mucho 1MB, el tama&ntilde;o de tu archivo es mayor que el permitido.';
+         }     
+         move_uploaded_file($_FILES["imagen"]["tmp_name"], $nuevoarchivo);
+      } else $urlimage = $this->settings['public'] . "/images/images.svg";
+
+      return $urlimage;
+   }
+
+   /**
+    * Evitamos repetir este código
+   */
+   public function verifyUrl(string $portada = '', string $carpeta = 'posts') {
+   	$filter = (filter_var($portada, FILTER_VALIDATE_URL) !== false);
+   	$isUrl = $filter ? $portada : "{$this->settings['files']}/$carpeta/{$portada}";
+   	if(!file_exists($isUrl) AND $filter) {
+   		$isUrl = "{$this->settings['public']}/images/images.svg";
+   	}
+		return empty($portada) ? "{$this->settings['public']}/images/images.svg" : $isUrl;
+   }
 
 }

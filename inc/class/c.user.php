@@ -8,18 +8,31 @@
 
 class tsUser  {
 
-	var $info = array();		// SI EL USUARIO ES MIEMBRO CARGAMOS DATOS DE LA TABLA
-	var $is_member = 0;		// EL USUARIO ESTA LOGUEADO?
-   var $is_admod = 0;
-   var $is_banned = 0;
-   var $is_type;				// Inicia sesión o activa cuenta
-   var $response = '';		// Captcha
-	var $nick = 'Visitante';// NOMBRE A MOSTRAR
-	var $uid = 0;				// USER ID
-	var $is_error;				// SI OCURRE UN ERROR ESTA VARIABLE CONTENDRA EL NUMERO DE ERROR
-	var $session;
-	var $permisos;
-	var $email;
+	public $info = [];		// SI EL USUARIO ES MIEMBRO CARGAMOS DATOS DE LA TABLA
+	
+	public $is_member = 0;		// EL USUARIO ESTA LOGUEADO?
+   
+   public $is_admod = 0;
+   
+   public $is_banned = 0;
+   
+   public $is_type;				// Inicia sesión o activa cuenta
+   
+   public $response = '';		// Captcha
+	
+	public $nick = 'Visitante';// NOMBRE A MOSTRAR
+	
+	public $uid = 0;				// USER ID
+	
+	public $is_error;				// SI OCURRE UN ERROR ESTA VARIABLE CONTENDRA EL NUMERO DE ERROR
+	
+	public $session;
+	
+	public $permisos;
+	
+	public $email;
+	
+	public $avatar = [];
 
 	public function __construct() {
 		global $tsCore, $tsMedal;
@@ -114,6 +127,7 @@ class tsUser  {
 		loadUser()
 	*/
 	public function loadUser($login = FALSE) {
+		$tsCore = new tsCore;
 		$time = time();
       // Cargar datos
       $sql = 'SELECT u.*, s.* FROM u_sessions s, u_miembros u WHERE s.session_id = \''.$this->session->ID.'\' AND u.user_id = s.session_user_id';
@@ -143,6 +157,10 @@ class tsUser  {
 		$this->uid = $this->info['user_id'];
 		$this->email = $this->info['user_email'];
       $this->is_banned = $this->info['user_baneado'];
+		$this->avatar = [
+			50 => $tsCore->getAvatar($this->uid, 50),
+			120 => $tsCore->getAvatar($this->uid, 120)
+		];
 		// ULTIMA ACCION
 		db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_lastactive = $time WHERE user_id = {$this->uid}");
       // Si ha iniciado sesión cargamos estos datos.

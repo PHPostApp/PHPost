@@ -19,6 +19,9 @@
 		'posts-admin-borrar' =>  array('n' => 2, 'p' => ''),
 		'posts-votar' =>  array('n' => 2, 'p' => ''),
 		'posts-last-comentarios' =>  array('n' => 0, 'p' => 'last-comentarios'),
+		//
+		'posts-destacados' => array('n' => 0, 'p' => 'destacados'),
+		'posts-recientes' => array('n' => 0, 'p' => 'destacados'),
 	);
 
 /**********************************\
@@ -85,5 +88,12 @@
 			//<--
 			    $smarty->assign("tsComments",$tsPosts->getLastComentarios());
 			//-->
+		break;
+		case 'posts-destacados':
+		case 'posts-recientes':	
+			$fijado = ($action === 'posts-destacados') ? true : false;
+			$tsLastPosts = $tsPosts->getLastPosts('', $fijado);
+    		$smarty->assign("tsPosts", $tsLastPosts['data']);
+        	$smarty->assign("tsPages", $tsLastPosts['pages']);
 		break;
 	}

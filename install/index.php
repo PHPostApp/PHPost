@@ -199,7 +199,7 @@ switch ($step) {
 				file_put_contents(CONFIGINC, $config);
 				setcookie("upperkey", $web['c_upperkey'], time() + 3600);
 				// Publicidad
-				$linkad = "https://joelmiguelvalente.github.io/grupos/";
+				$linkad = "https://ScriptParaPHPost.github.io/grupos/";
 				$sizesad = ['160x600','300x250','468x60','728x90'];
 				foreach ($sizesad as $key => $ad) {
 					$html = "<a href=\"$linkad\" target=\"_blank\"><img src=\"{$web['url']}/public/images/ad$ad.webp\"></a>";

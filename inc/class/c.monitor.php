@@ -530,6 +530,7 @@ class tsMonitor {
 		// VARS
 		$notType = 4; // NOTIFICACION
 		$fw = $this->getFollowVars();
+		var_dump($fw);
 		foreach($fw as $k => $value) $fw[$k] = is_numeric($value) ? (int)$value : $value;
 		// ANTI FLOOD
 		$flood = $tsCore->antiFlood(false, 'follow');
@@ -538,7 +539,8 @@ class tsMonitor {
 			return "1-{$fw['obj']}-0-$flood";
 		}
 		// YA EXISTE?
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT follow_id FROM u_follows WHERE f_user = {$tsUser->uid} AND f_id = {$fw['obj']} AND f_type = {$fw['type']} LIMIT 1"));
+		$fwtype = empty($fw['type']) ? '' : "AND f_type = {$fw['type']}";
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT follow_id FROM u_follows WHERE f_user = {$tsUser->uid} AND f_id = {$fw['obj']} $fwtype LIMIT 1"));
 		// SEGUIR
 		if(empty($data['follow_id'])){
 			if($tsUser->uid == $fw['obj'] && $fw['type'] == 1) return "1-{$fw['obj']}-0-No puedes seguirte a ti mismo.";
@@ -595,7 +597,7 @@ class tsMonitor {
 	public function getFollowVars(){
 		global $tsCore;
 		//
-		$return['sType'] = (int)$_POST['type'];
+		$return['sType'] = $tsCore->setSecure($_POST['type']);
 		$return['obj'] = (int)$_POST['obj'];
 		// TIPO EN NUMERO
 		switch($return['sType']){

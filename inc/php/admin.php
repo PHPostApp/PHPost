@@ -105,7 +105,16 @@
 		if(!empty($_POST['titulo'])) {
 			if($tsSeo->saveSEO()) $tsCore->redireccionar('admin', $action, 'save=true');
 		}
-
+	// Control de mensajes
+	} elseif($action == 'mensajes') {
+		include_once TS_CLASS . "c.control_mensajes.php";
+		$tsMp =new tsControlMensajes();
+		if(empty($act)){
+			$smarty->assign("tsCmp",$tsMp->getControlMp());
+		} elseif($act == 'leer'){
+			$smarty->assign("tsDatamp",$tsMp->getDatmp());
+			$smarty->assign("tsLeermp",$tsMp->getLeermp());
+		}
 	// Temas
 	} elseif($action === 'temas') {
 		$tsTitle = 'Diseños / Temas';

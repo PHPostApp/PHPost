@@ -26,9 +26,9 @@ class tsCuenta {
 		// CAMBIOS
       $perfilInfo = $this->unData($perfilInfo);
 		// Redes viculadas
-		$perfilInfo['socials'] = json_decode($perfilInfo['user_socials'], true);
+		$perfilInfo['socials'] = empty($perfilInfo['user_socials']) ? '' : json_decode($perfilInfo['user_socials'], true);
 		// PORCENTAJE
-      $total = unserialize($perfilInfo['p_total']);
+      $total = safe_unserialize($perfilInfo['p_total']);
 		//
 		return $perfilInfo;
 	}
@@ -38,7 +38,7 @@ class tsCuenta {
    private function unData($data){
    	global $redes;
       //
-      $data['p_configs'] = unserialize($data['p_configs']);
+      $data['p_configs'] = safe_unserialize($data['p_configs']);
 		// Redes sociales
       $data["redes"] = $redes;
 		$data['p_socials'] = ($data['p_socials'] != NULL) ? json_decode($data['p_socials'], true) : [];
@@ -61,9 +61,9 @@ class tsCuenta {
 			$data['p_socials'] = json_decode($data['p_socials'], true);
 			foreach ($redes as $name => $valor) $data['p_socials'][$name];
    	} else $data['p_socials'] = '';
-		$data['p_configs'] = unserialize($data['p_configs']);
+		$data['p_configs'] = safe_unserialize($data['p_configs']);
 		$data['pais']= [
-			'icon'=> strtolower($data['user_pais']),
+			'icon'=> strtolower($data['user_pais'] ?? ''),
 			'name'=> $tsPaises[$data['user_pais']]
 		];
 		//

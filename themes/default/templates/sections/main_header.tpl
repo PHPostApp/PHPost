@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es" data-theme="light">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,8 +32,8 @@ $(document).ready(() => {
 	 <div class="rtop"></div>
 	 <div id="maincontainer">
 		<!--MAIN CONTAINER-->
-		  <div id="head">
-			<div id="logo">
+		  <header id="head">
+				<div id="logo">
 					<a id="logoi" title="{$tsConfig.titulo}" href="{$tsConfig.url}">
 						<img border="0" align="top" title="{$tsConfig.titulo}" alt="{$tsConfig.titulo}" src="{$tsConfig.images}/space.gif">
 					 </a>
@@ -45,8 +45,8 @@ $(document).ready(() => {
 						  {include "m.global_ads_468.tpl"}
 					 {/if}
 				</div>
-		  </div>
-		  <div id="contenido_principal">
+		  </header>
+		  <main id="contenido_principal">
 		  {include "head_menu.tpl"}
 		  {include "head_submenu.tpl"}
 		  {include "head_noticias.tpl"}

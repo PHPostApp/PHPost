@@ -33,6 +33,7 @@
 	<li id="a_posts"><span class="cat-title"><a href="{$tsConfig.url}/admin/posts">Todos los Posts</a></span></li>
 	<li id="a_fotos"><span class="cat-title"><a href="{$tsConfig.url}/admin/fotos">Todas las Fotos</a></span></li>
 	<li id="a_cats"><span class="cat-title"><a href="{$tsConfig.url}/admin/cats">Categor&iacute;as</a></span></li>
+	<li id="a_mensajes"><span class="cat-title"><a href="{$tsConfig.url}/admin/mensajes">Todos los mensajes</a></span></li>
 </ul>
 <h4>Control de Usuarios</h4>
 <ul class="cat-list">

@@ -130,14 +130,14 @@
 li#a_main {background-image: url(../../../public/images/icons/robot.png);}
 li#a_creditos {background-image: url(../../../public/images/icons/information-shield.png);}
 li#a_configs {background-image: url(../../../public/images/icons/gear.png);}
-li#a_configs, li#a_registro, li#a_socials {background-image: url(../../../public/images/icons/gear.png);}
+li#a_configs, li#a_registro, li#a_socials, li#a_seo {background-image: url(../../../public/images/icons/gear.png);}
 li#a_temas {background-image: url(../../../public/images/icons/color.png);}
 li#a_news {background-image: url(../../../public/images/icons/newspaper.png);}
 li#a_ads {background-image: url(../../../public/images/icons/currency.png);}
 li#a_medals {background-image: url(../../../public/images/icons/medal.png);}
 li#a_afs {background-image: url(../../../public/images/icons/block-share.png);}
 li#a_fotos {background-image: url(../../../public/images/icons/photo.png);}
-li#a_posts {background-image: url(../../../public/images/icons/posts.png);}
+li#a_posts, li#a_mensajes {background-image: url(../../../public/images/icons/posts.png);}
 li#a_cats {background-image: url(../../../public/images/icons/category.png);}
 li#a_users {background-image: url(../../../public/images/icons/users.png);}
 li#a_rangos {background-image: url(../../../public/images/icons/crown.png);}

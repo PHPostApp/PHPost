@@ -610,7 +610,7 @@
     border: medium none !important;
 }
 .big-info .last-activity div.sep a {
-    color: #004A95;
+    color: var(--base-color);
     font-weight: bold;
     height: 16px;
     overflow: hidden;

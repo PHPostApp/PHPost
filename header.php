@@ -32,7 +32,7 @@
  * -------------------------------------------------------------------
  */
 	require realpath(__DIR__) . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'defined.php';
-
+	header('Content-Type: text/html; charset=utf-8');
 /*
  * -------------------------------------------------------------------
  *  Agregamos los archivos globales
@@ -102,6 +102,8 @@
 	 
 	// Configuraciones
 	$smarty->assign('tsConfig', $tsCore->settings);
+
+	$smarty->assign('tsVerification', $tsCore->verification());
 
 	// Obtejo usuario
 	$smarty->assign('tsUser',$tsUser);

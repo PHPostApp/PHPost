@@ -21,7 +21,7 @@ class tsMuro {
 		$lesigoymesigue = ($follow == 1 && $yfollow == 1) ? true : false;
 		  //
 		$data = db_exec('fetch_assoc',db_exec([__FILE__, __LINE__], 'query', 'SELECT p_configs FROM u_perfil WHERE user_id = \''.(int)$user_id.'\' LIMIT 1'));
-		$data['p_configs'] = unserialize($data['p_configs']);
+		$data['p_configs'] = safe_unserialize($data['p_configs']);
 		// VER MURO
 		switch($data['p_configs']['m']){
 			case 0:

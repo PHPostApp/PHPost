@@ -25,15 +25,17 @@ function smarty_function_meta($params, &$smarty) {
 	$tsSeo = new tsSeo;
 	$data = $tsSeo->getSEO();
 
+	if(empty($data)) return '';
+
 	// Titulo
-	$title = (is_numeric($tsPost['post_id'])) ? $tsPost['post_title'] : ($tsFoto['foto_id'] ? $tsFoto['f_title'] : $data['seo_titulo']);
+	$title = (is_numeric($tsPost['post_id'])) ? $tsPost['post_title'] : ($tsFoto['foto_id'] ? $tsFoto['f_title'] : (empty($data['seo_titulo']) ? $tsCore->settings['titulo'] : $data['seo_titulo']));
 
 	// Descripcion
-	$description = (is_numeric($tsPost['post_id'])) ? $tsPost['post_body_descripcion'] : ($tsFoto['foto_id'] ? $tsFoto['foto_descripcion'] : $data['seo_descripcion']);
+	$description = (is_numeric($tsPost['post_id'])) ? $tsPost['post_body_descripcion'] : ($tsFoto['foto_id'] ? $tsFoto['foto_descripcion'] : (empty($data['seo_descripcion']) ? "{$tsCore->settings['titulo']} - {$tsCore->settings['slogan']}" : $data['seo_descripcion']));
 
 	// Etiquetas
 	$keywords = (is_numeric($tsPost['post_id'])) ? join(',', $tsPost['post_tags']) : $data['seo_keywords'];
-	$keywords = strtolower($keywords);
+	$keywords = empty($keywords) ? '' : strtolower($keywords);
 
 	// Portada
 	if(isset($tsPost['post_portada']) AND empty($tsPost['post_portada'])) {
@@ -86,13 +88,15 @@ function smarty_function_meta($params, &$smarty) {
 		}
 	}
 	
-	$type = pathinfo($data['seo_favicon'])['extension'];
-	$data['seo_favicon'] .= '?t=' . time();
-	$meta .= "<link href=\"{$data['seo_favicon']}\" rel=\"shortcut icon\" type=\"image/$type\" />\n";
-	foreach($data['seo_images'] as $im => $img) {
-		if(!empty($img)) {
-			$img .= '?t=' . time();
-			$meta .= "<link href=\"$img\" rel=\"shortcut icon\" type=\"image/$type\" sizes=\"{$im}x{$im}\" />\n";
+	if(isset($data['seo_favicon']) AND !empty($data['seo_favicon'])) {
+		$type = pathinfo($data['seo_favicon'], PATHINFO_EXTENSION);
+		$data['seo_favicon'] .= '?t=' . uniqid();
+		$meta .= "<link href=\"{$data['seo_favicon']}\" rel=\"shortcut icon\" type=\"image/$type\" />\n";
+		foreach($data['seo_images'] as $im => $img) {
+			if(!empty($img)) {
+				$img .= '?t=' . uniqid();
+				$meta .= "<link href=\"$img\" rel=\"shortcut icon\" type=\"image/$type\" sizes=\"{$im}x{$im}\" />\n";
+			}
 		}
 	}
 	// Retornamos

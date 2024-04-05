@@ -31,7 +31,7 @@ class tsSeo {
 		$robots = json_decode($sql['seo_robots_data'], true);
 		$sql['robots_name'] = $robots['name'];
 		$sql['robots_content'] = $robots['content'];
-		$sql['seo_images'] = json_decode($sql['seo_images'], true);
+		$sql['seo_images'] = empty($sql['seo_images']) ? : json_decode($sql['seo_images'], true);
 
 		return $sql;
 	}

@@ -28,11 +28,10 @@
 				<a title="Registrate!" href="javascript:registro_load_form()"><strong>Registrate</strong></a>
 			</li>
 		{/if}
-		<li class="clearBoth"></li>
 	</ul>
 
 	<!--RIGHT MENU-->
-	<div class="opciones_usuario {if !$tsUser->is_member}anonimo{/if}">
+	<div class="opciones_usuario{if !$tsUser->is_member} anonimo{/if}">
 		{if $tsUser->is_member}
 		 	<div class="userInfoLogin">
 				<ul>
@@ -76,5 +75,4 @@
 			</div>
 		{/if}
 	</div>
-	<div class="clearBoth"></div>
 </div>
