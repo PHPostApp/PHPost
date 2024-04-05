@@ -21,6 +21,5 @@
 		<div class="emptyData clearfix">&iquest;Te has portado mal? {$tsPost.user_name} te ha bloqueado y no podr&aacute;s comentar sus post.</div>
 	{/if}
 	<div style="text-align:center"><a class="irCielo" href="#cielo"><strong>Ir al cielo</strong></a></div>
-</div>
-<div style="clear:both"></div>      
+</div>     
 {include "main_footer.tpl"}

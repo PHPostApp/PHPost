@@ -29,4 +29,6 @@ define('TS_UPLOADS', TS_FILES . 'uploads' . TS_PATH);
 
 define('TS_PUBLIC', TS_ROOT . 'public' . TS_PATH);
 
+define('TS_DASHBOARD', TS_ROOT . 'dashboard' . TS_PATH);
+
 set_include_path(get_include_path() . PATH_SEPARATOR . realpath('./'));

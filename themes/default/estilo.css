@@ -4633,38 +4633,11 @@ span.sep {
 /* COMPARTIR*/
 
 .compartir-mov {
-		background: url('images/compartir.gif') bottom left repeat-x transparent; 
-			padding-bottom:8px;
-		
+	margin-top: 1rem;
+	padding-bottom: 8px;
 	position: relative;
 }
 
-.m-left {
-	bottom:0;
-	height:56px;
-	left:-24px;
-	position:absolute;
-	width:25px;
-	background: url('images/movi-left.gif') bottom left repeat-x transparent; 
-}
-
-.m-right {
-	bottom:0;
-	height:56px;
-	right:-24px;
-	position:absolute;
-	width:25px;
-	background: url('images/movi-right.gif') bottom left repeat-x transparent; 
-}
-
-.movi-logo {
-	bottom:11px;
-	height:30px;
-	position:absolute;
-	width:151px;
-	background: url('images/movi-logo.png') bottom left no-repeat transparent; 
-	
-}
 
 li.min-icon {
 	height:32px;

@@ -60,10 +60,11 @@ class tsSmarty extends Smarty {
 			'sections' => $templates . 'sections' . TS_PATH,
 			'modules' => $templates . 'modules' . TS_PATH,
 			'pagina' => $templates . 'modules' . TS_PATH . $tsPage . TS_PATH,
-			'admin_mods' => $templates . 'admin_mods' . TS_PATH,
 			'global' => $templates . 'modules' . TS_PATH . 'global' . TS_PATH,
 			'php_files' => $templates . 't.php_files' . TS_PATH,
-			'public' => TS_PUBLIC
+			'public' => TS_PUBLIC,
+			'dashboard' => TS_DASHBOARD,
+			'admin_mods' => TS_DASHBOARD . 'admin_mods' . TS_PATH
 		];
 		parent::addTemplateDir($directorios);
 	}
@@ -74,7 +75,7 @@ class tsSmarty extends Smarty {
 	 * @param string $page Nombre de la plantilla a cargar
 	 */
 	public function loadTemplate($page) {
-		$page = "t.$page.tpl";
+		$page = (in_array($page, ['admin', 'moderacion'])) ? "main.tpl" : "t.$page.tpl";
 		try {
 			$temp = parent::templateExists($page) ? $page : $this->template_error;
 			parent::display($temp);

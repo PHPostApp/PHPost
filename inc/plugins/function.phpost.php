@@ -58,11 +58,13 @@ class SmartyPHPost {
 		$settings = [
 		   'routes' => [
 		      'tema' => $this->system['tsCore']->settings['tema']['t_url'], 
-		      'public' => $this->system['tsCore']->settings['public']
+		      'public' => $this->system['tsCore']->settings['public'],
+		      'dashboard' => $this->system['tsCore']->settings['url'].'/dashboard',
 		   ],
 		   'folders' => [
 		      'tema' => $smarty->template_dir['tema'], 
-		      'public' => $smarty->template_dir['public']
+		      'public' => $smarty->template_dir['public'],
+		      'dashboard' => $smarty->template_dir['dashboard']
 		   ]
 		];
 		foreach($settings as $settingKey => $settingValue):
@@ -163,11 +165,15 @@ class SmartyPHPost {
   		$stylesheets = [...$stylesheets, "{$this->system['tsPage']}.css", "wysibb.css"];
   		
 	  	// Quitamos 'wysibb' del array
-		if($this->system['tsPage'] == 'admin') {
-			$posicion = array_search("wysibb.css", $stylesheets);
-			if($posicion !== false) unset($stylesheets[$posicion]);
-			$stylesheets = array_values($stylesheets);
+		if (in_array($this->system['tsPage'], ['admin', 'moderacion'])) {
+		   $stylesheetsToRemove = ['wysibb.css', 'moderacion.css'];
+		   foreach ($stylesheetsToRemove as $stylesheetToRemove) {
+		      $posicion = array_search($stylesheetToRemove, $stylesheets);
+		      if ($posicion !== false) unset($stylesheets[$posicion]);
+		   }
+		   $stylesheets = array_values($stylesheets);
 		}
+
   		// Añadimos el archivo 'live.css'
   		if(self::setPermisson('live') && self::setPermisson('notLive')) 
   			$stylesheets = [...$stylesheets, "live.css"];
@@ -202,7 +208,7 @@ class SmartyPHPost {
   	public function setScripts($scripts = NULL, bool $isArray = true) {
   		if(!$isArray) return self::setScript($scripts);
 	  	// Añadimos archivos escenciales
-	  	$scripts = ['jquery.min.js', 'lazyload.js', 'jquery.plugins.js', ...$scripts, "wysibb.js", "{$this->system['tsPage']}.js"];
+	  	$scripts = ['jquery.min.js', 'lazyload.js', 'jquery.plugins.js', ...$scripts, "{$this->system['tsPage']}.js", "wysibb.js"];
 	  	// Quitamos 'wysibb' del array
 		if(in_array($this->system['tsPage'], ['cuenta', 'comunidades'])) {
 	  		$scripts = [...$scripts, "avatar.js"];

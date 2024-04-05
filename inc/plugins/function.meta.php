@@ -82,9 +82,11 @@ function smarty_function_meta($params, &$smarty) {
 		]
 	];
 	foreach ($redes as $i => $social) {
-		$meta .= "<!-- ".ucfirst($i)." -->\n";
-		foreach ($social['data'] as $d => $info) {
-			$meta .= "<meta {$social['attr']}=\"{$social['prop']}:$info\" content=\"".$$info."\" />\n";
+		if($params[$i]) {
+			$meta .= "<!-- ".ucfirst($i)." -->\n";
+			foreach ($social['data'] as $d => $info) {
+				$meta .= "<meta {$social['attr']}=\"{$social['prop']}:$info\" content=\"".$$info."\" />\n";
+			}
 		}
 	}
 	

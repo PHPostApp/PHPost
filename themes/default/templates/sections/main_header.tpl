@@ -6,12 +6,7 @@
 <title>{$tsTitle}</title>
 {meta facebook=true twitter=true}
 {googlefonts fonts="Roboto"}
-{phpost 
-	favicon="favicon.ico" 
-	css=["estilo.css", "phpost.css", "extras.css"] 
-	js=["acciones.js"] 
-	scriptGlobal=true
-}
+{phpost css=["estilo.css", "phpost.css", "extras.css"] js=["acciones.js"] scriptGlobal=true}
 <script>
 $(document).ready(() => {
 	notifica.popup({$tsNots});

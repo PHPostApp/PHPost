@@ -119,7 +119,7 @@ class BBCode {
             $this->text = str_replace('[hr]', '<hr />', $this->text);
         }
 
-        $this->text = str_replace('\n', '<br />', $this->text);
+        $this->text = str_replace(['\n', '\r'], ['<br />', ''], $this->text);
     }
 
     /**

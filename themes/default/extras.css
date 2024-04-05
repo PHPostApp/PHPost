@@ -272,31 +272,21 @@
 	box-shadow:0 0 5px #CCC;
 	border:1px solid #CCC;
 }
-.form-add-post .markItUpHeader {
-	-moz-border-radius:5px;
-	background:#DDD;
-	border:1px solid #BBB;
-	height:26px;
-	padding:5px;
-	padding-bottom:0;
-	width:760px;
-}
-.form-add-post .markItUpHeader ul ul li {
-	margin:0;
-	width:auto;
-}
-.form-add-post .special-left {
+.form-add-post .special-left,
+.form-add-post .special-right  {
 	float:left;
-	width:300px;
+	width:calc(100% / 2);
 }
 .form-add-post .special-right {
 	float: right;
-	width: 300px;
+}
+.form-add-post .option input[type="checkbox"] {
+	float: left;
+	margin: 0.325rem;
 }
 .form-add-post .option p {
-	margin: 0 0 10px 5px;
-	color: #777;
-	width: 260px;
+	display: block;
+	width: 100%;
 }
 .form-add-post .option label {
 	font-weight: bold;
@@ -306,7 +296,7 @@
 	color: #000;
 	cursor:pointer;
 }
-.form-add-post select option{
+.form-add-post select option {
 	padding:3px 3px 3px 28px;
 	background-position:5px center;
 	background-repeat:no-repeat;
