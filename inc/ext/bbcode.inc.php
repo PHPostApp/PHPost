@@ -162,9 +162,9 @@ class BBCode {
 
         $tagCodes = array(
             array('tag' => 'b', 'replace' => '<strong>{param}</strong>'),
-            array('tag' => 'i', 'replace' => '<i>{param}</i>'),
+            array('tag' => 'i', 'replace' => '<em>{param}</em>'),
             array('tag' => 'u', 'replace' => '<u>{param}</u>'),
-            array('tag' => 's', 'replace' => '<s>{param}</s>'),
+            array('tag' => 's', 'replace' => '<strike>{param}</strike>'),
             array('tag' => 'sub', 'replace' => '<sub>{param}</sub>'),
             array('tag' => 'sup', 'replace' => '<sup>{param}</sup>'),
             array('tag' => 'table', 'replace' => '<table class="bbctab"><tbody>{param}</tbody></table>'),

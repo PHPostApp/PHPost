@@ -414,7 +414,8 @@ class tsMonitor {
 		$oracion['style'] = $this->monitor[$no_type]['css'];
 		$oracion['date'] = $data['not_date'];
 		$oracion['user'] = $data['usuario'];
-		$oracion['avatar'] = $data['obj_user'].'_50.jpg';
+		$oracion['avatar'][50] = $data['obj_user'].'_50.jpg';
+		$oracion['avatar'][120] = $data['obj_user'].'_120.jpg';
 		$oracion['total'] = $data['not_total'];
 		# CON UN SWITCH ESCOGEMOS QUE ORACION CONSTRUIR
 		switch($no_type){

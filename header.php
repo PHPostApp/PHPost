@@ -22,6 +22,7 @@
 	// Reporte de errores
 	error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 	ini_set('display_errors', TRUE);
+	# ini_set('memory_limit', '256M');
 
 	// Límite de ejecución
 	set_time_limit(300);
@@ -41,6 +42,7 @@
 	
 	// Funciones
 	include TS_EXTRA.'functions.php';
+	include TS_EXTRA.'extends.phpost.php';
 
 	// Nucleo
 	include TS_CLASS.'c.core.php';
@@ -92,7 +94,7 @@
 	// Smarty
 	$smarty = new tsSmarty();
 	// Nueva configuración
-	$smarty->output(false);
+	$smarty->output(true);
 	
 /*
  * -------------------------------------------------------------------

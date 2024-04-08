@@ -11,11 +11,13 @@
 		<div class="emptyData">{$gd_info}</div>
 	{/if}
 	<div class="avatar-cambiar" style="text-align: center;padding-bottom: 8px">
-		<div class="mBtn btnOk" id="changePC">Desde PC</div>
-		<div class="mBtn btn{if $tsConfig.c_allow_upload == '1'}Ok{else}Delete{/if}"{if $tsConfig.c_allow_upload == '1'} id="changeURL"{/if}>Desde Url</div>
+		<div class="changeAvatar mBtn btnOk" id="changePC">Desde PC</div>
+		<div class="changeAvatar mBtn btn{if $tsConfig.c_allow_upload == '1'}Ok{else}Delete error{/if}"{if $tsConfig.c_allow_upload == '1'} id="changeURL"{/if}>Desde Url</div>
 		<div id="input_add" style="display: none;">
-			<input type="text" name="url" autocomplete="off" placeholder="Url de la imagen" class="browse form-control"/>
-				<span class="verify">&check;</span>
+			<div>
+				<input type="text" name="url" autocomplete="off" placeholder="Url de la imagen" class="browse form-control"/>
+					<span class="verify">&check;</span>
+				</div>
 			</div>
 		</div>
 	</div>

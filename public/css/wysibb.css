@@ -23,7 +23,7 @@ html {
 	margin-bottom: 10px;
 	position: relative;
 	background: #fff;
-	font-size: 13px;
+	font-size: 1rem;
 }
 
 .wysibb.fullscreen {
@@ -885,19 +885,18 @@ html {
 /* NEW ICONS */
 
 .newicon {
-	background-image: url('../images/sprite.png');
-	background-position: top center;
-	background-repeat: no-repeat;
+	--position: top center;
+	background: url('../images/sprite.png') no-repeat var(--position)!important;
 	margin: 7px 2px!important;
 	height: 18px!important;
 }
 
-.i-spoiler { background-position: center -18px; }
-.i-flash { background-position: center -36px; }
-.i-goear { background-position: center -54px; }
-.i-code { background-position: center -72px; }
-.i-justify { background-position: center -90px; }
-.i-fullscreen { background-position: center -108px; }
+.i-spoiler { --position: center -18px; }
+.i-flash { --position: center -36px; }
+.i-goear { --position: center -54px; }
+.i-code { --position: center -72px; }
+.i-justify { --position: center -90px; }
+.i-fullscreen { --position: center -108px; }
 
 /* NEW BBCODE STYLES */
 
@@ -1021,9 +1020,18 @@ code {
 #preview img {
 	max-width: 100%;
 }
+.post-contenido :where(ol, ul) {
+	padding-left: 1rem;
+}
 .post-contenido ol li {
-	list-style-type: decimal;
+	list-style-type: decimal!important;
 }
 .post-contenido ul li {
-	list-style-type: disc;
+	list-style-type: disc!important;
+}
+.post_contenido u, .wysibb u {
+	text-decoration: underline;
+}
+.post_contenido s, .wysibb strike {
+	text-decoration: line-through!important;
 }

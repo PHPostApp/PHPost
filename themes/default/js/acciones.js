@@ -766,24 +766,5 @@ $(document).ready(() => {
 	});
 	// EXTRAS
 	$('a[title]').tipsy({ gravity: $.fn.tipsy.autoNS });
-	// Ejecutamos LazyLoad - by Miguel92
-   var LazyLoadClass = ['img[data-src]', '.background', '.iframe']
-   LazyLoadClass.map( lazyload => {
-   	let NewOptions = {
-         elements_selector: lazyload,
-         use_native: true,
-         class_loading: 'lazy-loading',
-         callback_error: callback => {
-			   callback.setAttribute("srcset", global_data.img + "/deleted-post.gif");
-			   callback.setAttribute("src", global_data.img + "/suspension.gif");
-			}
-      }
-      if(lazyload === '.background') {
-         // Agregamos
-         NewOptions = Object.assign(NewOptions, {class_loaded: 'lazy-loaded'})
-         // Quitamos -> use_native: true
-         delete NewOptions.use_native
-      }
-      new LazyLoad(NewOptions)
-   });
+	
 });

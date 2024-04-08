@@ -104,37 +104,12 @@ class LiteYTEmbed extends HTMLElement {
 // Register custom element
 customElements.define('lite-youtube', LiteYTEmbed);
 
-var AlertFloat = new function() {
-	this.prefix = 'alertfloat__color--',
-	this.element = 'alertfloat',
-	this.elclass = '',
-	this._type = 'default',
-	this._timeout = 3000,
-	this.show = objects => {
-		let body = empty(objects.body) ? this._body : objects.body;
-		let type = empty(objects.type) ? this._type : objects.type;
-		let title = (!empty(objects.title)) ? `<h3 class="alertfloat--title">${objects.title}</h3>` : '';
-		$('#brandday').after(`
-			<div id="${this.element}" class="alertfloat ${this.elclass} ${this.prefix}${type}">
-				${title}
-				<p class="alertfloat--content">${body}<p>
-			</div>
-		`)
-		this.close(objects.timeout)
-	},
-	this.close = end => {
-		removeElementOfBody = empty(end) ? this._timeout : end * 1000;
-		setTimeout(() => {
-			$('#brandday #' + this.element).remove()
-		}, removeElementOfBody);
-	}
-}
-
 /**
  * MyDialog v2
  * @autor Miguel92
 */
 var mydialog = {
+	theme: 'default',
 	is_show: false,
 	class_aux: '',
 	size: 'normal', // small | normal | big
@@ -172,8 +147,7 @@ var mydialog = {
 		if(this.close_button)
 			$('#mydialog #dialog #close').html('<span onclick="mydialog.close()" class="close_dialog">&times;</span>');
 
-		$('#mydialog #dialog').css('position', 'absolute');
-		$('#mydialog #dialog').fadeIn('fast');
+		$('#mydialog #dialog').css({ position: 'absolute' }).fadeIn('fast');
 		$(window).on('resize', mydialog.center);
 	},
 	close: function(){
@@ -211,30 +185,51 @@ var mydialog = {
 		if(args.length <= 7) delete obj.fail;
 		mydialog.buttons_action(args[0], obj);
 	},
+	buttons_theme: () => {
+		const buttonsTheme = {
+			default: {
+				done: 'mBtn btnOk',
+				fail: 'mBtn btnCancel'
+			}, 
+			cerberus: {
+				done: 'button button-ok',
+				fail: 'button button-error'
+			}, 
+			bootstrap: {
+				done: 'btn btn-primary',
+				fail: 'btn btn-danger'
+			}
+		}
+		return buttonsTheme[mydialog.theme]
+	},
 	buttons_action: (remBtn, dataObject) => {	
-		var is_html = '';	
-		if(!dataObject.ok && !dataObject.fail && remBtn) $('#mydialog #buttons').hide()
+		let is_html = '';	
+		let { done, fail } = mydialog.buttons_theme();
+		if(!dataObject.ok && !dataObject.fail && remBtn) $('#mydialog #buttons').hide();
+
 		// Si existe "OK"
 		if(dataObject.ok) {
 			// Si tiene accion definido
 			if(dataObject.ok.action === 'close' || !dataObject.ok.action) dataObject.ok.action = 'mydialog.close()';
 			let classdisabled = dataObject.ok.active ? '' : ' disabled';
-			is_html += `<input type="button" class="mBtn btnOk${classdisabled}" style="display:inline-block!important;" onclick="${dataObject.ok.action}" value="${dataObject.ok.text}"${classdisabled} />`;
+			is_html += `<input type="button" class="${done}${classdisabled}" style="display:inline-block!important;" onclick="${dataObject.ok.action}" value="${dataObject.ok.text}"${classdisabled} />`;
 		}
 		// Si existe "fail"
 		if(dataObject.fail) {
 			// Si tiene accion definido
 			if(dataObject.fail.action === 'close' || !dataObject.fail.action) dataObject.ok.action = 'mydialog.close()';
 			let classdisabled = dataObject.fail.active ? '' : ' disabled';
-			is_html += `<input type="button" class="mBtn btnCancel${classdisabled}" style="display:inline-block!important;" onclick="${dataObject.ok.action}" value="${dataObject.fail.text}"${classdisabled} />`;
+			is_html += `<input type="button" class="${fail}${classdisabled}" style="display:inline-block!important;" onclick="${dataObject.ok.action}" value="${dataObject.fail.text}"${classdisabled} />`;
 		}
 		// Por que si se ejecuta 2 veces y el 1ro tiene mydialog.buttons(false)
 		// El 2do ya no se visualizará ya que no existe en el DOM #buttons
 		$('#mydialog #buttons').show().html(is_html)
 		
 		if(!dataObject.ok && !dataObject.fail) {
-			if(dataObject.ok.focus) $('#mydialog #buttons .mBtn.btnOk').focus();
-			else if(dataObject.fail.focus) $('#mydialog #buttons .mBtn.btnCancel').focus();
+			done = '.' + done.replace('.', ' ');
+			fail = '.' + fail.replace('.', ' ');
+			if(dataObject.ok.focus) $(`#mydialog #buttons ${done}`).focus();
+			else if(dataObject.fail.focus) $(`#mydialog #buttons ${fail}`).focus();
 		}
 	},
 	alert: function(title, body, reload){
@@ -312,3 +307,26 @@ const verifyInput = (selector, errorMessage) => {
 $('input').on('keyup', function() {
 	$(this).parent().removeClass('was-error').find('.help').html('')
 });
+
+$(() => {
+	// Ejecutamos LazyLoad - by Miguel92
+   let LazyLoadClass = ['img[data-src]', '[data-bg]', '.iframe']
+   LazyLoadClass.map( lazyload => {
+   	let NewOptions = {
+         elements_selector: lazyload,
+         use_native: true,
+         class_loading: 'lazy-loading',
+         callback_error: callback => {
+			   callback.setAttribute("srcset", global_data.public_images + "/500-error.png");
+			   callback.setAttribute("src", global_data.public_images + "/500-error.png");
+			}
+      }
+      if(lazyload === '[data-bg]') {
+         // Agregamos
+         NewOptions = Object.assign(NewOptions, {class_loaded: 'lazy-loaded'})
+         // Quitamos -> use_native: true
+         delete NewOptions.use_native
+      }
+      new LazyLoad(NewOptions)
+   });
+})

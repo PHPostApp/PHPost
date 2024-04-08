@@ -187,11 +187,11 @@ class tsPosts {
 				// Agregamos este item al array
 				$postData['ip'] = $tsCore->validarIP();
 				if(!filter_var($postData['ip'], FILTER_VALIDATE_IP)) die('0: Su ip no se pudo validar.');
-				// VERIFICAMOS LA RUTA DE GUARDADO DE LA IMAGEN Y OTROS ANTES DE ENVIAR EL FORMULARIO.
-				$urlimage = $tsCore->covers_posts();
 				// Agregamos estos items al array
 				$postData['user'] = $tsUser->uid;
 				$postData['status'] = (!$tsUser->is_admod AND (int)$tsCore->settings['c_desapprove_post'] === 1) ? 3 : 0;
+				// VERIFICAMOS LA RUTA DE GUARDADO DE LA IMAGEN Y OTROS ANTES DE ENVIAR EL FORMULARIO.
+				$urlimage = $tsCore->covers_posts();
 				$postData['portada'] = $urlimage;
 				// INSERTAMOS
 				if(insertInto([__FILE__, __LINE__], 'p_posts', $postData, 'post_')) {
@@ -246,6 +246,9 @@ class tsPosts {
 			if ($key === 'sponsored' || $key === 'sticky') {
 				$postData[$key] = (!$tsUser->is_admod AND $tsUser->permisos['most'] != false) ? 0 : ($_POST[$key] === 'on' ? 1 : 0);
 			}
+		}
+		if(!empty($_FILES["portada"]["name"])) {
+			$postData["portada"] = $tsCore->covers_posts($postData["portada"]);
 		}
 		// ACTUALIZAMOS
 		if((int)$tsUser->uid === (int)$data['post_user'] || !empty($tsUser->is_admod) || !empty($tsUser->permisos['moedpo'])) {
@@ -448,7 +451,7 @@ class tsPosts {
 	public function getAutor(int $user_id = 0){
 		global $tsUser, $tsCore;
 		// DATOS DEL AUTOR
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_rango, u.user_puntos, u.user_lastactive, u.user_last_ip, u.user_activo, u.user_baneado, p.user_pais, p.user_sexo, p.user_firma FROM u_miembros AS u LEFT JOIN u_perfil AS p ON u.user_id = p.user_id WHERE u.user_id = $user_id LIMIT 1"));
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_rango, u.user_puntos, u.user_lastactive, u.user_registro, u.user_last_ip, u.user_activo, u.user_baneado, p.user_pais, p.user_sexo, p.user_firma FROM u_miembros AS u LEFT JOIN u_perfil AS p ON u.user_id = p.user_id WHERE u.user_id = $user_id LIMIT 1"));
 		//
 		$data['user_seguidores'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT follow_id FROM u_follows WHERE f_id = $user_id && f_type = 1"));
 		$data['user_comentarios'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT cid FROM p_comentarios WHERE c_user = $user_id && c_status = 0"));
@@ -503,23 +506,21 @@ class tsPosts {
 	function getEditPost(){
 		global $tsCore, $tsUser;
 		//
-		$pid = intval($_GET['pid']);
+		$pid = (int)$_GET['pid'];
 		//
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM p_posts WHERE post_id = \''.(int)$pid.'\' LIMIT 1');
-		$ford = db_exec('fetch_assoc', $query);
+		$ford = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT * FROM p_posts WHERE post_id = $pid LIMIT 1"));
 		
-		  //
-		  if(empty($ford['post_id'])){
+		if(empty($ford['post_id'])){
 				return 'El post elegido no existe.';
-		  }elseif($ford['post_status'] != '0' && $tsUser->is_admod == 0 && $tsUser->permisos['moedpo'] == false){
+		} elseif($ford['post_status'] != '0' && $tsUser->is_admod == 0 && $tsUser->permisos['moedpo'] == false){
 				return 'El post no puede ser editado.';
-		  }elseif(($tsUser->uid != $ford['post_user']) && $tsUser->is_admod == 0 && $tsUser->permisos['moedpo'] == false){
+		} elseif(($tsUser->uid != $ford['post_user']) && $tsUser->is_admod == 0 && $tsUser->permisos['moedpo'] == false){
 				return 'No puedes editar un post que no es tuyo.';
-		  }
+		}
 		// PEQUEÑO HACK
 		foreach($ford as $key => $val){
-			$iden = str_replace('post_','b_',$key);
-			$data[$iden] = $val;
+			$iden = str_replace('post_', 'b_', $key);
+			$data[$iden] = ($key == 'post_body') ? str_replace(['\n', '\r'], ["\n", ''], $val) : $val;
 		}
 		//
 		return $data;
@@ -591,7 +592,7 @@ class tsPosts {
 		getLastComentarios()
 		: PARA EL PORTAL
 	*/
-	function getLastComentarios(){
+	public function getLastComentarios() {
 		global $tsUser, $tsCore;
 		//
 		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT cm.cid, cm.c_status, u.user_id, u.user_name, u.user_activo, u.user_baneado, p.post_id, p.post_title, p.post_status, c.c_seo FROM p_comentarios AS cm LEFT JOIN u_miembros AS u ON cm.c_user = u.user_id LEFT JOIN p_posts AS p ON p.post_id = cm.c_post_id LEFT JOIN p_categorias AS c ON c.cid = p.post_category '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'WHERE p.post_status = \'0\'  AND cm.c_status = \'0\' AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' ORDER BY cid DESC LIMIT 10');
@@ -604,35 +605,33 @@ class tsPosts {
 	/*
 		getComentarios()
 	*/
-	function getComentarios($post_id){
+	public function getComentarios(int $post_id = 0) {
 		global $tsCore, $tsUser;
 		//
 		$start = $tsCore->setPageLimit($tsCore->settings['c_max_com']);
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT u.user_name, u.user_activo, u.user_baneado, c.* FROM u_miembros AS u LEFT JOIN p_comentarios AS c ON u.user_id = c.c_user WHERE c.c_post_id = \''.(int)$post_id.'\' '.($tsUser->is_admod ? '' : 'AND c.c_status = \'0\' AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' ORDER BY c.cid LIMIT '.$start);
+		$cstatus = $tsUser->is_admod ? '' : "AND c_status = 0";
+		$admod = $tsUser->is_admod ? '' : "$cstatus AND u.user_activo = 1 && u.user_baneado = 0";
+		//
+		$query = db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_id, u.user_name, u.user_activo, u.user_baneado, c.* FROM u_miembros AS u LEFT JOIN p_comentarios AS c ON u.user_id = c.c_user WHERE c.c_post_id = $post_id $admod ORDER BY c.cid LIMIT $start");
 		// COMENTARIOS TOTALES
-		$return['num'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT cid FROM p_comentarios WHERE c_post_id = \''.(int)$post_id.'\' '.($tsUser->is_admod ? '' : 'AND c_status = \'0\'').''));
+		$return['num'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT cid FROM p_comentarios WHERE c_post_id = $post_id $cstatus"));
 		//
 		$comments = result_array($query);
-		
-					
 		// PARSEAR EL BBCODE
-		$i = 0;
-		foreach($comments as $comment){
-			// CON ESTE IF NOS AHORRAMOS CONSULTAS :)
-			if($comment['c_votos'] != 0){
-				 $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT voto_id FROM p_votos WHERE tid = \''.(int)$comment['cid'].'\' AND tuser = \''.$tsUser->uid.'\' AND type = \'2\' LIMIT 1');
-				$votado = db_exec('num_rows', $query);
-				
-			} else $votado = 0;
-			
+		foreach($comments as $i => $comment){
+			$return['data'][$i]['votado'] = 0;
+			if($comment['c_votos'] != 0) {
+				$return['data'][$i]['votado'] = db_exec('num_rows',db_exec([__FILE__, __LINE__], 'query', "SELECT voto_id FROM p_votos WHERE tid = {$comment['cid']} AND tuser = {$tsUser->uid} AND type = 2 LIMIT 1"));
+			}
 			// BLOQUEADO
-			 $return['block'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT bid, b_user, b_auser FROM `u_bloqueos` WHERE b_user = \''.(int)$comment['c_user'].'\' AND b_auser = \''.$tsUser->uid.'\' LIMIT 1'));
-
+			$return['block'] = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT bid, b_user, b_auser FROM `u_bloqueos` WHERE b_user = {$comment['c_user']} AND b_auser = {$tsUser->uid} LIMIT 1"));
 			 //
 			$return['data'][$i] = $comment;
-			$return['data'][$i]['votado'] = $votado;
 			$return['data'][$i]['c_html'] = $tsCore->parseBadWords($tsCore->parseBBCode($return['data'][$i]['c_body']), true);
-			$i++;
+			$return['data'][$i]['c_avatar'] = [
+				50 => $tsCore->getAvatar($comment['user_id'], 50),
+				120 => $tsCore->getAvatar($comment['user_id'], 120)
+			];
 		}
 		//
 		return $return;

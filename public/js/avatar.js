@@ -10,15 +10,22 @@ function cambiarFile(other = true){
 }
 
 $(document).ready(() => {
-	$('.avatar-cambiar .mBtn').on('click', e => {
+	$('.avatar-cambiar .changeAvatar').on('click', function(e) {
 		if(!empty(e.target.id)) {
 			let name = e.target.id;
-			$("#input_add")[(name === 'changePC' ? 'hide' : 'block')]();
-			if(name === 'changePC') $('#drop-region input').click();
-			else $(".verify").on('click', e => avatar.subir('url'));
+			$("#input_add")[(name === 'changePC' ? 'hide' : 'show')]();
+			if(name === 'changePC') {
+				$('#drop-region input').click();
+			} else {
+				$(".verify").on('click', function() {
+					avatar.subir('url');
+					$(this).addClass('load')
+				});
+
+			}
 		}
 	})
-	$('.avatar-cambiar .mBtn.btnDelete').on('click', () => mydialog.alert('No puedes subir avatar por URL', 'Esta deshabilitado desde la administración...'));
+	$('.avatar-cambiar .changeAvatar.error').on('click', () => mydialog.alert('No puedes subir avatar por URL', 'Esta deshabilitado desde la administración...'));
 })
 getCache = () => {
 	let date_ = new Date();
@@ -47,14 +54,15 @@ var avatar = {
 	},
 	subir: async (type = 'desktop') => {
 		$(".avatar-loading").show();
-		const myInput = $(`input[name=${type}]`)
+		const myInput = $(`input[name=${type}]`);
 		//
 		const datoUrl = new FormData();
-		datoUrl.append('url', (type === 'url') ? myInput.value : myInput[0].files[0]);
-		const Response = await avatar.fetching('avatar', datoUrl)
+		datoUrl.append('url', (type === 'url') ? myInput.val() : myInput[0].files[0]);
+		const Response = await avatar.fetching('avatar', datoUrl);
 		if(!empty(Response)) avatar.subida_exitosa(Response);
 	},
 	subida_exitosa: rsp => {
+		$(".verify").removeClass('load');
 		if (rsp.error == 'success') avatar.success = true;
 		else if (rsp.msg) {
          avatar.key = rsp.key;
@@ -71,11 +79,12 @@ var avatar = {
 		mydialog.buttons(true, true, 'Cortar', `avatar.guardar()`, true, true, true, 'Cancelar', 'close', true, false);
 		mydialog.center();
 		$("#avatar-img, #avatar-menu").attr("src", newImageUpload).on('load', () => {
+			let sizes = [avatar.size, avatar.size, 'px'];
 			var croppr = new Croppr('.avatar-cortar', {
 			   aspectRatio: 1, // Mantemos el tamanio cuadrado 1:1
-			   // Minimo de 160px x  160px
-    			startSize: [avatar.size, avatar.size, 'px'], 
-    			minSize: [avatar.size, avatar.size, 'px'], 
+			   // Minimo de 120px x  120px
+    			startSize: sizes, 
+    			minSize: sizes, 
     			// Enviamos las coordenadas para cortar la imagen
     			// Tiene la funcion onCropEnd ya que es como va a quedar
     			onCropEnd: data => avatar.informacion = data,
@@ -87,13 +96,13 @@ var avatar = {
 		let rx = avatar.size / coords.width;
 		let ry = avatar.size / coords.height;
 		$('#avatar-img').css({
-			width: Math.round(rx * avatar.imgCrop[0].width) + 'px',
-			height: Math.round(ry * avatar.imgCrop[0].height) + 'px',
+			width: Math.round(rx * coords.width) + 'px',
+			height: Math.round(ry * coords.height) + 'px',
 			marginLeft: '-' + Math.ceil(rx * coords.x) + 'px',
 			marginTop: '-' + Math.round(ry * coords.y) + 'px'
 		});
 	},
-	recargar: () => $("#avatar-img, #avatar-menu").attr("src", avatar.current + '_120?t=' + getCache()),
+	recargar: () => $("#avatar-img, #avatar-menu").attr("src", avatar.current + '?t=' + getCache()),
 	guardar: async () => {
 		if (empty(avatar.informacion)) cuenta.alerta('Debes seleccionar una parte de la foto', 0);
 		else {
@@ -112,6 +121,10 @@ var avatar = {
 				mydialog.body("Tu avatar se ha creado correctamente...");
 			   mydialog.buttons(true, true, 'Aceptar', 'close', true, true, false);
 			   avatar.recargar();
+			   $("#input_add").hide();
+			   $(`input[name="url"]`).attr({
+			   	value: ''
+			   })
 			}
 		}
 	}

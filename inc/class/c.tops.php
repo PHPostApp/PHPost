@@ -96,12 +96,13 @@ class tsTops {
 	/*
 		getTopPostsQuery($data)
 	*/
-	function getTopPostsQuery($data){
-		
-		//
-        $query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_category, '.$data['type'].', p.post_puntos, p.post_title, c.c_seo, c.c_img FROM p_posts AS p LEFT JOIN p_categorias AS c ON c.cid = p.post_category  WHERE p.post_status = \'0\' AND p.post_date BETWEEN '.$data['start'].' AND '.$data['end'].' '.$data['scat'].' ORDER BY '.$data['type'].' DESC LIMIT 10');
-        $datos = result_array($query);
-		
+	public function getTopPostsQuery($data){
+		$tsCore = new tsCore;
+		$datos = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_category, p.post_portada, '.$data['type'].', p.post_puntos, p.post_title, c.c_seo, c.c_img FROM p_posts AS p LEFT JOIN p_categorias AS c ON c.cid = p.post_category  WHERE p.post_status = \'0\' AND p.post_date BETWEEN '.$data['start'].' AND '.$data['end'].' '.$data['scat'].' ORDER BY '.$data['type'].' DESC LIMIT 10'));
+
+		foreach ($data as $pid => $post) {
+			$data[$pid]['post_portada'] = $tsCore->verifyUrl($post['post_portada']);
+		}
 		//
 		return $datos;
 	}
@@ -111,11 +112,11 @@ class tsTops {
 	function getHomeTopPostsQuery($date){
 		$tsCore = new tsCore;
 		//
-		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_category, p.post_title, p.post_puntos, c.c_seo FROM p_posts AS p LEFT JOIN p_categorias AS c ON c.cid = p.post_category  WHERE p.post_status = 0 AND p.post_date BETWEEN \''.$date['start'].'\' AND \''.$date['end'].'\' ORDER BY p.post_puntos DESC LIMIT 15');
+		$query = db_exec([__FILE__, __LINE__], 'query', 'SELECT p.post_id, p.post_category, p.post_portada, p.post_title, p.post_puntos, c.c_seo FROM p_posts AS p LEFT JOIN p_categorias AS c ON c.cid = p.post_category  WHERE p.post_status = 0 AND p.post_date BETWEEN \''.$date['start'].'\' AND \''.$date['end'].'\' ORDER BY p.post_puntos DESC LIMIT 15');
 		$data = result_array($query);
 
 		foreach ($data as $pid => $post) {
-			$data[$pid]['post_portada'] = $tsCore->verifyUrl($post['post_portada'] ?? '');
+			$data[$pid]['post_portada'] = $tsCore->verifyUrl($post['post_portada']);
 		}
 		
 		//
