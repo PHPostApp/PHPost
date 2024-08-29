@@ -93,6 +93,7 @@ switch ($step) {
 		     	   $tsMessage = "Error en la consulta: " . $mysqli->error;
 		     	}
 		     	# INSTALAMOS LA NUEVA BASE DE DATOS
+		     	$version_title = SCRIPT_NAME_VERSION;
 				include_once DATABASE;
 				$error = '';
 				foreach ($phpost_sql as $key => $sentencia) {
@@ -139,7 +140,7 @@ switch ($step) {
             $name = $mysqli->real_escape_string($web['name']);
 				$seo = smarty_modifier_seo($name);
 				# ACTUALIZAMOS LA CATEGORÍA N°30
-				$mysqli->query("UPDATE `p_categorias` SET c_nombre = '$catename', c_seo = '$cateseo' WHERE cid = 30 LIMIT 1");
+				$mysqli->query("UPDATE `p_categorias` SET c_nombre = '$name', c_seo = '$seo' WHERE cid = 30 LIMIT 1");
             // Insertamos en w_temas
             $copy = 'Miguel92 &copy; ' . date('Y');
             $mysqli->query("INSERT INTO w_temas VALUES(1, '$version', '{$web['url']}/themes/default', 'default', '$copy')");
