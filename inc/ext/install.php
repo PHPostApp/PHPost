@@ -137,10 +137,10 @@ switch ($step) {
 				}
 				// Cambia el nombre de la categoría Taringa! por el del sitio web creado
             require_once TS_PLUGINS. "modifier.seo.php";
-            $name = $mysqli->real_escape_string($web['name']);
-				$seo = smarty_modifier_seo($name);
+            $catname = $mysqli->real_escape_string($web['name']);
+				$catseo = smarty_modifier_seo($name);
 				# ACTUALIZAMOS LA CATEGORÍA N°30
-				$mysqli->query("UPDATE `p_categorias` SET c_nombre = '$name', c_seo = '$seo' WHERE cid = 30 LIMIT 1");
+				$mysqli->query("UPDATE `p_categorias` SET c_nombre = '$catname', c_seo = '$catseo' WHERE cid = 30 LIMIT 1");
             // Insertamos en w_temas
             $copy = 'Miguel92 &copy; ' . date('Y');
             $mysqli->query("INSERT INTO w_temas VALUES(1, '$version', '{$web['url']}/themes/default', 'default', '$copy')");
