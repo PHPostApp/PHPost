@@ -62,7 +62,7 @@ class tsSmarty extends Smarty {
 			'pagina' => $templates . 'modules' . TS_PATH . $tsPage . TS_PATH,
 			'global' => $templates . 'modules' . TS_PATH . 'global' . TS_PATH,
 			'php_files' => $templates . 't.php_files' . TS_PATH,
-			'public' => TS_PUBLIC,
+			'assets' => TS_ASSETS,
 			'dashboard' => TS_DASHBOARD,
 			'admin_mods' => TS_DASHBOARD . 'admin_mods' . TS_PATH
 		];

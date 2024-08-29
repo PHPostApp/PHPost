@@ -99,7 +99,7 @@ ol.cleanlist {
 		  font-weight: normal;
 		  color:#222;
 	 }
-	.lastPosts  li.categoriaPost.sticky{ background-image:url(../../public/images/icons/sticky.png); background-position:5px center; padding: 3px 3px 3px 20px;}
+	.lastPosts  li.categoriaPost.sticky{ background-image:url(../../assets/images/icons/sticky.png); background-position:5px center; padding: 3px 3px 3px 20px;}
 	.lastPosts  li.categoriaPost.patrocinado{background-color:#FFFFCC;}
 	.lastPosts  li.categoriaPost.sticky.patrocinado .categoriaPost:hover {background-color: transparent;} 
 	.lastPosts  li.sticky a {
@@ -143,7 +143,7 @@ ol.cleanlist {
 		  margin-bottom: 5px;
 	 }
 	 #webStats .wMod-h{
-		  background-image: url(../../public/images/icons/chart.png);
+		  background-image: url(../../assets/images/icons/chart.png);
 	 }
 	 #webStats .box_cuerpo{
 		  border:1px solid #ccc;
@@ -158,11 +158,11 @@ ol.cleanlist {
 	 }
 	 /** => FOTOS **/
 	 #lastFotos .wMod-h{
-		  background: url(../../public/images/icons/photo.png) no-repeat left center;
+		  background: url(../../assets/images/icons/photo.png) no-repeat left center;
 	 }
 	 /** => AFILIADOS **/
 	 #webAffs .wMod-h{
-		  background: url(../../public/images/icons/block-share.png) no-repeat left center;
+		  background: url(../../assets/images/icons/block-share.png) no-repeat left center;
 		  margin:0!important;
 	 }
 	 #webAffs .wMod-data {
@@ -330,7 +330,7 @@ span.ma_wall_post {background-position: 0 -192px;}
 span.ma_w_comment {background-position: 0 -208px;}
 span.ma_w_like {background-position: 0 -224px;}
 span.ma_photo {background-position:  0 -240px;}
-span.ma_medal{ background: url(../../public/images/icons/med/blue_bronze_16.png);}
+span.ma_medal{ background: url(../../assets/images/icons/med/blue_bronze_16.png);}
 
 
 /*
@@ -363,17 +363,17 @@ span.ma_medal{ background: url(../../public/images/icons/med/blue_bronze_16.png)
 	 margin-right: 10px;
 	 border-right: 1px solid #DDD;
 }
-.mod-actions .geoip {background-image: url(../../public/images/icons/geoip.png);}
-.mod-actions .edituser {background-image: url(../../public/images/icons/editar.png);}
-.mod-actions .alert {background-image: url(../../public/images/icons/warning.png);}
-.mod-actions .ban {background-image: url(../../public/images/icons/power_off.png);}
-.mod-actions .unban {background-image: url(../../public/images/icons/power_on.png);}
-.mod-actions .sticky {background-image: url(../../public/images/icons/sticky.png);}
-.mod-actions .edit {background-image: url(../../public/images/icons/edit.png);}
-.mod-actions .delete {background-image: url(../../public/images/icons/close.png);}
-.mod-actions .openclosed {background-image: url(../../public/images/icons/comment.png);}
-.mod-actions .des_approve {background-image: url(../../public/images/icons/warning.png);}
-.mod-actions .deletecomments {background-image: url(../../public/images/icons/comments.png);}
+.mod-actions .geoip {background-image: url(../../assets/images/icons/geoip.png);}
+.mod-actions .edituser {background-image: url(../../assets/images/icons/editar.png);}
+.mod-actions .alert {background-image: url(../../assets/images/icons/warning.png);}
+.mod-actions .ban {background-image: url(../../assets/images/icons/power_off.png);}
+.mod-actions .unban {background-image: url(../../assets/images/icons/power_on.png);}
+.mod-actions .sticky {background-image: url(../../assets/images/icons/sticky.png);}
+.mod-actions .edit {background-image: url(../../assets/images/icons/edit.png);}
+.mod-actions .delete {background-image: url(../../assets/images/icons/close.png);}
+.mod-actions .openclosed {background-image: url(../../assets/images/icons/comment.png);}
+.mod-actions .des_approve {background-image: url(../../assets/images/icons/warning.png);}
+.mod-actions .deletecomments {background-image: url(../../assets/images/icons/comments.png);}
 
 /*
 	 HOVERCARD
@@ -488,7 +488,7 @@ span.ma_medal{ background: url(../../public/images/icons/med/blue_bronze_16.png)
 	 margin-top: 7px;
 }
 .loading-msg {
-	 background: url(../../public/images/icons/spinner.gif) no-repeat left center;
+	 background: url(../../assets/images/icons/spinner.gif) no-repeat left center;
 	 padding: 5px 20px 5px 20px;
 	 margin: 0 10px;
 	 width: 50px;

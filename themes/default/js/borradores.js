@@ -19,7 +19,7 @@ var borradores = {
 
 			let onclick = (borrador['tipo'] == 'eliminados') ? `onclick="borradores.show_eliminado(${id}); return false;"` : '';
 			let h = `<li id="borrador_id_${id}">
-			<a title="${categoria_name}" class="categoriaPost ${categoria} ${tipo}" href="${url}" ${onclick} style="background-image:url(${global_data.public_images}/icons/cat/${imagen})">${titulo}</a>
+			<a title="${categoria_name}" class="categoriaPost ${categoria} ${tipo}" href="${url}" ${onclick} style="background-image:url(${global_data.assets_images}/icons/cat/${imagen})">${titulo}</a>
 				<span class="causa">Causa: ${causa}</span>
 				<span class="gray">&Uacute;ltima vez guardado el ${fecha_guardado}</span> <a style="float:right" href="" onclick="borradores.eliminar(${id}, true); return false;"><span title="Eliminar Borrador">&times</span></a>
 			</li>`;

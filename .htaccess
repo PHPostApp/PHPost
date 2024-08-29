@@ -106,6 +106,7 @@ RewriteRule ^comunidades/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/$ inc/php/comunidades
 RewriteRule ^comunidades/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/pagina.([0-9]+)$ inc/php/comunidades.php?action=$1&act=$2&page=$3 [QSA,L]
 RewriteRule ^comunidades/([A-Za-z0-9_-]+)/([0-9]+)/([A-Za-z0-9_-]+).html$ inc/php/comunidades.php?action=$1&temaid=$2&act=tema [QSA,L]
 
+RewriteRule ^install/$ inc/ext/install.php [QSA,L]
 
 #EXTRAS
 RewriteRule ^([A-Za-z0-9_-]+).php$ inc/php/ajax_files.php?action=$1 [QSA,L]

@@ -17,7 +17,7 @@ var favoritos = {
 			const { fav_id, post_id, titulo, categoria, categoria_name, imagen, url, fecha_creado, fecha_creado_formato, fecha_creado_palabras, fecha_guardado, fecha_guardado_formato, fecha_guardado_palabras, puntos, comentarios } = favorito;
 			let h = `<tr id="favorito_id_${fav_id}">
 				<td>
-					<img src="${global_data.public_images}/icons/cat/${imagen}" title="${categoria_name}"/>
+					<img src="${global_data.assets_images}/icons/cat/${imagen}" title="${categoria_name}"/>
 				</td>
 				<td style="text-align:left">
 					<a class="titlePost" title="${titulo}" href="${url}">${titulo}</a>

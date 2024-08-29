@@ -5,7 +5,7 @@
  * @name    c.core.php
  * @author  Miguel92 & PHPost.es
  */
-class tsCore extends tsExtends {
+class tsCore extends PHPost {
     
 	var $settings;	// CONFIGURACIONES DEL SITIO
 
@@ -23,7 +23,7 @@ class tsCore extends tsExtends {
 		$this->settings['files'] = $this->settings['url'].'/files';
 		$this->settings['avatar'] = $this->settings['files'].'/avatar';
 		$this->settings['uploads'] = $this->settings['files'].'/uploads';
-		$this->settings['public'] = $this->settings['url'].'/public';
+		$this->settings['assets'] = $this->settings['url'].'/assets';
 		// Autenticarme con las redes
 		$this->settings['oauth'] = parent::OAuth();
       //

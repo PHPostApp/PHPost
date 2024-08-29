@@ -56,15 +56,16 @@ class SmartyPHPost {
 		$settings = [
 		   'routes' => [
 		      'tema' => $this->system['tsCore']->settings['tema']['t_url'], 
-		      'public' => $this->system['tsCore']->settings['public'],
+		      'assets' => $this->system['tsCore']->settings['assets'],
 		      'dashboard' => $this->system['tsCore']->settings['url'].'/dashboard',
 		   ],
 		   'folders' => [
 		      'tema' => $smarty->template_dir['tema'], 
-		      'public' => $smarty->template_dir['public'],
+		      'assets' => $smarty->template_dir['assets'],
 		      'dashboard' => $smarty->template_dir['dashboard']
 		   ]
 		];
+
 		foreach($settings as $settingKey => $settingValue):
 		   foreach($settingValue as $routeKey => $routeValue):
 		      foreach($this->resources as $folder):
@@ -125,12 +126,9 @@ class SmartyPHPost {
 		if($typeTag == 'css') {
 			if(pathinfo($file, PATHINFO_BASENAME) == 'wysibb.css') {
 				return "<link rel=\"stylesheet\" href=\"$file\"/>\n";
-			} elseif(!$this->inLine) {
-				return "<link rel=\"stylesheet\" href=\"$file\" $integrity/>\n";
 			} else {
-				$file = $this->minifyCss(file_get_contents($file));
-				return "<style>$file</style>";
-			}
+				return "<link rel=\"stylesheet\" href=\"$file\" $integrity/>\n";
+			} 
 		} else {
 			return "<script src=\"$filereturn\" $integrity></script>\n";
 		}
@@ -293,9 +291,9 @@ class SmartyPHPost {
 		}
 
 		// Siempre
-		$claves['public_images'] = $this->system['tsCore']->settings['public'] . '/images';
+		$claves['assets_images'] = $this->system['tsCore']->settings['assets'] . '/images';
 		$claves['tema_images'] = $this->system['tsCore']->settings['images'];
-		$others = ['url', 'public', 'domain', 'titulo', 'slogan'];
+		$others = ['url', 'assets', 'domain', 'titulo', 'slogan'];
 		foreach ($others as $key => $other) $claves[$other] = $this->system['tsCore']->settings[$other];
 		//
 		foreach ($claves as $key => $value) 

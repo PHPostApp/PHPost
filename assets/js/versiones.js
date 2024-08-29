@@ -52,15 +52,6 @@ changeBranch = (branch = 'main') => {
 		content = response.commit.message.replace(/\n/g, '<br>');
 		// Si la pantalla es menor a 1120px solo tendrá 7 caracteres
 		SHA = (window.width < 1120) ? response.sha.substring(0, 7) : sha;
-		// Si la Cookie no existe la crearemos por 7 días
-		if($.cookie(cookiename) === null) $.cookie(cookiename, SHA, expires);
-		// Obtenemos el valor de la cookie
-		let getSHA = $.cookie(cookiename);
-		// Comparamos
-		if(SHA !== getSHA) {
-			url = global_data.url + '/admin-update.php';
-			$.post(url, 'update_now=false', r => $.cookie(cookiename, getSHA, expires))
-		}
 		let hace = $.timeago(commit.author.date)
 		//
 		let added = 0;

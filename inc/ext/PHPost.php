@@ -1,6 +1,6 @@
 <?php 
 
-class tsExtends {
+class PHPost {
 
 	// No quitar, ni reemplazar
 	private $keygen = 'UmlzdXMyMw==';
@@ -75,7 +75,6 @@ class tsExtends {
 	 * @return string
 	*/
 	public function createPassword(string $username = '', string $password = '', string $verify = '') {
-		if((int)$this->settings['c_upperkey'] === 0) $username = strtolower($username);
 		$username = $this->keygen . md5($username);
 		$password = $this->keygen . md5($password);
 		$md5 = md5($password . $username);

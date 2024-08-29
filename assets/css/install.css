@@ -1,0 +1,22 @@
+header {
+	a {
+		img {
+			width: 200px;
+		}
+	}
+}
+textarea[name="license"] {
+	height: calc(100vh - 350px);
+}
+.badge-ok {
+	background: var(--bs-success);
+}
+.badge-no {
+	background: var(--bs-danger);
+}
+.border-ok {
+	--bs-border-color: var(--bs-success);
+}
+.border-no {
+	--bs-border-color: var(--bs-danger);
+}

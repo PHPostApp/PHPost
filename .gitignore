@@ -1,9 +1,4 @@
-automatizer/
 cache/
-upgrade/
-optimizer/
-PullIn/
-PullIn_/
 
 # Los avatares
 files/avatar/*_120.jpg
@@ -14,15 +9,10 @@ files/portadas/*.*
 
 # Archivos
 config.inc.php
-inc/ext/backup.php
-inc/ext/optimizer.php
-inc/ext/thumb.php
-inc/php/newsletter.php
 *.zip
 
 # Archivo generado desde el install
 .lock
-.env
 
 # Solo el theme default
 themes/*

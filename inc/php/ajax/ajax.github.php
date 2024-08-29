@@ -29,7 +29,6 @@ endif;
 // CODIGO
 switch($action){
 	case 'github-api':
-		$token = (file_exists(TS_ROOT . '.env')) ? getenv('USER_GITHUB_TOKEN') : '';
 
 		$branch = isset($_POST['branch']) ? $tsCore->setSecure($_POST['branch']) : 'main';
 
@@ -37,7 +36,6 @@ switch($action){
 
 		$ch = curl_init($url);
 
-		if(file_exists(TS_ROOT . '.env')) $header[] = 'Authorization: token ' . $token;
 		$header[] = 'User-Agent: PHPost App';
 
 		// Configura la cabecera de autenticación con el token

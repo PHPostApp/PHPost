@@ -68,7 +68,7 @@ class tsRegistro extends reCaptcha {
      * @return string
      */
 	function registerUser(){
-		global $tsCore, $tsUser;
+		global $tsCore, $tsUser, $reCaptcha;
 		// DATOS NECESARIOS
 		$nac = explode('-', $_POST['nacimiento']);
 		$tsData = array(
@@ -96,8 +96,8 @@ class tsRegistro extends reCaptcha {
 			if($val == '') return str_replace('user_', '', $key) . ": El campo es requerido";
 		}
 		// Verificando el captcha
-      $response = parent::verify($tsData['user_captcha']);
-      if (!$response) return 'recaptcha: No hemos podido validar tu humanidad';
+		$reCaptcha->RECAPTCHA_TOKEN = $tsData['user_captcha'];
+      $reCaptcha->recaptcha_verify_human();
       // COMPROBAR QUE EL NOMBRE DE USUARIO SEA VÁLIDO
       if(!preg_match("/^[a-zA-Z0-9_-]{4,16}$/", $tsData['user_nick'])) die('nick: Nombre de usuario inv&aacute;lido');
 

@@ -30,21 +30,6 @@
 		</ul>
 	</div>
 	<div class="phpost version">
-		<h4>Estado</h4>
-		<ul id="status_pp" class="pp_list">
-			<li>
-				<div class="title">Estado de los archivos</div>
-				<div class="body">
-					{if $tsConfig.updated === '1'}
-						<strong>Estas al día</strong>
-					{else}
-						<strong>Hay nuevas actualizaciones</strong>
-						<br>
-						<a href="javascript:admin.updated()">Actualizar ahora con Github</a>
-					{/if}
-				</div>
-			</li>
-		</ul>
 		<h4>PHPost Risus</h4>
 		<ul id="version_pp" class="pp_list">
 			<li>

@@ -243,7 +243,7 @@
     font-weight: bold;
 }
 .stream {
-    background: url(../../../public/images/icons/muro/stream.png) no-repeat left top;
+    background: url(../../../assets/images/icons/muro/stream.png) no-repeat left top;
     display: inline-block;
     width: 16px;
     height: 16px;
@@ -253,7 +253,7 @@
     vertical-align: middle;
 }
 .nub {
-    background: url("../../../public/images/icons/muro/fb_arrow_up.gif") no-repeat scroll center top transparent;
+    background: url("../../../assets/images/icons/muro/fb_arrow_up.gif") no-repeat scroll center top transparent;
     height: 7px;
     left: 2px;
     position: absolute;
@@ -367,7 +367,7 @@
     width: 463px;
 }
 .Story_Content .uiClose {
-    background: url("../../../public/images/icons/muro/fb_close_big.png") no-repeat center top;
+    background: url("../../../assets/images/icons/muro/fb_close_big.png") no-repeat center top;
     height: 15px;
     width: 15px;
     display: block;
@@ -443,7 +443,7 @@
     padding-top: 2px;
 }
 .lifi i {
-    background-image: url("../../../public/images/icons/muro/fb_arrow_min.png");
+    background-image: url("../../../assets/images/icons/muro/fb_arrow_min.png");
     background-repeat: no-repeat;
     display: block;
     height: 5px;
@@ -458,7 +458,7 @@
     position: relative;
 }
 .ufiItem i {
-    background-image: url(../../../public/images/icons/muro/fb_cm_box.png);
+    background-image: url(../../../assets/images/icons/muro/fb_cm_box.png);
     background-position: center top;
     background-repeat: no-repeat;
     display: block;
@@ -638,7 +638,7 @@
     display: none;
 }
 .big-info .last-activity div.sep:hover span.remove {
-    background: url("../../../public/images/icons/cross.png") no-repeat scroll left top transparent;
+    background: url("../../../assets/images/icons/cross.png") no-repeat scroll left top transparent;
     display: block;
     float: right;
     font-weight: bold;

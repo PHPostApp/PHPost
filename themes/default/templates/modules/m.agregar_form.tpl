@@ -27,7 +27,7 @@
 					<select class="text-inp agregar required" tabindex="5" size="9" style="width:300px;" size="{$tsConfig.categorias.ncats}" name="categoria">
 						<option value="" selected="selected" style="color: #000; font-weight: bold; padding: 3px; background:none;">Elegir una categor&iacute;a</option>
 						{foreach from=$tsConfig.categorias item=c}
-							<option value="{$c.cid}"{if $tsDraft.b_category == $c.cid} selected{/if} style="background-image:url({$tsConfig.public}/images/icons/cat/{$c.c_img})">{$c.c_nombre}</option>
+							<option value="{$c.cid}"{if $tsDraft.b_category == $c.cid} selected{/if} style="background-image:url({$tsConfig.assets}/images/icons/cat/{$c.c_img})">{$c.c_nombre}</option>
 						{/foreach}
 					</select>
 				</li>

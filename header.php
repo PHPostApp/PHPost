@@ -32,7 +32,7 @@
  *  Definiendo constantes
  * -------------------------------------------------------------------
  */
-	require realpath(__DIR__) . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'defined.php';
+	require realpath(__DIR__) . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'config_path.php';
 	header('Content-Type: text/html; charset=utf-8');
 /*
  * -------------------------------------------------------------------
@@ -41,29 +41,30 @@
  */
 	
 	// Funciones
-	include TS_EXTRA.'functions.php';
-	include TS_EXTRA.'extends.phpost.php';
+	include TS_EXTRA . 'functions.php';
+
+	include TS_EXTRA . 'PHPost.php';
 
 	// Nucleo
-	include TS_CLASS.'c.core.php';
+	include TS_CLASS . 'c.core.php';
 	
 	// Controlador de usuarios
-	include TS_CLASS.'c.user.php';
+	include TS_CLASS . 'c.user.php';
 
 	// Monitor de usuario
-	include TS_CLASS.'c.monitor.php';
+	include TS_CLASS . 'c.monitor.php';
 	
 	// Actividad de usuario
-	include TS_CLASS.'c.actividad.php';
+	include TS_CLASS . 'c.actividad.php';
 
 	// Mensajes de usuario
-	include TS_CLASS.'c.mensajes.php';
+	include TS_CLASS . 'c.mensajes.php';
 
 	// Smarty
 	include TS_CLASS . 'c.smarty.php';
 	
 	// Crean requests
-	include TS_EXTRA.'QueryString.php';
+	include TS_EXTRA . 'QueryString.php';
 
 /*
  * -------------------------------------------------------------------

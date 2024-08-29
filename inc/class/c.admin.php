@@ -71,7 +71,7 @@ class tsAdmin {
 	 * extraemos las imagenes
 	*/
 	public function getExtraIcons(string $folder = 'cat', int $size = 16) {
-		$ruta = TS_PUBLIC . "images/icons/{$folder}";
+		$ruta = TS_ASSETS . "images/icons/{$folder}";
 		# Accedemos a la carpeta de icons
 		$carpeta = opendir( $ruta );
 		# Recorremos la carpeta
