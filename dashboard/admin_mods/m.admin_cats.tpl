@@ -18,7 +18,7 @@ $(() => {
    $('#cat_img').on('change', () => {
       var icono = $("#cat_img option:selected").val();
       $('#c_icon').css({
-         "background": 'url(\'{$tsConfig.public}/images/icons/cat/'+icono+'\') no-repeat center',
+         "background": 'url(\'{$tsConfig.assets}/images/icons/cat/'+icono+'\') no-repeat center',
          "background-size": '16px'
       })
    })
@@ -47,12 +47,12 @@ $(() => {
 				<tr id="{$c.cid}" data-id="{$c.cid}">
 					<td width="30">{$c.cid}</td>
 					<td width="30">{$c.c_orden}</td>
-					<td width="30"><img src="{$tsConfig.public}/images/icons/cat/{$c.c_img}" alt="{$c.c_nombre}"></td>
+					<td width="30"><img src="{$tsConfig.assets}/images/icons/cat/{$c.c_img}" alt="{$c.c_nombre}"></td>
 					<td style="text-align:left;"><strong>{$c.c_nombre}</strong></td>
 					<td style="text-align:left;"><em>{$c.c_seo}</em></td>
 					<td class="admin_actions" width="100">
-						<a href="{$tsConfig.url}/admin/cats?act=editar&cid={$c.cid}&t=cat"><img src="{$tsConfig.public}/images/icons/editar.png" title="Editar Categor&iacute;a"/></a>
-						<a href="{$tsConfig.url}/admin/cats?act=borrar&cid={$c.cid}&t=cat"><img src="{$tsConfig.public}/images/icons/close.png" title="Borrar Categor&iacute;a"/></a>
+						<a href="{$tsConfig.url}/admin/cats?act=editar&cid={$c.cid}&t=cat"><img src="{$tsConfig.assets}/images/icons/editar.png" title="Editar Categor&iacute;a"/></a>
+						<a href="{$tsConfig.url}/admin/cats?act=borrar&cid={$c.cid}&t=cat"><img src="{$tsConfig.assets}/images/icons/close.png" title="Borrar Categor&iacute;a"/></a>
 					</td>
 				</tr>
 				{/foreach}
@@ -74,7 +74,7 @@ $(() => {
 				<dl>
 					<dt><label for="cat_img">Icono de la categor&iacute;a:</label></dt>
 					<dd>
-                  <img src="{$tsConfig.images}/space.gif" style="background:url({$tsConfig.public}/images/icons/cat/{$tsCat.c_img}) no-repeat left center;" width="16" height="16" id="c_icon"/>
+                  <img src="{$tsConfig.images}/space.gif" style="background:url({$tsConfig.assets}/images/icons/cat/{$tsCat.c_img}) no-repeat left center;" width="16" height="16" id="c_icon"/>
 					  	<select name="c_img" id="cat_img" style="width:164px">
 					  		{foreach from=$tsIcons key=i item=img}
 								<option value="{$img}"{if $tsCat.c_img == $img} selected{/if}>{$img}</option>
@@ -86,7 +86,7 @@ $(() => {
 		  </fieldset>
 		  </form>
 	 {elseif $tsAct == 'nueva'}
-		  <div class="mensajes error">Si deseas m&aacute;s iconos para las categor&iacute;as debes subirlos al directorio: {$tsConfig.public}/images/icons/cat/</div>
+		  <div class="mensajes error">Si deseas m&aacute;s iconos para las categor&iacute;as debes subirlos al directorio: {$tsConfig.assets}/images/icons/cat/</div>
 		  <form action="" method="post" autocomplete="off">
 		  <fieldset>
 				<legend>Nueva</legend>

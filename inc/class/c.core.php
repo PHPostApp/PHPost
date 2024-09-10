@@ -15,10 +15,10 @@ class tsCore extends PHPost {
 		$this->settings['domain'] = str_replace(parent::https_on(),'',$this->settings['url']);
 		$this->settings['categorias'] = $this->getCategorias();
       $this->settings['default'] = $this->settings['url'].'/themes/default';
-		$this->settings['tema'] = $this->getTema();
-		$this->settings['images'] = $this->settings['tema']['t_url'].'/images';
-      $this->settings['css'] = $this->settings['tema']['t_url'].'/css';
-		$this->settings['js'] = $this->settings['tema']['t_url'].'/js';
+		$this->settings['t_url'] = $this->settings['url'] . '/themes/' . $this->settings['tema'];
+		$this->settings['images'] = $this->settings['t_url'].'/images';
+      $this->settings['css'] = $this->settings['t_url'].'/css';
+		$this->settings['js'] = $this->settings['t_url'].'/js';
 		//
 		$this->settings['files'] = $this->settings['url'].'/files';
 		$this->settings['avatar'] = $this->settings['files'].'/avatar';
@@ -33,12 +33,20 @@ class tsCore extends PHPost {
 		// $this->settings['install'] = $this->existinstall();
 		$this->settings['novemods'] = $this->getNovemods();
 	}
-
+	/**
+	 * Obtenemos la url
+	*/
+	private function getSSLProtocol() {
+		$ssl = 'http';
+		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' || !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') $ssl .= 's';
+		return "$ssl://";
+	}
 	/*
 		getSettings() :: CARGA DESDE LA DB LAS CONFIGURACIONES DEL SITIO
 	*/
 	public function getSettings() {
-		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM w_configuracion')); 
+		$query = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT * FROM w_configuracion'));
+		$query['url'] = $this->getSSLProtocol() . $query['url'];
 		return $query;
 	}
 	
@@ -65,16 +73,6 @@ class tsCore extends PHPost {
 		$categorias = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT cid, c_orden, c_nombre, c_seo, c_img FROM p_categorias ORDER BY c_orden'));
       //
       return $categorias;
-	}
-	/*
-		getTema()
-	*/
-	public function getTema() {
-		$id = $this->settings['tema_id'];
-		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT tid, t_name, t_url, t_path, t_copy FROM w_temas WHERE tid = $id LIMIT 1"));
-      $data['t_url'] = $this->settings['url'] . '/themes/' . $data['t_path'];
-		//
-		return $data;
 	}
 	/*
         getNews()

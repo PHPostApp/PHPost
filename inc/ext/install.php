@@ -7,7 +7,7 @@
  */
 
 require_once realpath(dirname(__DIR__)) . DIRECTORY_SEPARATOR . "config_path.php";
-require_once TS_EXTRA . "install.fn.php";
+require_once TS_EXTRA . "Installer.class.php";
 
 error_reporting(1);
 session_start();
@@ -16,6 +16,16 @@ $step = (int)$_GET['step'] ?? 0;
 $next = true; // CONTINUAR
 
 $Install = new Installer;
+
+function key_generator(string $type = 'verify', int $lenght = 12) {
+	$caracteres = ($type === 'verify') ? 'Aa1Bb$2Cc#3DSd4Ee5@Ff6Z7O8LP90!-U' : '0A1B2C3D4E5F6L7M8Q9';
+	$code = '';
+	$max = strlen($caracteres) - 1;
+	for($i = 0; $i < $lenght; $i++) {
+		$code .= $caracteres[mt_rand(0, $max)];
+	}
+	return $code;
+}
 
 if(file_exists(TS_LOCK)) header("Location: ../");
 
@@ -82,6 +92,7 @@ switch ($step) {
 
          $mysqli = $Install->conn($db, $tsMessage, $next);
 			if($next) {
+				$db['verification'] = key_generator();
 				$Install->save($db);
 				# Para evitar problemas obtenemos todas las tablas y eliminamos (solo si existen)
 		     	if ($results = $mysqli->query("SHOW TABLES")) {
@@ -116,6 +127,9 @@ switch ($step) {
 		// No saltar la licencia
 		if (!$_SESSION['license']) header("Location: ./");
 		$next = false;
+
+		$email_servidor = $_SERVER['SERVER_ADMIN'] ?? '';
+
 		if (isset($_POST['save'])) {
          // Con esto evitamos escribir todos los campos
          foreach($_POST['web'] as $key => $val) $web[$key] = htmlspecialchars($val);
@@ -141,34 +155,27 @@ switch ($step) {
 				$catseo = smarty_modifier_seo($name);
 				# ACTUALIZAMOS LA CATEGORÍA N°30
 				$mysqli->query("UPDATE `p_categorias` SET c_nombre = '$catname', c_seo = '$catseo' WHERE cid = 30 LIMIT 1");
-            // Insertamos en w_temas
-            $copy = 'Miguel92 &copy; ' . date('Y');
-            $mysqli->query("INSERT INTO w_temas VALUES(1, '$version', '{$web['url']}/themes/default', 'default', '$copy')");
-				// SEO TITLE
-				$seoTitle = "{$web['name']} - {$web['slogan']}";
-				// SEO DESCRIPTION
-				$seoDecription = "Únete a nuestra comunidad para compartir experiencias y conocer gente nueva. ¡Conéctate hoy mismo!";
-				// SEO KEYWORDS
-				$seoKeys = "comunidad, conocer, red, ampliar, interaccion, compartir, amigos, conectar, relaciones, intereses, encuentros, virtual, actualizada, mejorada";
 				// SEO IMAGES
-				$seoFavicon = $web['url'] . '/assets/images/logos/logo_16.webp';
-				$seoPortada = $web['url'] . '/assets/images/logos/logo_512.webp';
+				$seoFavicon = '/assets/images/logos/logo_16.webp';
+				$seoPortada = '/assets/images/logos/logo_512.webp';
 				$seoImages = json_encode([
 					'16' => $seoFavicon,
-					'32' => $web['url'] . '/assets/images/logos/logo_32.webp',
-					'64' => $web['url'] . '/assets/images/logos/logo_64.webp'
+					'32' => '/assets/images/logos/logo_32.webp',
+					'64' => '/assets/images/logos/logo_64.webp'
 				], JSON_FORCE_OBJECT);
-				$mysqli->query("UPDATE `w_site_seo` SET seo_titulo = '$seoTitle', seo_descripcion = '$seoDecription', seo_portada = '$seoPortada', seo_favicon = '$seoFavicon', seo_keywords = '$seoKeys', seo_images = '$seoImages', seo_robots = 0, seo_sitemap = 0 WHERE seo_id = 1");
+				$mysqli->query("UPDATE `w_site_seo` SET seo_titulo = '{$web['name']} - {$web['slogan']}', seo_descripcion = 'Únete a nuestra comunidad para compartir experiencias y conocer gente nueva. ¡Conéctate hoy mismo!', seo_portada = '$seoPortada', seo_favicon = '$seoFavicon', seo_keywords = 'comunidad, conocer, red, ampliar, interaccion, compartir, amigos, conectar, relaciones, intereses, encuentros, virtual, actualizada, mejorada', seo_images = '$seoImages', seo_robots_data = '', seo_robots = 0, seo_sitemap = 0 WHERE seo_id = 1");
 				// Publicidad
 				$alt = "Script para ZCode";
 				$github = "https://scriptparaphpost.github.io/grupos/";
 				$tamanos = ['160x600','300x250','468x60','728x90'];
+				$add = $Install->getURL('./');
 				foreach($tamanos as $tamano) {
 					$size = explode('x', $tamano);
-					$html = "<a href=\"$github\" target=\"_blank\" style=\"display:block;\"><img loading=\"lazy\" alt=\"Publicidad de $tamano\" title=\"$alt\" width=\"{$size[0]}\" height=\"{$size[1]}\" src=\"{$web['url']}/assets/images/ad$tamano.webp\"></a>";
+					$html = "<a href=\"$github\" target=\"_blank\" style=\"display:block;\"><img loading=\"lazy\" alt=\"Publicidad de $tamano\" title=\"$alt\" width=\"{$size[0]}\" height=\"{$size[1]}\" src=\"$add/assets/images/ad$tamano.webp\"></a>";
 					$insert[] = "ads_".substr($tamano, 0, 3)." = '".html_entity_decode($html)."'";
 				}
 				$publicidades = join(',', $insert);
+				$web['url'] = rtrim($web['url'], '/');
 				// UPDATE
 				if ($mysqli->query("UPDATE w_configuracion SET 
 					titulo = '{$web['name']}', 
@@ -229,7 +236,7 @@ switch ($step) {
             if($mysqli->query("SELECT user_id FROM u_miembros WHERE user_id = 1 OR user_rango = 1 LIMIT 1")->num_rows > 0) {
                $tsMessage = 'No se puede registrar, ya existe un administrador.';
                $body = "<html><head></head><body><h2>Un lammer ha entrado a su instalador.</h2><br><p><strong>Sitio web:</strong> {$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}<br> <strong>Usuario:</strong> {$user['name']}<br><strong>Password:</strong> {$user['pass']}<br><strong>Email:</strong> {$user['mail']}<br> <strong>Dirección IP:</strong> {$_SERVER['REMOTE_ADDR']}</p></body></html>";
-               mail('isidro@phpost.net', 'Lammer detectado', $body, 'Content-type: text/html; charset=iso-8859-15');
+               mail('portfoliomiguel92@gmail.com', 'Lammer detectado', $body, 'Content-type: text/html; charset=iso-8859-15');
             } else {
                //INSERTAMOS AL FUNDADOR DE LA WEB
 					$mysqli->query("INSERT INTO u_miembros (user_name, user_password, user_email, user_rango, user_registro, user_puntosxdar, user_activo) VALUES ('{$user['name']}', '$key', '{$user['mail']}', 1, $time, 50, 1)");
@@ -248,10 +255,10 @@ switch ($step) {
                $mysqli->query("UPDATE p_posts SET post_user = $uid, post_category = 30, post_date = $time WHERE post_id = 1");
                $mysqli->query("UPDATE w_stats SET stats_time_foundation = $time, stats_time_upgrade = $time WHERE stats_no = 1");
                // DAMOS BIENVENIDA POR CORREO
-	            $body = "<html><head></head><body><h2>Su nueva comunidad Link Sharing est&aacute; lista!</h2><br>	<p>Estas son sus credenciales de acceso:<br><strong>Usuario:</strong> {$user['name']}<br><strong>Contrase&ntilde;a:</strong> {$user['pass']}</p><br><hr><br><p>Gracias por usar <a href=\"https://phpost.es\">PHPost</a> para compartir enlaces :)</p></body></html>";
-	            mail($user['email'], 'Su comunidad ya puede ser usada', $body, 'Content-type: text/html; charset=iso-8859-15');
+	            $body = "<html><head></head><body><h2>Su nueva comunidad Link Sharing est&aacute; lista!</h2><br><p>Estas son sus credenciales de acceso:<br><strong>Usuario:</strong> {$user['name']}<br><strong>Contrase&ntilde;a:</strong> {$user['pass']}</p><br><hr><br><p>Gracias por usar <a href=\"https://phpost.es\">PHPost</a> para compartir enlaces :)</p></body></html>";
+	            mail($user['mail'], 'Su comunidad ya puede ser usada', $body, 'Content-type: text/html; charset=iso-8859-15');
 	            $mysqli->close();
-	            header("Location: ./?step=" . ($step + 1) . "?uid=$uid");
+	            header("Location: ./?step=" . ($step + 1) . "&uid=$uid");
          	}
       	}
       }
@@ -270,19 +277,19 @@ switch ($step) {
 		// CONSULTA
 		$time = time();
 		$uid = (int)$_GET['uid'];
-		$user = $mysqli->query("SELECT user_id, user_name FROM u_miembros WHERE user_id = $uid")->fetch_assoc();
+		$user = $mysqli->query("SELECT user_name FROM u_miembros WHERE user_id = $uid")->fetch_assoc();
 		// ESTADISTICAS
 	   $code = [
 	      'title' => $data['titulo'], 
 	      'url' => $data['url'], 
 	      'version' => SCRIPT_NAME_VERSION, 
 	      'admin' => $user['user_name'], 
-	      'id' => $user['user_id']
+	      'id' => $uid
 	   ];
 	   $key = base64_encode(serialize($code));
 	   $key .= '&verification=' . base64_encode("{$data['url']} - " . SCRIPT_VERSION . " - " . SCRIPT_KEY);
-		#$tsAction = $data['url'];
-		$tsAction = "https://zcode.newluckies.com/feed/?from=" . SCRIPT_NAME . "&type=install&key=$key";
+		#$tsAction = "https://zcode.newluckies.com/feed/?from=" . SCRIPT_NAME . "&type=install&key=$key";
+		$tsAction = "http://localhost/feed/?type=install&key=$key";
 		// Abrir el archivo en modo de escritura ("w")
 	   $handle = fopen(TS_LOCK, "w");
 	   // Escribir los datos en el archivo
@@ -311,7 +318,7 @@ switch ($step) {
 <body>
 
 	<main class="container">
-		<header class="d-flex justify-content-between align-items-center p-3 border-bottom">
+		<header class="d-flex justify-content-between align-items-center p-3">
 			<a href="https://www.phpost.es" rel="noreferrer" target="_blank">
 				<img src="<?=$Install->getURL('assets/images')?>/logo.png" alt="logo <?= SCRIPT_NAME_VERSION ?>" title="Instalaci&oacute;n de <?= SCRIPT_NAME_VERSION ?>" />
 			</a>
@@ -437,14 +444,14 @@ switch ($step) {
 								</div>
 								<div class="col-6 mb-3 p-3">
 									<div class="form-floating">
-									  	<input type="url" class="form-control" id="siteurl" name="web[url]" placeholder="Inteligencia renovada" value="<?=($web['url'] ?? $Install->getURL('./'))?>" required>
+									  	<input type="text" class="form-control" id="siteurl" name="web[url]" placeholder="Inteligencia renovada" value="<?=($web['url'] ?? $Install->getURL('./', 'getSSLProtocol'))?>" required>
 									  	<label for="siteurl">Direcci&oacute;n</label>
-									  	<div class="form-text" id="siteurl">Ingresa la url donde  est&aacute; alojada tu web, sin la &uacute;ltima diagonal <strong>/</strong></div>
+									  	<div class="form-text" id="siteurl">El protocolo será automático, ahora tienes este: <strong><?= $Install->getSSLProtocol() ?>://</strong></div>
 									</div>
 								</div>
 								<div class="col-6 mb-3 p-3">
 									<div class="form-floating">
-									  	<input type="email" class="form-control" id="sitemail" name="web[mail]" placeholder="example@server.com" value="<?=($web['mail'] ?? '')?>" required>
+									  	<input type="email" class="form-control" id="sitemail" name="web[mail]" placeholder="example@server.com" value="<?=($web['mail'] ?? $email_servidor)?>" required>
 									  	<label for="sitemail">Email</label>
 									  	<div class="form-text" id="sitemail">Email de la web o del administrador</div>
 									</div>
@@ -512,13 +519,13 @@ switch ($step) {
 					<h2 class="s16">Bienvenido a <?= SCRIPT_NAME_VERSION ?></h2>
 					<!-- ESTADISTICAS -->
 					<form action="<?=$tsAction?>" method="post">
-					  	<div class="alert alert-danger">Ingresa a tu FTP y borra la carpeta <strong><?php echo basename(getcwd()); ?></strong> antes de usar el script.</div>
+					  	<div class="alert alert-danger">Ingresa a tu FTP y borra el archivo <strong>../inc/ext/<?= pathinfo(__FILE__, PATHINFO_BASENAME) ?></strong> antes de usar el script.</div>
 					  	<fieldset>
 							<p>Gracias por instalar <strong><?= SCRIPT_NAME_VERSION ?></strong>, ya est&aacute; lista tu nueva comunidad <strong>Link Sharing System</strong>. S&oacute;lo inicia sesi&oacute;n con tus datos y comienza a disfrutar. Ahora no dejes de <a href="https://www.phpost.es" target="_blank"><u>visitarnos</u></a> para estar pendiente de futuras actualizaciones. Recuerda reportar cualquier bug que encuentres, de esta manera todos ganamos.</p><br>
 					  	</fieldset>
 					  	<center>
 							<input type="hidden" name="key" value="<?=$key?>" />
-							<i class="text-center"nput type="submit" value="Finalizar" class="btn btn-primary mt-3"  />
+							<input type="submit" value="Finalizar" class="btn btn-primary mt-3"  />
 					  	</center>
 					</form>
 				<?php } ?>

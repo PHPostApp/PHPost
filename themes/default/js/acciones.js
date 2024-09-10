@@ -323,7 +323,6 @@ var notifica = {
 			$('a[name=Monitor]').parent('li').addClass('monitor-notificaciones');
 			$('a[name=Monitor]').children('span').removeClass('spinner');
 			$('#mon_list').show().children('ul').html(notifica.cache.last);
-			$('#mon_list > ul > li > a[title]').tipsy({ gravity: 's' });
 		}
 	},
 	filter: function () {
@@ -585,7 +584,6 @@ var mensaje = {
 			$('a[name=Mensajes]').parent('li').addClass('monitor-notificaciones');
 			$('a[name=Mensajes]').children('span').removeClass('spinner');
 			$('#mp_list').show().children('ul').html(mensaje.cache.last);
-			$('#mp_list > ul > li > a[title]').tipsy({ gravity: 's' });
 		}
 	},
     close: () => {
@@ -764,7 +762,5 @@ $(document).ready(() => {
 		$(this).removeClass('fb_share_no_count');
 		$('.fb_share_count_inner', this).html('0');
 	});
-	// EXTRAS
-	$('a[title]').tipsy({ gravity: $.fn.tipsy.autoNS });
 	
 });

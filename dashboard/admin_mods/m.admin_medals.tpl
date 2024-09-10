@@ -25,7 +25,7 @@
 				{foreach from=$tsMedals.medallas item=m}
 					<tr id="medal_id_{$m.medal_id}">
 						<td>{$m.medal_id}</td>
-						<td><img src="{$tsConfig.public}/images/icons/med/{$m.m_image}" /></td>
+						<td><img src="{$tsConfig.assets}/images/icons/med/{$m.m_image}" /></td>
 						<td>{if $m.m_type == 1}Usuario{elseif $m.m_type == 2}Post{else}Foto{/if}</td>
 						<td>{$m.m_title}</td>
 						<td>{$m.m_description}</td>
@@ -33,9 +33,9 @@
 						<td>{$m.m_date|date_format:"%d/%m/%Y"}</td>
 						<td id="total_med_assig_{$m.medal_id}">{$m.m_total}</td>
 						<td class="admin_actions">
-							<a onclick="admin.medallas.asignar({$m.medal_id}); return false"><img src="{$tsConfig.public}/images/icons/plus.png" title="Asignar Medalla"/></a>
-							<a href="{$tsConfig.url}/admin/medals?act=editar&mid={$m.medal_id}"><img src="{$tsConfig.public}/images/icons/editar.png" title="Editar Medalla"/></a>
-							<a onclick="admin.medallas.borrar({$m.medal_id}); return false"><img src="{$tsConfig.public}/images/icons/close.png" title="Borrar Medalla" /></a>
+							<a onclick="admin.medallas.asignar({$m.medal_id}); return false"><img src="{$tsConfig.assets}/images/icons/plus.png" title="Asignar Medalla"/></a>
+							<a href="{$tsConfig.url}/admin/medals?act=editar&mid={$m.medal_id}"><img src="{$tsConfig.assets}/images/icons/editar.png" title="Editar Medalla"/></a>
+							<a onclick="admin.medallas.borrar({$m.medal_id}); return false"><img src="{$tsConfig.assets}/images/icons/close.png" title="Borrar Medalla" /></a>
 						</td>
 					</tr>
 				{/foreach}
@@ -62,13 +62,13 @@
 			{foreach from=$tsAsignaciones.asignaciones item=m}
 				<tr id="assign_id_{$m.id}">
 					<td>{$m.id}</td>
-					<td><img src="{$tsConfig.public}/images/icons/med/{$m.m_image}" title="{$m.m_title}"/></td>
+					<td><img src="{$tsConfig.assets}/images/icons/med/{$m.m_image}" title="{$m.m_title}"/></td>
 					<td>{if $m.m_type == 1}Usuario{elseif $m.m_type == 2}Post{else}Foto{/if}</td>
 					<td>{if $m.m_type == 1}<a href="{$tsConfig.url}/perfil/{$m.user_name}" class="hovercard" uid="{$m.user_id}">@{$m.user_name}</a>{elseif $m.m_type == 2}<a href="{$tsConfig.url}/posts/{$m.c_seo}/{$m.post_id}/{$m.post_title|seo}.html" target="_blank">{$m.post_title}</a>{else}<a href="{$tsConfig.url}/fotos/autor/{$m.foto_id}/{$m.f_title}.html" target="_blank">{$m.f_title}</a>{/if}</td>
 					<td>{$m.m_date|hace:true}</td>{*date_format:"%d/%m/%Y"*}
 					<td>{$m.medal_ip}</td>
 					<td class="admin_actions">
-						<a onclick="admin.medallas.borrar_asignacion({$m.id}, {$m.medal_id}); return false"><img src="{$tsConfig.public}/images/icons/close.png" title="Borrar Asignaci&oacute;n" /></a>
+						<a onclick="admin.medallas.borrar_asignacion({$m.id}, {$m.medal_id}); return false"><img src="{$tsConfig.assets}/images/icons/close.png" title="Borrar Asignaci&oacute;n" /></a>
 					</td>
 				</tr>
 			{/foreach}
@@ -83,7 +83,7 @@
 				$('#med_img').on('change', () => {
 					var cssi = $("#med_img option:selected").val();
 					$('#c_icon').css({ 
-	         		"background": 'url(\'{$tsConfig.public}/images/icons/med/'+cssi+'\') no-repeat center',
+	         		"background": 'url(\'{$tsConfig.assets}/images/icons/med/'+cssi+'\') no-repeat center',
 	         		"background-size": '16px'
 	         	});
 				});
@@ -103,7 +103,7 @@
 				<dl>
 					<dt><label for="cat_img">Icono de la categor&iacute;a:</label></dt>
 					<dd>
-						<img src="{$tsConfig.images}/space.gif" style="background:url({$tsConfig.public}/images/icons/med/{if $tsMed.m_image}{$tsMed.m_image}{else}{$tsIcons.0}{/if}) no-repeat left center;" width="16" height="16" id="c_icon"/>
+						<img src="{$tsConfig.images}/space.gif" style="background:url({$tsConfig.assets}/images/icons/med/{if $tsMed.m_image}{$tsMed.m_image}{else}{$tsIcons.0}{/if}) no-repeat left center;" width="16" height="16" id="c_icon"/>
 						<select name="med_img" id="med_img" style="width:164px">
 						{foreach from=$tsIcons key=i item=img}
 							<option value="{$img}"{if $tsMed.m_image == $img} selected{/if}>{$img}</option>

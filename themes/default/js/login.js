@@ -62,9 +62,24 @@ multiOptions = (who = '', status = false) => {
 			title: data[who],
 			body: template,
 			buttons: {
-				ok: {text: 'Continuar', action: `javascript:multiOptions(true, '${who}')` },
+				ok: {text: 'Continuar', action: `javascript:multiOptions('${who}', true)` },
 				fail: {text: 'Cancelar', action: 'close' }
 			}
+		})
+	} else {
+		const page = (who === 'password') ? 'pass' : 'validation';
+		const r_email = $('#r_email').val();
+		mydialog.procesando_inicio();
+		$.post(global_data.url + '/recover-'+page+'.php', { r_email }, receive => {
+			mydialog.procesando_fin();
+			mydialog.faster({
+				title: (receive.charAt(0) == '0' ? 'Opps!' : 'Hecho'),
+				body: receive.substring(3),
+				buttons: {
+					ok: {text: 'Aceptar', action: `close` },
+					fail: {text: 'Cancelar', action: 'close' }
+				}
+			});
 		})
 	}
 }

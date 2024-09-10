@@ -6,7 +6,7 @@
 <title>{$tsTitle}</title>
 {meta facebook=false twitter=false}
 {googlefonts fonts="Roboto"}
-{phpost css=["main.css"] js=[] scriptGlobal=true}
+{phpost css=["main.css"] js=[] cdn=["npm/jquery","npm/vanilla-lazyload"] scriptGlobal=true}
 </head>
 <body>
 <div id="loading" style="display:none"><img src="{$tsConfig.images}/ajax-loader.gif" alt="Cargando"> Procesando...</div>

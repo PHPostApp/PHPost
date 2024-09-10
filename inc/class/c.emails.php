@@ -51,9 +51,9 @@ class tsEmail {
 		global $tsCore;
    	include_once TS_EXTRA . "emails/phpost.php";
    	// Buscamos para reemplazar
-   	$search = ['{1}', '{2}', '{3}'];
+   	$search = ['{url}', '{titulo}', '{slogan}', '{contenido}'];
    	// Por lo que vamos a reemplazar
-   	$from = [$tsCore->settings['url'], $tsCore->settings['titulo'], $this->emailBody];
+   	$from = [$tsCore->settings['url'], $tsCore->settings['titulo'], $tsCore->settings['slogan'], $this->emailBody];
    	// Realizamos los cambios
 		$contenido = str_replace($search, $from, $plantilla);
 

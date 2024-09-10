@@ -24,8 +24,8 @@
 						<td>{$m.mp_date|hace}</td>
 						<td style="cursor:pointer;"class="qtip" title="{$m.mp_subject}<hr>{$m.mp_preview}">{$m.mp_subject|truncate:40}</td>
 						<td class="admin_actions">
-							<a href="{$tsConfig.url}/admin/mensajes/leer/{$m.mp_id}"><img src="{$tsConfig.public}/images/icon-mensajes-recibidos.gif" title="Leer Mensajes" /></a>{if $m.user_id!=$tsUser->uid}<a href="#" onclick="mod.users.action({$m.user_id}, 'aviso', false); return false;"><img src="{$tsConfig.public}/images/icons/warning.png" title="Enviar Alerta" /></a>{/if}
-							<a href="#" onclick="admin.mp.borrar('{$m.mp_id}'); return false"><img src="{$tsConfig.public}/images/icons/close.png" title="Eliminar Mensaje" /></a>
+							<a href="{$tsConfig.url}/admin/mensajes/leer/{$m.mp_id}"><img src="{$tsConfig.assets}/images/icon-mensajes-recibidos.gif" title="Leer Mensajes" /></a>{if $m.user_id!=$tsUser->uid}<a href="#" onclick="mod.users.action({$m.user_id}, 'aviso', false); return false;"><img src="{$tsConfig.assets}/images/icons/warning.png" title="Enviar Alerta" /></a>{/if}
+							<a href="#" onclick="admin.mp.borrar('{$m.mp_id}'); return false"><img src="{$tsConfig.assets}/images/icons/close.png" title="Eliminar Mensaje" /></a>
 						</td>
 					</tr>
 					{/foreach}

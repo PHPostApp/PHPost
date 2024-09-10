@@ -286,7 +286,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_miembros_social` (
   `social_name` varchar(20) NOT NULL DEFAULT '',
   `social_nick` varchar(24) NOT NULL DEFAULT '',
   `social_email` varchar(80) NOT NULL DEFAULT '',
-  `social_avatar` tinytext NOT NULL DEFAULT '',
+  `social_avatar` tinytext NULL,
   PRIMARY KEY (`social_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
 
@@ -417,7 +417,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `u_portal` (
   `last_posts_visited` text NULL,
   `last_posts_shared` text NULL,
   `last_posts_cats` text NULL,
-  `c_monitor` text NOT NULL DEFAULT 'f1,f2,f3,f8,f9,f4,f5,f10,f6,f7,f11,f12,f13,f14,f18',
+  `c_monitor` varchar(255) NOT NULL DEFAULT 'f1,f2,f3,f8,f9,f4,f5,f10,f6,f7,f11,f12,f13,f14,f18',
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;";
 
@@ -494,7 +494,7 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_configuracion` (
   `url` tinytext NULL,
   `email` varchar(60) NOT NULL DEFAULT '',
   `banner` varchar(100) NOT NULL DEFAULT '',
-  `tema_id` int(11) NOT NULL DEFAULT 1,
+  `tema` varchar(30) NOT NULL DEFAULT 'default',
   `updated` int(1) NOT NULL DEFAULT 1,
   `c_allow_fuentes` int(1) NOT NULL DEFAULT 0,
   `ads_300` text NULL,
@@ -653,15 +653,6 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_stats` (
 
 $phpost_sql[] = "INSERT INTO `w_stats` (`stats_no`, `stats_max_online`) VALUES (1, 0);";
 
-$phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_temas` (
-  `tid` int(11) NOT NULL AUTO_INCREMENT,
-  `t_name` tinytext NULL,
-  `t_url` tinytext NULL,
-  `t_path` tinytext NULL,
-  `t_copy` tinytext NULL,
-  PRIMARY KEY (`tid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1;";
-
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_visitas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` int(11) NOT NULL DEFAULT 0,
@@ -689,8 +680,8 @@ $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_site_seo` (
   `seo_portada` tinytext NULL,
   `seo_favicon` tinytext NULL,
   `seo_keywords` text NULL,
-  `seo_images` text NULL DEFAULT '',
-  `seo_robots_data` text NULL DEFAULT '',
+  `seo_images` text NULL,
+  `seo_robots_data` text NULL,
   `seo_robots` int(1) NULL DEFAULT 0,
   `seo_sitemap` int(1) NULL DEFAULT 0,
   PRIMARY KEY (`seo_id`)
@@ -734,7 +725,7 @@ $phpost_sql[] = "CREATE TABLE c_chat_blacklist (
 
 $phpost_sql[] = "CREATE TABLE IF NOT EXISTS `w_sitemap` (
   `id` int(3) NOT NULL AUTO_INCREMENT,
-  `url` tinytext NOT NULL DEFAULT '',
+  `url` tinytext NULL,
   `frecuencia` varchar(15) NOT NULL DEFAULT '',
   `fecha` int(16) NOT NULL DEFAULT 0,
   `prioridad` decimal(2,1) NOT NULL DEFAULT 0,

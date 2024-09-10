@@ -24,8 +24,8 @@
                <td>{$social.social_redirect_uri|replace:"{$tsConfig.url}":''}</td>
                <td class="align-bottom">
                   <div class="admin_actions">
-                     <a href="{$tsConfig.url}/admin/socials?act=editar&id={$social.social_id}"><img src="{$tsConfig.public}/images/icons/editar.png" title="Editar red social"/></a>
-                     <a href="{$tsConfig.url}/admin/socials?act=borrar&id={$social.social_id}"><img src="{$tsConfig.public}/images/icons/close.png" title="Borrar red social"/></a>
+                     <a href="{$tsConfig.url}/admin/socials?act=editar&id={$social.social_id}"><img src="{$tsConfig.assets}/images/icons/editar.png" title="Editar red social"/></a>
+                     <a href="{$tsConfig.url}/admin/socials?act=borrar&id={$social.social_id}"><img src="{$tsConfig.assets}/images/icons/close.png" title="Borrar red social"/></a>
                   </div>
                </td>
             </tr>
@@ -59,7 +59,7 @@
             	<dt><label for="redirecturi">Redirect URL:</label></dt>
             	<dd><input class="form-control" type="text" id="redirecturi" value="{$tsSocial.social_redirect_uri}" />
                   <small class="position-absolute" style="right:4rem;top:1rem"></small>
-                  <span style="top:.4rem;right:1rem;cursor:pointer;" class="position-absolute" id="botonCopiar"><img src="{$tsConfig.public}/images/icons/copy.svg" alt="Copiar"></span></dd>
+                  <span style="top:.4rem;right:1rem;cursor:pointer;" class="position-absolute" id="botonCopiar"><img src="{$tsConfig.assets}/images/icons/copy.svg" alt="Copiar"></span></dd>
          	</dl>
 	         <p><input type="submit" name="save" value="Guardar Cambios" class="btn btn-primary" /></p>
 	      </fieldset>

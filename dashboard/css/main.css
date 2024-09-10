@@ -143,39 +143,39 @@
     display: block;
     padding: .4rem .3rem;
 }
-#a_main {--image: url(../../public/images/icons/robot.png);}
-#a_creditos {--image: url(../../public/images/icons/information-shield.png);}
+#a_main {--image: url(../../assets/images/icons/robot.png);}
+#a_creditos {--image: url(../../assets/images/icons/information-shield.png);}
 #a_configs, 
 #a_registro, 
 #a_socials, 
-#a_seo {--image: url(../../public/images/icons/gear.png);}
-#a_temas {--image: url(../../public/images/icons/color.png);}
-#a_news {--image: url(../../public/images/icons/newspaper.png);}
-#a_ads {--image: url(../../public/images/icons/currency.png);}
-#a_medals {--image: url(../../public/images/icons/medal.png);}
-#a_afs {--image: url(../../public/images/icons/block-share.png);}
-#a_fotos {--image: url(../../public/images/icons/photo.png);}
+#a_seo {--image: url(../../assets/images/icons/gear.png);}
+#a_temas {--image: url(../../assets/images/icons/color.png);}
+#a_news {--image: url(../../assets/images/icons/newspaper.png);}
+#a_ads {--image: url(../../assets/images/icons/currency.png);}
+#a_medals {--image: url(../../assets/images/icons/medal.png);}
+#a_afs {--image: url(../../assets/images/icons/block-share.png);}
+#a_fotos {--image: url(../../assets/images/icons/photo.png);}
 #a_posts, 
-#a_mensajes {--image: url(../../public/images/icons/posts.png);}
-#a_cats {--image: url(../../public/images/icons/category.png);}
-#a_users {--image: url(../../public/images/icons/users.png);}
-#a_rangos {--image: url(../../public/images/icons/crown.png);}
-#a_stats {--image: url(../../public/images/icons/chart.png);}
-#a_sesiones {--image: url(../../public/images/icons/find.png);}
-#a_nicks {--image: url(../../public/images/icons/key.png);}
-#a_blacklist {--image: url(../../public/images/icons/flag_black.png);}
-#a_badwords {--image: url(../../public/images/icons/stop.png);}
+#a_mensajes {--image: url(../../assets/images/icons/posts.png);}
+#a_cats {--image: url(../../assets/images/icons/category.png);}
+#a_users {--image: url(../../assets/images/icons/users.png);}
+#a_rangos {--image: url(../../assets/images/icons/crown.png);}
+#a_stats {--image: url(../../assets/images/icons/chart.png);}
+#a_sesiones {--image: url(../../assets/images/icons/find.png);}
+#a_nicks {--image: url(../../assets/images/icons/key.png);}
+#a_blacklist {--image: url(../../assets/images/icons/flag_black.png);}
+#a_badwords {--image: url(../../assets/images/icons/stop.png);}
 
 
-#a_pospelera {--image: url(../../public/images/icons/details.png);}
-#a_fotos {--image: url(../../public/images/icons/foto.png);}
-#a_fopelera {--image: url(../../public/images/icons/photo.png);}
-#a_mps {--image: url(../../public/images/icons/spam.png);}
-#a_users {--image: url(../../public/images/icons/users.png);}
-#a_banusers {--image: url(../../public/images/icons/user-ban.png);}
-#a_buscador {--image: url(../../public/images/icons/find.png);}
-#a_comentarios {--image: url(../../public/images/icons/comment.png);}
-#a_revposts {--image: url(../../public/images/icons/exclamation.png);}
+#a_pospelera {--image: url(../../assets/images/icons/details.png);}
+#a_fotos {--image: url(../../assets/images/icons/foto.png);}
+#a_fopelera {--image: url(../../assets/images/icons/photo.png);}
+#a_mps {--image: url(../../assets/images/icons/spam.png);}
+#a_users {--image: url(../../assets/images/icons/users.png);}
+#a_banusers {--image: url(../../assets/images/icons/user-ban.png);}
+#a_buscador {--image: url(../../assets/images/icons/find.png);}
+#a_comentarios {--image: url(../../assets/images/icons/comment.png);}
+#a_revposts {--image: url(../../assets/images/icons/exclamation.png);}
 
 .arrastrar {
     cursor: pointer;

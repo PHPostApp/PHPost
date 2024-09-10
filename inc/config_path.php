@@ -45,7 +45,7 @@ define('LICENSE', file_get_contents(TS_ROOT . 'LICENSE'));
 
 define('SCRIPT_KEY', 'WkNvZGVVcGdyYWRl');
 define('SCRIPT_NAME', 'PHPost');
-define('SCRIPT_VERSION', '1.3.0-24');
+define('SCRIPT_VERSION', '1.3.5-24');
 define('SCRIPT_NAME_VERSION', SCRIPT_NAME . ' ' . SCRIPT_VERSION);
 $codeversion = strtolower(str_replace([' ', '.', '-'], '_', SCRIPT_NAME_VERSION));
 define('SCRIPT_VERSION_CODE', $codeversion);

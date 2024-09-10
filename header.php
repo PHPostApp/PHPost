@@ -88,14 +88,14 @@
 	$tsMP = new tsMensajes();
 
 	// Definimos el template a utilizar
-	$tsTema = $tsCore->settings['tema']['t_path'];
+	$tsTema = $tsCore->settings['tema'];
 	if(empty($tsTema)) $tsTema = 'default';
 	define('TS_TEMA', $tsTema);
 
 	// Smarty
 	$smarty = new tsSmarty();
 	// Nueva configuración
-	$smarty->output(true);
+	$smarty->output(false);
 	
 /*
  * -------------------------------------------------------------------

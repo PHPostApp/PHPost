@@ -54,7 +54,7 @@
                                                 <td><a href="http://oxi.mx/g/{$u.user_last_ip}" class="geoip" title="Información de IP" target="_blank">{$u.user_last_ip}</a></td>
 												<td>{$u.user_lastlogin|hace:true}</td>
                                                 <td class="admin_actions">
-                                               <a href="#" onclick="mod.users.action({$u.user_id}, 'ban', false); return false;"><img src="{$tsConfig.public}/images/icons/power_off.png" title="Suspender Usuario" /></a>
+                                               <a href="#" onclick="mod.users.action({$u.user_id}, 'ban', false); return false;"><img src="{$tsConfig.assets}/images/icons/power_off.png" title="Suspender Usuario" /></a>
                                                 </td>
                                             </tr>
                                             {/foreach}{else}
@@ -110,7 +110,7 @@
                                                 <td><a href="http://oxi.mx/g/{$p.post_ip}" class="geoip" title="Información de IP" target="_blank">{$p.post_ip}</a></td>
 												<td>{$p.post_date|hace:true}</td>
                                                 <td class="admin_actions">
-													<a href="#" onclick="mod.posts.borrar({$p.post_id}, 'posts'); return false"><img src="{$tsConfig.public}/images/icons/close.png" title="Borrar Post" /></a>
+													<a href="#" onclick="mod.posts.borrar({$p.post_id}, 'posts'); return false"><img src="{$tsConfig.assets}/images/icons/close.png" title="Borrar Post" /></a>
                                                 </td>
                                             </tr>
                                             {/foreach}{else}
@@ -140,7 +140,7 @@
                                                 <td><a href="http://oxi.mx/g/{$f.f_ip}" class="geoip" title="Información de IP" target="_blank">{$f.f_ip}</a></td>
 												<td>{$f.f_date|hace:true}</td>
                                                 <td class="admin_actions">
-														<a href="#" onclick="mod.fotos.borrar({$f.foto_id}); return false"><img src="{$tsConfig.public}/images/icons/close.png" title="Borrar Foto" /></a>                                                </td>
+														<a href="#" onclick="mod.fotos.borrar({$f.foto_id}); return false"><img src="{$tsConfig.assets}/images/icons/close.png" title="Borrar Foto" /></a>                                                </td>
                                             </tr>
                                             {/foreach}{else}
                                             <tr>

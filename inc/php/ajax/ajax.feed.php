@@ -28,20 +28,20 @@
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg['mensaje']; die();}
 	 //
 	$code = [
-		'w' => $tsCore->settings['titulo'], 
-		's' => $tsCore->settings['slogan'], 
-		'u' => str_replace(['http://','https://'], '', $tsCore->settings['url']), 
-		'v' => $tsCore->settings['version_code'], 
-		'a' => $tsUser->nick, 
-		'i' => $tsUser->uid
-	];
+      'title' => $tsCore->settings['titulo'],
+      'url' => $tsCore->settings['url'],
+      'version' => $tsCore->settings['version'],
+      'admin' => $tsUser->nick,
+      'id' => $tsUser->uid
+   ];
 	$key = base64_encode(serialize($code));
-	$conexion = "https://phpost.es/feed/";
+	$key .= '&verification=' . $tsCore->verification();
+	$conexion = "https://zcode.newluckies.com/feed/index.php?key=$key&type=";
 	// CODIGO
 	switch($action){
 		case 'feed-support':
 			//<--- CONSULTAR ACTUALIZACIONES OFICIALES Y VERIFICAR VERSIÓN ACTUAL DE ESTE SCRIPT
-				$json = $tsCore->getUrlContent($conexion . 'index.php?from=PHPost&type=support&key=' . $key);
+				$json = $tsCore->getUrlContent($conexion . 'support');
 				echo $json;
 			//--->
 		break;
@@ -51,7 +51,7 @@
 			 * PHPost Risus 1.3.0.005 *
 			*/
 			$time = time();
-			$version_now = 'Risus 1.3.0.006';
+			$version_now = 'PHPost 1.3.5-24';
 			$version_code = str_replace([' ', '.'], '_', strtolower($version_now));
 			# ACTUALIZAR VERSIÓN
 			if($tsCore->settings['version'] != $version_now){
@@ -59,7 +59,7 @@
 				db_exec([__FILE__, __LINE__], 'query', "UPDATE `w_stats` SET stats_time_upgrade = $time WHERE stats_no = 1 LIMIT 1");
 			}
 			//<---
-			$json = $tsCore->getUrlContent($conexion . 'index.php?from=PHPost&type=version&key=' . $key);
+			$json = $tsCore->getUrlContent($conexion . 'version');
 			echo $json;
 			//--->
 		break;

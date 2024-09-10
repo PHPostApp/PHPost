@@ -53,7 +53,7 @@ class PHPost {
 	 * @description Es solo para comprobar que fue instalado
 	*/
 	public function verification() {
-		$encode = base64_encode("{$this->settings['url']} - {$this->settings['version']}");
+		$encode = base64_encode("{$this->settings['url']} - {$this->settings['version']} - " . SCRIPT_KEY);
 		return $encode;
 	}
 
@@ -75,11 +75,9 @@ class PHPost {
 	 * @return string
 	*/
 	public function createPassword(string $username = '', string $password = '', string $verify = '') {
-		$username = $this->keygen . md5($username);
-		$password = $this->keygen . md5($password);
-		$md5 = md5($password . $username);
-		if(!empty($verify)) $md5 = ($md5 === $verify);
-		return $md5;
+		$passmd5 = md5($username.$password);
+		if(!empty($verify)) $passmd5 = ($passmd5 === $verify);
+		return $passmd5;
 	}
 
 	/*

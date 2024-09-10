@@ -5,9 +5,9 @@
  * @name    ajax.recover.php
  * @author  Miguel92 & PHPost.es
 */
-	$tsLevel = 1; // solo visitantes
-	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-	if($tsLevelMsg != 1){ die('0: '.$tsLevelMsg); }
+	$tsLevel = 0; // solo visitantes
+	#$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
+	#if($tsLevelMsg != 1){ die('0: '.$tsLevelMsg); }
 	
 	$email = $tsCore->setSecure($_REQUEST['r_email']);
 	$user_info = db_exec([__FILE__, __LINE__], 'query', 'SELECT user_id, user_name, user_registro, user_activo FROM u_miembros WHERE user_email = \''.$email.'\'') or die('0: '.show_error('Error al ejecutar la consulta de la l&iacute;nea '.__LINE__.' de '.__FILE__.'.', 'db'));
@@ -17,7 +17,7 @@
 
 	$tsData = db_exec('fetch_assoc', $user_info);
 	
-	include(TS_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'class'.DIRECTORY_SEPARATOR.'c.emails.php');
+	include TS_CLASS . 'c.emails.php';
 
 	switch($action){
 		case 'recover-pass':

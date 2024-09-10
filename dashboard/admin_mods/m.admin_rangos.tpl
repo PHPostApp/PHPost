@@ -24,16 +24,16 @@
 						<td>{$r.num_members}</td>
 						<td>{$r.user_puntos}</td>
 						<td>{$r.max_points}</td>
-						<td><img src="{$tsConfig.public}/images/icons/ran/{$r.imagen}.png" /></td>
+						<td><img src="{$tsConfig.assets}/images/icons/ran/{$r.imagen}.png" /></td>
 						<td class="admin_actions">
-							<a href="{$tsConfig.url}/admin/rangos/?act=editar&rid={$r.id}&t=s"><img src="{$tsConfig.public}/images/icons/editar.png" title="Editar Rango"/></a>
+							<a href="{$tsConfig.url}/admin/rangos/?act=editar&rid={$r.id}&t=s"><img src="{$tsConfig.assets}/images/icons/editar.png" title="Editar Rango"/></a>
 							{if $r.id > 3}
-								<a href="{$tsConfig.url}/admin/rangos/?act=borrar&rid={$r.id}" ><img src="{$tsConfig.public}/images/icons/close.png" title="Borrar Rango"/></a>
+								<a href="{$tsConfig.url}/admin/rangos/?act=borrar&rid={$r.id}" ><img src="{$tsConfig.assets}/images/icons/close.png" title="Borrar Rango"/></a>
 							{/if}
 							{if $tsConfig.c_reg_rango == $r.id}
-								<img src="{$tsConfig.public}/images/icons/yes.png" title="Rango Predeterminado al registro"/>
+								<img src="{$tsConfig.assets}/images/icons/yes.png" title="Rango Predeterminado al registro"/>
 							{else}
-								<img onclick="location.href = '{$tsConfig.url}/admin/rangos/?act=setdefault&rid={$r.id}';" style="cursor:pointer;" src="{$tsConfig.public}/images/icons/reboot.png" title="Establecer Predeterminado" />
+								<img onclick="location.href = '{$tsConfig.url}/admin/rangos/?act=setdefault&rid={$r.id}';" style="cursor:pointer;" src="{$tsConfig.assets}/images/icons/reboot.png" title="Establecer Predeterminado" />
 							{/if}
 						</td>
 					</tr>
@@ -69,11 +69,11 @@
 						<td>{$r.cant}</td>
 						<td>{$r.user_puntos}</td>
 						<td>{$r.max_points}</td>
-						<td><img src="{$tsConfig.public}/images/icons/ran/{$r.imagen}.png" /></td>
+						<td><img src="{$tsConfig.assets}/images/icons/ran/{$r.imagen}.png" /></td>
 						<td class="admin_actions">
-							<a href="{$tsConfig.url}/admin/rangos/?act=editar&rid={$r.id}&t=p"><img src="{$tsConfig.public}/images/icons/editar.png" title="Editar Rango"/></a>
+							<a href="{$tsConfig.url}/admin/rangos/?act=editar&rid={$r.id}&t=p"><img src="{$tsConfig.assets}/images/icons/editar.png" title="Editar Rango"/></a>
 							{if $r.id > 3}
-								<a href="{$tsConfig.url}/admin/rangos/?act=borrar&rid={$r.id}"><img src="{$tsConfig.public}/images/icons/close.png" title="Borrar Rango" /></a>
+								<a href="{$tsConfig.url}/admin/rangos/?act=borrar&rid={$r.id}"><img src="{$tsConfig.assets}/images/icons/close.png" title="Borrar Rango" /></a>
 							{/if}
 						</td>
 					</tr>
@@ -106,7 +106,7 @@
 						<td>{$m.user_lastlogin|hace:true}</td>
 						<td>{$m.user_registro|date_format:"%d/%m/%Y"}</td>
 						<td class="admin_actions">
-							<a href="{$tsConfig.url}/admin/users?act=show&uid={$m.user_id}&t=7"><img src="{$tsConfig.public}/images/icons/editar.png" title="Editar rango" /></a>
+							<a href="{$tsConfig.url}/admin/users?act=show&uid={$m.user_id}&t=7"><img src="{$tsConfig.assets}/images/icons/editar.png" title="Editar rango" /></a>
 						</td>
 					</tr>
 					{/foreach}
@@ -163,7 +163,7 @@
 					<dl>
 						<dt><label for="cat_img">Icono del rango:{$tsRango.r_image}</label></dt>
 						<dd>
-							<img src="{$tsConfig.public}/images/icons/ran/{if $tsRango.r_image}{$tsRango.r_image}{else}{$tsIcons.0}{/if}_16.png" width="16" height="16" id="c_icon"/>
+							<img src="{$tsConfig.assets}/images/icons/ran/{if $tsRango.r_image}{$tsRango.r_image}{else}{$tsIcons.0}{/if}_16.png" width="16" height="16" id="c_icon"/>
 							<select name="r_img" id="cat_img" style="width:164px">
 								{foreach from=$tsIcons key=i item=img}
 									<option value="{$img}"{if $tsRango.r_image == $img} selected{/if}>{$img}</option>

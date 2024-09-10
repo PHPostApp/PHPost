@@ -1,76 +1,47 @@
 <?php
 
-/**
- * Generamos el icono
-*/
 
-$array = [
-	'background' => '0D8ABC',
-	'color' => 'fff',
-	'name' => $tsCore->settings['titulo'],
-	'size' => 128, 
-	'font-size' => '0.50',
-	'bold' => true,
-	'format' => 'png'
-];
-foreach ($array as $key => $value) $params[$key] = "$key=$value";
-// URL COMPLETO
-$icono = 'https://ui-avatars.com/api/?' . join('&', $params);
 // AÑO ACTUAl
 $tiempo = date('Y');
 $plantilla = <<<EMAIL
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
 <style>
-html,body,table,table>*,p,h1,h2,h3,h4,h5,h6{padding:0;margin:0}
-.contenido{min-width:400px;max-width:100%;margin:0 auto;background:#EEE}
-table{width:100%}
-table thead th{background-color:#{$array['background']};padding:20px 0}
-table thead th img{width:{$array['size']}px;border-radius:.3rem}
-tfoot>td.foot{width:calc(100%/2);padding:10px;}
-td.sidebar{width:20px}
-td.main{padding:20px}
-table tbody p{display:block;font-size:16px;padding:4px 0;line-height:18px}
-table tfoot{background-color:#EEE3}
-table tfoot td{padding:8px 0;}
-table tfoot a{color:#2D68C0;font-weight:bold;text-decoration:none;display:inline-block;}
-.small{font-size:12px;}
-hr{border:transparent;border-bottom:1px solid #CCC5;width:80%;margin:1rem auto}
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+body{font-family:"Roboto",sans-serif;}
 </style>
 </head>
-<body class="contenido">
-<table>
-	<thead>
-		<th colspan="3">
-			<img src="$icono" alt="{2}">
+<body style="margin:0;padding:0;scroll-behavior: smooth;">
+<table style="width: 100%;height: 100vh;">
+	<thead style="border-bottom:1px solid #CCC;background:#CCC3;">
+		<th colspan="3" style="height:120px;text-align:left;padding:16px 32px">
+			<span style="display:block;font-size: 3rem;margin-bottom:-14px;">{titulo}</span>
+			<small>{slogan}</small>
 		</th>
 	</thead>
 	<tbody>
 		<tr>
-			<td class="sidebar"></td>
-			<td class="main">{3}</td>
-			<td class="sidebar"></td>
+			<td class="sidebar" style="width:200px;"></td>
+			<td class="main" style="font-family:Roboto,sans-serif;">{contenido}</td>
+			<td class="sidebar" style="width:200px;"></td>
 		</tr>
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="3" style="text-align:left;padding-left:10px;">
-				<p>Para m&aacute;s informaci&oacute;n</p>
-				<p><a href="https://www.phpost.net/foro/" target="_blank">PHPost Oficial</a> - <a href="https://phpost.es/" target="_blank">PHPost</a></p>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="3" align="center">
-				<p>
-					<a href="{1}/pages/terminos-y-condiciones/">Terminos & condiciones</a>&nbsp;-&nbsp;
-					<a href="{1}/pages/privacidad/">Privacidad</a>
+			<td colspan="3" style="padding:16px;text-align:right;">
+				<p style="margin:0;padding:0;font-size:20px;font-weight:bolder;margin-bottom:8px;">Para m&aacute;s informaci&oacute;n</p>
+				<p style="margin:0;padding:0;">
+					<a style="text-decoration:none;font-weight:bold;color:#2588BC;display:inline-block;" href="https://phpost.es/" target="_blank">PHPost</a>&nbsp;-&nbsp;
+					<a style="text-decoration:none;font-weight:bold;color:#2588BC;display:inline-block;" href="{url}/pages/terminos-y-condiciones/">Terminos & condiciones</a>&nbsp;-&nbsp;
+					<a style="text-decoration:none;font-weight:bold;color:#2588BC;display:inline-block;" href="{url}/pages/privacidad/">Privacidad</a>
 				</p>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3" style="background-color:#EEE3">
-				<p style="text-align:center;text-transform:uppercase;font-weight: 600;">El Staff de <b>{2}</b></p>
-				<p style="text-align:center;text-transform:uppercase;font-weight: 600;font-size: 12px;">Copyright 2022-$tiempo</p>
+			<td colspan="3" style="text-align:center;padding: 16px 0;border-top:1px solid #CCC;margin-top:16px;background:#CCC5;">
+				<p style="margin:0;padding:0;">El Staff de <strong>{titulo}</strong></p>
+				<p style="margin:0;padding:0;font-size:.75rem;margin-top:8px;">Copyright 2022-$tiempo</p>
 			</td>
 		</tr>
 	</tfoot>

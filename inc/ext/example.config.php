@@ -23,6 +23,8 @@ $db['password'] = 'dbpass';
 
 $db['database'] = 'dbname';
 
+$db['verification'] = 'dbverify';
+
 /*
 | -------------------------------------------------------------------
 | AJUSTES DE MENSAJES ESTATICOS

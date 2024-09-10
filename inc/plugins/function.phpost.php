@@ -55,7 +55,7 @@ class SmartyPHPost {
 		# Enlaces a los recursos y Directorios
 		$settings = [
 		   'routes' => [
-		      'tema' => $this->system['tsCore']->settings['tema']['t_url'], 
+		      'tema' => $this->system['tsCore']->settings['t_url'], 
 		      'assets' => $this->system['tsCore']->settings['assets'],
 		      'dashboard' => $this->system['tsCore']->settings['url'].'/dashboard',
 		   ],

@@ -28,10 +28,10 @@
 						<td>{$af.a_hits_out}</td>
 						<td id="status_afiliado_{$af.aid}">{if $af.a_active == 0}<font color="purple">Inactivo</font>{else}<font color="green">Activo</font>{/if}</td>
 						<td class="admin_actions">
-							<a href="{$tsConfig.url}/admin/afs?act=editar&aid={$af.aid}"><img src="{$tsConfig.public}/images/icons/editar.png" title="Editar"/></a>
-							<a href="#" onclick="ad_afiliado.detalles({$af.aid}); return false;"><img src="{$tsConfig.public}/images/icons/details.png" title="Detalles"/></a>
+							<a href="{$tsConfig.url}/admin/afs?act=editar&aid={$af.aid}"><img src="{$tsConfig.assets}/images/icons/editar.png" title="Editar"/></a>
+							<a href="#" onclick="ad_afiliado.detalles({$af.aid}); return false;"><img src="{$tsConfig.assets}/images/icons/details.png" title="Detalles"/></a>
 							<a onclick="admin.afs.accion({$af.aid}); return false"><img src="{$tsConfig.images}/reactivar.png" title="Activar/Desactivar Afiliado" /></a>
-							<a href="#" onclick="admin.afs.borrar({$af.aid}); return false"><img src="{$tsConfig.public}/images/icons/close.png" title="Eliminar"/></a>
+							<a href="#" onclick="admin.afs.borrar({$af.aid}); return false"><img src="{$tsConfig.assets}/images/icons/close.png" title="Eliminar"/></a>
 						</td>
 					</tr>
 					{/foreach}
